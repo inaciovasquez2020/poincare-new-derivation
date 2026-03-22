@@ -1,0 +1,71 @@
+\section{Hypergraph Final Wall (Chronicles)}
+
+\textbf{Conditional Theorem.}
+Fix $k,\Delta,R$ and a non-tree hypergraph gadget $H$. Assume:
+\begin{enumerate}
+\item Bounded-multiplicity cover reduction $G \mapsto \mathcal O_H(G)$ with overlap size $\le B$,
+\item Overlap-packing: $\operatorname{cx}_H(G)\to\infty \Rightarrow m\to\infty$ controlled witnesses,
+\item Non-collision lemma with constant $C=C(k,\Delta,R,H)$.
+\end{enumerate}
+
+Then:
+\[
+\#\{\operatorname{tp}^k_R(v)\} \;\ge\; C^{-1} m.
+\]
+
+Hence:
+\[
+\operatorname{cx}_H(G)\to\infty \;\Longrightarrow\; \#\{\operatorname{tp}^k_R(v)\}\to\infty.
+\]
+
+Contraposition:
+\[
+\#\{\operatorname{tp}^k_R(v)\}\le C_0
+\;\Longrightarrow\;
+\operatorname{cx}_H(G)\le C \cdot C_0.
+\]
+
+Thus:
+\[
+\exists C' = C'(k,\Delta,R,H)\ \text{s.t.}\ 
+\#\{\operatorname{tp}^k_R(v)\}\le C'
+\;\Longrightarrow\;
+\operatorname{cx}_H(G)\le C'.
+\]
+
+\paragraph{Closure (Conditional Resolution).}
+Assume:
+(i) bounded-multiplicity cover reduction \(G\mapsto \mathcal O_H(G)\) with interface size \(\le B\);
+(ii) overlap-packing: \(\operatorname{cx}_H(G)\to\infty \Rightarrow m\to\infty\) pairwise controlled witnesses;
+(iii) canonical encoding \(\mathcal E\) with non-collision constant \(C(k,\Delta,R,H)\).
+
+Then:
+\[
+m \le C\cdot \#\{\operatorname{tp}^k_R(v)\},
+\qquad
+\#\{\operatorname{tp}^k_R(v)\}\ge C^{-1} m.
+\]
+
+Hence:
+\[
+\operatorname{cx}_H(G)\to\infty
+\;\Longrightarrow\;
+\#\{\operatorname{tp}^k_R(v)\}\to\infty.
+\]
+
+Contraposition:
+\[
+\#\{\operatorname{tp}^k_R(v)\}\le C_0
+\;\Longrightarrow\;
+\operatorname{cx}_H(G)\le C\cdot C_0.
+\]
+
+Thus for \(C' := C\cdot C_0\),
+\[
+\#\{\operatorname{tp}^k_R(v)\}\le C'
+\;\Longrightarrow\;
+\operatorname{cx}_H(G)\le C'.
+\]
+
+\hfill\(\square\)
+

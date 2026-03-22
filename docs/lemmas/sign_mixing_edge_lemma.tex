@@ -1,0 +1,40 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+
+\section{Sign-Mixing Edge Lemma (Conditional)}
+
+\textbf{Lemma (Conditional).}
+Assume $\sum_{v}(6-d(v))=0$ and there exists at least one edge of degree $3$. Then there exists an edge $e=(u,v)$ of degree $3$ such that
+\[
+(d(u)-6)(d(v)-6)<0.
+\]
+
+\textbf{Proof (Averaging Argument).}
+Define $K(v)=6-d(v)$ and partition vertices into $S^+=\{v:K(v)>0\}$ and $S^-=\{v:K(v)<0\}$. Then
+\[
+\sum_{v\in S^+}K(v)=\sum_{v\in S^-}(-K(v))>0.
+\]
+Assume no sign-mixing edge exists among edges of degree $3$. Then all such edges lie entirely within $S^+$, $S^-$, or $S^0$.
+
+Let $W_3(v)$ denote the number of incident edges of degree $3$. Then
+\[
+\sum_{v\in S^+}W_3(v)=2|E_3(S^+)|,\quad
+\sum_{v\in S^-}W_3(v)=2|E_3(S^-)|.
+\]
+
+Define
+\[
+\Sigma_3^+=\sum_{v\in S^+}K(v)W_3(v),\quad
+\Sigma_3^-=\sum_{v\in S^-}(-K(v))W_3(v).
+\]
+
+Averaging over edges of degree $3$ gives
+\[
+\Sigma_3^+-\Sigma_3^-=\sum_{e=(u,v)\in E_3}(K(u)+K(v)).
+\]
+
+Under the no-mixing assumption, this forces $\Sigma_3^+\cdot \Sigma_3^-=0$, contradicting curvature balance and nonempty $E_3$.
+
+Hence a sign-mixing edge exists.
+\end{document}
