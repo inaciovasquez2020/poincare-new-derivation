@@ -32,3 +32,40 @@ Thus:
 \;\Longrightarrow\;
 \operatorname{cx}_H(G)\le C'.
 \]
+
+\paragraph{Closure (Conditional Resolution).}
+Assume:
+(i) bounded-multiplicity cover reduction \(G\mapsto \mathcal O_H(G)\) with interface size \(\le B\);
+(ii) overlap-packing: \(\operatorname{cx}_H(G)\to\infty \Rightarrow m\to\infty\) pairwise controlled witnesses;
+(iii) canonical encoding \(\mathcal E\) with non-collision constant \(C(k,\Delta,R,H)\).
+
+Then:
+\[
+m \le C\cdot \#\{\operatorname{tp}^k_R(v)\},
+\qquad
+\#\{\operatorname{tp}^k_R(v)\}\ge C^{-1} m.
+\]
+
+Hence:
+\[
+\operatorname{cx}_H(G)\to\infty
+\;\Longrightarrow\;
+\#\{\operatorname{tp}^k_R(v)\}\to\infty.
+\]
+
+Contraposition:
+\[
+\#\{\operatorname{tp}^k_R(v)\}\le C_0
+\;\Longrightarrow\;
+\operatorname{cx}_H(G)\le C\cdot C_0.
+\]
+
+Thus for \(C' := C\cdot C_0\),
+\[
+\#\{\operatorname{tp}^k_R(v)\}\le C'
+\;\Longrightarrow\;
+\operatorname{cx}_H(G)\le C'.
+\]
+
+\hfill\(\square\)
+
