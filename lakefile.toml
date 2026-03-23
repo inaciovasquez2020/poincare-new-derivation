@@ -1,0 +1,10 @@
+name = "twolift"
+version = "0.1.0"
+defaultTargets = ["twolift"]
+
+[[lean_lib]]
+name = "Twolift"
+
+[[lean_exe]]
+name = "twolift"
+root = "Main"
