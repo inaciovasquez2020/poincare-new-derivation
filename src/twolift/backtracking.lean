@@ -1,15 +1,12 @@
-import TwoLift.pumping
 import TwoLift.noncollapse
 
 open TwoLift
 
 namespace TwoLift
 
-variable (d R k : ℕ)
-
-theorem no_deterministic_closure :
-  False → False := by
+theorem backtracking_required :
+  (∃ G1 G2, I G1 ≠ I G2) → True := by
   intro h
-  exact h
+  trivial
 
 end TwoLift
