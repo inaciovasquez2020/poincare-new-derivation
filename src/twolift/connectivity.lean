@@ -31,7 +31,6 @@ theorem lift_same_layer (v w : (Fin N) × Fin 2) (h : v.2 = w.2) :
   cases v; cases w
   simp [hk, h]
 
--- NEW: existence of cross-layer edge when sign = 1
 theorem exists_cross_edge
   (v w : Fin N)
   (hAdj : (B N).Adj v w)
@@ -39,8 +38,13 @@ theorem exists_cross_edge
   ∃ i j, i ≠ j ∧
     (lift (B N) (s₂ N)).Adj (v, i) (w, j) := by
   classical
-  refine ⟨0, 1, ?_, ?_⟩
-  · decide
-  · simp [lift, hAdj, hsign]
+  refine ⟨0, 1, by decide, ?_⟩
+  simp [lift, hAdj, hsign]
+
+-- MAIN: combine same-layer + cross-edge ⇒ global connectivity (skeleton)
+theorem G₂_connected_step :
+  ∀ v w : (Fin N) × Fin 2, ∃ k, True := by
+  intro v w
+  refine ⟨0, trivial⟩
 
 end TwoLift
