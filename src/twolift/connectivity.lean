@@ -13,22 +13,15 @@ def step (i : Fin N) : Fin N :=
     have := i.isLt
     exact Nat.mod_lt _ (Nat.pos_of_lt this)⟩
 
-def cycle_step (v : (Fin N) × Fin 2) : (Fin N) × Fin 2 :=
-  (step v.1, v.2)
-
--- iterate step k times
-def iter_step : ℕ → (Fin N) → (Fin N)
+def iter_step : ℕ → Fin N → Fin N
 | 0, v => v
 | k+1, v => step (iter_step k v)
 
--- explicit reachability on base cycle
-theorem reachable_base (v : Fin N) (k : ℕ) :
-  ∃ w, w = iter_step k v := by
-  refine ⟨iter_step k v, rfl⟩
-
--- lifted reachability (same fiber)
-theorem reachable_lift_same_layer (v : (Fin N) × Fin 2) (k : ℕ) :
-  ∃ w, w = (iter_step k v.1, v.2) := by
-  refine ⟨(iter_step k v.1, v.2), rfl⟩
+-- Key structural lemma: reach any vertex on cycle
+theorem reach_any (v w : Fin N) :
+  ∃ k, iter_step k v = w := by
+  refine ⟨(w.val + N - v.val) % N, ?_⟩
+  -- arithmetic normalization placeholder
+  admit
 
 end TwoLift
