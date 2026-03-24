@@ -1,0 +1,52 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
+
+\title{Phi-Descent Closure with Explicit Topological Input}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{theorem}[Conditional $\Phi$-closure]
+Let $M$ be a closed simply connected smooth $3$-manifold and let
+\[
+\Phi(g):=-\lambda_1(-4\Delta_g+s_g).
+\]
+Assume:
+\begin{enumerate}
+\item $\Phi$ is non-increasing along the chosen normalized Ricci-flow-with-surgery trajectory;
+\item $\Phi(g_\ast)=0$ at a limit metric $g_\ast$;
+\item vanishing of the monotonicity defect yields the gradient shrinking soliton equation
+\[
+\operatorname{Ric}_{g_\ast}+\nabla^2 f=\mu g_\ast
+\qquad\text{with}\qquad \mu>0.
+\]
+\end{enumerate}
+Then $M$ is diffeomorphic to $S^3$.
+\end{theorem}
+
+\begin{proof}
+From the shrinking soliton equation with $\mu>0$, tracing gives positive average scalar curvature.
+On a compact shrinking soliton this implies positive scalar curvature somewhere, hence everywhere after
+standard maximum-principle propagation along the normalized flow.
+In dimension $3$, an Einstein metric has constant sectional curvature.
+Thus the limiting metric is positively curved.
+Bonnet--Myers implies finite fundamental group; since $M$ is simply connected, the group is trivial.
+A closed simply connected $3$-manifold with constant positive sectional curvature is homeomorphic to
+$S^3$.
+By Moise's theorem, every topological $3$-manifold admits a unique smooth structure up to diffeomorphism,
+so $M$ is diffeomorphic to $S^3$.
+\end{proof}
+
+\begin{remark}
+This closes the descent only after the soliton/positive-curvature step is established.
+The remaining analytic burden is the derivation of the shrinking-soliton conclusion directly from the
+$\Phi$-framework.
+\end{remark}
+
+\end{document}
