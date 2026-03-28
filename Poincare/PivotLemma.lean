@@ -61,3 +61,51 @@ theorem pivot_strict_descent
   trivial
 
 end Poincare
+
+abbrev Coord := Nat
+
+def l1NormOn (S : Finset Coord) (x : Coord → Int) : Int :=
+  ∑ j in S, Int.natAbs (x j)
+
+def supportOn (S : Finset Coord) (x : Coord → Int) : Finset Coord :=
+  S.filter (fun j => x j ≠ 0)
+
+def PhiOn (S : Finset Coord) (x : Coord → Int) : Int :=
+  l1NormOn S x + (supportOn S x).card
+
+theorem pivot_zeroes_coordinate
+  {S : Finset Coord} {x γ : Coord → Int} {j : Coord}
+  (hjS : j ∈ S)
+  (hγj : γ j = Int.sign (x j))
+  (hxj : x j ≠ 0) :
+  (fun k => x k - γ k) j = 0 := by
+  simp [hγj, Int.sign]
+
+theorem l1_drop_one
+  {S : Finset Coord} {x γ : Coord → Int} {j : Coord}
+  (hjS : j ∈ S)
+  (hγsupp : ∀ k ∈ S, k ≠ j → γ k = 0)
+  (hγj : γ j = Int.sign (x j))
+  (hxj : x j ≠ 0)
+  (hxunit : Int.natAbs (x j) = 1) :
+  l1NormOn S (fun k => x k - γ k) = l1NormOn S x - 1 := by
+  classical
+  admit
+
+theorem support_not_increase
+  {S : Finset Coord} {x γ : Coord → Int} {j : Coord}
+  (hγsupp : ∀ k ∈ S, k ≠ j → γ k = 0) :
+  (supportOn S (fun k => x k - γ k)).card ≤ (supportOn S x).card := by
+  classical
+  admit
+
+theorem Phi_descent
+  {S : Finset Coord} {x γ : Coord → Int} {j : Coord}
+  (hjS : j ∈ S)
+  (hγsupp : ∀ k ∈ S, k ≠ j → γ k = 0)
+  (hγj : γ j = Int.sign (x j))
+  (hxj : x j ≠ 0)
+  (hxunit : Int.natAbs (x j) = 1) :
+  PhiOn S (fun k => x k - γ k) < PhiOn S x := by
+  admit
+
