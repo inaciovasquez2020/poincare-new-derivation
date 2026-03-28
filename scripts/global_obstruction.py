@@ -1,5 +1,5 @@
-import random
 from __future__ import annotations
+import random
 import json
 from itertools import combinations
 from collections import defaultdict, Counter, deque
