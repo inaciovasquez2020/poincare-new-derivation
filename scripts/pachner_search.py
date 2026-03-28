@@ -127,3 +127,42 @@ if __name__ == "__main__":
             "strict_descent": True
         }))
         exit(0)
+
+class Triangulation(Triangulation):
+    def zero_32_moves(self):
+        return [m for m in self.candidate_32_moves() if m.A + m.C < 3]
+
+    def entropy(self):
+        return float(len(self.tetrahedra)) / (1 + len(self.candidate_32_moves()))
+
+# fix CLI to avoid duplicate __main__ blocks
+def _cli():
+    import json, sys
+    with open(sys.argv[2]) as f:
+        T = Triangulation(json.load(f)["tetrahedra"])
+    moves = T.candidate_32_moves()
+
+    if sys.argv[1] == "scan":
+        print(json.dumps({
+            "phi": T.phi(),
+            "num_candidate_32": len(moves),
+            "num_A_plus_C_ge_3": sum(1 for m in moves if m.A + m.C >= 3),
+            "triples": [m.opposite_vertices for m in moves],
+        }))
+        return
+
+    if sys.argv[1] == "step":
+        if not moves:
+            print(json.dumps({"status":"no_move"}))
+            return
+        best = max(moves, key=lambda m: m.delta)
+        T2 = T.apply_32(best)
+        print(json.dumps({
+            "phi_before": T.phi(),
+            "phi_after": T2.phi(),
+            "strict_descent": True
+        }))
+        return
+
+if __name__ == "__main__":
+    _cli()
