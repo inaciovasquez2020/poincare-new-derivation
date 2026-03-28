@@ -98,17 +98,15 @@ class Triangulation:
                 ((deg[w3]-1)-6)**2
             )
 
-            out.append(Move32(
-                (u,v),
-                (w1,w2,w3),
-                incident,
-                A,
-                C,
-                before1-after1,
-                before2-after2
-            ))
+            out.append(Move32((u,v),(w1,w2,w3),incident,A,C,before1-after1,before2-after2))
 
         return out
+
+    def positive_32_moves(self):
+        return [m for m in self.candidate_32_moves() if m.delta1 > 0]
+
+    def zero_32_moves(self):
+        return [m for m in self.candidate_32_moves() if m.delta1 == 0]
 
     def apply_32(self, move: Move32):
         current = set(self.tetrahedra)
@@ -127,18 +125,14 @@ class Triangulation:
 
     def best_lex_move(self):
         moves = self.candidate_32_moves()
-
-        # primary: Δ1 > 0
         pos = [m for m in moves if m.delta1 > 0]
-
-        # secondary: Δ1 = 0 but Δ2 > 0
         weak = [m for m in moves if m.delta1 == 0 and m.delta2 > 0]
 
         candidates = pos if pos else weak
         if not candidates:
             return None
 
-        return max(candidates, key=lambda m: (m.delta1, m.delta2, m.A+m.C))
+        return max(candidates, key=lambda m:(m.delta1,m.delta2,m.A+m.C))
 
 def load(path):
     with open(path) as f:
@@ -146,7 +140,6 @@ def load(path):
 
 if __name__=="__main__":
     import sys
-
     cmd = sys.argv[1]
     T = load(sys.argv[2])
 
@@ -156,53 +149,17 @@ if __name__=="__main__":
             "phi":T.phi(),
             "phi2":T.phi2(),
             "triples":[
-                {"edge":list(m.edge),"A":m.A,"C":m.C,"d1":m.delta1,"d2":m.delta2}
+                {"edge":list(m.edge),"A":m.A,"C":m.C,"delta":m.delta1}
                 for m in moves
             ]
         }))
         exit(0)
 
-    if cmd == "step":
-        seq = []
-        steps = 0
-
-        while True:
-            move = T.best_lex_move()
-            if move is None:
-                break
-
-            T2 = T.apply_32(move)
-
-            seq.append({
-                "phi_before":T.phi(),
-                "phi_after":T2.phi(),
-                "phi2_before":T.phi2(),
-                "phi2_after":T2.phi2(),
-                "move":{"A":move.A,"C":move.C,"d1":move.delta1,"d2":move.delta2}
-            })
-
-            if T2.phi() == T.phi() and T2.phi2() == T.phi2():
-                break
-
-            T = T2
-            steps += 1
-
-            if steps > 100:
-                break
-
-        print(json.dumps({
-            "steps":steps,
-            "final_phi":T.phi(),
-            "final_phi2":T.phi2(),
-            "sequence":seq
-        }))
-        exit(0)
-
-    if cmd == "find_counterexample":
+    if cmd == "find_zero_witness":
         moves = T.candidate_32_moves()
         bad = [
-            {"edge":list(m.edge),"A":m.A,"C":m.C,"d1":m.delta1,"d2":m.delta2}
-            for m in moves if (m.A+m.C>=3 and m.delta2==0)
+            {"edge":list(m.edge),"A":m.A,"C":m.C,"delta":m.delta1}
+            for m in moves if (m.A+m.C>=3 and m.delta1==0)
         ]
         print(json.dumps({
             "phi":T.phi(),
