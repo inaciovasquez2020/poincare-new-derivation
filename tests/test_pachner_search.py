@@ -4,7 +4,7 @@ import subprocess
 import sys
 import tempfile
 
-from scripts.pachner_search import Triangulation
+from scripts.pachner_search import Triangulation, random_lift_generator
 
 def canon(T):
     return sorted(tuple(sorted(t)) for t in T)
@@ -51,8 +51,8 @@ def test_positive_move_filter():
     T = Triangulation(tetrahedra)
     pos = T.positive_32_moves()
     zero = T.zero_32_moves()
-    assert all(m.delta > 0 for m in pos)
-    assert all(m.delta == 0 for m in zero)
+    assert all(m.delta1 > 0 for m in pos)
+    assert all(m.delta1 == 0 for m in zero)
 
 def test_cli_scan_and_zero_witness():
     tetrahedra = [
@@ -91,3 +91,13 @@ def test_cli_scan_and_zero_witness():
         assert p2.returncode == 0
         witness = json.loads(p2.stdout)
         assert "num_witnesses" in witness
+
+def test_phi3_and_random_lift():
+    base = [
+        [0, 1, 2, 3],
+        [0, 1, 2, 4],
+        [0, 1, 3, 4],
+    ]
+    T = random_lift_generator(base, 3, 7)
+    assert isinstance(T.phi3(), int)
+    assert T.phi3() >= 0
