@@ -123,17 +123,6 @@ class Triangulation:
 
         return Triangulation(list(remaining | new))
 
-    def best_lex_move(self):
-        moves = self.candidate_32_moves()
-        pos = [m for m in moves if m.delta1 > 0]
-        weak = [m for m in moves if m.delta1 == 0 and m.delta2 > 0]
-
-        candidates = pos if pos else weak
-        if not candidates:
-            return None
-
-        return max(candidates, key=lambda m:(m.delta1,m.delta2,m.A+m.C))
-
 def load(path):
     with open(path) as f:
         return Triangulation(json.load(f)["tetrahedra"])
@@ -164,7 +153,7 @@ if __name__=="__main__":
         print(json.dumps({
             "phi":T.phi(),
             "phi2":T.phi2(),
-            "num_bad":len(bad),
-            "bad":bad
+            "num_witnesses":len(bad),
+            "witnesses":bad
         }))
         exit(0)
