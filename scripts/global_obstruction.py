@@ -4,6 +4,7 @@ import json
 from itertools import combinations
 from collections import defaultdict, Counter, deque
 from dataclasses import dataclass
+from scripts.certificate_homology import Triangulation as CertTriangulation, compare_certificates
 from typing import Dict, Iterable, List, Set, Tuple
 
 Vertex = int
@@ -298,13 +299,24 @@ def candidate_3_2_moves(T: Triangulation):
 
 def certificate_termination(T: Triangulation) -> Dict[str, object]:
     inv = T.invariants()
+    cert = CertTriangulation(T.tetrahedra).certificate()
     return {
         "terminate": (
             inv.beta1_2skeleton_proxy == 0 and
             inv.noncollapsible_core_tets == 0 and
-            inv.pi1_proxy_rank == 0
+            inv.pi1_proxy_rank == 0 and
+            cert.h2 == 0
         ),
-        "certificate": inv.certificate,
+        "certificate": {
+            **inv.certificate,
+            "rank_d2": cert.rank_d2,
+            "rank_d3": cert.rank_d3,
+            "h2": cert.h2,
+            "pi1_generators": cert.pi1_generators,
+            "pi1_relators_faces": cert.pi1_relators_faces,
+            "pi1_relators_tets": cert.pi1_relators_tets,
+            "certificate_metric": list(cert.certificate_metric),
+        },
     }
 
 def random_lift_generator(base_tets, lift_size: int, seed: int) -> Triangulation:

@@ -83,6 +83,7 @@ def test_cli():
         assert p2.returncode == 0
         cert = json.loads(p2.stdout)
         assert "terminate" in cert
+        assert "h2" in cert["certificate"]
 
         p3 = subprocess.run(
             [sys.executable, "scripts/global_obstruction.py", "moves", path],
