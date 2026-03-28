@@ -1,5 +1,5 @@
 from __future__ import annotations
-from certificate_homology import Triangulation as CertTriangulation, compare_certificates
+from scripts.certificate_homology import Triangulation as CertTriangulation, compare_certificates
 import random
 import json
 from itertools import combinations
