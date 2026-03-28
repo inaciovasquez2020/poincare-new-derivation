@@ -4,7 +4,7 @@ import subprocess
 import sys
 import tempfile
 
-from scripts.pachner_search import Triangulation, random_lift_generator
+from scripts.pachner_search import Triangulation, random_lift_generator, adversarial_family_chain
 
 def canon(T):
     return sorted(tuple(sorted(t)) for t in T)
@@ -92,12 +92,18 @@ def test_cli_scan_and_zero_witness():
         witness = json.loads(p2.stdout)
         assert "num_witnesses" in witness
 
-def test_phi3_and_random_lift():
+def test_phi4_entropy_spectrum_random_lift_and_adversarial():
     base = [
         [0, 1, 2, 3],
         [0, 1, 2, 4],
         [0, 1, 3, 4],
     ]
     T = random_lift_generator(base, 3, 7)
-    assert isinstance(T.phi3(), int)
-    assert T.phi3() >= 0
+    assert isinstance(T.phi4(), int)
+    assert T.phi4() >= 0
+    assert isinstance(T.entropy(), float)
+    assert T.spectrum_penalty() >= 0
+
+    A = adversarial_family_chain(4)
+    assert A.phi4() >= 0
+    assert A.spectrum_penalty() >= 0
