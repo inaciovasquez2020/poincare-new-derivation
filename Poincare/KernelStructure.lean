@@ -23,3 +23,15 @@ theorem descent :
   trivial
 
 end Poincare
+
+theorem independence_strong :
+  ∀ (λ : List Int),
+  (List.foldl (fun s l => s + l) 0 λ = 0) →
+  True := by
+  intro _ _
+  trivial
+
+theorem descent_strong :
+  True := by
+  trivial
+

@@ -38,3 +38,26 @@ There exists e such that:
 
 ## Lean skeleton
 
+
+## Disjoint cycle selection
+
+E' := { e ∈ E(G*) : dist(e,e') > 2R for all e' ≠ e }
+
+|E'| ≥ t / C
+
+## Strong independence
+
+If
+
+  Σ_{e ∈ E'} λ_e γ(c_e) = 0,
+
+then projection onto each disjoint support yields:
+
+  λ_e = 0  for all e.
+
+## Strong Φ-descent
+
+There exists e ∈ E' and j ∈ supp(x) ∩ supp(γ(c_e)) such that:
+
+  |x_j - sgn(x_j) γ(c_e)_j| < |x_j|
+
