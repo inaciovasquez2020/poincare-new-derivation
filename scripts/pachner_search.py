@@ -18,7 +18,7 @@ def norm_edge(a,b):
 @dataclass
 class Move32:
     edge: Edge
-    w: Tuple[int,int,int]
+    opposite_vertices: Tuple[int,int,int]
     A: int
     C: int
     delta: int
@@ -86,7 +86,7 @@ class Triangulation:
 
     def apply_32(self, move: Move32):
         u,v = move.edge
-        w1,w2,w3 = move.w
+        w1,w2,w3 = move.opposite_vertices
 
         remove = {
             norm_tet((u,v,w1,w2)),
@@ -125,6 +125,6 @@ if __name__=="__main__":
         print(json.dumps({
             "phi_before":T.phi(),
             "phi_after":T2.phi(),
-            "strict":T2.phi()<T.phi()
+            "strict_descent":T2.phi()<T.phi()
         }))
         exit(0)
