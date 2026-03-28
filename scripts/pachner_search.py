@@ -27,3 +27,19 @@ class Triangulation:
 
         # keep external tetrahedron already present (no duplication)
         return Triangulation([canon(t) for t in new_tets])
+
+def random_lift_generator(n=10):
+    import random
+    return Triangulation([
+        tuple(sorted(random.sample(range(n*3), 4)))
+        for _ in range(n)
+    ])
+
+def adversarial_family_chain(k=3):
+    return [random_lift_generator(n=10+i) for i in range(k)]
+
+__all__ = [
+    "Triangulation",
+    "random_lift_generator",
+    "adversarial_family_chain",
+]
