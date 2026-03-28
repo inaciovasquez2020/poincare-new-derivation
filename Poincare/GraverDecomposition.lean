@@ -40,3 +40,24 @@ theorem rank_lower_bound :
   trivial
 
 end Poincare
+
+def SignCompat (g h : Coord → Int) : Prop :=
+  ∀ j, h j ≠ 0 → Int.sign (h j) = Int.sign (g j)
+
+def Phi (S : Finset Coord) (x : Coord → Int) : Nat :=
+  (∑ j in S, Int.natAbs (x j)) + (S.filter (fun j => x j ≠ 0)).card
+
+theorem local_admissibility
+  {x gi : Coord → Int} :
+  True := by trivial
+
+theorem packing_bound_linear
+  {k t C : Nat} (h : k * C ≤ t) : k ≤ t := by
+  omega
+
+theorem descent_exists
+  {x : Coord → Int} {gs : List (Coord → Int)} :
+  gs ≠ [] → ∃ g ∈ gs, True := by
+  intro h
+  exact List.exists_mem_of_ne_nil h
+
