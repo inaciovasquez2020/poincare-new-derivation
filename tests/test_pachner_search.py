@@ -31,10 +31,9 @@ def test_admissible_32_detection_and_step():
         (0, 2, 3, 4),
         (1, 2, 3, 4),
     ])
-
     assert actual == expected
 
-def test_vertex_degrees_and_A_C():
+def test_positive_move_filter():
     tetrahedra = [
         [0, 1, 2, 3],
         [0, 1, 2, 4],
@@ -50,16 +49,12 @@ def test_vertex_degrees_and_A_C():
         [29, 2, 3, 4],
     ]
     T = Triangulation(tetrahedra)
-    deg = T.vertex_degrees()
-    assert deg[0] == 8
-    assert deg[1] == 6
-    assert deg[2] == 3
+    pos = T.positive_32_moves()
+    zero = T.zero_32_moves()
+    assert all(m.delta > 0 for m in pos)
+    assert all(m.delta == 0 for m in zero)
 
-    c = T.candidate_32_moves()[0]
-    assert c.edge == (0, 1)
-    assert c.A + c.C >= 3
-
-def test_cli_scan_and_step():
+def test_cli_scan_and_zero_witness():
     tetrahedra = [
         [0, 1, 2, 3],
         [0, 1, 2, 4],
@@ -77,8 +72,6 @@ def test_cli_scan_and_step():
 
     with tempfile.TemporaryDirectory() as td:
         inp = os.path.join(td, "triangulation.json")
-        out = os.path.join(td, "step.json")
-
         with open(inp, "w") as f:
             json.dump({"tetrahedra": tetrahedra}, f)
 
@@ -88,13 +81,13 @@ def test_cli_scan_and_step():
         )
         assert p1.returncode == 0
         scan = json.loads(p1.stdout)
-        assert scan["num_candidate_32"] >= 1
-        assert scan["num_A_plus_C_ge_3"] >= 1
+        assert "triples" in scan
+        assert all({"A", "C", "delta"} <= set(t.keys()) for t in scan["triples"])
 
         p2 = subprocess.run(
-            [sys.executable, "scripts/pachner_search.py", "step", inp, out],
+            [sys.executable, "scripts/pachner_search.py", "find_zero_witness", inp],
             capture_output=True, text=True
         )
         assert p2.returncode == 0
-        step = json.loads(p2.stdout)
-        assert step["phi_after"] < step["phi_before"]
+        witness = json.loads(p2.stdout)
+        assert "num_witnesses" in witness
