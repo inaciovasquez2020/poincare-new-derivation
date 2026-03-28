@@ -1,10 +1,9 @@
-# FIX: correct 3→2 detection (remove invalid opp_vertex logic)
-
 from __future__ import annotations
 import json
 from itertools import combinations
 from collections import defaultdict
-from typing import List, Tuple, Dict
+from dataclasses import dataclass
+from typing import List, Tuple
 
 Vertex = int
 Tet = Tuple[int,int,int,int]
@@ -15,6 +14,14 @@ def norm_tet(t):
 
 def norm_edge(a,b):
     return (a,b) if a<b else (b,a)
+
+@dataclass
+class Move32:
+    edge: Edge
+    w: Tuple[int,int,int]
+    A: int
+    C: int
+    delta: int
 
 class Triangulation:
     def __init__(self, tetrahedra):
@@ -39,7 +46,7 @@ class Triangulation:
                 e2t[norm_edge(a,b)].append(t)
         return e2t
 
-    def candidate_32_moves(self):
+    def candidate_32_moves(self) -> List[Move32]:
         deg = self.vertex_degrees()
         out = []
         for (u,v), incident in self.edge_to_tets().items():
@@ -47,7 +54,6 @@ class Triangulation:
                 continue
 
             opp_sets = [tuple(sorted(set(t)-{u,v})) for t in incident]
-
             union = sorted({x for s in opp_sets for x in s})
             if len(union)!=3:
                 continue
@@ -59,7 +65,6 @@ class Triangulation:
                 norm_tet((u,v,w1,w3)),
                 norm_tet((u,v,w2,w3)),
             }
-
             if set(incident)!=required:
                 continue
 
@@ -75,19 +80,13 @@ class Triangulation:
                 abs((deg[w3]-1)-6)
             )
 
-            out.append({
-                "edge":(u,v),
-                "w":(w1,w2,w3),
-                "A":A,
-                "C":C,
-                "delta":before-after
-            })
+            out.append(Move32((u,v),(w1,w2,w3),A,C,before-after))
 
         return out
 
-    def apply_32(self, move):
-        u,v = move["edge"]
-        w1,w2,w3 = move["w"]
+    def apply_32(self, move: Move32):
+        u,v = move.edge
+        w1,w2,w3 = move.w
 
         remove = {
             norm_tet((u,v,w1,w2)),
@@ -103,27 +102,25 @@ class Triangulation:
 
         return Triangulation(new)
 
-
 if __name__=="__main__":
     import sys
     data = json.load(open(sys.argv[2]))
     T = Triangulation(data["tetrahedra"])
+    moves = T.candidate_32_moves()
 
     if sys.argv[1]=="scan":
-        moves = T.candidate_32_moves()
         print(json.dumps({
             "phi":T.phi(),
-            "moves":moves,
-            "exists_good":any(m["A"]+m["C"]>=3 for m in moves)
+            "num_candidate_32":len(moves),
+            "num_A_plus_C_ge_3":sum(1 for m in moves if m.A+m.C>=3)
         }))
         exit(0)
 
     if sys.argv[1]=="step":
-        moves = T.candidate_32_moves()
         if not moves:
             print(json.dumps({"status":"no_move"}))
             exit(1)
-        best = max(moves, key=lambda m:m["delta"])
+        best = max(moves, key=lambda m:m.delta)
         T2 = T.apply_32(best)
         print(json.dumps({
             "phi_before":T.phi(),
