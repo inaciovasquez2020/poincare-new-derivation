@@ -1,10 +1,10 @@
 from __future__ import annotations
+from certificate_homology import Triangulation as CertTriangulation, compare_certificates
 import random
 import json
 from itertools import combinations
 from collections import defaultdict, Counter, deque
 from dataclasses import dataclass
-from scripts.certificate_homology import Triangulation as CertTriangulation, compare_certificates
 from typing import Dict, Iterable, List, Set, Tuple
 
 Vertex = int
