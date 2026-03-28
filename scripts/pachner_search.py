@@ -19,6 +19,7 @@ def norm_edge(a,b):
 class Move32:
     edge: Edge
     opposite_vertices: Tuple[int,int,int]
+    incident_tets: Tuple[Tet,Tet,Tet]
     A: int
     C: int
     delta: int
@@ -53,6 +54,8 @@ class Triangulation:
             if len(incident)!=3:
                 continue
 
+            incident = tuple(norm_tet(t) for t in incident)
+
             opp_sets = [tuple(sorted(set(t)-{u,v})) for t in incident]
             union = sorted({x for s in opp_sets for x in s})
             if len(union)!=3:
@@ -80,31 +83,25 @@ class Triangulation:
                 abs((deg[w3]-1)-6)
             )
 
-            out.append(Move32((u,v),(w1,w2,w3),A,C,before-after))
+            out.append(Move32((u,v),(w1,w2,w3),incident,A,C,before-after))
 
         return out
 
     def apply_32(self, move: Move32):
+        current = set(self.tetrahedra)
+        remove = set(move.incident_tets)
+
+        remaining = current - remove
+
         u,v = move.edge
         w1,w2,w3 = move.opposite_vertices
 
-        remove = {
-            norm_tet((u,v,w1,w2)),
-            norm_tet((u,v,w1,w3)),
-            norm_tet((u,v,w2,w3)),
-        }
-
-        new = [t for t in self.tetrahedra if t not in remove]
-
-        # preserve ordering exactly as expected by tests
-        new.append((5,2,3,4)) if (5,2,3,4) not in new and any(5 in t for t in self.tetrahedra) else None
-
-        new += [
+        new = {
             norm_tet((u,w1,w2,w3)),
             norm_tet((v,w1,w2,w3)),
-        ]
+        }
 
-        return Triangulation(new)
+        return Triangulation(list(remaining | new))
 
 if __name__=="__main__":
     import sys
@@ -129,6 +126,6 @@ if __name__=="__main__":
         print(json.dumps({
             "phi_before":T.phi(),
             "phi_after":T2.phi(),
-            "strict_descent": True
+            "strict_descent":T2.phi()<T.phi()
         }))
         exit(0)
