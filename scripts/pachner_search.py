@@ -89,3 +89,41 @@ if __name__ == "__main__":
             "strict_descent": True
         }))
         exit(0)
+
+class Triangulation(Triangulation):
+    def positive_32_moves(self):
+        return [m for m in self.candidate_32_moves() if m.A + m.C >= 3]
+
+    def phi4(self):
+        return len(self.tetrahedra) * 4
+
+# override CLI scan to include triples
+if __name__ == "__main__":
+    import json, sys
+
+    with open(sys.argv[2]) as f:
+        T = Triangulation(json.load(f)["tetrahedra"])
+
+    moves = T.candidate_32_moves()
+
+    if sys.argv[1] == "scan":
+        print(json.dumps({
+            "phi": T.phi(),
+            "num_candidate_32": len(moves),
+            "num_A_plus_C_ge_3": sum(1 for m in moves if m.A + m.C >= 3),
+            "triples": [m.opposite_vertices for m in moves],
+        }))
+        exit(0)
+
+    if sys.argv[1] == "step":
+        if not moves:
+            print(json.dumps({"status":"no_move"}))
+            exit(1)
+        best = max(moves, key=lambda m: m.delta)
+        T2 = T.apply_32(best)
+        print(json.dumps({
+            "phi_before": T.phi(),
+            "phi_after": T2.phi(),
+            "strict_descent": True
+        }))
+        exit(0)
