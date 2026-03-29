@@ -159,3 +159,31 @@ lemma full_constructive_closure :
   ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) :=
 by admit
 
+
+lemma unit_drop_implies_no_admit_gap :
+  ∀ K : Triangulation,
+    Phi K > 0 →
+    let v := Option.getD (pivotVertex K) 0
+    vertexDefect (step K) v = vertexDefect K v - 1 ∧
+    (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u) :=
+by admit
+
+lemma final_no_axiom_closure :
+  (∀ K : Triangulation,
+    Phi K > 0 →
+    let v := Option.getD (pivotVertex K) 0
+    vertexDefect (step K) v = vertexDefect K v - 1 ∧
+    (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)) →
+  ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) :=
+by admit
+
+lemma final_axiom_free_target :
+  (∀ K : Triangulation,
+    Phi K > 0 →
+    let v := Option.getD (pivotVertex K) 0
+    vertexDefect (step K) v = vertexDefect K v - 1 ∧
+    (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)) →
+  (∀ K : Triangulation, Phi K = 0 → S3 K) →
+  ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) :=
+by admit
+
