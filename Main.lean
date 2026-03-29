@@ -1,2 +1,4 @@
+import Poincare
+
 def main : IO Unit :=
-  IO.println "Build OK"
+  IO.println "Poincare derivation certificate — single-file build loaded."
