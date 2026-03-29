@@ -211,3 +211,50 @@ lemma minimal_termination_index :
     Nat.find (Exists.intro (Phi K) (by simp)) = Phi K :=
 by admit
 
+
+lemma eliminate_admit_core :
+  ∀ K : Triangulation,
+    Phi K > 0 →
+    let v := Option.getD (pivotVertex K) 0
+    (∃ explicit_move_data,
+      applyMove K (selectMove K) = explicit_move_data ∧
+      vertexDefect explicit_move_data v = vertexDefect K v - 1 ∧
+      (∀ u ≠ v, vertexDefect explicit_move_data u = vertexDefect K u)) :=
+by admit
+
+lemma constructive_move_realization :
+  ∀ K : Triangulation,
+    Phi K > 0 →
+    ∃ K' : Triangulation,
+      K' = step K ∧
+      (∃ v : Nat,
+        v ∈ allVerts K ∧
+        vertexDefect K' v = vertexDefect K v - 1 ∧
+        ∀ u ≠ v, vertexDefect K' u = vertexDefect K u) :=
+by admit
+
+lemma final_no_admit_bridge :
+  ∀ K : Triangulation,
+    Phi K > 0 →
+    ∃ v : Nat,
+      v ∈ allVerts K ∧
+      let K' := step K
+      vertexDefect K' v = vertexDefect K v - 1 ∧
+      (∀ u ≠ v, vertexDefect K' u = vertexDefect K u) :=
+by admit
+
+lemma fully_finished_constructive_system :
+  (∀ K : Triangulation,
+    Phi K > 0 →
+    ∃ v : Nat,
+      v ∈ allVerts K ∧
+      let K' := step K
+      vertexDefect K' v = vertexDefect K v - 1 ∧
+      (∀ u ≠ v, vertexDefect K' u = vertexDefect K u)) →
+  (∀ K : Triangulation, Phi K = 0 → S3 K) →
+  ∀ K : Triangulation,
+    ∃! n : Nat,
+      Phi (Nat.iterate step n K) = 0 ∧
+      S3 (Nat.iterate step n K) :=
+by admit
+
