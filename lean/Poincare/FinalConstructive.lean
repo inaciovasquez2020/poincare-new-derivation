@@ -52,3 +52,27 @@ lemma iterate_step_hits_zero :
     Phi (Nat.iterate step (Phi K) K) = 0 :=
 by admit
 
+
+lemma step_decreases_by_one :
+  ∀ K : Triangulation,
+    Phi K > 0 →
+    Phi (step K) = Phi K - 1 :=
+by admit
+
+lemma iterate_step_exact :
+  ∀ (K : Triangulation) (n : Nat),
+    n ≤ Phi K →
+    Phi (Nat.iterate step n K) = Phi K - n :=
+by admit
+
+lemma termination_exact :
+  ∀ K : Triangulation,
+    Phi (Nat.iterate step (Phi K) K) = 0 ∧
+    ∀ n < Phi K, Phi (Nat.iterate step n K) > 0 :=
+by admit
+
+lemma full_constructive_recognition :
+  ∀ K : Triangulation,
+    S3 (Nat.iterate step (Phi K) K) :=
+by admit
+
