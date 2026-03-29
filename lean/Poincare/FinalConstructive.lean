@@ -303,3 +303,25 @@ lemma final_system_is_closed :
       S3 (Nat.iterate step n K) :=
 by admit
 
+
+lemma explicit_move_data_exists :
+  ∀ K : Triangulation,
+    Phi K > 0 →
+    ∃ K' : Triangulation,
+      K' = step K ∧
+      let v := Option.getD (pivotVertex K) 0
+      vertexDefect K' v = vertexDefect K v - 1 ∧
+      (∀ u ≠ v, vertexDefect K' u = vertexDefect K u) :=
+by admit
+
+lemma explicit_move_data_yields_unit_drop :
+  ∀ K : Triangulation,
+    Phi K > 0 →
+    (∃ K' : Triangulation,
+      K' = step K ∧
+      let v := Option.getD (pivotVertex K) 0
+      vertexDefect K' v = vertexDefect K v - 1 ∧
+      (∀ u ≠ v, vertexDefect K' u = vertexDefect K u)) →
+    Phi (step K) = Phi K - 1 :=
+by admit
+
