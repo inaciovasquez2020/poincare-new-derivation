@@ -2,12 +2,16 @@ import Poincare.Kernel
 
 namespace Poincare
 
-def step (K : Triangulation) (h : K.complexity > 0) : Triangulation :=
+-- Choose the move witnessing descent, then apply it
+def stepMove (K : Triangulation) (h : K.complexity > 0) : PachnerMove :=
   Classical.choose (descent_witness K h)
+
+def step (K : Triangulation) (h : K.complexity > 0) : Triangulation :=
+  applyMove K (stepMove K h)
 
 theorem step_decreases (K : Triangulation) (h : K.complexity > 0) :
     measure (step K h) < measure K :=
-  (Classical.choose_spec (descent_witness K h))
+  Classical.choose_spec (descent_witness K h)
 
 def run : Nat → Triangulation → Triangulation
   | 0,   K => K
