@@ -4,3 +4,4 @@
 *.log
 obstruction_log_*.txt
 *.log
+/.lake

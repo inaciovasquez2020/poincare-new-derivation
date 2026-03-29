@@ -1,7 +1,6 @@
-import PoincareKernel
-import PoincareDescent
-import PoincareConstructive
+import Poincare.Kernel
+import Poincare.Descent
+import Poincare.Constructive
 
 namespace Poincare
-
 end Poincare
