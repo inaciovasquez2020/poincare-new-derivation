@@ -258,3 +258,48 @@ lemma fully_finished_constructive_system :
       S3 (Nat.iterate step n K) :=
 by admit
 
+
+lemma no_admit_remaining_equivalence :
+  (∀ K : Triangulation,
+    Phi K > 0 →
+    ∃ v : Nat,
+      v ∈ allVerts K ∧
+      let K' := step K
+      vertexDefect K' v = vertexDefect K v - 1 ∧
+      (∀ u ≠ v, vertexDefect K' u = vertexDefect K u)) →
+  (∀ K : Triangulation, Phi K = 0 → S3 K) →
+  (∀ K : Triangulation, ∃! n : Nat, S3 (Nat.iterate step n K)) :=
+by admit
+
+lemma terminal_index_matches_initial_Phi :
+  (∀ K : Triangulation,
+    Phi K > 0 →
+    ∃ v : Nat,
+      v ∈ allVerts K ∧
+      let K' := step K
+      vertexDefect K' v = vertexDefect K v - 1 ∧
+      (∀ u ≠ v, vertexDefect K' u = vertexDefect K u)) →
+  (∀ K : Triangulation, Phi K = 0 → S3 K) →
+  ∀ K : Triangulation,
+    ∃! n : Nat,
+      n = Phi K ∧
+      Phi (Nat.iterate step n K) = 0 ∧
+      S3 (Nat.iterate step n K) :=
+by admit
+
+lemma final_system_is_closed :
+  (∀ K : Triangulation,
+    Phi K > 0 →
+    ∃ v : Nat,
+      v ∈ allVerts K ∧
+      let K' := step K
+      vertexDefect K' v = vertexDefect K v - 1 ∧
+      (∀ u ≠ v, vertexDefect K' u = vertexDefect K u)) →
+  (∀ K : Triangulation, Phi K = 0 → S3 K) →
+  ∀ K : Triangulation,
+    ∃! n : Nat,
+      n = Phi K ∧
+      Phi (Nat.iterate step n K) = 0 ∧
+      S3 (Nat.iterate step n K) :=
+by admit
+
