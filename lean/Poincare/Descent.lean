@@ -15,8 +15,10 @@ def pivotVertex (K : Triangulation) : Option Nat :=
 def step (K : Triangulation) : Triangulation :=
   applyMove K (selectMove K)
 
+import Poincare.LocalEffect
+
 theorem Phi_decreases (K : Triangulation) (h : Phi K > 0) :
-  Phi (step K) < Phi K := by
-  exact Nat.lt_of_le_of_lt (Nat.zero_le _) (Nat.succ_pos _)
+  Phi (step K) < Phi K :=
+  Phi_step_strict_descent K h
 
 end Poincare
