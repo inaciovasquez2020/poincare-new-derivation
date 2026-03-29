@@ -1,6 +1,4 @@
-import Poincare.Kernel
+import Poincare.Triangulation
+import Poincare.Moves
 import Poincare.Descent
-import Poincare.Constructive
-
-namespace Poincare
-end Poincare
+import Poincare.Recognition
