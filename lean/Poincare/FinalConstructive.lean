@@ -76,3 +76,35 @@ lemma full_constructive_recognition :
     S3 (Nat.iterate step (Phi K) K) :=
 by admit
 
+
+lemma step_changes_exactly_one_vertex :
+  ∀ K : Triangulation,
+    Phi K > 0 →
+    ∃! v : Nat,
+      vertexDefect (step K) v = vertexDefect K v - 1 ∧
+      ∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u :=
+by admit
+
+lemma step_locality_support :
+  ∀ K : Triangulation,
+    Phi K > 0 →
+    ∃ S : Finset Nat,
+      S.card = 1 ∧
+      ∀ u : Nat, u ∉ S → vertexDefect (step K) u = vertexDefect K u :=
+by admit
+
+lemma exact_local_to_global_descent :
+  ∀ K : Triangulation,
+    Phi K > 0 →
+    (∃ S : Finset Nat,
+      S.card = 1 ∧
+      ∀ u : Nat, u ∉ S → vertexDefect (step K) u = vertexDefect K u) →
+    Phi (step K) = Phi K - 1 :=
+by admit
+
+lemma no_axioms_remaining_target :
+  (∀ K : Triangulation, Phi K > 0 → Phi (step K) = Phi K - 1) →
+  (∀ K : Triangulation, Phi K = 0 → S3 K) →
+  ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) :=
+by admit
+
