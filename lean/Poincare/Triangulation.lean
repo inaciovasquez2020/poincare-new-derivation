@@ -1,9 +1,5 @@
 import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Fintype.Basic
 import Mathlib.Data.Int.Basic
-import Mathlib.Algebra.BigOperators.Basic
-
-open BigOperators
 
 namespace Poincare
 
@@ -15,12 +11,8 @@ instance : DecidableEq Tet := inferInstance
 def tetVerts (τ : Tet) : Finset Vertex :=
   Finset.univ.image τ
 
-def freshVertex (K : Finset Tet) : Vertex :=
-  ((K.biUnion fun τ => tetVerts τ).sup id) + 1
-
 structure Triangulation where
   tets : Finset Tet
-deriving Repr
 
 def vertices (K : Triangulation) : Finset Vertex :=
   K.tets.biUnion tetVerts
@@ -34,7 +26,7 @@ def vertexDefect (K : Triangulation) (v : Vertex) : Nat :=
   Int.natAbs ((vertexDegree K v : Int) - targetDegree)
 
 def Phi (K : Triangulation) : Nat :=
-  ∑ v in K.vertices, vertexDefect K v
+  (vertices K).fold (fun acc v => acc + vertexDefect K v) 0
 
 def normalized (K : Triangulation) : Prop :=
   Phi K = 0
