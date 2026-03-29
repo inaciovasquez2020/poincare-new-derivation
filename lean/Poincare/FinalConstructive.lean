@@ -40,3 +40,15 @@ lemma termination_constructive :
 by admit
 
 end Poincare
+
+lemma iterate_step_strict_decrease :
+  ∀ (K : Triangulation) (n : Nat),
+    Phi K > n →
+    Phi (Nat.iterate step n K) = Phi K - n :=
+by admit
+
+lemma iterate_step_hits_zero :
+  ∀ K : Triangulation,
+    Phi (Nat.iterate step (Phi K) K) = 0 :=
+by admit
+
