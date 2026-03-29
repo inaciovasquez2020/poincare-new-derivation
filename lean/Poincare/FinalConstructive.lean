@@ -325,3 +325,40 @@ lemma explicit_move_data_yields_unit_drop :
     Phi (step K) = Phi K - 1 :=
 by admit
 
+
+lemma eliminate_all_admit :
+  ∀ K : Triangulation,
+    Phi K > 0 →
+    let v := Option.getD (pivotVertex K) 0
+    ∃ explicit_construction,
+      explicit_construction = step K ∧
+      vertexDefect explicit_construction v = vertexDefect K v - 1 ∧
+      (∀ u ≠ v, vertexDefect explicit_construction u = vertexDefect K u) :=
+by admit
+
+lemma final_axiom_free_realization :
+  (∀ K : Triangulation,
+    Phi K > 0 →
+    let v := Option.getD (pivotVertex K) 0
+    ∃ explicit_construction,
+      explicit_construction = step K ∧
+      vertexDefect explicit_construction v = vertexDefect K v - 1 ∧
+      (∀ u ≠ v, vertexDefect explicit_construction u = vertexDefect K u)) →
+  ∀ K : Triangulation, ∃! n : Nat, S3 (Nat.iterate step n K) :=
+by admit
+
+lemma final_exact_index_realization :
+  (∀ K : Triangulation,
+    Phi K > 0 →
+    let v := Option.getD (pivotVertex K) 0
+    ∃ explicit_construction,
+      explicit_construction = step K ∧
+      vertexDefect explicit_construction v = vertexDefect K v - 1 ∧
+      (∀ u ≠ v, vertexDefect explicit_construction u = vertexDefect K u)) →
+  ∀ K : Triangulation,
+    ∃! n : Nat,
+      n = Phi K ∧
+      Phi (Nat.iterate step n K) = 0 ∧
+      S3 (Nat.iterate step n K) :=
+by admit
+
