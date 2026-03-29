@@ -1,32 +1,27 @@
-import Mathlib.Data.Finset.Basic
-import Mathlib.Data.Int.Basic
-
 namespace Poincare
 
 abbrev Vertex := Nat
-abbrev Tet := Fin 4 → Vertex
-
-instance : DecidableEq Tet := inferInstance
-
-def tetVerts (τ : Tet) : Finset Vertex :=
-  Finset.univ.image τ
+abbrev Tet := Vertex × Vertex × Vertex × Vertex
 
 structure Triangulation where
-  tets : Finset Tet
+  tets : List Tet
 
-def vertices (K : Triangulation) : Finset Vertex :=
-  K.tets.biUnion tetVerts
+def vertices (K : Triangulation) : List Vertex :=
+  K.tets.bind (fun ⟨a,b,c,d⟩ => [a,b,c,d])
 
 def vertexDegree (K : Triangulation) (v : Vertex) : Nat :=
-  (K.tets.filter fun τ => v ∈ tetVerts τ).card
+  (vertices K).count v
 
 def targetDegree : Nat := 4
 
 def vertexDefect (K : Triangulation) (v : Vertex) : Nat :=
-  Int.natAbs ((vertexDegree K v : Int) - targetDegree)
+  Nat.abs (vertexDegree K v - targetDegree)
 
-def Phi (K : Triangulation) : Nat :=
-  (vertices K).fold (fun acc v => acc + vertexDefect K v) 0
+def Phi : Triangulation → Nat
+| ⟨tets⟩ =>
+  (tets.bind (fun ⟨a,b,c,d⟩ => [a,b,c,d])).foldl
+    (fun acc v => acc + Nat.abs (((tets.bind (fun ⟨a,b,c,d⟩ => [a,b,c,d])).count v) - targetDegree))
+    0
 
 def normalized (K : Triangulation) : Prop :=
   Phi K = 0
