@@ -108,3 +108,26 @@ lemma no_axioms_remaining_target :
   ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) :=
 by admit
 
+
+lemma pivotVertex_unique_max :
+  ∀ K : Triangulation,
+    Phi K > 0 →
+    ∃! v ∈ allVerts K,
+      vertexDefect K v = (allVerts K).foldl (fun m u => max m (vertexDefect K u)) 0 :=
+by admit
+
+lemma pivotVertex_is_getD_of_unique_max :
+  ∀ K : Triangulation,
+    Phi K > 0 →
+    let v := Option.getD (pivotVertex K) 0
+    v ∈ allVerts K ∧
+    ∀ u ∈ allVerts K, vertexDefect K u ≤ vertexDefect K v :=
+by admit
+
+lemma pivot_strict_drop_at_unique_max :
+  ∀ K : Triangulation,
+    Phi K > 0 →
+    let v := Option.getD (pivotVertex K) 0
+    vertexDefect (step K) v = vertexDefect K v - 1 :=
+by admit
+
