@@ -16,6 +16,9 @@ end Regge
 
 namespace Regge
 
+
+namespace Regge
+
 constant zero_so3 : so3
 constant exp_so3 : so3 → so3
 constant so3_add : so3 → so3 → so3
