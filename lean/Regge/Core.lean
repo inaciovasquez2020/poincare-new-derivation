@@ -1,17 +1,14 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.List.Basic
+import Mathlib.Algebra.BigOperators.Basic
+
+open BigOperators
 
 universe u
 
 abbrev Edge (V : Type u) := V × V
 abbrev Tet  (V : Type u) := V × V × V × V
-
-variable {V : Type u} [DecidableEq V]
-
-def tEdges (t : Tet V) : Finset (Edge V) :=
-  let ⟨a,b,c,d⟩ := t
-  ({(a,b),(a,c),(a,d),(b,c),(b,d),(c,d)} : Finset _)
 
 structure SimplicialComplex where
   V : Type u
@@ -24,7 +21,14 @@ structure SimplicialComplex where
 
 attribute [instance] SimplicialComplex.decV
 
-def incidentTets (M : SimplicialComplex) (e : Edge M.V) : Finset (Tet M.V) :=
+def tEdges {V : Type u} [DecidableEq V] (t : Tet V) : Finset (Edge V) :=
+  let ⟨a,b,c,d⟩ := t
+  Finset.mk
+    [(a,b),(a,c),(a,d),(b,c),(b,d),(c,d)]
+    (by decide)
+
+def incidentTets (M : SimplicialComplex) (e : Edge M.V) :
+    Finset (Tet M.V) :=
   M.T.filter (fun t => e ∈ tEdges t)
 
 def total_angle (M : SimplicialComplex) (e : Edge M.V) : ℝ :=
