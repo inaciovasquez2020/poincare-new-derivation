@@ -13,7 +13,7 @@ theorem poincare_program_closure :
   (∀ T, Phi T = 0 → S3 T) →
   ∀ T, terminal T → S3 T := by
   intro h1 h2 T hT
-  have : Phi T = 0 := by admit
+  have : Phi T = 0 := by sorry
   exact h2 T this
 
 end Poincare
