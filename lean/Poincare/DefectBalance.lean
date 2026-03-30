@@ -12,7 +12,7 @@ lemma applyMove_defect_balance
   vertexDefect K' v < vertexDefect K v ∧
   ∀ u : Nat, u ≠ v → vertexDefect K' u ≤ vertexDefect K u :=
 by
-  admit
+  sorry
 
 lemma Phi_strict_descent_constructive
   (K : Triangulation)
@@ -22,6 +22,6 @@ by
   obtain ⟨v, hv⟩ := Option.exists_of_ne_none (by
     cases hpv : pivotVertex K <;> simp [hpv] at h; contradiction)
   have hbal := applyMove_defect_balance K v hv
-  admit
+  sorry
 
 end Poincare
