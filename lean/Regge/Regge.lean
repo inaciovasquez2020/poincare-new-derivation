@@ -5,6 +5,7 @@ import Regge.Schlafli
 import Regge.Pachner
 
 
-import Regge.HolonomyLinearization
 
 import Regge.FinalClosure
+
+import Regge.HolonomyLinearization

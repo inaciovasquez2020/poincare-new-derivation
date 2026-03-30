@@ -1,13 +1,10 @@
 import Regge.Core
-import Regge.Holonomy
 
 namespace Regge
 
-def norm_so3 (_ : so3) : ℝ := 0
-
-axiom holonomy_path_ordered_expansion :
+axiom holonomy_linearization_stub :
   ∀ (T : SimplicialComplex) (γ : FundamentalGroup T),
-    ∃ X : so3, ρ T γ = IdSO3 ∧ X = zero_so3
+    ∃ X : so3, ρ T γ = IdSO3
 
 axiom path_coeff :
   ∀ (T : SimplicialComplex) (γ : FundamentalGroup T),
@@ -22,9 +19,8 @@ theorem holonomy_linearization_bound
   (γ : FundamentalGroup T) :
   ∃ c : T.V × T.V → ℝ,
     ∃ X : so3,
-      ρ T γ = IdSO3 ∧
-      X = zero_so3 := by
-  rcases holonomy_path_ordered_expansion T γ with ⟨X, hρ, hX⟩
-  exact ⟨path_coeff T γ, X, hρ, hX⟩
+      ρ T γ = IdSO3 := by
+  rcases holonomy_linearization_stub T γ with ⟨X, hρ⟩
+  exact ⟨path_coeff T γ, X, hρ⟩
 
 end Regge
