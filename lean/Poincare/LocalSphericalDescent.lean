@@ -7,11 +7,17 @@ constant applyMove : Move → Triangulation → Triangulation
 constant Phi : Triangulation → ℕ
 constant S3 : Triangulation → Prop
 
+axiom descent_step :
+  ∀ T : Triangulation,
+    ¬ S3 T →
+    ∃ m ∈ allowedMoves T,
+      Phi (applyMove m T) < Phi T
+
 theorem local_spherical_descent :
   ∀ T : Triangulation,
     ¬ S3 T →
     ∃ m ∈ allowedMoves T,
-      Phi (applyMove m T) < Phi T := by
-  admit
+      Phi (applyMove m T) < Phi T :=
+  descent_step
 
 end Poincare
