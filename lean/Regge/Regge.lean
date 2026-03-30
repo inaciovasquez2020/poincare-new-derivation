@@ -6,3 +6,5 @@ import Regge.Pachner
 
 
 import Regge.HolonomyLinearization
+
+import Regge.FinalClosure
