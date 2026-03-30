@@ -14,4 +14,4 @@ structure SimplicialComplex where
 attribute [instance] SimplicialComplex.inst
 
 noncomputable def regge_action (M : SimplicialComplex) : ℝ :=
-  M.E.toList.foldl (fun acc e => acc + M.length e) 0
+  M.E.toList.sum (fun e => M.length e)
