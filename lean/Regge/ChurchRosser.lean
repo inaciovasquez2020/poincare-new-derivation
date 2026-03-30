@@ -1,8 +1,17 @@
 import Regge.Reduction
 
-axiom church_rosser_reduction
+theorem local_diamond
+  {V : Type u} (Faces : Set (List V))
+  (L L1 L2 : List V) :
+  LoopReduction Faces L L1 →
+  LoopReduction Faces L L2 →
+  ∃ L', ReductionPath Faces L1 L' ∧ ReductionPath Faces L2 L' := by
+  sorry
+
+theorem church_rosser_reduction
   {V : Type u} (Faces : Set (List V))
   (L L1 L2 : List V) :
   ReductionPath Faces L L1 →
   ReductionPath Faces L L2 →
-  ∃ L', ReductionPath Faces L1 L' ∧ ReductionPath Faces L2 L'
+  ∃ L', ReductionPath Faces L1 L' ∧ ReductionPath Faces L2 L' := by
+  sorry

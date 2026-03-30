@@ -1,12 +1,18 @@
 import Regge.Core
 import Regge.Pachner
 
-axiom schlafli_assembly (M : SimplicialComplex) :
-  ∀ dl : Edge M.V → ℝ,
-    (∀ e, e ∉ M.E → dl e = 0) →
-    ∑ e in M.E, M.length e * dl e = 0
+def local_angle_variation
+  (M M' : SimplicialComplex) (S : Finset (Edge M.V)) : ℝ :=
+  ∑ e in S, M.length e * (total_angle M e - total_angle M' e)
 
-axiom regge_action_invariant (M M' : SimplicialComplex) :
-  PachnerMove M M' →
-  IsRealizablePath M M' →
-  regge_action M = regge_action M'
+theorem schlafli_local_zero
+  (M M' : SimplicialComplex)
+  (h : PachnerMove M M') :
+  local_angle_variation M M' h.support = 0 := by
+  sorry
+
+theorem regge_action_invariant
+  (M M' : SimplicialComplex)
+  (h : PachnerMove M M') :
+  regge_action M = regge_action M' := by
+  sorry
