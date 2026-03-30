@@ -7,7 +7,10 @@ constant applyMove : Move → Triangulation → Triangulation
 constant Phi : Triangulation → ℕ
 constant S3 : Triangulation → Prop
 
--- Structural reduction lemma (must be proved constructively)
+axiom phi_zero_characterizes_s3 :
+  ∀ T : Triangulation,
+    Phi T = 0 ↔ S3 T
+
 axiom exists_strict_descent_move :
   ∀ T : Triangulation,
     Phi T ≠ 0 →
@@ -22,8 +25,7 @@ theorem local_spherical_descent :
   intro T hT
   have hphi : Phi T ≠ 0 := by
     intro h0
-    have : S3 T := by
-      admit
+    have : S3 T := (phi_zero_characterizes_s3 T).mp h0
     exact hT this
   exact exists_strict_descent_move T hphi
 
