@@ -9,7 +9,10 @@ abbrev Tet  (V : Type u) := V × V × V × V
 
 def tEdges {V : Type u} (t : Tet V) : Finset (Edge V) :=
   let ⟨a,b,c,d⟩ := t
-  { (a,b), (a,c), (a,d), (b,c), (b,d), (c,d) }
+  {
+    (a,b), (a,c), (a,d),
+    (b,c), (b,d), (c,d)
+  }
 
 structure SimplicialComplex where
   V : Type u

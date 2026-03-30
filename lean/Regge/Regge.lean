@@ -1,11 +1,11 @@
 import Regge.Core
 import Regge.Reduction
-import Regge.Pachner
-import Regge.Schlafli
-import Regge.ChurchRosser
 import Regge.Geometry
-import Regge.InvariantDecomp
-
+import Regge.Pachner
 import Regge.FiniteSupport
+import Regge.InvariantDecomp
 import Regge.SchlafliAxioms
+import Regge.Schlafli
 import Regge.ChurchRosserAxioms
+import Regge.ChurchRosser
+

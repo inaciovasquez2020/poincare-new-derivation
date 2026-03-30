@@ -9,10 +9,8 @@ def local_angle_variation
 theorem schlafli_local_zero
   (M M' : SimplicialComplex)
   (h : PachnerMove M M') :
-  local_angle_variation M M' h.support = 0 :=
-by
-  simpa [local_angle_variation]
-    using schlafli_local_zero_axiom M M' h
+  local_angle_variation M M' h.support = 0 := by
+  simpa [local_angle_variation] using schlafli_local_zero_axiom M M' h
 
 theorem regge_action_invariant
   (M M' : SimplicialComplex)

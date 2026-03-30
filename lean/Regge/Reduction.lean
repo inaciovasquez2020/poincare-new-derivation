@@ -15,3 +15,8 @@ abbrev ReductionPath {V : Type u} (Faces : Set (List V)) :=
 theorem reduction_refl {V : Type u} (F : Set (List V)) (L : List V) :
   ReductionPath F L L :=
   Relation.ReflTransGen.refl
+
+theorem reduction_single {V : Type u} (F : Set (List V)) (L₁ L₂ : List V)
+    (h : LoopReduction F L₁ L₂) :
+    ReductionPath F L₁ L₂ :=
+  Relation.ReflTransGen.single h

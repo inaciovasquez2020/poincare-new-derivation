@@ -1,6 +1,8 @@
 import Regge.Reduction
 import Regge.ChurchRosserAxioms
 
+universe u
+
 theorem church_rosser_reduction
   {V : Type u} (Faces : Set (List V))
   (L L1 L2 : List V) :
