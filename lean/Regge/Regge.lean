@@ -3,3 +3,5 @@ import Regge.Reduction
 import Regge.Pachner
 import Regge.Schlafli
 import Regge.ChurchRosser
+import Regge.Geometry
+import Regge.InvariantDecomp
