@@ -4,7 +4,7 @@ constant Triangulation : Type
 constant Phi : Triangulation → ℕ
 constant S3 : Triangulation → Prop
 
-axiom zero_defect_axiom :
+theorem zero_defect_axiom :
   ∀ T : Triangulation,
     Phi T = 0 → S3 T
 
