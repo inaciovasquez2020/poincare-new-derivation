@@ -1,8 +1,5 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Finset.Basic
-import Mathlib.Algebra.BigOperators.Basic
-
-open BigOperators
 
 universe u
 
@@ -16,5 +13,5 @@ structure SimplicialComplex where
 
 attribute [instance] SimplicialComplex.inst
 
-def regge_action (M : SimplicialComplex) : ℝ :=
-  ∑ e in M.E, M.length e
+noncomputable def regge_action (M : SimplicialComplex) : ℝ :=
+  M.E.fold (fun acc e => acc + M.length e) 0
