@@ -1,4 +1,3 @@
-import Regge
 import Regge.Regge
 import Poincare.Triangulation
 import Poincare.Moves

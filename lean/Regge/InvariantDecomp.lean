@@ -1,6 +1,6 @@
 import Regge.Core
 import Regge.Pachner
-import Mathlib.Algebra.BigOperators.Ring
+import Mathlib.Data.Real.Basic
 
 def delta_regge (M M' : SimplicialComplex) : ℝ :=
   regge_action M - regge_action M'

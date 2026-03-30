@@ -7,20 +7,25 @@ universe u
 abbrev Edge (V : Type u) := V × V
 abbrev Tet  (V : Type u) := V × V × V × V
 
-def tEdges {V : Type u} (t : Tet V) : Finset (Edge V) :=
+variable {V : Type u} [DecidableEq V]
+
+def tEdges (t : Tet V) : Finset (Edge V) :=
   let ⟨a,b,c,d⟩ := t
-  {
-    (a,b), (a,c), (a,d),
-    (b,c), (b,d), (c,d)
-  }
+  Finset.fromList [
+    (a,b),(a,c),(a,d),
+    (b,c),(b,d),(c,d)
+  ]
 
 structure SimplicialComplex where
   V : Type u
+  [decV : DecidableEq V]
   E : Finset (Edge V)
   T : Finset (Tet V)
   length : Edge V → ℝ
   dihedralAngle : Edge V → Tet V → ℝ
   Faces : Set (List V)
+
+attribute [instance] SimplicialComplex.decV
 
 def incidentTets (M : SimplicialComplex) (e : Edge M.V) : Finset (Tet M.V) :=
   M.T.filter (fun t => e ∈ tEdges t)

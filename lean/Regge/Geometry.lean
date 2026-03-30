@@ -1,5 +1,5 @@
 import Mathlib.Data.Matrix.Basic
-import Mathlib.LinearAlgebra.Matrix.Determinant
+import Mathlib.Data.Matrix.Basic
 
 def CayleyMengerDet (dSq : Matrix (Fin 4) (Fin 4) ℝ) : ℝ :=
   dSq.det
