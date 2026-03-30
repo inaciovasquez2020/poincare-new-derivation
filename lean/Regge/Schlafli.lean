@@ -10,6 +10,6 @@ theorem schlafli_local_constructive
   (E : Finset (V × V))
   (l : (V × V) → ℝ) :
   (∑ e in E, l e * dθ l e) = 0 := by
-  simp [dθ]
+  simp [dθ, Finset.mul_sum]
 
 end Regge
