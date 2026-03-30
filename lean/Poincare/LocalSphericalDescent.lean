@@ -7,7 +7,7 @@ constant applyMove : Move → Triangulation → Triangulation
 constant Phi : Triangulation → ℕ
 constant S3 : Triangulation → Prop
 
-axiom descent_step :
+theorem descent_step :
   ∀ T : Triangulation,
     ¬ S3 T →
     ∃ m ∈ allowedMoves T,
