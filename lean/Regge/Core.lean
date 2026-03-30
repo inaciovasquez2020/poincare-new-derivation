@@ -11,10 +11,7 @@ variable {V : Type u} [DecidableEq V]
 
 def tEdges (t : Tet V) : Finset (Edge V) :=
   let ⟨a,b,c,d⟩ := t
-  Finset.fromList [
-    (a,b),(a,c),(a,d),
-    (b,c),(b,d),(c,d)
-  ]
+  ({(a,b),(a,c),(a,d),(b,c),(b,d),(c,d)} : Finset _)
 
 structure SimplicialComplex where
   V : Type u
