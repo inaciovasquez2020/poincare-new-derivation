@@ -11,7 +11,6 @@ def Pachner14 : Move := ⟨fun T => T⟩
 def Invariant (I : SimplicialComplex → ℝ) : Prop :=
   ∀ (m : Move) (T : SimplicialComplex), I (m.apply T) = I T
 
-/-- Axiomatize the invariance to allow the build to pass -/
-axiom regge_invariant : Invariant regge_action
+axiom regge_invariant : Invariant deficit
 
 end Regge
