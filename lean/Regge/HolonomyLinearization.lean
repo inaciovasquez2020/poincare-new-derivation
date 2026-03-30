@@ -2,6 +2,9 @@ import Regge.Core
 
 namespace Regge
 
+variable (FundamentalGroup : SimplicialComplex → Type)
+variable (ρ : ∀ T : SimplicialComplex, FundamentalGroup T → so3)
+
 axiom holonomy_linearization_stub :
   ∀ (T : SimplicialComplex),
     ∀ (γ : FundamentalGroup T),
@@ -23,7 +26,7 @@ theorem holonomy_linearization_bound
   ∃ c : T.V × T.V → ℝ,
     ∃ X : so3,
       True := by
-  rcases holonomy_linearization_stub T γ with ⟨X, _⟩
-  exact ⟨path_coeff T γ, X, trivial⟩
+  rcases holonomy_linearization_stub FundamentalGroup ρ T γ with ⟨X, _⟩
+  exact ⟨path_coeff FundamentalGroup T γ, X, trivial⟩
 
 end Regge
