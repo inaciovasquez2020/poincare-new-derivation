@@ -7,3 +7,5 @@ import Regge.Geometry
 import Regge.InvariantDecomp
 
 import Regge.FiniteSupport
+import Regge.SchlafliAxioms
+import Regge.ChurchRosserAxioms
