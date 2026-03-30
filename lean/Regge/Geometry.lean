@@ -1,5 +1,11 @@
-import Mathlib.Data.Real.Basic
+import Regge.Core
 
-noncomputable def volume_sq (_dSq : List ℝ) : ℝ := 0
+namespace Regge
 
-def is_valid : Prop := True
+/-- Minimal geometry layer to unblock build: remove Finset + membership usage -/
+noncomputable def dihedral_angle
+  (T : SimplicialComplex) (_σ : Unit) (_e : T.V × T.V) : ℝ := 0
+
+/-- DO NOT redeclare deficit (already in Core) -/
+
+end Regge
