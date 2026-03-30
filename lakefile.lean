@@ -10,3 +10,6 @@ require mathlib from git
 lean_lib Poincare {
   srcDir := "lean"
 }
+
+lean_lib Regge where
+  srcDir := "lean"
