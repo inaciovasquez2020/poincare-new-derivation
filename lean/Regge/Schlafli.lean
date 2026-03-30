@@ -1,7 +1,10 @@
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Real.Basic
+import Mathlib.Algebra.BigOperators.Basic
 
 namespace Regge
+
+open BigOperators
 
 def dθ (V : Type) (_l : (V × V) → ℝ) (_e : V × V) : ℝ := 0
 

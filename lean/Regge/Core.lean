@@ -1,17 +1,21 @@
-import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Real.Basic
+import Mathlib.Data.Finset.Basic
+import Mathlib.Algebra.BigOperators.Basic
 
-universe u
+namespace Regge
 
-abbrev Edge (V : Type u) := V × V
+open BigOperators
 
 structure SimplicialComplex where
-  V : Type u
+  V : Type
   inst : DecidableEq V
-  E : Finset (Edge V)
-  length : Edge V → ℝ
+  faces : Finset (Finset V)
+  edges : Finset (V × V)
+  lengths : (V × V) → ℝ
 
-attribute [instance] SimplicialComplex.inst
+noncomputable def deficit (T : SimplicialComplex) (e : T.V × T.V) : ℝ := 0
 
-noncomputable def regge_action (M : SimplicialComplex) : ℝ :=
-  (M.E.toList.map M.length).foldl (fun acc x => acc + x) 0
+noncomputable def regge_action (T : SimplicialComplex) : ℝ :=
+  ∑ e in T.edges, T.lengths e * deficit T e
+
+end Regge
