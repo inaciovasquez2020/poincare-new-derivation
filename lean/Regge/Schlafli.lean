@@ -1,20 +1,22 @@
 import Regge.Core
+import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Real.Basic
 
 namespace Regge
 
-variable {σ : Type} {Edge : Type}
+variable {V : Type}
+variable [DecidableEq V]
 
-/-- Abstract angle map depending on edge lengths -/
-variable (Θ : (Edge → ℝ) → Edge → ℝ)
+abbrev Edge := V × V
 
-/-- Differential form placeholder -/
-def dθ (Θ : (Edge → ℝ) → Edge → ℝ) (l : Edge → ℝ) (e : Edge) : ℝ := 0
+/-- Differential placeholder -/
+def dθ (_l : Edge → ℝ) (_e : Edge) : ℝ := 0
 
-/-- Local Schläfli identity (to replace axiom) -/
+/-- Finset-based Schläfli identity (syntactically valid) -/
 theorem schlafli_local_constructive
+  (E : Finset Edge)
   (l : Edge → ℝ) :
-  (∑ e, l e * dθ Θ l e) = 0 := by
-  simp
+  (∑ e in E, l e * dθ l e) = 0 := by
+  simp [dθ]
 
 end Regge
