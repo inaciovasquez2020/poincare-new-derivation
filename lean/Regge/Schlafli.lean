@@ -9,8 +9,8 @@ theorem schlafli_local_constructive
   {V : Type} [DecidableEq V]
   (E : Finset (V × V))
   (l : (V × V) → ℝ) :
-  (E.toList.map (fun e => l e * dθ l e)).sum = 0 := by
+  (∑ e in E, l e * dθ l e) = 0 := by
   classical
-  simp [dθ, List.sum_map]
+  simp [dθ]
 
 end Regge
