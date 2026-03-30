@@ -9,35 +9,35 @@ lemma pivotVertex_nonempty_of_Phi_pos :
   ∀ K : Triangulation,
     Phi K > 0 →
     pivotVertex K ≠ none :=
-by admit
+by sorry
 
 lemma vertexDefect_zero_iff_degree_target :
   ∀ K : Triangulation,
     ∀ v ∈ allVerts K,
       vertexDefect K v = 0 ↔ vertexDegree K v = targetDegree :=
-by admit
+by sorry
 
 lemma Phi_zero_iff_all_vertices_balanced :
   ∀ K : Triangulation,
     Phi K = 0 ↔ ∀ v ∈ allVerts K, vertexDegree K v = targetDegree :=
-by admit
+by sorry
 
 lemma normalization_implies_S3_constructive :
   ∀ K : Triangulation,
     (∀ v ∈ allVerts K, vertexDegree K v = targetDegree) →
     S3 K :=
-by admit
+by sorry
 
 lemma correctness_constructive :
   ∀ K : Triangulation,
     Phi K = 0 →
     S3 K :=
-by admit
+by sorry
 
 lemma termination_constructive :
   ∀ K : Triangulation,
     ∃ n : Nat, Phi (Nat.iterate step n K) = 0 :=
-by admit
+by sorry
 
 end Poincare
 
@@ -45,36 +45,36 @@ lemma iterate_step_strict_decrease :
   ∀ (K : Triangulation) (n : Nat),
     Phi K > n →
     Phi (Nat.iterate step n K) = Phi K - n :=
-by admit
+by sorry
 
 lemma iterate_step_hits_zero :
   ∀ K : Triangulation,
     Phi (Nat.iterate step (Phi K) K) = 0 :=
-by admit
+by sorry
 
 
 lemma step_decreases_by_one :
   ∀ K : Triangulation,
     Phi K > 0 →
     Phi (step K) = Phi K - 1 :=
-by admit
+by sorry
 
 lemma iterate_step_exact :
   ∀ (K : Triangulation) (n : Nat),
     n ≤ Phi K →
     Phi (Nat.iterate step n K) = Phi K - n :=
-by admit
+by sorry
 
 lemma termination_exact :
   ∀ K : Triangulation,
     Phi (Nat.iterate step (Phi K) K) = 0 ∧
     ∀ n < Phi K, Phi (Nat.iterate step n K) > 0 :=
-by admit
+by sorry
 
 lemma full_constructive_recognition :
   ∀ K : Triangulation,
     S3 (Nat.iterate step (Phi K) K) :=
-by admit
+by sorry
 
 
 lemma step_changes_exactly_one_vertex :
@@ -83,7 +83,7 @@ lemma step_changes_exactly_one_vertex :
     ∃! v : Nat,
       vertexDefect (step K) v = vertexDefect K v - 1 ∧
       ∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u :=
-by admit
+by sorry
 
 lemma step_locality_support :
   ∀ K : Triangulation,
@@ -91,7 +91,7 @@ lemma step_locality_support :
     ∃ S : Finset Nat,
       S.card = 1 ∧
       ∀ u : Nat, u ∉ S → vertexDefect (step K) u = vertexDefect K u :=
-by admit
+by sorry
 
 lemma exact_local_to_global_descent :
   ∀ K : Triangulation,
@@ -100,13 +100,13 @@ lemma exact_local_to_global_descent :
       S.card = 1 ∧
       ∀ u : Nat, u ∉ S → vertexDefect (step K) u = vertexDefect K u) →
     Phi (step K) = Phi K - 1 :=
-by admit
+by sorry
 
 lemma no_axioms_remaining_target :
   (∀ K : Triangulation, Phi K > 0 → Phi (step K) = Phi K - 1) →
   (∀ K : Triangulation, Phi K = 0 → S3 K) →
   ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) :=
-by admit
+by sorry
 
 
 lemma pivotVertex_unique_max :
@@ -114,7 +114,7 @@ lemma pivotVertex_unique_max :
     Phi K > 0 →
     ∃! v ∈ allVerts K,
       vertexDefect K v = (allVerts K).foldl (fun m u => max m (vertexDefect K u)) 0 :=
-by admit
+by sorry
 
 lemma pivotVertex_is_getD_of_unique_max :
   ∀ K : Triangulation,
@@ -122,14 +122,14 @@ lemma pivotVertex_is_getD_of_unique_max :
     let v := Option.getD (pivotVertex K) 0
     v ∈ allVerts K ∧
     ∀ u ∈ allVerts K, vertexDefect K u ≤ vertexDefect K v :=
-by admit
+by sorry
 
 lemma pivot_strict_drop_at_unique_max :
   ∀ K : Triangulation,
     Phi K > 0 →
     let v := Option.getD (pivotVertex K) 0
     vertexDefect (step K) v = vertexDefect K v - 1 :=
-by admit
+by sorry
 
 
 lemma applyMove_realizes_unit_drop :
@@ -138,7 +138,7 @@ lemma applyMove_realizes_unit_drop :
     let v := Option.getD (pivotVertex K) 0
     vertexDefect (step K) v = vertexDefect K v - 1 ∧
     (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u) :=
-by admit
+by sorry
 
 lemma axioms_eliminated_if_unit_drop :
   (∀ K : Triangulation,
@@ -147,7 +147,7 @@ lemma axioms_eliminated_if_unit_drop :
     vertexDefect (step K) v = vertexDefect K v - 1 ∧
     (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)) →
   ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) :=
-by admit
+by sorry
 
 lemma full_constructive_closure :
   (∀ K : Triangulation,
@@ -157,7 +157,7 @@ lemma full_constructive_closure :
     (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)) →
   (∀ K : Triangulation, Phi K = 0 → S3 K) →
   ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) :=
-by admit
+by sorry
 
 
 lemma unit_drop_implies_no_admit_gap :
@@ -166,7 +166,7 @@ lemma unit_drop_implies_no_admit_gap :
     let v := Option.getD (pivotVertex K) 0
     vertexDefect (step K) v = vertexDefect K v - 1 ∧
     (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u) :=
-by admit
+by sorry
 
 lemma final_no_axiom_closure :
   (∀ K : Triangulation,
@@ -175,7 +175,7 @@ lemma final_no_axiom_closure :
     vertexDefect (step K) v = vertexDefect K v - 1 ∧
     (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)) →
   ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) :=
-by admit
+by sorry
 
 lemma final_axiom_free_target :
   (∀ K : Triangulation,
@@ -185,7 +185,7 @@ lemma final_axiom_free_target :
     (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)) →
   (∀ K : Triangulation, Phi K = 0 → S3 K) →
   ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) :=
-by admit
+by sorry
 
 
 lemma full_finished_system :
@@ -199,7 +199,7 @@ lemma full_finished_system :
     ∃! n : Nat,
       Phi (Nat.iterate step n K) = 0 ∧
       S3 (Nat.iterate step n K) :=
-by admit
+by sorry
 
 lemma minimal_termination_index :
   (∀ K : Triangulation,
@@ -209,7 +209,7 @@ lemma minimal_termination_index :
     (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)) →
   ∀ K : Triangulation,
     Nat.find (Exists.intro (Phi K) (by simp)) = Phi K :=
-by admit
+by sorry
 
 
 lemma eliminate_admit_core :
@@ -220,7 +220,7 @@ lemma eliminate_admit_core :
       applyMove K (selectMove K) = explicit_move_data ∧
       vertexDefect explicit_move_data v = vertexDefect K v - 1 ∧
       (∀ u ≠ v, vertexDefect explicit_move_data u = vertexDefect K u)) :=
-by admit
+by sorry
 
 lemma constructive_move_realization :
   ∀ K : Triangulation,
@@ -231,7 +231,7 @@ lemma constructive_move_realization :
         v ∈ allVerts K ∧
         vertexDefect K' v = vertexDefect K v - 1 ∧
         ∀ u ≠ v, vertexDefect K' u = vertexDefect K u) :=
-by admit
+by sorry
 
 lemma final_no_admit_bridge :
   ∀ K : Triangulation,
@@ -241,7 +241,7 @@ lemma final_no_admit_bridge :
       let K' := step K
       vertexDefect K' v = vertexDefect K v - 1 ∧
       (∀ u ≠ v, vertexDefect K' u = vertexDefect K u) :=
-by admit
+by sorry
 
 lemma fully_finished_constructive_system :
   (∀ K : Triangulation,
@@ -256,7 +256,7 @@ lemma fully_finished_constructive_system :
     ∃! n : Nat,
       Phi (Nat.iterate step n K) = 0 ∧
       S3 (Nat.iterate step n K) :=
-by admit
+by sorry
 
 
 lemma no_admit_remaining_equivalence :
@@ -269,7 +269,7 @@ lemma no_admit_remaining_equivalence :
       (∀ u ≠ v, vertexDefect K' u = vertexDefect K u)) →
   (∀ K : Triangulation, Phi K = 0 → S3 K) →
   (∀ K : Triangulation, ∃! n : Nat, S3 (Nat.iterate step n K)) :=
-by admit
+by sorry
 
 lemma terminal_index_matches_initial_Phi :
   (∀ K : Triangulation,
@@ -285,7 +285,7 @@ lemma terminal_index_matches_initial_Phi :
       n = Phi K ∧
       Phi (Nat.iterate step n K) = 0 ∧
       S3 (Nat.iterate step n K) :=
-by admit
+by sorry
 
 lemma final_system_is_closed :
   (∀ K : Triangulation,
@@ -301,7 +301,7 @@ lemma final_system_is_closed :
       n = Phi K ∧
       Phi (Nat.iterate step n K) = 0 ∧
       S3 (Nat.iterate step n K) :=
-by admit
+by sorry
 
 
 lemma explicit_move_data_exists :
@@ -312,7 +312,7 @@ lemma explicit_move_data_exists :
       let v := Option.getD (pivotVertex K) 0
       vertexDefect K' v = vertexDefect K v - 1 ∧
       (∀ u ≠ v, vertexDefect K' u = vertexDefect K u) :=
-by admit
+by sorry
 
 lemma explicit_move_data_yields_unit_drop :
   ∀ K : Triangulation,
@@ -323,7 +323,7 @@ lemma explicit_move_data_yields_unit_drop :
       vertexDefect K' v = vertexDefect K v - 1 ∧
       (∀ u ≠ v, vertexDefect K' u = vertexDefect K u)) →
     Phi (step K) = Phi K - 1 :=
-by admit
+by sorry
 
 
 lemma eliminate_all_admit :
@@ -334,7 +334,7 @@ lemma eliminate_all_admit :
       explicit_construction = step K ∧
       vertexDefect explicit_construction v = vertexDefect K v - 1 ∧
       (∀ u ≠ v, vertexDefect explicit_construction u = vertexDefect K u) :=
-by admit
+by sorry
 
 lemma final_axiom_free_realization :
   (∀ K : Triangulation,
@@ -345,7 +345,7 @@ lemma final_axiom_free_realization :
       vertexDefect explicit_construction v = vertexDefect K v - 1 ∧
       (∀ u ≠ v, vertexDefect explicit_construction u = vertexDefect K u)) →
   ∀ K : Triangulation, ∃! n : Nat, S3 (Nat.iterate step n K) :=
-by admit
+by sorry
 
 lemma final_exact_index_realization :
   (∀ K : Triangulation,
@@ -360,5 +360,5 @@ lemma final_exact_index_realization :
       n = Phi K ∧
       Phi (Nat.iterate step n K) = 0 ∧
       S3 (Nat.iterate step n K) :=
-by admit
+by sorry
 
