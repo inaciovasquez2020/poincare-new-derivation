@@ -1,5 +1,5 @@
-import Mathlib.Data.Real.Basic
 import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Real.Basic
 
 universe u
 
@@ -14,4 +14,4 @@ structure SimplicialComplex where
 attribute [instance] SimplicialComplex.inst
 
 noncomputable def regge_action (M : SimplicialComplex) : ℝ :=
-  M.E.toList.sum (fun e => M.length e)
+  (M.E.toList.map M.length).sum
