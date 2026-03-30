@@ -11,9 +11,8 @@ theorem schlafli_local_constructive
   (l : (V × V) → ℝ) :
   (∑ e in E, l e * dθ l e) = 0 := by
   classical
-  have h : ∀ e, l e * dθ l e = 0 := by
-    intro e
-    simp [dθ]
-  simpa [h]
+  refine Finset.sum_eq_zero ?h
+  intro e he
+  simp [dθ]
 
 end Regge
