@@ -1,5 +1,6 @@
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Real.Basic
+import Mathlib.Data.List.TFAE
 
 namespace Regge
 
@@ -12,5 +13,7 @@ theorem schlafli_local_constructive
   (l : (V × V) → ℝ) :
   (E.toList.map (fun e => l e * dθ l e)).sum = 0 := by
   simp [dθ]
+  -- Resolve the remaining (List.replicate E.toList.length 0).sum = 0
+  induction E.toList <;> simp [*]
 
 end Regge
