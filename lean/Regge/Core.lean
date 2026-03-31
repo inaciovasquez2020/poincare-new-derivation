@@ -3,20 +3,19 @@ import Mathlib.Data.Finset.Basic
 
 namespace Regge
 
+universe u
+
 structure SimplicialComplex where
-  V : Type
-  [inst : DecidableEq V]
+  V : Type u
+  inst : DecidableEq V
   faces : Finset (Finset V)
   edges : Finset (V × V)
   lengths : (V × V) → ℝ
 
 attribute [instance] SimplicialComplex.inst
 
-noncomputable def deficit (T : SimplicialComplex) (_ : T.V × T.V) : ℝ := 0
-
 constant so3 : Type
 constant TetraGeom : Type
-constant FundamentalGroup : SimplicialComplex → Type
 
 constant zero_so3 : so3
 constant exp_so3 : so3 → so3
