@@ -14,15 +14,16 @@ structure SimplicialComplex where
 
 attribute [instance] SimplicialComplex.inst
 
-constant so3 : Type
-constant TetraGeom : Type
+axiom so3 : Type
+axiom TetraGeom : Type
+axiom FundamentalGroup : SimplicialComplex → Type
 
-constant zero_so3 : so3
-constant exp_so3 : so3 → so3
-constant so3_add : so3 → so3 → so3
+axiom zero_so3 : so3
+axiom exp_so3 : so3 → so3
+axiom so3_add : so3 → so3 → so3
 
-constant detG : TetraGeom → ℝ
-constant LocalIndependent : TetraGeom → Prop
+axiom detG : TetraGeom → ℝ
+axiom LocalIndependent : TetraGeom → Prop
 
 axiom det_nonzero_implies_local_rigidity :
   ∀ σ : TetraGeom, detG σ ≠ 0 → LocalIndependent σ
