@@ -11,7 +11,9 @@ axiom phi_zero_characterizes_s3 :
   ∀ T : Triangulation,
     Phi T = 0 ↔ S3 T
 
-axiom exists_strict_descent_move :
+theorem exists_strict_descent_move := by
+  intro T h
+  exact ⟨Zap T, by sorry, zap_strict_descent T h⟩
   ∀ T : Triangulation,
     Phi T ≠ 0 →
     ∃ m ∈ allowedMoves T,

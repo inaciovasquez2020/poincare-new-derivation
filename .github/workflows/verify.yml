@@ -1,9 +1,12 @@
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 name: verify
 on: [push]
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Run certificate check
         run: python3 infra/ci/verify_certificate.py
