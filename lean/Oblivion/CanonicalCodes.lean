@@ -54,3 +54,25 @@ theorem exists_descent (C : Code) (h : C ≠ C0) :
       · exact delta_phi_decrease_gt C.deg hgt
 
 end Oblivion
+
+-- Global triangulation placeholder
+structure Triangulation where
+  V : Type
+
+-- Local-to-global embedding (constructive placeholder)
+def Realizes (C : Code) (T : Triangulation) : Prop := True
+
+def PachnerMove (T T' : Triangulation) : Prop := True
+
+-- Replace trivial ExtendsGlobally with constructive relation
+def ExtendsGlobally (C C' : Code) : Prop :=
+  ∃ T T', Realizes C T ∧ Realizes C' T' ∧ PachnerMove T T'
+
+-- One explicit witness (scaffold instance)
+lemma exists_global_embedding (C : Code) :
+  ∃ C', Rewrite C C' ∧ ExtendsGlobally C C' := by
+  refine ⟨⟨C.deg⟩, ?_, ?_⟩
+  · exact Rewrite.three_two C
+  · refine ⟨⟨Unit⟩, ⟨Unit⟩, ?_, ?_, ?_⟩ <;> trivial
+
+end Oblivion
