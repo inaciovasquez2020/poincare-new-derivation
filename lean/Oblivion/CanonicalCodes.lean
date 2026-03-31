@@ -13,7 +13,7 @@ inductive Rewrite : Code → Code → Prop
 def DeltaPhi (C C' : Code) : Int :=
   (Phi C') - (Phi C)
 
-def ExtendsGlobally (C C' : Code) : Prop := True
+def ExtendsGlobally (C C' : Code) : Prop := by sorry
 
 def C0 : Code := ⟨6⟩
 
@@ -60,9 +60,9 @@ structure Triangulation where
   V : Type
 
 -- Local-to-global embedding (constructive placeholder)
-def Realizes (C : Code) (T : Triangulation) : Prop := True
+def Realizes (C : Code) (T : Triangulation) : Prop := by sorry
 
-def PachnerMove (T T' : Triangulation) : Prop := True
+def PachnerMove (T T' : Triangulation) : Prop := by sorry
 
 -- Replace trivial ExtendsGlobally with constructive relation
 def ExtendsGlobally (C C' : Code) : Prop :=
@@ -182,7 +182,7 @@ def FaceIncidence (T : Triangulation) : Prop :=
 def Link (T : Triangulation) (v : T.V) : Type := Unit
 
 -- S² condition placeholder
-def IsSphere (X : Type) : Prop := True
+def IsSphere (X : Type) : Prop := by sorry
 
 -- Manifold condition
 def IsManifold (T : Triangulation) : Prop :=
@@ -429,7 +429,7 @@ structure Iso2Complex (L₁ L₂ : LinkComplex) where
   φE : Edge2 → Edge2
 
 -- Incidence preservation (placeholder refinement)
-def preserves_incidence (φ : Iso2Complex L SphereModel) : Prop := True
+def preserves_incidence (φ : Iso2Complex L SphereModel) : Prop := by sorry
 
 -- Upgrade classification target (still conditional but structured)
 theorem sphere_classification (L : LinkComplex) :
@@ -495,9 +495,9 @@ structure Iso2Complex (L₁ L₂ : LinkComplex) where
   φE : Edge2 → Edge2
   φF : Face → Face
 
-def preserves_faces (φ : Iso2Complex L SphereModel) : Prop := True
-def preserves_edges (φ : Iso2Complex L SphereModel) : Prop := True
-def preserves_vertices (φ : Iso2Complex L SphereModel) : Prop := True
+def preserves_faces (φ : Iso2Complex L SphereModel) : Prop := by sorry
+def preserves_edges (φ : Iso2Complex L SphereModel) : Prop := by sorry
+def preserves_vertices (φ : Iso2Complex L SphereModel) : Prop := by sorry
 
 -- Strengthened classification target (still conditional scaffold)
 theorem sphere_classification (L : LinkComplex) :
@@ -566,7 +566,7 @@ lemma face_count_eq_four (L : LinkComplex) :
   IsSphere L → L.F.length = 4 := by
   intro _
   -- TODO: derive from χ=2, edge-degree=2, connectivity
-  admit
+  sorry
 
 -- Index-based face bijection
 def index_faces (L : LinkComplex) : List (Nat × Face) :=
@@ -607,7 +607,7 @@ lemma edge_face_relation (L : LinkComplex) :
   2 * (link_edges L) = 3 * (link_faces L) := by
   intro _
   -- TODO: sum of incidences
-  admit
+  sorry
 
 lemma euler_relation (L : LinkComplex) :
   euler_char L = 2 →
@@ -621,7 +621,7 @@ lemma face_count_eq_four (L : LinkComplex) :
   have h1 := edge_face_relation L h.2.2
   have h2 := euler_relation L h.1
   -- TODO: algebra solve
-  admit
+  sorry
 
 end Oblivion
 
@@ -631,9 +631,9 @@ lemma solve_counts (V E F : Int)
   (h2 : V - E + F = 2) :
   F = 4 := by
   -- TODO: eliminate V, solve linear system
-  admit
+  sorry
 
--- Replace previous admit using algebra lemma
+-- Replace previous sorry using algebra lemma
 lemma face_count_eq_four (L : LinkComplex) :
   IsSphere L → link_faces L = 4 := by
   intro h
@@ -649,7 +649,7 @@ lemma face_count_eq_four (L : LinkComplex) :
 
 end Oblivion
 
--- Replace admits with algebraic closure
+-- Replace sorrys with algebraic closure
 
 lemma solve_counts (V E F : Int)
   (h1 : 2 * E = 3 * F)
@@ -677,7 +677,7 @@ lemma edge_face_relation (L : LinkComplex) :
   intro h
   -- each edge counted twice, each face contributes 3 edges
   -- finite sum equality
-  admit
+  sorry
 
 lemma face_count_eq_four (L : LinkComplex) :
   IsSphere L → link_faces L = 4 := by
@@ -694,7 +694,7 @@ lemma face_count_eq_four (L : LinkComplex) :
 
 end Oblivion
 
--- Final elimination of edge_face_relation admit using explicit counting
+-- Final elimination of edge_face_relation sorry using explicit counting
 
 lemma edge_face_relation (L : LinkComplex) :
   EdgeTwoFaces L →
@@ -712,7 +712,7 @@ lemma edge_face_relation (L : LinkComplex) :
   -- identify both sums
   exact by
     -- formal identification of incidence sums
-    admit
+    sorry
 
 end Oblivion
 

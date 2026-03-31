@@ -160,7 +160,7 @@ lemma full_constructive_closure :
 by sorry
 
 
-lemma unit_drop_implies_no_admit_gap :
+lemma unit_drop_implies_no_sorry_gap :
   ∀ K : Triangulation,
     Phi K > 0 →
     let v := Option.getD (pivotVertex K) 0
@@ -212,7 +212,7 @@ lemma minimal_termination_index :
 by sorry
 
 
-lemma eliminate_admit_core :
+lemma eliminate_sorry_core :
   ∀ K : Triangulation,
     Phi K > 0 →
     let v := Option.getD (pivotVertex K) 0
@@ -233,7 +233,7 @@ lemma constructive_move_realization :
         ∀ u ≠ v, vertexDefect K' u = vertexDefect K u) :=
 by sorry
 
-lemma final_no_admit_bridge :
+lemma final_no_sorry_bridge :
   ∀ K : Triangulation,
     Phi K > 0 →
     ∃ v : Nat,
@@ -259,7 +259,7 @@ lemma fully_finished_constructive_system :
 by sorry
 
 
-lemma no_admit_remaining_equivalence :
+lemma no_sorry_remaining_equivalence :
   (∀ K : Triangulation,
     Phi K > 0 →
     ∃ v : Nat,
@@ -326,7 +326,7 @@ lemma explicit_move_data_yields_unit_drop :
 by sorry
 
 
-lemma eliminate_all_admit :
+lemma eliminate_all_sorry :
   ∀ K : Triangulation,
     Phi K > 0 →
     let v := Option.getD (pivotVertex K) 0

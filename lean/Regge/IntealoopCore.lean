@@ -2,11 +2,11 @@ import Regge.Core
 
 namespace Regge
 
-def NonDegenerate (_M : SimplicialComplex) : Prop := True
+def NonDegenerate (_M : SimplicialComplex) : Prop := by sorry
 
-def FlatInterior (_M : SimplicialComplex) : Prop := True
+def FlatInterior (_M : SimplicialComplex) : Prop := by sorry
 
-def ValidPath (_M _M' : SimplicialComplex) : Prop := True
+def ValidPath (_M _M' : SimplicialComplex) : Prop := by sorry
 
 theorem Intealoop_core
   (_M _M' : SimplicialComplex) :

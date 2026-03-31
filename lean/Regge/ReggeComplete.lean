@@ -22,8 +22,8 @@ axiom schlafli_global :
 axiom pachner_23_invariant :
   ∀ (T : Triangulation), ReggeAction T = ReggeAction T
 
-def boundary1 {C1 C0} (∂1 : C1 → C0) := True
-def boundary2 {C2 C1} (∂2 : C2 → C1) := True
+def boundary1 {C1 C0} (∂1 : C1 → C0) := by sorry
+def boundary2 {C2 C1} (∂2 : C2 → C1) := by sorry
 
 def H1 := ℕ
 

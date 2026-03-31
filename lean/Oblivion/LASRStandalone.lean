@@ -23,7 +23,7 @@ def extractR {α : Type u} (R : Nat) [DecidableEq α] (C : Configuration α) : F
     radius := R
   }}
 
-def FOkAdmissible {α : Type u} (k R Δ B : Nat) (C : Configuration α) : Prop := True
+def FOkAdmissible {α : Type u} (k R Δ B : Nat) (C : Configuration α) : Prop := by sorry
 
 def DependencyRich {α : Type u} [DecidableEq α] (R : Nat) (C : Configuration α) : Prop :=
   ∃ w : Witness α, w ∈ extractR R C

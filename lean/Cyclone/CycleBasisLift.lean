@@ -41,7 +41,7 @@ inductive EFWin (k R : ℕ) (G H : Graph) :
 def Girth (G : Graph) : ℕ := 0
 
 /-- Tree property placeholder -/
-def IsTreeSubgraph (G : Graph) (S : Set G.V) : Prop := True
+def IsTreeSubgraph (G : Graph) (S : Set G.V) : Prop := by sorry
 
 /-- Girth > 2R ⇒ ball is tree -/
 theorem girth_gt_twoR_ball_tree
