@@ -196,3 +196,39 @@ lemma pachner32_preserves_manifold
   exact hM
 
 end Oblivion
+
+-- Faces as unordered triples
+structure Face where
+  verts : Fin 3 → Nat
+
+-- Tetrahedra as unordered quadruples
+structure Tetra where
+  verts : Fin 4 → Nat
+
+-- Face extraction from tetra
+def tetra_faces (t : Tetra) : List Face :=
+  []  -- to be filled with actual 4 faces
+
+-- Exact face incidence count
+def face_count (T : Triangulation) (f : Face) : Nat :=
+  (T.tets.bind tetra_faces).count f
+
+def FaceIncidence (T : Triangulation) : Prop :=
+  ∀ f : Face, face_count T f ≤ 2
+
+-- Link as induced 2-complex (placeholder structure)
+structure LinkComplex where
+  faces : List Face
+
+def Link (T : Triangulation) (v : T.V) : LinkComplex :=
+  ⟨[]⟩  -- to be constructed from star of v
+
+-- Sphere condition (combinatorial placeholder)
+def IsSphere (L : LinkComplex) : Prop :=
+  L.faces.length ≥ 4  -- minimal non-degenerate condition
+
+-- Updated manifold condition
+def IsManifold (T : Triangulation) : Prop :=
+  FaceIncidence T ∧ ∀ v, IsSphere (Link T v)
+
+end Oblivion
