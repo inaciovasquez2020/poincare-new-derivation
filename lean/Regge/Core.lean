@@ -10,10 +10,13 @@ structure SimplicialComplex where
   edges : Finset (V × V)
   lengths : (V × V) → ℝ
 
-noncomputable def deficit (T : SimplicialComplex) (e : T.V × T.V) : ℝ := 0
+attribute [instance] SimplicialComplex.inst
+
+noncomputable def deficit (T : SimplicialComplex) (_e : T.V × T.V) : ℝ := 0
 
 constant so3 : Type
 constant TetraGeom : Type
+constant FundamentalGroup : SimplicialComplex → Type
 
 constant zero_so3 : so3
 constant exp_so3 : so3 → so3
