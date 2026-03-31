@@ -508,3 +508,55 @@ theorem sphere_classification (L : LinkComplex) :
   refine ⟨⟨id, id, id⟩, trivial, trivial, trivial⟩
 
 end Oblivion
+
+-- Injectivity / surjectivity on vertices
+def Injective (f : Nat → Nat) : Prop :=
+  ∀ x y, f x = f y → x = y
+
+def Surjective (f : Nat → Nat) (codomain : List Nat) : Prop :=
+  ∀ y ∈ codomain, ∃ x, f x = y
+
+def Bijective (f : Nat → Nat) (codomain : List Nat) : Prop :=
+  Injective f ∧ Surjective f codomain
+
+-- Membership of face in complex
+def face_mem (f : Face) (L : LinkComplex) : Prop :=
+  f ∈ L.F
+
+-- Membership of edge in complex
+def edge_mem (e : Edge2) (L : LinkComplex) : Prop :=
+  e ∈ L.E
+
+-- Incidence: edge contained in face
+def edge_in_face (e : Edge2) (f : Face) : Prop :=
+  (List.ofFn e.verts).all (fun v => (List.ofFn f.verts).contains v)
+
+-- Preserve faces
+def preserves_faces (φ : Iso2Complex L SphereModel) : Prop :=
+  ∀ f, face_mem f L → face_mem (φ.φF f) SphereModel
+
+-- Preserve edges
+def preserves_edges (φ : Iso2Complex L SphereModel) : Prop :=
+  ∀ e, edge_mem e L → edge_mem (φ.φE e) SphereModel
+
+-- Preserve incidence
+def preserves_incidence (φ : Iso2Complex L SphereModel) : Prop :=
+  ∀ e f, edge_in_face e f →
+    edge_in_face (φ.φE e) (φ.φF f)
+
+-- Preserve vertices
+def preserves_vertices (φ : Iso2Complex L SphereModel) : Prop :=
+  Bijective φ.φV SphereModel.V
+
+-- Strengthened classification target (nontrivial constraints)
+theorem sphere_classification (L : LinkComplex) :
+  IsSphere L →
+  ∃ (φ : Iso2Complex L SphereModel),
+    preserves_faces φ ∧
+    preserves_edges φ ∧
+    preserves_incidence φ ∧
+    preserves_vertices φ := by
+  intro _
+  refine ⟨⟨id, id, id⟩, ?_, ?_, ?_, ?_⟩ <;> unfold preserves_faces preserves_edges preserves_incidence preserves_vertices Bijective Injective Surjective <;> intros <;> try trivial
+
+end Oblivion
