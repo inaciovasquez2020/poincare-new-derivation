@@ -11,18 +11,21 @@ theorem local_independent_of_det
 
 theorem holonomy_completion_stub
   (T : SimplicialComplex)
-  (γ : FundamentalGroup T) :
-  ∃ c : T.V × T.V → ℝ,
-    ∃ X : so3,
-      exp_so3 X = exp_so3 X := by
-  rcases holonomy_linearization_bound T γ with ⟨c, X, _h⟩
-  exact ⟨c, X, rfl⟩
+  (γ : FundamentalGroup T)
+  (path : ℝ → (T.V × T.V → ℝ))
+  (t : ℝ) :
+  ∃ X R : so3,
+    holonomy_rho T γ path t = exp_so3 X := by
+  rcases holonomy_linearization_bound_intealoop T γ path t with ⟨X, R, hρ, _hbound⟩
+  exact ⟨X, R, hρ⟩
 
 theorem holonomy_completion_exists
   (T : SimplicialComplex)
-  (γ : FundamentalGroup T) :
-  ∃ c : T.V × T.V → ℝ, ∃ X : so3, True := by
-  rcases holonomy_completion_stub T γ with ⟨c, X, _⟩
-  exact ⟨c, X, trivial⟩
+  (γ : FundamentalGroup T)
+  (path : ℝ → (T.V × T.V → ℝ))
+  (t : ℝ) :
+  ∃ X : so3, holonomy_rho T γ path t = exp_so3 X := by
+  rcases holonomy_completion_stub T γ path t with ⟨X, _R, hρ⟩
+  exact ⟨X, hρ⟩
 
 end Regge
