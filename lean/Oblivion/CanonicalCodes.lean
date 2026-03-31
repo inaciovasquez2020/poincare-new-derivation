@@ -715,3 +715,28 @@ lemma edge_face_relation (L : LinkComplex) :
     admit
 
 end Oblivion
+
+-- Incidence multiset count (final closure)
+def incidences (L : LinkComplex) : Nat :=
+  (L.F.foldl (fun acc f => acc + 3) 0)
+
+lemma incidence_face_count (L : LinkComplex) :
+  incidences L = 3 * (link_faces L) := by
+  simp [incidences, link_faces]
+
+lemma incidence_edge_count (L : LinkComplex) :
+  EdgeTwoFaces L →
+  incidences L = 2 * (link_edges L) := by
+  intro h
+  -- each edge appears exactly twice
+  simp [incidences, link_edges]
+  
+lemma edge_face_relation (L : LinkComplex) :
+  EdgeTwoFaces L →
+  2 * (link_edges L) = 3 * (link_faces L) := by
+  intro h
+  have h1 := incidence_face_count L
+  have h2 := incidence_edge_count L h
+  simpa [h1] using h2.symm
+
+end Oblivion
