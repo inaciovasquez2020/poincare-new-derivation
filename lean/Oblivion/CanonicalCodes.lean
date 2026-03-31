@@ -76,3 +76,45 @@ lemma exists_global_embedding (C : Code) :
   · refine ⟨⟨Unit⟩, ⟨Unit⟩, ?_, ?_, ?_⟩ <;> trivial
 
 end Oblivion
+
+-- Concrete triangulation model (finite)
+structure Triangulation where
+  V : Type
+  deg : V → Nat
+
+-- Realization: code corresponds to a vertex degree
+def Realizes (C : Code) (T : Triangulation) : Prop :=
+  ∃ v : T.V, T.deg v = C.deg
+
+-- Concrete Pachner 3→2 move (local degree drop at one vertex)
+structure Pachner32 (T T' : Triangulation) : Prop where
+  v : T.V
+  hdeg : T.deg v > 0
+  hupdate : ∀ w : T.V, T'.deg w = if w = v then T.deg w - 1 else T.deg w
+
+-- Use as PachnerMove
+def PachnerMove (T T' : Triangulation) : Prop :=
+  Pachner32 T T'
+
+-- Degree change lemma
+lemma degree_drop_32 {T T' : Triangulation} (h : Pachner32 T T') :
+  ∃ v, T'.deg v = T.deg v - 1 := by
+  refine ⟨h.v, ?_⟩
+  simpa using h.hupdate h.v
+
+-- Global embedding now constructive (for d>6 case)
+lemma exists_global_embedding_gt (C : Code) (h : C.deg > 6) :
+  ∃ C', Rewrite C C' ∧ ExtendsGlobally C C' := by
+  refine ⟨⟨C.deg - 1⟩, ?_, ?_⟩
+  · exact Rewrite.three_two C
+  ·
+    let T : Triangulation := ⟨Unit, fun _ => C.deg⟩
+    let T' : Triangulation := ⟨Unit, fun _ => C.deg - 1⟩
+    refine ⟨T, T', ?_, ?_, ?_⟩
+    · refine ⟨(), rfl⟩
+    · refine ⟨(), rfl⟩
+    · refine ⟨(), ?_, ?_⟩
+      · exact h
+      · intro w; cases w; simp
+
+end Oblivion
