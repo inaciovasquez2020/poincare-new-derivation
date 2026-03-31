@@ -9,4 +9,3 @@ import Regge.HolonomyCompletion
 import Regge.HolonomyMatrixModel
 
 
-import Regge.Pachner
