@@ -600,3 +600,27 @@ theorem sphere_classification (L : LinkComplex) :
   refine ⟨build_iso L, ?_, ?_, ?_, ?_⟩ <;> unfold preserves_faces preserves_edges preserves_incidence preserves_vertices Bijective Injective Surjective <;> intros <;> try trivial
 
 end Oblivion
+
+-- Counting relations (targets)
+lemma edge_face_relation (L : LinkComplex) :
+  EdgeTwoFaces L →
+  2 * (link_edges L) = 3 * (link_faces L) := by
+  intro _
+  -- TODO: sum of incidences
+  admit
+
+lemma euler_relation (L : LinkComplex) :
+  euler_char L = 2 →
+  (link_vertices L : Int) - (link_edges L : Int) + (link_faces L : Int) = 2 := by
+  intro h
+  simpa using h
+
+lemma face_count_eq_four (L : LinkComplex) :
+  IsSphere L → link_faces L = 4 := by
+  intro h
+  have h1 := edge_face_relation L h.2.2
+  have h2 := euler_relation L h.1
+  -- TODO: algebra solve
+  admit
+
+end Oblivion
