@@ -3,10 +3,8 @@ import Mathlib.Data.Finset.Basic
 
 namespace Regge
 
-universe u
-
 structure SimplicialComplex where
-  V : Type u
+  V : Type
   inst : DecidableEq V
   faces : Finset (Finset V)
   edges : Finset (V × V)
