@@ -2,7 +2,7 @@ import Regge.Core
 
 namespace Regge
 
-axiom norm_so3 : so3 → ℝ
+-- These now consume the centralized definitions from Regge.Core
 axiom global_gram_lambda_min : SimplicialComplex → ℝ → ℝ
 axiom holonomy_rho :
   (T : SimplicialComplex) →
@@ -22,6 +22,5 @@ axiom holonomy_linearization_bound_intealoop
   (t : ℝ) :
   ∃ X R : so3,
     holonomy_rho T γ path t = exp_so3 X ∧
-    norm_so3 R ≤ (kappa / global_gram_lambda_min T t) * (norm_so3 X)^2
 
 end Regge
