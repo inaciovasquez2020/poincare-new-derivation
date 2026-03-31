@@ -12,6 +12,6 @@ theorem Intealoop_core
   (_M _M' : SimplicialComplex) :
   ValidPath _M _M' → NonDegenerate _M ∧ FlatInterior _M := by
   intro _
-  exact ⟨trivial, trivial⟩
+  exact ⟨(by exact sorry), (by exact sorry)⟩
 
 end Regge
