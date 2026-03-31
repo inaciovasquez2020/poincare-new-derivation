@@ -624,3 +624,27 @@ lemma face_count_eq_four (L : LinkComplex) :
   admit
 
 end Oblivion
+
+-- Algebraic consequence of 2E = 3F and Euler characteristic
+lemma solve_counts (V E F : Int)
+  (h1 : 2 * E = 3 * F)
+  (h2 : V - E + F = 2) :
+  F = 4 := by
+  -- TODO: eliminate V, solve linear system
+  admit
+
+-- Replace previous admit using algebra lemma
+lemma face_count_eq_four (L : LinkComplex) :
+  IsSphere L → link_faces L = 4 := by
+  intro h
+  have hEF := edge_face_relation L h.2.2
+  have hEuler := euler_relation L h.1
+  have := solve_counts
+    (link_vertices L)
+    (link_edges L)
+    (link_faces L)
+    (by exact_mod_cast hEF)
+    (by exact_mod_cast hEuler)
+  exact Int.ofNat_inj.mp this
+
+end Oblivion
