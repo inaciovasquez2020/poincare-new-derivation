@@ -6,6 +6,5 @@ import Regge.HolonomyCompletion
 
 
 
-import Regge.HolonomyMatrixModel
 
 
