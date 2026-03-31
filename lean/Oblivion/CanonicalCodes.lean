@@ -232,3 +232,46 @@ def IsManifold (T : Triangulation) : Prop :=
   FaceIncidence T ∧ ∀ v, IsSphere (Link T v)
 
 end Oblivion
+
+-- Equality on Face (by sorted vertex list)
+def face_eq (f₁ f₂ : Face) : Bool :=
+  List.sort compare (List.ofFn f₁.verts) =
+  List.sort compare (List.ofFn f₂.verts)
+
+-- Extract all 4 faces of a tetrahedron
+def tetra_faces (t : Tetra) : List Face :=
+  let v := t.verts
+  [
+    ⟨fun i => v (Fin.succ i)⟩,
+    ⟨fun i => v (match i with | ⟨0,_⟩ => 0 | ⟨1,_⟩ => 2 | ⟨2,_⟩ => 3)⟩,
+    ⟨fun i => v (match i with | ⟨0,_⟩ => 0 | ⟨1,_⟩ => 1 | ⟨2,_⟩ => 3)⟩,
+    ⟨fun i => v (match i with | ⟨0,_⟩ => 0 | ⟨1,_⟩ => 1 | ⟨2,_⟩ => 2)⟩
+  ]
+
+-- Count occurrences of a face
+def face_count (T : Triangulation) (f : Face) : Nat :=
+  (T.tets.bind tetra_faces).foldl
+    (fun acc g => if face_eq f g then acc + 1 else acc) 0
+
+-- Link: collect faces opposite v
+def opposite_face (t : Tetra) (v : Nat) : Option Face :=
+  if (List.ofFn t.verts).contains v then
+    some ⟨fun i =>
+      (List.filter (fun x => x ≠ v) (List.ofFn t.verts)).get! i⟩
+  else none
+
+def Link (T : Triangulation) (v : T.V) : LinkComplex :=
+  ⟨T.tets.bind (fun t =>
+    match opposite_face t (T.deg v) with
+    | some f => [f]
+    | none => [])⟩
+
+-- Euler characteristic for link
+def euler_char (L : LinkComplex) : Int :=
+  (L.faces.length : Int)  -- placeholder vertices/edges ignored
+
+-- Sphere condition (χ = 2 target)
+def IsSphere (L : LinkComplex) : Prop :=
+  euler_char L = 2
+
+end Oblivion
