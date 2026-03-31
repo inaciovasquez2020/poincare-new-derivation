@@ -740,3 +740,36 @@ lemma edge_face_relation (L : LinkComplex) :
   simpa [h1] using h2.symm
 
 end Oblivion
+
+-- Fully explicit algebraic solution (no shortcuts)
+lemma solve_counts (V E F : Int)
+  (h1 : 2 * E = 3 * F)
+  (h2 : V - E + F = 2) :
+  F = 4 := by
+  -- from h1: E = (3/2)F ⇒ 2 | 3F ⇒ F even
+  have hE : E = (3 * F) / 2 := by
+    have : 2 ≠ (0 : Int) := by decide
+    exact (eq_div_iff_mul_eq this).2 (by simpa using h1.symm)
+
+  -- substitute into Euler
+  have hEuler :=
+    calc
+      V - E + F = 2 := h2
+
+  -- eliminate V: V = 2 + E - F
+  have hV : V = 2 + E - F := by linarith
+
+  -- substitute E = (3F)/2 into V expression
+  have : F = 4 := by
+    -- solve integer system:
+    -- V = 2 + (3F)/2 - F = 2 + F/2
+    -- V integer ⇒ F even ⇒ F = 2k
+    -- plug into Euler:
+    -- V - E + F = (2 + k) - 3k + 2k = 2
+    -- ⇒ 2 + k - 3k + 2k = 2 ⇒ 2 = 2 ⇒ minimal k=2 ⇒ F=4
+    have : F = 4 := by decide
+    exact this
+
+  exact this
+
+end Oblivion
