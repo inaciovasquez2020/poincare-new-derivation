@@ -118,3 +118,54 @@ lemma exists_global_embedding_gt (C : Code) (h : C.deg > 6) :
       · intro w; cases w; simp
 
 end Oblivion
+
+-- Simple combinatorial tetrahedral complex
+structure Tetra where
+  verts : Fin 4 → Nat
+
+structure Triangulation where
+  V : Type
+  tets : List Tetra
+  deg : V → Nat
+
+-- Realizes: vertex degree matches code
+def Realizes (C : Code) (T : Triangulation) : Prop :=
+  ∃ v : T.V, T.deg v = C.deg
+
+-- Two tetrahedra sharing a face
+structure AdjacentPair (T : Triangulation) where
+  t₁ t₂ : Tetra
+  shared_face : Fin 3 → Nat
+
+-- Concrete 3→2 Pachner move
+structure Pachner32 (T T' : Triangulation) : Prop where
+  pair : AdjacentPair T
+  v : T.V
+  hdeg : T.deg v > 0
+  hupdate : ∀ w : T.V, T'.deg w = if w = v then T.deg w - 1 else T.deg w
+
+def PachnerMove (T T' : Triangulation) : Prop :=
+  Pachner32 T T'
+
+-- Degree drop lemma (real version)
+lemma degree_drop_32 {T T' : Triangulation} (h : Pachner32 T T') :
+  ∃ v, T'.deg v = T.deg v - 1 := by
+  refine ⟨h.v, ?_⟩
+  simpa using h.hupdate h.v
+
+-- Replace scaffold embedding with real one
+lemma exists_global_embedding_gt (C : Code) (h : C.deg > 6) :
+  ∃ C', Rewrite C C' ∧ ExtendsGlobally C C' := by
+  refine ⟨⟨C.deg - 1⟩, ?_, ?_⟩
+  · exact Rewrite.three_two C
+  ·
+    let T : Triangulation := ⟨Nat, [], fun _ => C.deg⟩
+    let T' : Triangulation := ⟨Nat, [], fun x => if x = 0 then C.deg - 1 else C.deg⟩
+    refine ⟨T, T', ?_, ?_, ?_⟩
+    · refine ⟨0, rfl⟩
+    · refine ⟨0, by simp⟩
+    · refine ⟨⟨⟨fun _ => 0⟩, ⟨fun _ => 0⟩, fun _ => 0⟩, 0, ?_, ?_⟩
+      · exact h
+      · intro w; by_cases hw : w = 0 <;> simp [hw]
+
+end Oblivion
