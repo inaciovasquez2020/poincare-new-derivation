@@ -8,7 +8,8 @@ axiom dihedral_variation : TetraGeom → (ℕ × ℕ) → ℝ
 axiom edges_of : TetraGeom → Finset (ℕ × ℕ)
 axiom lengths_of : TetraGeom → (ℕ × ℕ) → ℝ
 
-axiom schlafli_identity (σ : TetraGeom) : True
+axiom schlafli_identity (σ : TetraGeom) :
+  ∑ e : (ℕ × ℕ) in edges_of σ, (lengths_of σ e) * (dihedral_variation σ e) = 0
 
 def is_non_degenerate (σ : TetraGeom) : Prop :=
   detG σ > 0
