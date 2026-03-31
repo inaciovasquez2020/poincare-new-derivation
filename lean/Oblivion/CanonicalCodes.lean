@@ -275,3 +275,80 @@ def IsSphere (L : LinkComplex) : Prop :=
   euler_char L = 2
 
 end Oblivion
+
+-- Full combinatorial 2-complex for links
+structure Edge2 where
+  verts : Fin 2 → Nat
+
+structure LinkComplex where
+  V : List Nat
+  E : List Edge2
+  F : List Face
+
+def edge_eq (e₁ e₂ : Edge2) : Bool :=
+  List.sort compare (List.ofFn e₁.verts) =
+  List.sort compare (List.ofFn e₂.verts)
+
+def face_vertices (f : Face) : List Nat :=
+  List.ofFn f.verts
+
+def face_edges (f : Face) : List Edge2 :=
+  let v := face_vertices f
+  match v with
+  | [a,b,c] =>
+      [ ⟨fun i => if i = 0 then a else b⟩
+      , ⟨fun i => if i = 0 then a else c⟩
+      , ⟨fun i => if i = 0 then b else c⟩ ]
+  | _ => []
+
+def link_vertices (L : LinkComplex) : Nat :=
+  L.V.eraseDups.length
+
+def link_edges (L : LinkComplex) : Nat :=
+  L.E.eraseDupsBy edge_eq |>.length
+
+def link_faces (L : LinkComplex) : Nat :=
+  L.F.length
+
+def euler_char (L : LinkComplex) : Int :=
+  (link_vertices L : Int) - (link_edges L : Int) + (link_faces L : Int)
+
+def edge_incidence_count (L : LinkComplex) (e : Edge2) : Nat :=
+  (L.F.bind face_edges).foldl (fun acc e' => if edge_eq e e' then acc + 1 else acc) 0
+
+def LinkConnected (L : LinkComplex) : Prop :=
+  L.V ≠ []
+
+def EdgeTwoFaces (L : LinkComplex) : Prop :=
+  ∀ e ∈ L.E.eraseDupsBy edge_eq, edge_incidence_count L e = 2
+
+def IsSphere (L : LinkComplex) : Prop :=
+  euler_char L = 2 ∧ LinkConnected L ∧ EdgeTwoFaces L
+
+def opposite_face_vertices (t : Tetra) (v : Nat) : List Nat :=
+  (List.ofFn t.verts).filter (fun x => x ≠ v)
+
+def mkFaceFromList (xs : List Nat) : Option Face :=
+  match xs with
+  | [a,b,c] =>
+      some ⟨fun i =>
+        match (i : Nat) with
+        | 0 => a
+        | 1 => b
+        | _ => c⟩
+  | _ => none
+
+def opposite_face (t : Tetra) (v : Nat) : Option Face :=
+  mkFaceFromList (opposite_face_vertices t v)
+
+def Link (T : Triangulation) (v : T.V) : LinkComplex :=
+  let fs :=
+    T.tets.bind (fun t =>
+      match opposite_face t (T.deg v) with
+      | some f => [f]
+      | none => [])
+  let es := fs.bind face_edges
+  let vs := fs.bind face_vertices
+  ⟨vs, es, fs⟩
+
+end Oblivion
