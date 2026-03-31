@@ -18,12 +18,41 @@ axiom FundamentalGroup : SimplicialComplex → Type
 
 axiom zero_so3 : so3
 axiom exp_so3 : so3 → so3
+
 axiom so3_add : so3 → so3 → so3
+axiom so3_neg : so3 → so3
+
+axiom so3_bracket : so3 → so3 → so3
 
 axiom detG : TetraGeom → ℝ
 axiom LocalIndependent : TetraGeom → Prop
 
 axiom det_nonzero_implies_local_rigidity :
   ∀ σ : TetraGeom, detG σ ≠ 0 → LocalIndependent σ
+
+axiom norm_so3 : so3 → ℝ
+
+axiom norm_nonneg : ∀ X : so3, 0 ≤ norm_so3 X
+axiom norm_zero : norm_so3 zero_so3 = 0
+
+axiom bracket_bilinear :
+  ∀ X Y Z : so3,
+    so3_bracket (so3_add X Y) Z =
+      so3_add (so3_bracket X Z) (so3_bracket Y Z)
+
+axiom bracket_antisymm :
+  ∀ X Y : so3,
+    so3_bracket X Y = so3_neg (so3_bracket Y X)
+
+axiom bracket_jacobi :
+  ∀ X Y Z : so3,
+    so3_bracket X (so3_bracket Y Z) =
+      so3_add
+        (so3_bracket (so3_bracket X Y) Z)
+        (so3_bracket Y (so3_bracket X Z))
+
+axiom norm_bracket_bound :
+  ∀ X Y : so3,
+    norm_so3 (so3_bracket X Y) ≤ norm_so3 X * norm_so3 Y
 
 end Regge
