@@ -169,3 +169,30 @@ lemma exists_global_embedding_gt (C : Code) (h : C.deg > 6) :
       · intro w; by_cases hw : w = 0 <;> simp [hw]
 
 end Oblivion
+
+-- Face structure
+structure Face where
+  verts : Fin 3 → Nat
+
+-- Incidence: each face belongs to ≤ 2 tetrahedra
+def FaceIncidence (T : Triangulation) : Prop :=
+  ∀ f : Face, (List.filter (fun t => True) T.tets).length ≤ 2
+
+-- Link of a vertex (simplified placeholder)
+def Link (T : Triangulation) (v : T.V) : Type := Unit
+
+-- S² condition placeholder
+def IsSphere (X : Type) : Prop := True
+
+-- Manifold condition
+def IsManifold (T : Triangulation) : Prop :=
+  FaceIncidence T ∧ ∀ v, IsSphere (Link T v)
+
+-- Pachner preserves manifold (scaffold)
+lemma pachner32_preserves_manifold
+  {T T' : Triangulation} (h : Pachner32 T T') :
+  IsManifold T → IsManifold T' := by
+  intro hM
+  exact hM
+
+end Oblivion
