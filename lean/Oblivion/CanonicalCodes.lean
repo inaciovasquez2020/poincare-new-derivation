@@ -8,6 +8,7 @@ def Phi (C : Code) : Nat :=
 
 inductive Rewrite : Code → Code → Prop
 | three_two (C : Code) : Rewrite C ⟨C.deg - 1⟩
+| two_three (C : Code) : Rewrite C ⟨C.deg + 1⟩
 
 def DeltaPhi (C C' : Code) : Int :=
   (Phi C') - (Phi C)
@@ -16,18 +17,40 @@ def ExtendsGlobally (C C' : Code) : Prop := True
 
 def C0 : Code := ⟨6⟩
 
-lemma delta_phi_decrease (d : Nat) (h : d > 6) :
+lemma delta_phi_decrease_gt (d : Nat) (h : d > 6) :
   DeltaPhi ⟨d⟩ ⟨d-1⟩ < 0 := by
   simp [DeltaPhi, Phi]
-  have : |(d-1 : Int) - 6| < |(d : Int) - 6| := by
-    have : (d : Int) - 6 > 0 := by exact sub_pos.mpr h
-    simp [abs_of_pos this, abs_of_pos (sub_pos.mpr (Nat.sub_lt h (by decide)))]
-  simpa using this
+  have : (d : Int) - 6 > 0 := by exact sub_pos.mpr h
+  have h1 : |(d : Int) - 6| = (d : Int) - 6 := by simpa using abs_of_pos this
+  have h2 : |(d-1 : Int) - 6| = (d-1 : Int) - 6 := by
+    have : (d-1 : Int) - 6 > 0 := by
+      have : d ≥ 7 := Nat.succ_le_of_lt h
+      exact sub_pos.mpr (lt_of_lt_of_le (by decide) this)
+    simpa using abs_of_pos this
+  simp [h1, h2]
 
-theorem exists_descent (C : Code) (h : C.deg > 6) :
+lemma delta_phi_decrease_lt (d : Nat) (h : d < 6) :
+  DeltaPhi ⟨d⟩ ⟨d+1⟩ < 0 := by
+  simp [DeltaPhi, Phi]
+  have : (d : Int) - 6 < 0 := by exact sub_neg.mpr h
+  have h1 : |(d : Int) - 6| = 6 - d := by
+    simpa using abs_of_neg this
+  have h2 : |(d+1 : Int) - 6| = 6 - (d+1) := by
+    have : (d+1 : Int) - 6 < 0 := by
+      exact sub_neg.mpr (Nat.succ_lt_succ h)
+    simpa using abs_of_neg this
+  simp [h1, h2]
+
+theorem exists_descent (C : Code) (h : C ≠ C0) :
   ∃ C', Rewrite C C' ∧ DeltaPhi C C' < 0 := by
-  refine ⟨⟨C.deg - 1⟩, ?_, ?_⟩
-  · exact Rewrite.three_two C
-  · exact delta_phi_decrease C.deg h
+  cases lt_or_gt_of_ne h with
+  | inl hlt =>
+      refine ⟨⟨C.deg + 1⟩, ?_, ?_⟩
+      · exact Rewrite.two_three C
+      · exact delta_phi_decrease_lt C.deg hlt
+  | inr hgt =>
+      refine ⟨⟨C.deg - 1⟩, ?_, ?_⟩
+      · exact Rewrite.three_two C
+      · exact delta_phi_decrease_gt C.deg hgt
 
 end Oblivion
