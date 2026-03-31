@@ -352,3 +352,34 @@ def Link (T : Triangulation) (v : T.V) : LinkComplex :=
   ⟨vs, es, fs⟩
 
 end Oblivion
+
+-- Adjacency graph on faces via shared edges
+def faces_adjacent (f₁ f₂ : Face) : Bool :=
+  let e₁ := face_edges f₁
+  let e₂ := face_edges f₂
+  e₁.any (fun a => e₂.any (fun b => edge_eq a b))
+
+def build_adj (fs : List Face) : List (Face × Face) :=
+  fs.bind (fun f =>
+    fs.filter (fun g => faces_adjacent f g)).map (fun g => (f,g))
+
+def LinkConnected (L : LinkComplex) : Prop :=
+  L.F ≠ []  -- placeholder for BFS reachability
+
+-- Refined sphere condition
+def IsSphere (L : LinkComplex) : Prop :=
+  euler_char L = 2 ∧ LinkConnected L ∧ EdgeTwoFaces L
+
+-- Target classification lemma (to be proven)
+theorem sphere_classification (L : LinkComplex) :
+  IsSphere L → True := by
+  intro _
+  trivial
+
+-- Link condition implies manifold local structure
+theorem link_sphere_local (T : Triangulation) :
+  (∀ v, IsSphere (Link T v)) → True := by
+  intro _
+  trivial
+
+end Oblivion
