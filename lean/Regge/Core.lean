@@ -22,7 +22,6 @@ axiom exp_so3 : so3 → so3
 axiom so3_add : so3 → so3 → so3
 axiom so3_neg : so3 → so3
 axiom so3_sub : so3 → so3 → so3
-
 axiom so3_bracket : so3 → so3 → so3
 
 axiom detG : TetraGeom → ℝ
@@ -35,27 +34,6 @@ axiom norm_so3 : so3 → ℝ
 
 axiom norm_nonneg : ∀ X : so3, 0 ≤ norm_so3 X
 axiom norm_zero : norm_so3 zero_so3 = 0
-
-axiom bracket_bilinear_left :
-  ∀ X Y Z : so3,
-    so3_bracket (so3_add X Y) Z =
-      so3_add (so3_bracket X Z) (so3_bracket Y Z)
-
-axiom bracket_bilinear_right :
-  ∀ X Y Z : so3,
-    so3_bracket X (so3_add Y Z) =
-      so3_add (so3_bracket X Y) (so3_bracket X Z)
-
-axiom bracket_antisymm :
-  ∀ X Y : so3,
-    so3_bracket X Y = so3_neg (so3_bracket Y X)
-
-axiom bracket_jacobi :
-  ∀ X Y Z : so3,
-    so3_bracket X (so3_bracket Y Z) =
-      so3_add
-        (so3_bracket (so3_bracket X Y) Z)
-        (so3_bracket Y (so3_bracket X Z))
 
 axiom norm_add :
   ∀ X Y : so3,
