@@ -5,14 +5,14 @@ namespace Regge
 
 structure SimplicialComplex where
   V : Type
-  inst : DecidableEq V
+  [inst : DecidableEq V]
   faces : Finset (Finset V)
   edges : Finset (V × V)
   lengths : (V × V) → ℝ
 
 attribute [instance] SimplicialComplex.inst
 
-noncomputable def deficit (T : SimplicialComplex) (_e : T.V × T.V) : ℝ := 0
+noncomputable def deficit (T : SimplicialComplex) (_ : T.V × T.V) : ℝ := 0
 
 constant so3 : Type
 constant TetraGeom : Type
