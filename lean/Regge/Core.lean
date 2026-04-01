@@ -1,3 +1,4 @@
+import Regge.So3Concrete
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Finset.Basic
 
@@ -12,7 +13,6 @@ structure SimplicialComplex where
 
 attribute [instance] SimplicialComplex.inst
 
-axiom so3 : Type
 axiom TetraGeom : Type
 axiom FundamentalGroup : SimplicialComplex → Type
 
