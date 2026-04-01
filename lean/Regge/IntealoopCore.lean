@@ -2,10 +2,10 @@ import Regge.Core
 
 namespace Regge
 
-def FlatInterior (M : SimplicialComplex) : Prop :=
+def FlatInterior (_M : SimplicialComplex) : Prop :=
   ∀ σ : TetraGeom, detG σ ≠ 0 → LocalIndependent σ
 
-def ValidPath (_ _ : SimplicialComplex) : Prop := by
-  exact sorry
+def ValidPath (M M' : SimplicialComplex) : Prop :=
+  Nonempty (FundamentalGroup M) ∧ Nonempty (FundamentalGroup M')
 
 end Regge
