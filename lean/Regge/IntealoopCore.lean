@@ -1,9 +1,5 @@
+import Regge.Core
 namespace Regge
-
-structure TetraGeom where
-  data : Unit
-
-def detG (_ : TetraGeom) : Nat := (1 : Nat)
 
 def NonDegenerate (_ : TetraGeom) : Prop := True
 
