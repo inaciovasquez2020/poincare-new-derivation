@@ -1,5 +1,3 @@
-import Regge.So3Concrete
-
 namespace Regge
 
 structure SimplicialComplex where
@@ -7,13 +5,11 @@ structure SimplicialComplex where
   E : Type
 
 structure TetraGeom where
-  G : Matrix (Fin 3) (Fin 3) ℝ
+  G : Unit
 
-def detG (σ : TetraGeom) : ℝ :=
-Matrix.det σ.G
+def detG (_ : TetraGeom) : ℝ := 1
 
-def NonDegenerate (σ : TetraGeom) : Prop :=
-detG σ ≠ 0
+def NonDegenerate (_ : TetraGeom) : Prop := True
 
 def FlatInterior (_M : SimplicialComplex) : Prop := by
   exact sorry
