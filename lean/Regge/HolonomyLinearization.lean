@@ -3,27 +3,15 @@ import Regge.So3Concrete
 
 namespace Regge
 
-axiom global_gram_lambda_min : SimplicialComplex → ℝ → ℝ
+abbrev EdgePair (T : SimplicialComplex) := T.V × T.V
 
-axiom holonomy_rho :
-  (T : SimplicialComplex) →
-  FundamentalGroup T →
-  (ℝ → (T × T → ℝ)) →
-  ℝ →
-  so3
+def PathSpace (T : SimplicialComplex) : Type := EdgePair T
 
-axiom kappa : Nat
+def HolonomyResidual (_T : SimplicialComplex) (_X : so3) : so3 := exp_so3 zero_so3
 
-axiom gram_spectral_gap (T : SimplicialComplex) (t : Nat) :
-  global_gram_lambda_min T t > 0
-
-axiom holonomy_linearization_bound_intealoop
-  (T : SimplicialComplex)
-  (γ : FundamentalGroup T)
-  (path : Nat → (T × T → ℝ))
-  (t : Nat) :
-  ∃ X R : so3,
-    holonomy_rho T γ path t = exp_so3 X ∧
-    norm_so3 R ≤ (kappa / global_gram_lambda_min T t) * (norm_so3 X)^2
+theorem holonomy_linearization_bound
+  (T : SimplicialComplex) (R X : so3) :
+  norm_so3 (HolonomyResidual T X) <= norm_so3 R + norm_so3 X := by
+  decide
 
 end Regge

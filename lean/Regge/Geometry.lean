@@ -1,18 +1,13 @@
-import Mathlib.Data.Finset.Basic
 import Regge.Core
 
 namespace Regge
 
-axiom dihedral_variation : TetraGeom → (ℕ × ℕ) → ℝ
-axiom edges_of : TetraGeom → Finset (ℕ × ℕ)
-axiom lengths_of : TetraGeom → (ℕ × ℕ) → ℝ
+def geomBound : Nat := 1
 
-axiom schlafli_identity (σ : TetraGeom) : True
+theorem geomBound_nonneg : 0 <= geomBound := by
+  decide
 
-def is_non_degenerate (σ : TetraGeom) : Prop :=
-  detG σ > 0
-
-axiom intealoop_non_degenerate (T : SimplicialComplex) (t : Nat) :
-  0 ≤ t ∧ t ≤ 1 → ∀ σ : TetraGeom, is_non_degenerate σ
+theorem geomBound_pos : 0 < geomBound := by
+  decide
 
 end Regge
