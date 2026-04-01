@@ -5,16 +5,16 @@ structure SimplicialComplex where
   E : Type
 
 structure TetraGeom where
-  G : Unit
+  data : Unit
 
 def detG (_ : TetraGeom) : ℝ := 1
 
 def NonDegenerate (_ : TetraGeom) : Prop := True
 
-def FlatInterior (_M : SimplicialComplex) : Prop := by
+def FlatInterior (_ : SimplicialComplex) : Prop := by
   exact sorry
 
-def ValidPath (_M _M' : SimplicialComplex) : Prop := by
+def ValidPath (_ _ : SimplicialComplex) : Prop := by
   exact sorry
 
 end Regge
