@@ -11,16 +11,16 @@ axiom holonomy_rho :
   ℝ →
   so3
 
-axiom kappa : ℝ
+axiom kappa : Nat
 
-axiom gram_spectral_gap (T : SimplicialComplex) (t : ℝ) :
+axiom gram_spectral_gap (T : SimplicialComplex) (t : Nat) :
   global_gram_lambda_min T t > 0
 
 axiom holonomy_linearization_bound_intealoop
   (T : SimplicialComplex)
   (γ : FundamentalGroup T)
-  (path : ℝ → (T.V × T.V → ℝ))
-  (t : ℝ) :
+  (path : Nat → (T.V × T.V → ℝ))
+  (t : Nat) :
   ∃ X R : so3,
     holonomy_rho T γ path t = exp_so3 X ∧
     norm_so3 R ≤ (kappa / global_gram_lambda_min T t) * (norm_so3 X)^2
