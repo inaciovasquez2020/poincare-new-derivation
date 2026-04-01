@@ -1,6 +1,6 @@
 import Mathlib.Data.Matrix.Basic
-import Mathlib.LinearAlgebra.Matrix
-import Mathlib.Analysis.NormedSpace.Basic
+import Mathlib.LinearAlgebra.Matrix.Basic
+import Mathlib.Analysis.NormedSpace.OperatorNorm
 
 namespace Regge
 
