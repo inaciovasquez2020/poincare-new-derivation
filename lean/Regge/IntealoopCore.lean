@@ -7,7 +7,7 @@ structure SimplicialComplex where
 structure TetraGeom where
   data : Unit
 
-def detG (_ : TetraGeom) : ℝ := (1 : ℝ)
+def detG (_ : TetraGeom) : Nat := (1 : Nat)
 
 def NonDegenerate (_ : TetraGeom) : Prop := True
 
