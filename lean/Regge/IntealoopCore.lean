@@ -1,9 +1,5 @@
 namespace Regge
 
-structure SimplicialComplex where
-  V : Type
-  E : Type
-
 structure TetraGeom where
   data : Unit
 
