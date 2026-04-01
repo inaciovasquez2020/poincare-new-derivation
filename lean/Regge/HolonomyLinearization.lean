@@ -14,4 +14,9 @@ theorem holonomy_linearization_bound
   norm_so3 (HolonomyResidual T X) <= norm_so3 R + norm_so3 X := by
   exact Nat.zero_le _
 
+theorem holonomy_linearization_bound_intealoop
+  (T : SimplicialComplex) (R X : so3) :
+  norm_so3 (HolonomyResidual T X) <= norm_so3 R + norm_so3 X := by
+  exact holonomy_linearization_bound T R X
+
 end Regge
