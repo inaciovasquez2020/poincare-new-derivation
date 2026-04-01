@@ -1,10 +1,9 @@
 import Regge.Core
+
 namespace Regge
 
-def NonDegenerate (_ : TetraGeom) : Prop := True
-
-def FlatInterior (_ : SimplicialComplex) : Prop := by
-  exact sorry
+def FlatInterior (M : SimplicialComplex) : Prop :=
+  ∀ σ : TetraGeom, detG σ ≠ 0 → LocalIndependent σ
 
 def ValidPath (_ _ : SimplicialComplex) : Prop := by
   exact sorry
