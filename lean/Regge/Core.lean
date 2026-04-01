@@ -1,5 +1,4 @@
 import Regge.So3Concrete
-import Mathlib.Data.Real.Defs
 
 namespace Regge
 
