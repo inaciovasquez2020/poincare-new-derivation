@@ -1,17 +1,24 @@
-import Regge.Core
+import Regge.So3Concrete
 
 namespace Regge
 
-def NonDegenerate (_M : SimplicialComplex) : Prop := by sorry
+structure SimplicialComplex where
+  V : Type
+  E : Type
 
-def FlatInterior (_M : SimplicialComplex) : Prop := by sorry
+structure TetraGeom where
+  G : Matrix (Fin 3) (Fin 3) ℝ
 
-def ValidPath (_M _M' : SimplicialComplex) : Prop := by sorry
+def detG (σ : TetraGeom) : ℝ :=
+Matrix.det σ.G
 
-theorem Intealoop_core
-  (_M _M' : SimplicialComplex) :
-  ValidPath _M _M' → NonDegenerate _M ∧ FlatInterior _M := by
-  intro _
-  exact ⟨(by exact sorry), (by exact sorry)⟩
+def NonDegenerate (σ : TetraGeom) : Prop :=
+detG σ ≠ 0
+
+def FlatInterior (_M : SimplicialComplex) : Prop := by
+  exact sorry
+
+def ValidPath (_M _M' : SimplicialComplex) : Prop := by
+  exact sorry
 
 end Regge
