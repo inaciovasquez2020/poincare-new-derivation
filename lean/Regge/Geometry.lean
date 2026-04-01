@@ -12,7 +12,7 @@ axiom schlafli_identity (σ : TetraGeom) : True
 def is_non_degenerate (σ : TetraGeom) : Prop :=
   detG σ > 0
 
-axiom intealoop_non_degenerate (T : SimplicialComplex) (t : ℝ) :
+axiom intealoop_non_degenerate (T : SimplicialComplex) (t : Nat) :
   0 ≤ t ∧ t ≤ 1 → ∀ σ : TetraGeom, is_non_degenerate σ
 
 end Regge

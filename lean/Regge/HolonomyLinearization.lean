@@ -1,4 +1,5 @@
 import Regge.Core
+import Regge.So3Concrete
 
 namespace Regge
 
