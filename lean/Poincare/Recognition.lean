@@ -1,13 +1,13 @@
-import Poincare.Descent
+import Mathlib
+import Poincare.Triangulation
+import Poincare.Moves
+import Poincare.NormalizationImpliesS3
 
 namespace Poincare
 
-axiom normalization_implies_combinatorial_S3 :
-  ∀ K, normalized K → S3 K
-
-theorem correctness (K : Triangulation) :
-    Phi K = 0 → S3 K := by
-  intro h
-  exact normalization_implies_combinatorial_S3 K h
+theorem recognition_implies_combinatorial_S3 :
+  ∀ K : Triangulation,
+    normalized K → S3 K :=
+  normalization_implies_combinatorial_S3
 
 end Poincare
