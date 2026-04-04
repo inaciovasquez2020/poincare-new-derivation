@@ -12,7 +12,7 @@ match best with
 if vertexDefect K v > vertexDefect K w then some v else some w)
 none
 
-def step (K : Triangulation) : Triangulation :=
+noncomputable def step (K : Triangulation) : Triangulation :=
 applyMove K (selectMove K)
 
 end Poincare

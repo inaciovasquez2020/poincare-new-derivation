@@ -8,10 +8,8 @@ inductive PachnerMove where
 | move14
 | move41
 
-def applyMove (K : Triangulation) (_ : PachnerMove) : Triangulation :=
-  K
+axiom applyMove : Triangulation → PachnerMove → Triangulation
 
-def selectMove (_ : Triangulation) : PachnerMove :=
-  PachnerMove.move23
+axiom selectMove : Triangulation → PachnerMove
 
 end Poincare
