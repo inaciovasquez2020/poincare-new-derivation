@@ -1,18 +1,13 @@
+import Mathlib
+import Poincare.Triangulation
+import Poincare.Moves
+import Poincare.PhiZeroCharacterizesS3
+
 namespace Poincare
 
-constant Triangulation : Type
-constant Phi : Triangulation → ℕ
-constant S3 : Triangulation → Prop
-
--- Minimal constructive target: invariant completeness
-axiom phi_zero_characterizes_s3 :
+theorem zero_defect_characterizes_s3 :
   ∀ T : Triangulation,
-    Phi T = 0 ↔ S3 T
-
-theorem zero_defect_characterization :
-  ∀ T : Triangulation,
-    Phi T = 0 → S3 T := by
-  intro T h
-  exact (phi_zero_characterizes_s3 T).mp h
+    Phi T = 0 ↔ S3 T :=
+  phi_zero_characterizes_s3
 
 end Poincare
