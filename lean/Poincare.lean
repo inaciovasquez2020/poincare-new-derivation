@@ -4,3 +4,4 @@ import Poincare.Moves
 import Poincare.Descent
 import Poincare.Recognition
 import Poincare.LocalDelta
+import Poincare.LocalSphericalDescent
