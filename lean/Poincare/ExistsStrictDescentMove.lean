@@ -1,5 +1,6 @@
 import Poincare.Moves
 import Poincare.Descent
+import Poincare.Step
 import Poincare.PhiPosOfNeZero
 
 namespace Poincare
