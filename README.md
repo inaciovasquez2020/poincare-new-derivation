@@ -55,3 +55,8 @@ Conditional on:
 - Structured collision experiments (near-injective regime).  
 - Spectral correction: HS operator requires squared resolvent decay.  
 
+
+## LocalDelta
+
+- `lean/Poincare/LocalDelta.lean` now records local Pachner-move delta classification.
+- This module classifies local `ΔΦ` from degree multisets and does not claim strict descent.
