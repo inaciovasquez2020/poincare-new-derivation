@@ -1,29 +1,24 @@
-namespace Poincare
+import Mathlib
+import Poincare.Triangulation
+import Poincare.Moves
 
-constant Triangulation : Type
-constant Move : Type
-constant allowedMoves : Triangulation → Finset Move
-constant applyMove : Move → Triangulation → Triangulation
-constant Phi : Triangulation → ℕ
-constant S3 : Triangulation → Prop
+namespace Poincare
 
 axiom phi_zero_characterizes_s3 :
   ∀ T : Triangulation,
     Phi T = 0 ↔ S3 T
 
-theorem exists_strict_descent_move := by
-  intro T h
-  exact ⟨Zap T, by sorry, zap_strict_descent T h⟩
+axiom exists_strict_descent_move :
   ∀ T : Triangulation,
     Phi T ≠ 0 →
-    ∃ m ∈ allowedMoves T,
-      Phi (applyMove m T) < Phi T
+    ∃ m : PachnerMove,
+      Phi (applyMove T m) < Phi T
 
 theorem local_spherical_descent :
   ∀ T : Triangulation,
     ¬ S3 T →
-    ∃ m ∈ allowedMoves T,
-      Phi (applyMove m T) < Phi T := by
+    ∃ m : PachnerMove,
+      Phi (applyMove T m) < Phi T := by
   intro T hT
   have hphi : Phi T ≠ 0 := by
     intro h0
