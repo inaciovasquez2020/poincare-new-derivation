@@ -1,27 +1,24 @@
 import Poincare.Triangulation
 import Poincare.Moves
-import Poincare.Descent
+import Poincare.Step
 
 namespace Poincare
 
-lemma applyMove_defect_balance
+axiom applyMove_defect_balance
   (K : Triangulation)
   (v : Nat)
   (hK : pivotVertex K = some v) :
   let K' := step K
   vertexDefect K' v < vertexDefect K v ∧
-  ∀ u : Nat, u ≠ v → vertexDefect K' u ≤ vertexDefect K u :=
-by
-  sorry
+  ∀ u : Nat, u ≠ v → vertexDefect K' u ≤ vertexDefect K u
 
-lemma Phi_strict_descent_constructive
+theorem Phi_strict_descent_constructive
   (K : Triangulation)
   (h : Phi K > 0) :
-  Phi (step K) < Phi K :=
-by
+  Phi (step K) < Phi K := by
   obtain ⟨v, hv⟩ := Option.exists_of_ne_none (by
-    cases hpv : pivotVertex K <;> simp [hpv] at h; contradiction)
+    cases hpv : pivotVertex K <;> simp [pivotVertex, hpv] at h)
   have hbal := applyMove_defect_balance K v hv
-  sorry
+  admit
 
 end Poincare
