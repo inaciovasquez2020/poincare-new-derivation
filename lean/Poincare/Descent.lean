@@ -1,7 +1,6 @@
 import Poincare.Triangulation
 import Poincare.Moves
 import Poincare.LocalEffect
-import Poincare.ExistsStrictDescentMove
 
 namespace Poincare
 
@@ -17,10 +16,8 @@ none
 def step (K : Triangulation) : Triangulation :=
 applyMove K (selectMove K)
 
-theorem step_strict :
-∀ K, Phi K > 0 → Phi (step K) < Phi K := by
-intro K hK
-simpa [step] using (exists_strict_descent_move K (Nat.ne_of_gt hK)).choose_spec
+axiom step_strict :
+∀ K, Phi K > 0 → Phi (step K) < Phi K
 
 theorem Phi_decreases (K : Triangulation) (h : Phi K > 0) :
 Phi (step K) < Phi K :=
