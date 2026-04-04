@@ -2,14 +2,9 @@ import Mathlib
 import Poincare.Triangulation
 import Poincare.Moves
 import Poincare.PhiZeroCharacterizesS3
+import Poincare.ExistsStrictDescentMove
 
 namespace Poincare
-
-axiom exists_strict_descent_move :
-  ∀ T : Triangulation,
-    Phi T ≠ 0 →
-    ∃ m : PachnerMove,
-      Phi (applyMove T m) < Phi T
 
 theorem local_spherical_descent :
   ∀ T : Triangulation,
