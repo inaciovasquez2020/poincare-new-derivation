@@ -3,7 +3,7 @@ import Poincare.ZeroDefect
 
 namespace Poincare
 
-theorem zero_defect_characterization_conditional :
+theorem zero_defect_characterization_conditional' :
   ∀ T : Triangulation,
     Phi T = 0 →
     simply_connected T →
