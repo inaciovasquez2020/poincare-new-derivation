@@ -1,0 +1,5 @@
+lean/Poincare/VertexDefectPhiPos.lean
+  axiom vertexDefect_pos_implies_Phi_pos
+
+lean/Poincare/MovesImplGreedySpec.lean
+  theorem selectMoveImplGreedy_spec := by sorry
