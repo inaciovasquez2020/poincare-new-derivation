@@ -1,6 +1,6 @@
 import Poincare.Triangulation
 import Poincare.Moves
-import Poincare.AxiomFrontier
+import Poincare.MovesSemantics
 
 namespace Poincare
 
@@ -16,7 +16,7 @@ theorem applyMove_local_effect :
     deltaMultiplicity K K' v = 0 := by
   intro K m v
   dsimp [deltaMultiplicity]
-  rw [applyMove_spec_available K m]
+  rw [applyMove_spec K m]
   simp
 
 theorem Phi_step_strict_descent :

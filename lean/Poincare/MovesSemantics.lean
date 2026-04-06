@@ -1,14 +1,13 @@
-import Poincare.AxiomFrontier
+import Poincare.Triangulation
+import Poincare.Moves
 
 namespace Poincare
 
-theorem applyMove_spec :
-  ∀ (K : Triangulation) (m : PachnerMove), allVerts (applyMove K m) = allVerts K :=
-  applyMove_spec_available
+axiom applyMove_spec :
+  ∀ (K : Triangulation) (m : PachnerMove), allVerts (applyMove K m) = allVerts K
 
-theorem selectMove_spec :
-  ∀ K : Triangulation, Phi K > 0 → Phi (applyMove K (selectMove K)) < Phi K :=
-  selectMove_spec_available
+axiom selectMove_spec :
+  ∀ K : Triangulation, Phi K > 0 → Phi (applyMove K (selectMove K)) < Phi K
 
 theorem selected_move_strict_descent :
   ∀ K : Triangulation, Phi K > 0 → Phi (applyMove K (selectMove K)) < Phi K := by
