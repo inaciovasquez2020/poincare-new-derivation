@@ -13,12 +13,12 @@ PARTIALLY RESOLVED
   → present in docs/DERIVATION.md (needs formalization check)
 
 - Lemma C (Zero-Defect Characterization)
-  → NOT explicitly located (still missing)
+  → conditionally discharged in lean/Poincare/ZeroDefect.lean
 
 - Lemma D (Termination)
   → implemented in docs/normal_surface/termination_theorem.md
 
 ## Remaining gap
 
-Zero-Defect Characterization (Lemma C) not formally discharged.
+Zero-Defect Characterization (Lemma C) conditionally discharged; unconditional form remains open.
 

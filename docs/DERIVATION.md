@@ -1,3 +1,4 @@
+# NOTE: Requires simply-connected assumption for S^3 conclusion
 # Derivation Log
 
 ## Step 1 — Local move system
