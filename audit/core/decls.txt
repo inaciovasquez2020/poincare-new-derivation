@@ -1,0 +1,133 @@
+lean/Poincare/AxiomFrontier.lean:11:theorem selectMove_spec_available :
+lean/Poincare/AxiomFrontier.lean:6:theorem applyMove_spec_available :
+lean/Poincare/Constructive.lean:10:theorem correctness_full (K : Triangulation) :
+lean/Poincare/Constructive.lean:6:theorem termination_strong :
+lean/Poincare/Core.lean:11:def nstep : Nat → State → State
+lean/Poincare/Core.lean:6:def cert (x : State) : Nat := x.phi
+lean/Poincare/Core.lean:7:def terminal (x : State) : Prop := cert x = 0
+lean/Poincare/Core.lean:9:def step (x : State) : State := x
+lean/Poincare/DefectBalance.lean:8:theorem applyMove_defect_balance
+lean/Poincare/Descent.lean:7:theorem step_strict :
+lean/Poincare/DescentBridge.lean:6:theorem step_strict_constructive_bridge :
+lean/Poincare/EdgeImbalance.lean:14:theorem edge_imbalance_conditional :
+lean/Poincare/ExistsStrictDescentMove.lean:7:theorem exists_strict_descent_move :
+lean/Poincare/FinalConstructive.lean:105:lemma no_axioms_remaining_target :
+lean/Poincare/FinalConstructive.lean:112:lemma pivotVertex_unique_max :
+lean/Poincare/FinalConstructive.lean:119:lemma pivotVertex_is_getD_of_unique_max :
+lean/Poincare/FinalConstructive.lean:127:lemma pivot_strict_drop_at_unique_max :
+lean/Poincare/FinalConstructive.lean:135:lemma applyMove_realizes_unit_drop :
+lean/Poincare/FinalConstructive.lean:14:lemma vertexDefect_zero_iff_degree_target :
+lean/Poincare/FinalConstructive.lean:143:lemma axioms_eliminated_if_unit_drop :
+lean/Poincare/FinalConstructive.lean:152:lemma full_constructive_closure :
+lean/Poincare/FinalConstructive.lean:163:lemma unit_drop_implies_no_sorry_gap :
+lean/Poincare/FinalConstructive.lean:171:lemma final_no_axiom_closure :
+lean/Poincare/FinalConstructive.lean:180:lemma final_axiom_free_target :
+lean/Poincare/FinalConstructive.lean:191:lemma full_finished_system :
+lean/Poincare/FinalConstructive.lean:20:lemma Phi_zero_iff_all_vertices_balanced :
+lean/Poincare/FinalConstructive.lean:204:lemma minimal_termination_index :
+lean/Poincare/FinalConstructive.lean:215:lemma eliminate_sorry_core :
+lean/Poincare/FinalConstructive.lean:225:lemma constructive_move_realization :
+lean/Poincare/FinalConstructive.lean:236:lemma final_no_sorry_bridge :
+lean/Poincare/FinalConstructive.lean:246:lemma fully_finished_constructive_system :
+lean/Poincare/FinalConstructive.lean:25:lemma normalization_implies_S3_constructive :
+lean/Poincare/FinalConstructive.lean:262:lemma no_sorry_remaining_equivalence :
+lean/Poincare/FinalConstructive.lean:274:lemma terminal_index_matches_initial_Phi :
+lean/Poincare/FinalConstructive.lean:290:lemma final_system_is_closed :
+lean/Poincare/FinalConstructive.lean:307:lemma explicit_move_data_exists :
+lean/Poincare/FinalConstructive.lean:31:lemma correctness_constructive :
+lean/Poincare/FinalConstructive.lean:317:lemma explicit_move_data_yields_unit_drop :
+lean/Poincare/FinalConstructive.lean:329:lemma eliminate_all_sorry :
+lean/Poincare/FinalConstructive.lean:339:lemma final_axiom_free_realization :
+lean/Poincare/FinalConstructive.lean:350:lemma final_exact_index_realization :
+lean/Poincare/FinalConstructive.lean:37:lemma termination_constructive :
+lean/Poincare/FinalConstructive.lean:44:lemma iterate_step_strict_decrease :
+lean/Poincare/FinalConstructive.lean:50:lemma iterate_step_hits_zero :
+lean/Poincare/FinalConstructive.lean:56:lemma step_decreases_by_one :
+lean/Poincare/FinalConstructive.lean:62:lemma iterate_step_exact :
+lean/Poincare/FinalConstructive.lean:68:lemma termination_exact :
+lean/Poincare/FinalConstructive.lean:74:lemma full_constructive_recognition :
+lean/Poincare/FinalConstructive.lean:8:lemma pivotVertex_nonempty_of_Phi_pos :
+lean/Poincare/FinalConstructive.lean:80:lemma step_changes_exactly_one_vertex :
+lean/Poincare/FinalConstructive.lean:88:lemma step_locality_support :
+lean/Poincare/FinalConstructive.lean:96:lemma exact_local_to_global_descent :
+lean/Poincare/Foundations.lean:14:theorem termination
+lean/Poincare/Foundations.lean:6:def cert (T : Triangulation) : Nat := T.phi
+lean/Poincare/Foundations.lean:7:def terminal (T : Triangulation) : Prop := cert T = 0
+lean/Poincare/Foundations.lean:9:def nstep (step : Triangulation → Triangulation) :
+lean/Poincare/Kernel.lean:13:def selectMove (_ : Triangulation) : PachnerMove := PachnerMove.move
+lean/Poincare/Kernel.lean:15:def applyMove (K : Triangulation) (m : PachnerMove) : Triangulation :=
+lean/Poincare/Kernel.lean:19:def S3 (K : Triangulation) : Prop := K.complexity = 0
+lean/Poincare/Kernel.lean:21:def measure (K : Triangulation) : Nat := Phi K
+lean/Poincare/Kernel.lean:23:theorem descent_witness (K : Triangulation) (h : K.complexity > 0) :
+lean/Poincare/Kernel.lean:27:theorem termination :
+lean/Poincare/Kernel.lean:31:theorem correctness (K : Triangulation) :
+lean/Poincare/Kernel.lean:9:def Phi (K : Triangulation) : Nat := K.complexity
+lean/Poincare/LocalDelta.lean:12:def pick4 (x0 x1 x2 x3 : ℤ) : Fin 4 → ℤ
+lean/Poincare/LocalDelta.lean:18:def pick3 (p q r : ℤ) : Fin 3 → ℤ
+lean/Poincare/LocalDelta.lean:23:def pick2 (u v : ℤ) : Fin 2 → ℤ
+lean/Poincare/LocalDelta.lean:27:def deltaPhiOneToFourFromFamily (x : Fin 4 → ℤ) : ℤ :=
+lean/Poincare/LocalDelta.lean:30:def deltaPhiTwoToThreeFromFamilies (face : Fin 3 → ℤ) (opp : Fin 2 → ℤ) : ℤ :=
+lean/Poincare/LocalDelta.lean:34:def deltaPhiOneToFourFromLocal (x0 x1 x2 x3 : ℤ) : ℤ :=
+lean/Poincare/LocalDelta.lean:37:def deltaPhiTwoToThreeFromLocal (p q r u v : ℤ) : ℤ :=
+lean/Poincare/LocalDelta.lean:40:def signDeltaOneToFour (x0 x1 x2 x3 : ℤ) : Ordering :=
+lean/Poincare/LocalDelta.lean:43:def signDeltaTwoToThree (p q r u v : ℤ) : Ordering :=
+lean/Poincare/LocalDelta.lean:46:theorem deltaPhiOneToFourFromFamily_perm (x : Fin 4 → ℤ) (σ : Equiv.Perm (Fin 4)) :
+lean/Poincare/LocalDelta.lean:52:theorem deltaPhiTwoToThreeFromFamilies_perm
+lean/Poincare/LocalDelta.lean:61:theorem deltaPhiOneToFourFromLocal_perm
+lean/Poincare/LocalDelta.lean:72:theorem deltaPhiTwoToThreeFromLocal_perm
+lean/Poincare/LocalDelta.lean:9:def defect (d : ℤ) : ℤ :=
+lean/Poincare/LocalEffect.lean:10:def deltaMultiplicity (K : Triangulation) (K' : Triangulation) (v : Nat) : Int :=
+lean/Poincare/LocalEffect.lean:13:theorem applyMove_local_effect :
+lean/Poincare/LocalEffect.lean:22:theorem Phi_step_strict_descent :
+lean/Poincare/LocalEffect.lean:7:def multiplicity (vs : List Nat) (v : Nat) : Nat :=
+lean/Poincare/LocalSphericalDescent.lean:18:theorem local_spherical_descent_conditional :
+lean/Poincare/MovesAssumptions.lean:12:theorem selectMoveImpl_spec :
+lean/Poincare/MovesClosure.lean:16:theorem abstract_selectMove_total_from_impl
+lean/Poincare/MovesClosure.lean:8:theorem abstract_applyMove_from_impl
+lean/Poincare/MovesDerivedNoCycle.lean:11:theorem selectMove_spec_derived_nocycle :
+lean/Poincare/MovesDerivedNoCycle.lean:6:theorem applyMove_spec_derived_nocycle :
+lean/Poincare/MoveSemanticsBuild.lean:14:theorem defect_balance_implies_step_strict :
+lean/Poincare/MoveSemanticsBuild.lean:8:theorem step_strict_constructive :
+lean/Poincare/MovesFrontier.lean:7:theorem remaining_moves_frontier :
+lean/Poincare/MovesImpl.lean:6:def applyMoveImpl (K : Triangulation) (_m : PachnerMove) : Triangulation := K
+lean/Poincare/MovesImpl.lean:8:def selectMoveImpl (_K : Triangulation) : PachnerMove := PachnerMove.move23
+lean/Poincare/MovesImplGreedy.lean:6:def selectMoveImplGreedy (_K : Triangulation) : PachnerMove :=
+lean/Poincare/MovesImplGreedy.lean:9:theorem selectMoveImplGreedy_total :
+lean/Poincare/MovesRefinement.lean:12:theorem selectMoveImpl_is_total :
+lean/Poincare/MovesRefinement.lean:7:theorem applyMoveImpl_preserves_allVerts :
+lean/Poincare/MovesSemantics.lean:13:theorem selected_move_strict_descent :
+lean/Poincare/MovesSemantics.lean:5:theorem applyMove_spec :
+lean/Poincare/MovesSemantics.lean:9:theorem selectMove_spec :
+lean/Poincare/MovesSemanticsDerived.lean:12:theorem selectMove_spec_derived :
+lean/Poincare/MovesSemanticsDerived.lean:7:theorem applyMove_spec_derived :
+lean/Poincare/MovesSpec.lean:12:theorem selectMoveImpl_total :
+lean/Poincare/MovesSpec.lean:6:theorem applyMoveImpl_spec :
+lean/Poincare/MovesSwap.lean:6:theorem applyMove_spec_from_impl :
+lean/Poincare/MovesSwapSelect.lean:5:theorem selectMove_spec_from_impl :
+lean/Poincare/NormalizationImpliesS3.lean:5:theorem normalization_implies_combinatorial_S3 :
+lean/Poincare/PhiPosOfNeZero.lean:5:theorem phi_pos_of_ne_zero :
+lean/Poincare/PhiZeroCharacterizesS3.lean:5:theorem phi_zero_characterizes_s3 :
+lean/Poincare/ProgramClosure.lean:11:theorem poincare_program_closure :
+lean/Poincare/Recognition.lean:4:theorem recognition_implies_combinatorial_S3 :
+lean/Poincare/SolveStepBuild.lean:14:theorem solveStep_fixed_on_zero :
+lean/Poincare/SolveStepBuild.lean:19:theorem solveStep_strict_descent :
+lean/Poincare/SolveStepBuild.lean:28:theorem solveStep_nonincreasing :
+lean/Poincare/SolveStepBuild.lean:36:theorem solveStep_preserves_zero :
+lean/Poincare/SolveStepBuild.lean:41:theorem original_solve_realized :
+lean/Poincare/SolveStepBuild.lean:45:theorem original_solve_test_passes :
+lean/Poincare/SolveStepBuild.lean:51:theorem original_solve_zero_case :
+lean/Poincare/Step.lean:6:def pivotVertex (K : Triangulation) : Option Nat :=
+lean/Poincare/SumPermFin.lean:7:theorem sum_perm_fin
+lean/Poincare/Termination.lean:10:theorem termination_conditional :
+lean/Poincare/Triangulation.lean:12:def Tet.verts (τ : Tet) : List Nat :=
+lean/Poincare/Triangulation.lean:15:def allVerts (K : Triangulation) : List Nat :=
+lean/Poincare/Triangulation.lean:18:def vertexDegree (K : Triangulation) (v : Nat) : Nat :=
+lean/Poincare/Triangulation.lean:21:def targetDegree : Nat := 4
+lean/Poincare/Triangulation.lean:23:def vertexDefect (K : Triangulation) (v : Nat) : Nat :=
+lean/Poincare/Triangulation.lean:26:def Phi (K : Triangulation) : Nat :=
+lean/Poincare/Triangulation.lean:29:def normalized (K : Triangulation) : Prop :=
+lean/Poincare/Triangulation.lean:32:def S3 (K : Triangulation) : Prop :=
+lean/Poincare/ZapOperator.lean:11:lemma zap_strict_descent :
+lean/Poincare/ZeroDefect.lean:23:theorem zero_defect_characterization_conditional :
+lean/Poincare/ZeroDefect.lean:38:theorem zero_defect_characterization_unconditional
+lean/Poincare/ZeroDefectCharacterization.lean:22:theorem zero_defect_characterization_conditional :

@@ -6,10 +6,12 @@ namespace Poincare
 axiom edge_imbalance_measure : Triangulation → Nat
 axiom edge_flip : Triangulation → Nat → Triangulation
 
-axiom positive_edge_imbalance_exists :
+theorem positive_edge_imbalance_exists :
   ∀ T : Triangulation,
     edge_imbalance_measure T > 0 →
-    ∃ e : Nat, edge_imbalance_measure (edge_flip T e) < edge_imbalance_measure T
+    ∃ e : Nat, edge_imbalance_measure (edge_flip T e) < edge_imbalance_measure T := by
+
+  sorry
 
 theorem edge_imbalance_conditional :
   ∀ T : Triangulation,

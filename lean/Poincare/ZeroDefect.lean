@@ -8,17 +8,23 @@ axiom delta : Triangulation → Nat → Nat
 axiom spherical_link : Triangulation → Nat → Prop
 axiom simply_connected : Triangulation → Prop
 
-axiom Phi_zero_iff_local_zero :
-  ∀ T : Triangulation, Phi T = 0 ↔ ∀ v : Nat, delta T v = 0
+theorem Phi_zero_iff_local_zero :
+  ∀ T : Triangulation, Phi T = 0 ↔ ∀ v : Nat, delta T v = 0 := by
 
-axiom local_zero_iff_spherical_links :
-  ∀ T : Triangulation, (∀ v : Nat, delta T v = 0) ↔ ∀ v : Nat, spherical_link T v
+  sorry
 
-axiom global_s3_of_links_and_pi1 :
+theorem local_zero_iff_spherical_links :
+  ∀ T : Triangulation, (∀ v : Nat, delta T v = 0) ↔ ∀ v : Nat, spherical_link T v := by
+
+  sorry
+
+theorem global_s3_of_links_and_pi1 :
   ∀ T : Triangulation,
     (∀ v : Nat, spherical_link T v) →
     simply_connected T →
-    S3 T
+    S3 T := by
+
+  sorry
 
 theorem zero_defect_characterization_conditional :
   ∀ T : Triangulation,
@@ -32,8 +38,9 @@ theorem zero_defect_characterization_conditional :
 
 
 axiom invariant : Triangulation → Nat
-axiom invariant_zero_implies_pi1_trivial :
-  ∀ T : Triangulation, invariant T = 0 → simply_connected T
+theorem invariant_zero_implies_pi1_trivial :
+  ∀ T : Triangulation, invariant T = 0 → simply_connected T := by
+  sorry
 
 theorem zero_defect_characterization_unconditional
   (T : Triangulation)

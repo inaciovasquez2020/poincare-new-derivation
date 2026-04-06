@@ -1,0 +1,19 @@
+lean/Poincare/EdgeImbalance.lean:6:axiom edge_imbalance_measure : Triangulation → Nat
+lean/Poincare/EdgeImbalance.lean:7:axiom edge_flip : Triangulation → Nat → Triangulation
+lean/Poincare/LocalSphericalDescent.lean:6:axiom moveAt : Triangulation → Nat → Triangulation
+lean/Poincare/Moves.lean:12:axiom applyMove : Triangulation → PachnerMove → Triangulation
+lean/Poincare/Moves.lean:13:axiom selectMove : Triangulation → PachnerMove
+lean/Poincare/MovesAssumptions.lean:10:axiom hselect_impl : selectMove = selectMoveImplGreedy
+lean/Poincare/MovesAssumptions.lean:9:axiom happly_impl : applyMove = applyMoveImpl
+lean/Poincare/MovesImplGreedySpec.lean:7:axiom selectMoveImplGreedy_spec :
+lean/Poincare/Termination.lean:6:axiom step : Triangulation → Triangulation
+lean/Poincare/ZeroDefect.lean:40:axiom invariant : Triangulation → Nat
+lean/Poincare/ZeroDefect.lean:7:axiom delta : Triangulation → Nat → Nat
+lean/Poincare/ZeroDefect.lean:8:axiom spherical_link : Triangulation → Nat → Prop
+lean/Poincare/ZeroDefect.lean:9:axiom simply_connected : Triangulation → Prop
+lean/Poincare/ZeroDefectCharacterization.lean:10:axiom Phi_zero_iff_local_zero :
+lean/Poincare/ZeroDefectCharacterization.lean:13:axiom local_zero_iff_spherical_links :
+lean/Poincare/ZeroDefectCharacterization.lean:16:axiom global_s3_of_links_and_pi1 :
+lean/Poincare/ZeroDefectCharacterization.lean:6:axiom spherical_link : Triangulation → Nat → Prop
+lean/Poincare/ZeroDefectCharacterization.lean:7:axiom simply_connected : Triangulation → Prop
+lean/Poincare/ZeroDefectCharacterization.lean:8:axiom delta : Triangulation → Nat → Nat

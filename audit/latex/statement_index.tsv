@@ -1,0 +1,27 @@
+file	line	text
+.lake/packages/mathlib/Archive/Wiedijk100Theorems/README.md	1	# "Formalizing 100 Theorems" in Lean
+.lake/packages/mathlib/scripts/README.md	219	Builds Mathlib with `set_option grind.unusedLemmaThreshold N` (default 10) and reports
+.lake/packages/mathlib/scripts/README.md	223	Requires a Lean toolchain with `grind.unusedLemmaThreshold` support
+.lake/packages/proofwidgets/README.md	149	booktitle =	{14th International Conference on Interactive Theorem Proving (ITP 2023)},
+docs/DERIVATION.md	37	### Edge Imbalance Lemma
+docs/chronicles_final_wall.tex	3	\textbf{Conditional Theorem.}
+docs/closure_updates.md	3	## Lemma B' (Conditional)
+docs/closure_updates.md	23	- Descent mechanism: Conditional (via Lemma B')
+docs/closure_updates.md	25	- Global closure: Blocked only by Lemma B'
+docs/conditional_gap/OPEN_LEMMAS.md	1	# Open Lemmas
+docs/final_wall/final_wall_closure.tex	6	\newtheorem{theorem}{Theorem}
+docs/final_wall/phi_descent_closure_conditional.tex	5	\newtheorem{theorem}{Theorem}
+docs/intealoop/STATUS.md	13	- No unconditional axiom-free Regge/Pachner invariance theorem is formalized.
+docs/lemmas/sign_mixing_edge_lemma.tex	5	\section{Sign-Mixing Edge Lemma (Conditional)}
+docs/lemmas/sign_mixing_edge_lemma.tex	7	\textbf{Lemma (Conditional).}
+docs/normal_surface/bounded_radius_cycles.md	3	## Statement (Minimal Missing Lemma)
+docs/normal_surface/termination_theorem.md	1	# Termination Theorem for Φ-Descent
+docs/percentages.md	5	Blocking Lemma (B'): 0% (open)
+notes/MISSING_LEMMAS.md	1	# Missing Lemmas (UPDATED STATUS)
+notes/MISSING_LEMMAS.md	9	- Lemma A (Local Spherical Descent)
+notes/MISSING_LEMMAS.md	12	- Lemma B (Edge Imbalance)
+notes/MISSING_LEMMAS.md	15	- Lemma C (Zero-Defect Characterization)
+notes/MISSING_LEMMAS.md	18	- Lemma D (Termination)
+notes/MISSING_LEMMAS.md	23	Zero-Defect Characterization (Lemma C) repaired in strengthened form: Phi(T)=0 and invariant(T)=0 imply S3(T); raw unconditional form Phi(T)=0 implies S3(T) is false in general.
+proofs/STATUS.md	4	- Definition of the candidate functional
+proofs/STATUS.md	8	- Definition of the admissible move family

@@ -1,0 +1,8 @@
+lean/Poincare/LocalSphericalDescent.lean local_positive_vertex_exists
+lean/Poincare/LocalSphericalDescent.lean local_spherical_descent_step
+lean/Poincare/EdgeImbalance.lean positive_edge_imbalance_exists
+lean/Poincare/Termination.lean step_strict
+lean/Poincare/ZeroDefect.lean Phi_zero_iff_local_zero
+lean/Poincare/ZeroDefect.lean local_zero_iff_spherical_links
+lean/Poincare/ZeroDefect.lean global_s3_of_links_and_pi1
+lean/Poincare/ZeroDefect.lean invariant_zero_implies_pi1_trivial

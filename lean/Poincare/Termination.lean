@@ -4,8 +4,9 @@ import Poincare.ZeroDefectCharacterization
 namespace Poincare
 
 axiom step : Triangulation → Triangulation
-axiom step_strict :
-  ∀ T : Triangulation, Phi T > 0 → Phi (step T) < Phi T
+theorem step_strict :
+  ∀ T : Triangulation, Phi T > 0 → Phi (step T) < Phi T := by
+  sorry
 
 theorem termination_conditional :
   ∀ T : Triangulation, ∃ n : Nat, Phi ((step^[n]) T) = 0 := by

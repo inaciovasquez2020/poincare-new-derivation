@@ -1,0 +1,8 @@
+lean/Poincare/EdgeImbalance.lean:14:  sorry
+lean/Poincare/LocalSphericalDescent.lean:13:  sorry
+lean/Poincare/LocalSphericalDescent.lean:20:  sorry
+lean/Poincare/Termination.lean:9:  sorry
+lean/Poincare/ZeroDefect.lean:14:  sorry
+lean/Poincare/ZeroDefect.lean:19:  sorry
+lean/Poincare/ZeroDefect.lean:27:  sorry
+lean/Poincare/ZeroDefect.lean:43:  sorry
