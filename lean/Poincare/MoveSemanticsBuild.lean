@@ -1,7 +1,6 @@
 import Mathlib
 import Poincare.Triangulation
 import Poincare.Moves
-import Poincare.ExistsStrictDescentMove
 
 namespace Poincare
 
