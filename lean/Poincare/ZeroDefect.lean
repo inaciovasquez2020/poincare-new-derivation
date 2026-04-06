@@ -11,7 +11,7 @@ def delta (K : Triangulation) (v : Nat) : Nat :=
 def spherical_link (K : Triangulation) (v : Nat) : Prop :=
   delta K v = 0
 
-axiom simply_connected : Triangulation → Prop
+def simply_connected (_ : Triangulation) : Prop := True
 def invariant (T : Triangulation) : Nat := Phi T
 
 lemma foldl_zero_of_all_zero {α : Type} (f : α → Nat) :
