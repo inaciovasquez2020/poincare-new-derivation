@@ -1,0 +1,15 @@
+MINIMAL CONSTRUCTIVE COMPLETION SET
+
+1. local_spherical_descent_step :
+   ∀ (T : Triangulation) (v : Nat),
+     vertexDefect T v > 0 →
+     Phi (moveAt T v) < Phi T
+
+2. positive_edge_imbalance_exists :
+   ∀ T : Triangulation,
+     edge_imbalance_measure T > 0 →
+     ∃ e : Nat, edge_imbalance_measure (edge_flip T e) < edge_imbalance_measure T
+
+3. selectMoveImplGreedy_spec :
+   ∀ K : Triangulation, Phi K > 0 →
+     Phi (applyMoveImpl K (selectMoveImplGreedy K)) < Phi K
