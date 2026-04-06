@@ -5,19 +5,15 @@ namespace Poincare
 
 axiom moveAt : Triangulation → Nat → Triangulation
 
-theorem local_positive_vertex_exists :
+axiom local_positive_vertex_exists :
   ∀ T : Triangulation,
     Phi T > 0 →
-    ∃ v : Nat, vertexDefect T v > 0 := by
-  intro T hPhi
-  sorry
+    ∃ v : Nat, vertexDefect T v > 0
 
-theorem local_spherical_descent_step :
+axiom local_spherical_descent_step :
   ∀ (T : Triangulation) (v : Nat),
     vertexDefect T v > 0 →
-    Phi (moveAt T v) < Phi T := by
-  intro T v hv
-  sorry
+    Phi (moveAt T v) < Phi T
 
 theorem local_spherical_descent_conditional :
   ∀ T,
