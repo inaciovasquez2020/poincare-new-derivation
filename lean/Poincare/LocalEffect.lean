@@ -17,6 +17,7 @@ theorem applyMove_local_effect :
   intro K m v
   dsimp [deltaMultiplicity]
   rw [applyMove_spec K m]
+  ring
 
 theorem Phi_step_strict_descent :
   ∀ (step : Triangulation → Triangulation),
