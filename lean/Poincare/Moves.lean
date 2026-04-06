@@ -8,8 +8,8 @@ inductive PachnerMove where
 | move14
 | move41
 
+-- keep only minimal interface, mark explicitly as primitive layer
 axiom applyMove : Triangulation → PachnerMove → Triangulation
-
 axiom selectMove : Triangulation → PachnerMove
 
 end Poincare
