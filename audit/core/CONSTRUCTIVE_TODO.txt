@@ -1,0 +1,7 @@
+1. Prove Phi_zero_iff_local_zero
+2. Prove local_zero_iff_spherical_links
+3. Prove global_s3_of_links_and_pi1
+4. Prove local_positive_vertex_exists
+5. Prove local_spherical_descent_step
+6. Prove step_strict
+7. Prove positive_edge_imbalance_exists
