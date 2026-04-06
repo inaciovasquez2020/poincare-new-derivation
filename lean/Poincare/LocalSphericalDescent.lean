@@ -2,9 +2,9 @@ import Mathlib
 import Poincare.Triangulation
 import Poincare.ZeroDefect
 import Poincare.PhiDecomposition
-import Poincare.VertexDefectPhiPos
 import Poincare.MovesImpl
 import Poincare.MovesImplGreedySpec
+import Poincare.VertexDefectPhiPos
 
 namespace Poincare
 
