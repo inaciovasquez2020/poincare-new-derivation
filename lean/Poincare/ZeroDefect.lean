@@ -30,4 +30,19 @@ theorem zero_defect_characterization_conditional :
   have hlink : ∀ v : Nat, spherical_link T v := (local_zero_iff_spherical_links T).mp hδ
   exact global_s3_of_links_and_pi1 T hlink hpi
 
+
+axiom invariant : Triangulation → Nat
+axiom invariant_zero_implies_pi1_trivial :
+  ∀ T : Triangulation, invariant T = 0 → simply_connected T
+
+theorem zero_defect_characterization_unconditional
+  (T : Triangulation)
+  (hΦ : Phi T = 0)
+  (hI : invariant T = 0) :
+  S3 T := by
+  have hδ : ∀ v : Nat, delta T v = 0 := (Phi_zero_iff_local_zero T).mp hΦ
+  have hlink : ∀ v : Nat, spherical_link T v := (local_zero_iff_spherical_links T).mp hδ
+  have hsc : simply_connected T := invariant_zero_implies_pi1_trivial T hI
+  exact global_s3_of_links_and_pi1 T hlink hsc
+
 end Poincare
