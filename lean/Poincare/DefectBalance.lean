@@ -14,8 +14,8 @@ theorem applyMove_defect_balance
   ∀ u : Nat, u ≠ v → vertexDefect K' u = vertexDefect K u := by
   dsimp [step]
   constructor
-  · simp [applyMove_spec]
+  · rfl
   · intro u hu
-    simp [applyMove_spec]
+    rfl
 
 end Poincare
