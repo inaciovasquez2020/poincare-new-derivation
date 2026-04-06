@@ -8,15 +8,27 @@ theorem vertexDefect_pos_implies_Phi_pos
   (hv : v ∈ allVerts T)
   (hpos : vertexDefect T v > 0) :
   Phi T > 0 := by
-  rw [phi_eq_fold_vertexDefect]
-  induction allVerts T with
-  | nil =>
-      cases hv
-  | cons u us ih =>
-      simp at hv ⊢
-      rcases hv with rfl | hv'
-      · exact Nat.lt_of_lt_of_le hpos (Nat.le_add_right _ _)
-      · have hus : us.foldl (fun acc w => acc + vertexDefect T w) 0 > 0 := ih hv' hpos
-        exact Nat.lt_of_lt_of_le hus (Nat.le_add_left _ _)
+  classical
+  have hsum :
+    Phi T =
+      vertexDefect T v +
+      (List.erase (allVerts T) v).foldl
+        (fun acc w => acc + vertexDefect T w) 0 := by
+    -- use permutation decomposition instead of dependent pattern matching
+    have := List.exists_erase_eq (by simpa using hv)
+    rcases this with ⟨l, hl⟩
+    subst hl
+    simp [phi_eq_fold_vertexDefect, List.foldl_append, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc]
+
+  have hrest :
+    0 ≤
+      (List.erase (allVerts T) v).foldl
+        (fun acc w => acc + vertexDefect T w) 0 := by
+    apply Nat.zero_le
+
+  have : Phi T ≥ vertexDefect T v := by
+    simpa [hsum] using Nat.le_add_right _ _
+
+  exact Nat.lt_of_lt_of_le hpos this
 
 end Poincare
