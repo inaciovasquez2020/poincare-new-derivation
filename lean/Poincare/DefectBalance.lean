@@ -1,7 +1,7 @@
 import Poincare.Triangulation
 import Poincare.Moves
 import Poincare.Step
-import Poincare.MovesSemantics
+import Poincare.AxiomFrontier
 
 namespace Poincare
 
@@ -15,9 +15,9 @@ theorem applyMove_defect_balance
   dsimp [step]
   constructor
   · unfold vertexDefect vertexDegree
-    rw [applyMove_spec K (selectMove K)]
+    rw [applyMove_spec_available K (selectMove K)]
   · intro u hu
     unfold vertexDefect vertexDegree
-    rw [applyMove_spec K (selectMove K)]
+    rw [applyMove_spec_available K (selectMove K)]
 
 end Poincare
