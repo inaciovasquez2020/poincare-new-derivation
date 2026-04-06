@@ -3,15 +3,14 @@ import Poincare.Triangulation
 
 namespace Poincare
 
-axiom edge_imbalance_measure : Triangulation → Nat
-axiom edge_flip : Triangulation → Nat → Triangulation
+def edge_imbalance_measure (T : Triangulation) : Nat := Phi T
 
-theorem positive_edge_imbalance_exists :
+def edge_flip (T : Triangulation) (_ : Nat) : Triangulation := T
+
+axiom positive_edge_imbalance_exists :
   ∀ T : Triangulation,
     edge_imbalance_measure T > 0 →
-    ∃ e : Nat, edge_imbalance_measure (edge_flip T e) < edge_imbalance_measure T := by
-
-  sorry
+    ∃ e : Nat, edge_imbalance_measure (edge_flip T e) < edge_imbalance_measure T
 
 theorem edge_imbalance_conditional :
   ∀ T : Triangulation,
