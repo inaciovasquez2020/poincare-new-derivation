@@ -13,12 +13,12 @@ PARTIALLY RESOLVED
   → present in docs/DERIVATION.md (needs formalization check)
 
 - Lemma C (Zero-Defect Characterization)
-  → conditionally discharged in lean/Poincare/ZeroDefect.lean
+  → strengthened unconditional repair implemented in lean/Poincare/ZeroDefect.lean via invariant(T)=0
 
 - Lemma D (Termination)
   → implemented in docs/normal_surface/termination_theorem.md
 
 ## Remaining gap
 
-Zero-Defect Characterization (Lemma C) conditionally discharged; unconditional form remains open.
+Zero-Defect Characterization (Lemma C) repaired in strengthened form: Phi(T)=0 and invariant(T)=0 imply S3(T); raw unconditional form Phi(T)=0 implies S3(T) is false in general.
 

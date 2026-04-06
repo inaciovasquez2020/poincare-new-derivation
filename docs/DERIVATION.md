@@ -1,4 +1,4 @@
-# NOTE: Requires simply-connected assumption for S^3 conclusion
+# NOTE: Raw unconditional form Phi(T)=0 -> S3(T) is false in general; repaired form uses invariant(T)=0 to force simply_connected(T).
 # Derivation Log
 
 ## Step 1 — Local move system
