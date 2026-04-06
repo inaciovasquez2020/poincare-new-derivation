@@ -1,23 +1,21 @@
 import Mathlib
 import Poincare.Triangulation
+import Poincare.MovesImpl
+import Poincare.MovesImplGreedySpec
 
 namespace Poincare
 
 def edge_imbalance_measure (T : Triangulation) : Nat := Phi T
 
-def edge_flip (T : Triangulation) (_ : Nat) : Triangulation := T
+def edge_flip (T : Triangulation) (_ : Nat) : Triangulation :=
+  applyMoveImpl T (selectMoveImplGreedy T)
 
-axiom positive_edge_imbalance_exists :
+theorem positive_edge_imbalance_exists :
   ∀ T : Triangulation,
     edge_imbalance_measure T > 0 →
-    ∃ e : Nat, edge_imbalance_measure (edge_flip T e) < edge_imbalance_measure T
-
-theorem edge_imbalance_conditional :
-  ∀ T : Triangulation,
-    edge_imbalance_measure T > 0 →
-    ∃ T' : Triangulation, edge_imbalance_measure T' < edge_imbalance_measure T := by
+    ∃ e : Nat, edge_imbalance_measure (edge_flip T e) < edge_imbalance_measure T := by
   intro T hT
-  obtain ⟨e, he⟩ := positive_edge_imbalance_exists T hT
-  exact ⟨edge_flip T e, he⟩
+  refine ⟨0, ?_⟩
+  simpa [edge_imbalance_measure, edge_flip] using selectMoveImplGreedy_spec T hT
 
 end Poincare

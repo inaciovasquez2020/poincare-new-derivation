@@ -6,8 +6,8 @@ import Poincare.Triangulation
 
 namespace Poincare
 
-axiom happly_impl : applyMove = applyMoveImpl
-axiom hselect_impl : selectMove = selectMoveImplGreedy
+theorem happly_impl : applyMove = applyMoveImpl := rfl
+theorem hselect_impl : selectMove = selectMoveImplGreedy := rfl
 
 theorem selectMoveImpl_spec :
   ∀ K : Triangulation, Phi K > 0 → Phi (applyMoveImpl K (selectMoveImplGreedy K)) < Phi K :=
