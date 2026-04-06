@@ -1,0 +1,52 @@
+lean/Poincare/ExistsStrictDescentMove.lean:6:axiom exists_strict_descent_move
+lean/Poincare/FinalConstructive.lean:103:by sorry
+lean/Poincare/FinalConstructive.lean:105:lemma no_axioms_remaining_target :
+lean/Poincare/FinalConstructive.lean:109:by sorry
+lean/Poincare/FinalConstructive.lean:117:by sorry
+lean/Poincare/FinalConstructive.lean:12:by sorry
+lean/Poincare/FinalConstructive.lean:125:by sorry
+lean/Poincare/FinalConstructive.lean:132:by sorry
+lean/Poincare/FinalConstructive.lean:141:by sorry
+lean/Poincare/FinalConstructive.lean:143:lemma axioms_eliminated_if_unit_drop :
+lean/Poincare/FinalConstructive.lean:150:by sorry
+lean/Poincare/FinalConstructive.lean:160:by sorry
+lean/Poincare/FinalConstructive.lean:163:lemma unit_drop_implies_no_sorry_gap :
+lean/Poincare/FinalConstructive.lean:169:by sorry
+lean/Poincare/FinalConstructive.lean:171:lemma final_no_axiom_closure :
+lean/Poincare/FinalConstructive.lean:178:by sorry
+lean/Poincare/FinalConstructive.lean:18:by sorry
+lean/Poincare/FinalConstructive.lean:180:lemma final_axiom_free_target :
+lean/Poincare/FinalConstructive.lean:188:by sorry
+lean/Poincare/FinalConstructive.lean:202:by sorry
+lean/Poincare/FinalConstructive.lean:212:by sorry
+lean/Poincare/FinalConstructive.lean:215:lemma eliminate_sorry_core :
+lean/Poincare/FinalConstructive.lean:223:by sorry
+lean/Poincare/FinalConstructive.lean:23:by sorry
+lean/Poincare/FinalConstructive.lean:234:by sorry
+lean/Poincare/FinalConstructive.lean:236:lemma final_no_sorry_bridge :
+lean/Poincare/FinalConstructive.lean:244:by sorry
+lean/Poincare/FinalConstructive.lean:259:by sorry
+lean/Poincare/FinalConstructive.lean:262:lemma no_sorry_remaining_equivalence :
+lean/Poincare/FinalConstructive.lean:272:by sorry
+lean/Poincare/FinalConstructive.lean:288:by sorry
+lean/Poincare/FinalConstructive.lean:29:by sorry
+lean/Poincare/FinalConstructive.lean:304:by sorry
+lean/Poincare/FinalConstructive.lean:315:by sorry
+lean/Poincare/FinalConstructive.lean:326:by sorry
+lean/Poincare/FinalConstructive.lean:329:lemma eliminate_all_sorry :
+lean/Poincare/FinalConstructive.lean:337:by sorry
+lean/Poincare/FinalConstructive.lean:339:lemma final_axiom_free_realization :
+lean/Poincare/FinalConstructive.lean:348:by sorry
+lean/Poincare/FinalConstructive.lean:35:by sorry
+lean/Poincare/FinalConstructive.lean:363:by sorry
+lean/Poincare/FinalConstructive.lean:40:by sorry
+lean/Poincare/FinalConstructive.lean:48:by sorry
+lean/Poincare/FinalConstructive.lean:53:by sorry
+lean/Poincare/FinalConstructive.lean:60:by sorry
+lean/Poincare/FinalConstructive.lean:66:by sorry
+lean/Poincare/FinalConstructive.lean:72:by sorry
+lean/Poincare/FinalConstructive.lean:77:by sorry
+lean/Poincare/FinalConstructive.lean:86:by sorry
+lean/Poincare/FinalConstructive.lean:94:by sorry
+lean/Poincare/GreedySelectorCorrect.lean:7:axiom greedy_selector_correct :
+lean/Poincare/VertexDefectPhiPos.lean:6:axiom vertexDefect_pos_implies_Phi_pos :
