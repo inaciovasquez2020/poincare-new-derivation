@@ -1,0 +1,21 @@
+Missing objects required for full constructive completion:
+
+1. Constructive Pachner move implementation:
+   applyMoveImpl : Triangulation → PachnerMove → Triangulation
+   selectMoveImplGreedy : Triangulation → PachnerMove
+
+2. Local descent realization:
+   ∀ T v, vertexDefect T v > 0 → ∃ m, Phi (applyMoveImpl T m) < Phi T
+
+3. Edge imbalance realization:
+   ∀ T, Phi T > 0 → ∃ m, Phi (applyMoveImpl T m) < Phi T
+
+4. Equivalence proofs:
+   applyMove = applyMoveImpl
+   selectMove = selectMoveImplGreedy
+
+5. Removal targets:
+   - local_spherical_descent_step (axiom)
+   - positive_edge_imbalance_exists (axiom)
+   - MovesAssumptions axioms
+   - MovesImplGreedySpec axiom
