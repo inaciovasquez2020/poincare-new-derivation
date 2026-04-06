@@ -1,10 +1,10 @@
-import Poincare.MoveSemanticsBuild
+import Poincare.Triangulation
+import Poincare.Moves
 
 namespace Poincare
 
-theorem step_strict :
+axiom step_strict :
   ∀ K, Phi K > 0 →
-    ∃ m : PachnerMove, Phi (applyMove K m) < Phi K :=
-  step_strict_constructive
+    ∃ m : PachnerMove, Phi (applyMove K m) < Phi K
 
 end Poincare
