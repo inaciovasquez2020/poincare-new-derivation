@@ -14,7 +14,7 @@ def moveAt (T : Triangulation) (_v : Nat) : Triangulation :=
 theorem local_positive_vertex_exists :
   ∀ T : Triangulation,
     Phi T > 0 →
-    ∃ v : Nat, vertexDefect T v > 0 := by
+    ∃ v : Nat, v ∈ allVerts T ∧ vertexDefect T v > 0 := by
   intro T hPhi
   classical
   by_contra hnone
@@ -22,7 +22,7 @@ theorem local_positive_vertex_exists :
     intro v hv
     have hnp : ¬ vertexDefect T v > 0 := by
       intro hvpos
-      exact hnone ⟨v, hvpos⟩
+      exact hnone ⟨v, hv, hvpos⟩
     have hv0 : vertexDefect T v = 0 := Nat.eq_zero_of_not_pos hnp
     simpa [delta] using hv0
   have hPhi0 : Phi T = 0 := (Phi_zero_iff_local_zero T).2 hzero
@@ -30,10 +30,11 @@ theorem local_positive_vertex_exists :
 
 theorem local_spherical_descent_step :
   ∀ (T : Triangulation) (v : Nat),
+    v ∈ allVerts T →
     vertexDefect T v > 0 →
     Phi (moveAt T v) < Phi T := by
-  intro T v hv
-  have hpos : Phi T > 0 := vertexDefect_pos_implies_Phi_pos T v hv
+  intro T v hvmem hv
+  have hpos : Phi T > 0 := vertexDefect_pos_implies_Phi_pos T v hvmem hv
   simpa [moveAt] using selectMoveImplGreedy_spec T hpos
 
 theorem local_spherical_descent_conditional :
@@ -41,7 +42,7 @@ theorem local_spherical_descent_conditional :
     Phi T > 0 →
     ∃ T', Phi T' < Phi T := by
   intro T hPhi
-  obtain ⟨v, hv⟩ := local_positive_vertex_exists T hPhi
-  exact ⟨moveAt T v, local_spherical_descent_step T v hv⟩
+  obtain ⟨v, hvmem, hv⟩ := local_positive_vertex_exists T hPhi
+  exact ⟨moveAt T v, local_spherical_descent_step T v hvmem hv⟩
 
 end Poincare
