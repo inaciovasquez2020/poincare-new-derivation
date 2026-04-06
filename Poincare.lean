@@ -2,3 +2,4 @@ import Poincare.OpenLemmas
 import Poincare.Termination
 import Poincare.LocalSphericalDescent
 import Poincare.EdgeImbalance
+import Poincare.PhiDecomposition
