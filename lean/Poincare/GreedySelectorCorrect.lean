@@ -7,8 +7,6 @@ namespace Poincare
 axiom greedy_selector_correct :
   ∀ (K : Triangulation),
     Phi K > 0 →
-    ∃ m : PachnerMove,
-      m = selectMoveImplGreedy K ∧
-      Phi (applyMoveImpl K m) < Phi K
+    Phi (applyMoveImpl K (selectMoveImplGreedy K)) < Phi K
 
 end Poincare

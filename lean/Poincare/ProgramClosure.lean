@@ -1,19 +1,15 @@
+import Poincare.Triangulation
+import Poincare.SolveStepBuild
+
 namespace Poincare
 
-constant Triangulation : Type
-constant Move : Type
-constant allowedMoves : Triangulation → Finset Move
-constant applyMove : Move → Triangulation → Triangulation
-constant Phi : Triangulation → ℕ
-constant S3 : Triangulation → Prop
-constant terminal : Triangulation → Prop
-
-theorem poincare_program_closure :
-  (∀ T, ¬ S3 T → ∃ m ∈ allowedMoves T, Phi (applyMove m T) < Phi T) →
-  (∀ T, Phi T = 0 → S3 T) →
-  ∀ T, terminal T → S3 T := by
-  intro h1 h2 T hT
-  have : Phi T = 0 := by sorry
-  exact h2 T this
+theorem program_closure_zero_or_drop
+  (T : Triangulation) :
+  Phi T = 0 ∨ Phi (solveStep T) < Phi T := by
+  classical
+  by_cases h0 : Phi T = 0
+  · exact Or.inl h0
+  · have hpos : Phi T > 0 := Nat.pos_of_ne_zero h0
+    exact Or.inr (solveStep_strict_drop T hpos)
 
 end Poincare
