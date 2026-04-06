@@ -1,0 +1,18 @@
+lean/Poincare/EdgeImbalance.lean
+  positive_edge_imbalance_exists :
+  ∀ T : Triangulation,
+    edge_imbalance_measure T > 0 →
+    ∃ e : Nat, edge_imbalance_measure (edge_flip T e) < edge_imbalance_measure T
+
+lean/Poincare/LocalSphericalDescent.lean
+  local_spherical_descent_step :
+  ∀ (T : Triangulation) (v : Nat),
+    vertexDefect T v > 0 →
+    Phi (moveAt T v) < Phi T
+
+lean/Poincare/MovesAssumptions.lean
+  happly_impl : applyMove = applyMoveImpl
+  hselect_impl : selectMove = selectMoveImplGreedy
+
+lean/Poincare/MovesImplGreedySpec.lean
+  selectMoveImplGreedy_spec : ...
