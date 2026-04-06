@@ -6,7 +6,6 @@ import Poincare.Recognition
 import Poincare.LocalDelta
 import Poincare.LocalSphericalDescent
 import Poincare.PhiZeroCharacterizesS3
-import Poincare.ExistsStrictDescentMove
 import Poincare.NormalizationImpliesS3
 import Poincare.SolveStepBuild
 import Poincare.MoveSemanticsBuild
