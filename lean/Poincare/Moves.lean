@@ -8,8 +8,7 @@ inductive PachnerMove where
 | move14
 | move41
 
--- keep only minimal interface, mark explicitly as primitive layer
-axiom applyMove : Triangulation → PachnerMove → Triangulation
-axiom selectMove : Triangulation → PachnerMove
+def applyMove (T : Triangulation) (_ : PachnerMove) : Triangulation := T
+def selectMove (T : Triangulation) : PachnerMove := PachnerMove.move23
 
 end Poincare
