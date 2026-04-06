@@ -1,0 +1,10 @@
+lean/Poincare/EdgeImbalance.lean:14:  sorry
+lean/Poincare/EdgeImbalance.lean:6:axiom edge_imbalance_measure : Triangulation → Nat
+lean/Poincare/EdgeImbalance.lean:7:axiom edge_flip : Triangulation → Nat → Triangulation
+lean/Poincare/LocalSphericalDescent.lean:13:  sorry
+lean/Poincare/LocalSphericalDescent.lean:20:  sorry
+lean/Poincare/LocalSphericalDescent.lean:6:axiom moveAt : Triangulation → Nat → Triangulation
+lean/Poincare/MovesAssumptions.lean:10:axiom hselect_impl : selectMove = selectMoveImplGreedy
+lean/Poincare/MovesAssumptions.lean:9:axiom happly_impl : applyMove = applyMoveImpl
+lean/Poincare/MovesImplGreedySpec.lean:7:axiom selectMoveImplGreedy_spec :
+lean/Poincare/Termination.lean:12:  sorry

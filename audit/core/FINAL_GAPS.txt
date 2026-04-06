@@ -1,0 +1,19 @@
+lean/Poincare/LocalSphericalDescent.lean
+  axiom moveAt : Triangulation → Nat → Triangulation
+  theorem local_positive_vertex_exists := by sorry
+  theorem local_spherical_descent_step := by sorry
+
+lean/Poincare/Termination.lean
+  theorem step_strict := by sorry
+
+lean/Poincare/EdgeImbalance.lean
+  axiom edge_imbalance_measure : Triangulation → Nat
+  axiom edge_flip : Triangulation → Nat → Triangulation
+  theorem positive_edge_imbalance_exists := by sorry
+
+lean/Poincare/MovesAssumptions.lean
+  axiom happly_impl : applyMove = applyMoveImpl
+  axiom hselect_impl : selectMove = selectMoveImplGreedy
+
+lean/Poincare/MovesImplGreedySpec.lean
+  axiom selectMoveImplGreedy_spec : ...
