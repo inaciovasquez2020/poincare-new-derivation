@@ -1,16 +1,22 @@
 import Mathlib
 import Poincare.Triangulation
 import Poincare.ZeroDefect
+import Poincare.PhiDecomposition
+import Poincare.VertexDefectPhiPos
+import Poincare.MovesImpl
+import Poincare.MovesImplGreedySpec
 
 namespace Poincare
 
-def moveAt (T : Triangulation) (_ : Nat) : Triangulation := T
+def moveAt (T : Triangulation) (_v : Nat) : Triangulation :=
+  applyMoveImpl T (selectMoveImplGreedy T)
 
 theorem local_positive_vertex_exists :
   ∀ T : Triangulation,
     Phi T > 0 →
     ∃ v : Nat, vertexDefect T v > 0 := by
   intro T hPhi
+  classical
   by_contra hnone
   have hzero : ∀ v ∈ allVerts T, delta T v = 0 := by
     intro v hv
@@ -22,10 +28,13 @@ theorem local_positive_vertex_exists :
   have hPhi0 : Phi T = 0 := (Phi_zero_iff_local_zero T).2 hzero
   exact Nat.lt_irrefl 0 (hPhi0 ▸ hPhi)
 
-axiom local_spherical_descent_step :
+theorem local_spherical_descent_step :
   ∀ (T : Triangulation) (v : Nat),
     vertexDefect T v > 0 →
-    Phi (moveAt T v) < Phi T
+    Phi (moveAt T v) < Phi T := by
+  intro T v hv
+  have hpos : Phi T > 0 := vertexDefect_pos_implies_Phi_pos T v hv
+  simpa [moveAt] using selectMoveImplGreedy_spec T hpos
 
 theorem local_spherical_descent_conditional :
   ∀ T,
