@@ -15,7 +15,7 @@ def detG (_ : TetraGeom) : Nat := 1
 def LocalIndependent (_ : TetraGeom) : Prop := True
 
 theorem det_nonzero_implies_local_rigidity
-  (σ : TetraGeom) (h : detG σ ≠ 0) : LocalIndependent σ := by
+  (σ : TetraGeom) (_h : detG σ ≠ 0) : LocalIndependent σ := by
   trivial
 
 end Regge
