@@ -17,7 +17,6 @@ def test_frontier_registry_consistency():
 
     assert "Local spherical descent lemma." in missing
     assert "Zero-defect characterization: Phi(T)=0 => T ≃ S^3." in missing
-
     assert "Local spherical descent lemma" in open_lemmas
     assert "Zero-defect characterization: Phi(T)=0 ⇒ T ≃ S^3" in open_lemmas
 
