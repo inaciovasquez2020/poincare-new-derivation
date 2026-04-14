@@ -33,8 +33,7 @@ theorem Phi_zero_iff_local_zero :
   ∀ K : Triangulation, Phi K = 0 ↔ ∀ v ∈ allVerts K, delta K v = 0 := by
   intro K
   constructor
-  · intro hPhi
-    intro v hv
+  · intro hPhi v hv
     simpa [delta] using phi_sum_zero_implies_supportwise_zero K hPhi v hv
   · intro h
     simpa [Phi] using
