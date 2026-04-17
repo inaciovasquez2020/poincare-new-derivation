@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+title: "poincare-new-derivation"
+message: "If you use this repository, please cite it."
+type: software
+authors:
+  - family-names: "Vasquez"
+    given-names: "Inacio"
+repository-code: "https://github.com/inaciovasquez2020/poincare-new-derivation"
