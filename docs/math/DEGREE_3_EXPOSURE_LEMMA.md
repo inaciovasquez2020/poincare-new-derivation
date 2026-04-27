@@ -1,65 +1,172 @@
-# Degree-3 Exposure Lemma
+# Degree-3 Exposure Lemma — Corrected Frontier Status
 
-**Status:** Open.  
-**Role:** Replacement target for the false single-step Edge Imbalance Lemma.
+Status: Global formulation false.
 
----
+The previous global non-increasing exposure target is false.
 
-## Failure of the single-step Edge Imbalance Lemma
+## Counterexample: boundary of the 600-cell
 
-The single-step statement
+Let
 
 \[
-\Phi(T)>0
-\Rightarrow
-\exists e\text{ of degree }3\text{ such that }A(e)+C(e)\ge 3
+T=\partial C_{600}.
 \]
 
-is false as stated.
-
-A counterexample is the boundary of the regular \(600\)-cell.
-
-For this triangulation,
+Then
 
 \[
-T\simeq S^3,
+T\cong S^3,
+\qquad
+T\text{ is closed and simply connected},
 \]
 
 \[
 |V(T)|=120,
+\qquad
+d(v)=20\quad\forall v\in V(T),
 \]
 
-\[
-d(v)=20\quad\forall v,
-\]
-
-and every edge has degree
+and every edge has
 
 \[
 \deg(e)=5.
 \]
 
+Hence
+
+\[
+\Phi(T)=\sum_{v\in V(T)} |d(v)-6|
+      =120(20-6)
+      =1680>0.
+\]
+
+No \(3\to2\) move is initially admissible, since every edge has degree \(5\).
+
+No \(4\to1\) move is initially admissible, since every vertex has tetrahedral incidence \(20\).
+
+For a \(1\to4\) move, one tetrahedron is replaced by four tetrahedra. The four old vertices each replace one old tetrahedral incidence by three new tetrahedral incidences, so
+
+\[
+d(v):20\mapsto22.
+\]
+
+The new vertex has
+
+\[
+d(w)=4.
+\]
+
 Therefore
 
 \[
-\Phi(T)=\sum_{v\in T}|d(v)-6|
-       =120|20-6|
-       =1680>0,
+\Delta\Phi
+=
+4\bigl(|22-6|-|20-6|\bigr)+|4-6|
+=
+4(16-14)+2
+=
+10>0.
 \]
 
-but
+For a \(2\to3\) move, the two opposite vertices change by
 
 \[
-\neg\exists e\;(\deg(e)=3).
+d(v):20\mapsto22,
 \]
 
-Thus the Edge Imbalance Lemma cannot be used as a one-step descent theorem.
+and the three shared-face vertices remain unchanged. Hence
 
----
+\[
+\Delta\Phi
+=
+2\bigl(|22-6|-|20-6|\bigr)
+=
+2(16-14)
+=
+4>0.
+\]
 
-## Replacement theorem object
+Thus every available first move strictly increases \(\Phi\), while the previous global exposure formulation required
 
-The correct replacement target is the following exposure lemma.
+\[
+\Phi(T_i)\le \Phi(T)
+\quad\forall i.
+\]
+
+Since \(T\) initially has no degree-\(3\) edge and no admissible first move preserves the bound \(\Phi\le1680\), the global non-increasing Degree-3 Exposure Lemma is false.
+
+## Invalid topological patch
+
+The correction
+
+\[
+T\text{ closed simply connected}
+\wedge
+T\not\cong S^3
+\]
+
+is not admissible as a non-vacuous replacement target.
+
+By the Poincaré theorem, a closed simply connected \(3\)-manifold is homeomorphic to \(S^3\). Therefore this antecedent is empty.
+
+It is also circular in a repository whose subject is a Poincaré-type derivation.
+
+## Corrected bounded frontier
+
+For a fixed certified bound \(N\), define the bounded exposure certificate:
+
+\[
+\mathrm{BDE}(N):
+\]
+
+\[
+\forall T\,
+\Bigl(
+T\text{ closed simply connected triangulated }3\text{-manifold}
+\wedge
+|V(T)|\le N
+\wedge
+\Phi(T)>0
+\Bigr)
+\Rightarrow
+\exists T_0,\ldots,T_m
+\]
+
+such that
+
+\[
+T_0=T,
+\qquad
+T_{i+1}\in\mathcal M(T_i),
+\]
+
+\[
+\Phi(T_i)\le\Phi(T)
+\quad(0\le i\le m),
+\]
+
+and
+
+\[
+\exists e\in T_m
+\bigl(
+\deg(e)=3
+\wedge
+A(e)+C(e)\ge3
+\bigr).
+\]
+
+This bounded statement is the corrected deterministic frontier.
+
+It is a finite certificate target, not a global theorem.
+
+If \(N<120\), the \(600\)-cell obstruction is outside the certified domain.
+
+If \(N\ge120\), the certificate must explicitly handle \(\partial C_{600}\) or the non-increasing condition must be replaced by a barrier-descent condition allowing temporary increase.
+
+## Corrected global alternative
+
+A non-vacuous global replacement must allow barriers:
 
 \[
 \forall T\,
@@ -76,49 +183,28 @@ such that
 
 \[
 T_0=T,
-\]
-
-\[
+\qquad
 T_{i+1}\in\mathcal M(T_i),
 \]
 
 \[
-\Phi(T_i)\le \Phi(T)
-\quad
-(0\le i\le m),
+\Phi(T_m)<\Phi(T),
 \]
 
-and
+with no requirement that
 
 \[
-\exists e\in T_m\,
-\bigl(
-\deg(e)=3
-\wedge
-A(e)+C(e)\ge 3
-\bigr).
+\Phi(T_i)\le\Phi(T)
+\quad\forall i.
 \]
 
-Consequently, if the final exposed edge satisfies the strict descent sign condition, then
+This barrier-descent replacement is not proved here.
 
-\[
-\exists T'\in\mathcal M^{*}(T)
-\quad
-\Phi(T')<\Phi(T).
-\]
+## Remaining open object
 
----
+The remaining non-vacuous theorem-level object is one of the following:
 
-## Current status
+1. a finite executable proof of \(\mathrm{BDE}(N)\) for the certified bound \(N\), or
+2. a global barrier-descent theorem.
 
-This lemma is **Open**.
-
-No theorem-level Poincaré claim follows until this exposure lemma and the zero-defect characterization are formally proved without load-bearing axioms or `sorry` holes.
-
----
-
-## Frontier lock
-
-The repository may not claim that the Edge Imbalance Lemma is proved in its original single-step form.
-
-The repository may only use the Degree-3 Exposure Lemma as an open replacement target.
+No theorem-level Poincaré closure follows from this file.
