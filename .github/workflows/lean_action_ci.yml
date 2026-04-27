@@ -1,19 +1,17 @@
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 name: Lean Action CI
 
 on:
   push:
+    branches: [main]
   pull_request:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
-      with:
-        use-github-cache: false
+        with:
+          use-github-cache: false
