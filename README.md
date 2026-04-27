@@ -60,3 +60,22 @@ Conditional on:
 
 - `lean/Poincare/LocalDelta.lean` now records local Pachner-move delta classification.
 - This module classifies local `ΔΦ` from degree multisets and does not claim strict descent.
+
+## Formal Status
+
+Status: Deprecated / Conditional Sketch
+
+Build status:
+- A successful build means the checked root target compiles.
+- It does not imply that axiom-dependent or sorry-dependent results prove the Poincare conjecture.
+
+Theorem status:
+- This repository currently contains project-defined `axiom` declarations and `sorry` proof holes.
+- `axiom` is a trusted assumption, not a proof.
+- `sorry` is a proof hole.
+- Any result depending on project axioms or sorries is Conditional.
+
+Current status:
+- Strongest verified theorem: none asserted at repository level
+- Weakest missing theorem: remove every load-bearing axiom and sorry, and formalize the core topological definitions against accepted Lean topology definitions
+- Conditional inventory: `docs/status/DEPRECATED_CONDITIONAL_STATUS_2026_04_27.md`
