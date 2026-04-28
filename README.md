@@ -80,6 +80,10 @@ Current status:
 - Weakest missing theorem: remove every load-bearing axiom and sorry, and formalize the core topological definitions against accepted Lean topology definitions
 - Conditional inventory: `docs/status/DEPRECATED_CONDITIONAL_STATUS_2026_04_27.md`
 
+## Lean proof portfolio classification
+
+This repository is governed by [`docs/status/LEAN_PROOF_PORTFOLIO_CLASSIFICATION.md`](docs/status/LEAN_PROOF_PORTFOLIO_CLASSIFICATION.md). Its role in the portfolio is explicitly classified as proof-facing, conditional frontier, infrastructure/documentation, or legacy/scaffold.
+
 ## External status
 
 This repository is governed by [`docs/status/EXTERNAL_STATUS_LOCK.md`](docs/status/EXTERNAL_STATUS_LOCK.md). Build success, CI success, dashboards, ledgers, axioms, admits, `sorry`, or placeholder witnesses do not constitute theorem-level closure.
