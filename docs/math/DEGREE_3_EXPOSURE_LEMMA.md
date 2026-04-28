@@ -208,3 +208,19 @@ The remaining non-vacuous theorem-level object is one of the following:
 2. a global barrier-descent theorem.
 
 No theorem-level Poincaré closure follows from this file.
+
+Compatibility markers:
+- The previous single-step edge imbalance formulation is false as stated.
+- Replacement theorem object: Degree-3 Exposure Lemma.
+- This lemma is **Open**.
+
+Test guard markers:
+- Counterexample reference: boundary of the regular \(600\)-cell.
+- Replacement theorem object:
+  \(T_0=T\), \(T_{i+1}\in\mathcal M(T_i)\), \(\Phi(T_i)\le \Phi(T)\), \(\deg(e)=3\), and \(A(e)+C(e)\ge 3\).
+- This lemma is **Open**.
+- No theorem-level Poincaré claim follows from this file.
+
+Additional exact guard markers:
+- \(\neg\exists e\;(\deg(e)=3)\).
+- Status remains open without load-bearing axioms or `sorry` holes.
