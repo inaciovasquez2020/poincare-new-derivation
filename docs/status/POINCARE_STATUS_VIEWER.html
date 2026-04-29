@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>poincare-new-derivation — Repository Status Viewer</title>
+<meta name="description" content="Repository-local status viewer for poincare-new-derivation. Separates conditional frontier artifacts from theorem-level topology claims." />
+<style>
+:root{
+  --bg:#0b0d12;--fg:#e6e8ee;--muted:#9aa3b2;--card:#11141b;--border:#222836;
+  --closed:#1f9d55;--closed-bg:#0f1f17;--closed-border:#1f9d5544;
+  --open:#d9534f;--open-bg:#1f1313;--open-border:#d9534f44;
+  --cond:#c98a14;--cond-bg:#1f1a0f;--cond-border:#c98a1444;
+  --warn-bg:#1f1a0f;--warn-border:#c98a1466;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{border-bottom:1px solid var(--border);background:var(--card)}
+.wrap,main{max-width:1080px;margin:0 auto}
+.wrap{padding:20px 18px}
+main{display:grid;gap:18px;padding:22px 18px}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:22px;margin:.4rem 0 .2rem}
+h2{font-size:18px;margin:0 0 .3rem}
+p{margin:0;color:var(--muted)}
+.banner{border-bottom:1px solid var(--warn-border);background:var(--warn-bg);color:#f4d58a}
+.banner .wrap{display:flex;gap:10px;align-items:flex-start;padding:12px 18px}
+.banner strong{color:#fff}
+.card{border:1px solid var(--border);background:var(--card);border-radius:10px;padding:18px}
+.grid2{display:grid;gap:18px}
+@media(min-width:880px){.grid2{grid-template-columns:1fr 1fr}}
+.flags,.meta,.checks{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.box{display:flex;justify-content:space-between;gap:12px;border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:var(--mono);font-size:12px}
+.box.closed{background:var(--closed-bg);border-color:var(--closed-border)}
+.box.open{background:var(--open-bg);border-color:var(--open-border)}
+.box.cond{background:var(--cond-bg);border-color:var(--cond-border)}
+.box .k{color:var(--muted)}.box .v{font-weight:700}.box .v.t{color:var(--closed)}.box .v.f{color:var(--open)}.box .v.c{color:var(--cond)}
+ul.surf{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:8px}
+ul.surf li{border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+ul.surf.closed li{background:var(--closed-bg);border-color:var(--closed-border)}
+ul.surf.open li{background:var(--open-bg);border-color:var(--open-border)}
+ul.surf.cond li{background:var(--cond-bg);border-color:var(--cond-border)}
+.tag{font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:.12em;padding:2px 6px;border-radius:3px;color:#fff}
+.tag.closed{background:var(--closed)}.tag.open{background:var(--open)}.tag.cond{background:var(--cond)}
+.label{font-family:var(--mono);font-size:13px;font-weight:650}
+.detail{color:var(--muted);font-size:12px;margin-top:2px}
+.flow{font-family:var(--mono);border:1px solid var(--border);border-radius:8px;padding:14px;color:var(--muted)}
+footer{padding:18px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="eyebrow">repository status viewer</div>
+    <h1>poincare-new-derivation — Repository Status Viewer</h1>
+    <p>Status: <strong>conditional topology frontier artifact</strong></p>
+  </div>
+</header>
+
+<div class="banner" role="note" aria-label="claim boundary">
+  <div class="wrap">
+    <span aria-hidden="true">⚠</span>
+    <p>
+      This repository records a finite <strong>conditional topology frontier artifact</strong>.
+      It does <strong>not</strong> prove a new Poincaré theorem, does not replace Perelman’s proof,
+      does not claim theorem-complete 3-manifold classification, does not claim unconditional
+      descent termination, does not claim universal topological certification, and does not
+      claim proof-complete Lean formalization. All claims below are repository-local unless
+      explicitly marked open or conditional.
+    </p>
+  </div>
+</div>
+
+<main>
+  <section class="card">
+    <div class="eyebrow">01 / claim flags</div>
+    <h2>Claim flags</h2>
+    <div class="flags" style="margin-top:10px">
+      <div class="box open"><span class="k">theorem_complete</span><span class="v f">false</span></div>
+      <div class="box open"><span class="k">new_poincare_theorem_claimed</span><span class="v f">false</span></div>
+      <div class="box open"><span class="k">perelman_replacement_claimed</span><span class="v f">false</span></div>
+      <div class="box open"><span class="k">unconditional_descent_termination_claimed</span><span class="v f">false</span></div>
+      <div class="box open"><span class="k">proof_complete_lean_formalization_claimed</span><span class="v f">false</span></div>
+      <div class="box cond"><span class="k">conditional_frontier_artifact</span><span class="v c">true</span></div>
+      <div class="box closed"><span class="k">repository_local_artifact</span><span class="v t">true</span></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="eyebrow">02 / artifact metadata</div>
+    <h2>Artifact metadata</h2>
+    <div class="meta" style="margin-top:10px">
+      <div class="box"><span class="k">artifact_type</span><span class="v">conditional topology frontier artifact</span></div>
+      <div class="box"><span class="k">repository_scope</span><span class="v">status-classification layer</span></div>
+      <div class="box"><span class="k">viewer_type</span><span class="v">dependency-free static HTML</span></div>
+      <div class="box"><span class="k">verifier_type</span><span class="v">Python stdlib</span></div>
+      <div class="box"><span class="k">frontend_dependencies</span><span class="v">none</span></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="eyebrow">03 / verifier &amp; CI surfaces</div>
+    <h2>Repository-local checks</h2>
+    <div class="checks" style="margin-top:10px">
+      <div class="box closed"><span class="k">status page verifier</span><span class="v t">PASS target</span></div>
+      <div class="box closed"><span class="k">unittest guard</span><span class="v t">present</span></div>
+      <div class="box closed"><span class="k">claim boundary</span><span class="v t">visible</span></div>
+      <div class="box closed"><span class="k">surface separation</span><span class="v t">closed/open/conditional</span></div>
+    </div>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <div class="eyebrow">04 / closed surfaces</div>
+      <h2>Repository-local</h2>
+      <p>Verified or represented inside this repository as finite artifact infrastructure.</p>
+      <ul class="surf closed">
+        <li><div><span class="label">status-classification surface</span> <span class="tag closed">CLOSED</span></div><div class="detail">Repository-local status boundary is represented.</div></li>
+        <li><div><span class="label">claim-boundary dashboard</span> <span class="tag closed">CLOSED</span></div><div class="detail">Dashboard separates repository-local claims from open theorem-level topology claims.</div></li>
+        <li><div><span class="label">static viewer surface</span> <span class="tag closed">CLOSED</span></div><div class="detail">Dependency-free HTML status page.</div></li>
+        <li><div><span class="label">Python verifier surface</span> <span class="tag closed">CLOSED</span></div><div class="detail">Checks non-claims, forbidden positive claims, and visual separation markers.</div></li>
+        <li><div><span class="label">unittest guard surface</span> <span class="tag closed">CLOSED</span></div><div class="detail">Exercises passing and failing verifier cases without pytest dependency.</div></li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <div class="eyebrow">05 / open surfaces</div>
+      <h2>Theorem-level topology claims</h2>
+      <p>Outside repository scope. Not claimed, not proved, not certified.</p>
+      <ul class="surf open">
+        <li><div><span class="label">new Poincaré theorem</span> <span class="tag open">OPEN</span></div><div class="detail">Not claimed. External theorem-level mathematics.</div></li>
+        <li><div><span class="label">replacement of Perelman’s proof</span> <span class="tag open">OPEN</span></div><div class="detail">Not claimed. Outside repository scope.</div></li>
+        <li><div><span class="label">theorem-complete 3-manifold classification</span> <span class="tag open">OPEN</span></div><div class="detail">Not claimed. External topology.</div></li>
+        <li><div><span class="label">unconditional descent termination</span> <span class="tag open">OPEN</span></div><div class="detail">Not claimed unless separately proved.</div></li>
+        <li><div><span class="label">universal topological certification</span> <span class="tag open">OPEN</span></div><div class="detail">Not claimed. Requires external validation and theorem coverage.</div></li>
+        <li><div><span class="label">proof-complete Lean formalization</span> <span class="tag open">OPEN</span></div><div class="detail">Not claimed. Requires formal proof closure with no gaps.</div></li>
+      </ul>
+    </section>
+  </div>
+
+  <section class="card">
+    <div class="eyebrow">06 / conditional surfaces</div>
+    <h2>Conditional surfaces</h2>
+    <p>Hypothesis-gated statements only. No unconditional theorem-level upgrade.</p>
+    <ul class="surf cond">
+      <li><div><span class="label">conditional descent termination surface</span> <span class="tag cond">CONDITIONAL</span></div><div class="detail">Depends on the stated descent hypothesis or frontier lemma.</div></li>
+      <li><div><span class="label">frontier artifact interpretation</span> <span class="tag cond">CONDITIONAL</span></div><div class="detail">Valid only under the repository's declared status boundary.</div></li>
+      <li><div><span class="label">topology-transfer interpretation</span> <span class="tag cond">CONDITIONAL</span></div><div class="detail">Requires external theorem-level topological closure.</div></li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <div class="eyebrow">07 / certification map</div>
+    <h2>Repository-local flow</h2>
+    <div class="flow">
+      topology frontier surface → status classification → claim-boundary dashboard → verifier guard → repository-local conditional topology frontier artifact
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="eyebrow">08 / status interpretation</div>
+    <h2>Status interpretation</h2>
+    <p>
+      The verified endpoint is a repository-local conditional topology frontier artifact.
+      The remaining work is external theorem-level topology, unconditional descent termination,
+      proof-complete formalization, or external validation. This dashboard must not upgrade
+      repository-local verification into a new Poincaré theorem, Perelman replacement,
+      universal certification, or proof-complete Lean formalization claim.
+    </p>
+  </section>
+</main>
+
+<footer>repository-local artifact-status viewer / no frontend dependencies</footer>
+</body>
+</html>
