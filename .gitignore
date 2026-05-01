@@ -5,3 +5,4 @@
 obstruction_log_*.txt
 *.log
 /.lake
+__pycache__/
