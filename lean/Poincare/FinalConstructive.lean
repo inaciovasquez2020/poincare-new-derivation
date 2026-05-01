@@ -107,8 +107,15 @@ by sorry
 lemma termination_exact :
   ∀ K : Triangulation,
     Phi (Nat.iterate step (Phi K) K) = 0 ∧
-    ∀ n < Phi K, Phi (Nat.iterate step n K) > 0 :=
-by sorry
+    ∀ n < Phi K, Phi (Nat.iterate step n K) > 0 := by
+  intro K
+  constructor
+  · exact iterate_step_hits_zero K
+  · intro n hn
+    have hle : n ≤ Phi K := Nat.le_of_lt hn
+    have hEq := iterate_step_exact K n hle
+    rw [hEq]
+    exact Nat.sub_pos_of_lt hn
 
 lemma full_constructive_recognition :
   ∀ K : Triangulation,
