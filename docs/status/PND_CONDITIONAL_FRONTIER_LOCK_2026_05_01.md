@@ -15,16 +15,16 @@ This is a documentation and tooling lock. It does not modify Lean source files, 
 
 ## Current proof-hole totals
 
-Total sorry: 49
+Total sorry: 48
 Total admit: 0
 Total axiom: 31
-Total holes: 80
+Total holes: 79
 
 ## Current proof-hole table
 
 | File | sorry | admit | axiom | total |
 |---|---:|---:|---:|---:|
-| `lean/Poincare/FinalConstructive.lean` | 24 | 0 | 0 | 24 |
+| `lean/Poincare/FinalConstructive.lean` | 23 | 0 | 0 | 23 |
 | `lean/Oblivion/CanonicalCodes.lean` | 16 | 0 | 0 | 16 |
 | `lean/Regge/HolonomyMatrixModel.lean` | 0 | 0 | 11 | 11 |
 | `Poincare/GreedyDescent.lean` | 5 | 0 | 0 | 5 |

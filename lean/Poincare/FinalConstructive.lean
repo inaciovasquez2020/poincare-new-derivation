@@ -102,7 +102,14 @@ lemma iterate_step_exact :
   ∀ (K : Triangulation) (n : Nat),
     n ≤ Phi K →
     Phi (Nat.iterate step n K) = Phi K - n :=
-by sorry
+by
+  intro K n hn
+  by_cases hlt : n < Phi K
+  · exact iterate_step_strict_decrease K n hlt
+  · have hphi_le_n : Phi K ≤ n := Nat.le_of_not_gt hlt
+    have heq : n = Phi K := Nat.le_antisymm hn hphi_le_n
+    subst n
+    simpa using iterate_step_hits_zero K
 
 lemma termination_exact :
   ∀ K : Triangulation,
