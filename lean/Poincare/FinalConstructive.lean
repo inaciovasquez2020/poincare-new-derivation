@@ -347,7 +347,12 @@ lemma final_no_sorry_bridge :
       let K' := step K
       vertexDefect K' v = vertexDefect K v - 1 ∧
       (∀ u ≠ v, vertexDefect K' u = vertexDefect K u) :=
-by sorry
+by
+  intro K hPhi
+  obtain ⟨K', hK', v, hv, hdrop, hsame⟩ :=
+    constructive_move_realization K hPhi
+  subst K'
+  exact ⟨v, hv, hdrop, hsame⟩
 
 lemma fully_finished_constructive_system :
   (∀ K : Triangulation,
