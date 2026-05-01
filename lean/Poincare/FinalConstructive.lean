@@ -338,8 +338,16 @@ lemma terminal_index_matches_initial_Phi :
     ∃! n : Nat,
       n = Phi K ∧
       Phi (Nat.iterate step n K) = 0 ∧
-      S3 (Nat.iterate step n K) :=
-by sorry
+      S3 (Nat.iterate step n K) := by
+  intro _ _ K
+  refine ⟨Phi K, ?_, ?_⟩
+  · constructor
+    · rfl
+    · constructor
+      · exact iterate_step_hits_zero K
+      · exact full_constructive_recognition K
+  · intro n hn
+    exact hn.1
 
 lemma final_system_is_closed :
   (∀ K : Triangulation,
