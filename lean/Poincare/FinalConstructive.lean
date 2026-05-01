@@ -261,8 +261,9 @@ lemma minimal_termination_index :
     vertexDefect (step K) v = vertexDefect K v - 1 ∧
     (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)) →
   ∀ K : Triangulation,
-    Nat.find (Exists.intro (Phi K) (by simp)) = Phi K :=
-by sorry
+    Nat.find (Exists.intro (Phi K) (by simp)) = Phi K := by
+  intro _ K
+  simp
 
 
 lemma eliminate_sorry_core :
