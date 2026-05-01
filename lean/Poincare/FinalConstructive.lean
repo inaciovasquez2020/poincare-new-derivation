@@ -112,8 +112,10 @@ by sorry
 
 lemma full_constructive_recognition :
   ∀ K : Triangulation,
-    S3 (Nat.iterate step (Phi K) K) :=
-by sorry
+    S3 (Nat.iterate step (Phi K) K) := by
+  intro K
+  apply correctness_constructive
+  exact iterate_step_hits_zero K
 
 
 lemma step_changes_exactly_one_vertex :
