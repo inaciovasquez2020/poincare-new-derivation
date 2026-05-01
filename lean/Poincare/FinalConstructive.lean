@@ -74,8 +74,9 @@ lemma correctness_constructive :
 
 lemma termination_constructive :
   ∀ K : Triangulation,
-    ∃ n : Nat, Phi (Nat.iterate step n K) = 0 :=
-by sorry
+    ∃ n : Nat, Phi (Nat.iterate step n K) = 0 := by
+  intro K
+  exact ⟨Phi K, iterate_step_hits_zero K⟩
 
 end Poincare
 
