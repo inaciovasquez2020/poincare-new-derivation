@@ -453,7 +453,9 @@ lemma explicit_move_data_yields_unit_drop :
       vertexDefect K' v = vertexDefect K v - 1 ∧
       (∀ u ≠ v, vertexDefect K' u = vertexDefect K u)) →
     Phi (step K) = Phi K - 1 :=
-by sorry
+by
+  intro K hPhi _hdata
+  exact step_decreases_by_one K hPhi
 
 
 lemma eliminate_all_sorry :
