@@ -501,5 +501,14 @@ lemma final_exact_index_realization :
       n = Phi K ∧
       Phi (Nat.iterate step n K) = 0 ∧
       S3 (Nat.iterate step n K) :=
-by sorry
+by
+  intro hmove
+  apply final_system_is_closed
+  · intro K hPhi
+    let v := Option.getD (pivotVertex K) 0
+    have hpivot := pivotVertex_is_getD_of_unique_max K hPhi
+    obtain ⟨K', hK', hdrop, hsame⟩ := hmove K hPhi
+    subst K'
+    exact ⟨v, hpivot.1, hdrop, hsame⟩
+  · exact correctness_constructive
 
