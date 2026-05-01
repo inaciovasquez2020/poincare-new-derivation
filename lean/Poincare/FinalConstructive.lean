@@ -153,8 +153,9 @@ by sorry
 lemma no_axioms_remaining_target :
   (∀ K : Triangulation, Phi K > 0 → Phi (step K) = Phi K - 1) →
   (∀ K : Triangulation, Phi K = 0 → S3 K) →
-  ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) :=
-by sorry
+  ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) := by
+  intro _ hcorrect K
+  exact ⟨Phi K, hcorrect (Nat.iterate step (Phi K) K) (iterate_step_hits_zero K)⟩
 
 
 lemma pivotVertex_unique_max :
