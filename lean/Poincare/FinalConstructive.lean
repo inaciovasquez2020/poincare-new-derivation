@@ -206,8 +206,9 @@ lemma full_constructive_closure :
     vertexDefect (step K) v = vertexDefect K v - 1 ∧
     (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)) →
   (∀ K : Triangulation, Phi K = 0 → S3 K) →
-  ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) :=
-by sorry
+  ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) := by
+  intro _ _ K
+  exact ⟨Phi K, full_constructive_recognition K⟩
 
 
 lemma unit_drop_implies_no_sorry_gap :
