@@ -40,8 +40,9 @@ by sorry
 lemma correctness_constructive :
   ∀ K : Triangulation,
     Phi K = 0 →
-    S3 K :=
-by sorry
+    S3 K := by
+  intro K hPhi
+  simpa [S3, normalized] using hPhi
 
 lemma termination_constructive :
   ∀ K : Triangulation,
