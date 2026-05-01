@@ -1,3 +1,4 @@
+import Mathlib
 import Poincare.Triangulation
 import Poincare.Moves
 import Poincare.Descent
@@ -23,8 +24,19 @@ lemma pivotVertex_nonempty_of_Phi_pos :
 lemma vertexDefect_zero_iff_degree_target :
   ∀ K : Triangulation,
     ∀ v ∈ allVerts K,
-      vertexDefect K v = 0 ↔ vertexDegree K v = targetDegree :=
-by sorry
+      vertexDefect K v = 0 ↔ vertexDegree K v = targetDegree := by
+  intro K v hv
+  constructor
+  · intro h
+    unfold vertexDefect at h
+    have hInt :
+        ((vertexDegree K v : Int) - (targetDegree : Int)) = 0 := by
+      exact Int.natAbs_eq_zero.mp h
+    omega
+  · intro h
+    unfold vertexDefect
+    rw [h]
+    simp
 
 lemma Phi_zero_iff_all_vertices_balanced :
   ∀ K : Triangulation,
