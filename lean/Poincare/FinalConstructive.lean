@@ -115,7 +115,33 @@ by
 lemma iterate_step_hits_zero :
   ∀ K : Triangulation,
     Phi (Nat.iterate step (Phi K) K) = 0 :=
-by sorry
+by
+  intro K
+  by_cases hzero : Phi K = 0
+  · simpa [hzero]
+  · have hpos : Phi K > 0 := Nat.pos_of_ne_zero hzero
+    have hpred_lt : Phi K > Phi K - 1 := by omega
+    have hstrict :
+        Phi (Nat.iterate step (Phi K - 1) K) = Phi K - (Phi K - 1) :=
+      iterate_step_strict_decrease K (Phi K - 1) hpred_lt
+    have hiter_pos : Phi (Nat.iterate step (Phi K - 1) K) > 0 := by
+      rw [hstrict]
+      omega
+    have hstep :
+        Phi (step (Nat.iterate step (Phi K - 1) K)) =
+          Phi (Nat.iterate step (Phi K - 1) K) - 1 :=
+      step_decreases_by_one (Nat.iterate step (Phi K - 1) K) hiter_pos
+    have hsucc : Phi K = Nat.succ (Phi K - 1) := by omega
+    calc
+      Phi (Nat.iterate step (Phi K) K)
+          = Phi (Nat.iterate step (Nat.succ (Phi K - 1)) K) := by
+              rw [hsucc]
+      _ = Phi (step (Nat.iterate step (Phi K - 1) K)) := by
+              rfl
+      _ = Phi (Nat.iterate step (Phi K - 1) K) - 1 := hstep
+      _ = 0 := by
+              rw [hstrict]
+              omega
 
 lemma iterate_step_exact :
   ∀ (K : Triangulation) (n : Nat),
