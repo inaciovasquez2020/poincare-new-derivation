@@ -195,8 +195,9 @@ lemma axioms_eliminated_if_unit_drop :
     let v := Option.getD (pivotVertex K) 0
     vertexDefect (step K) v = vertexDefect K v - 1 ∧
     (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)) →
-  ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) :=
-by sorry
+  ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) := by
+  intro _ K
+  exact ⟨Phi K, full_constructive_recognition K⟩
 
 lemma full_constructive_closure :
   (∀ K : Triangulation,
