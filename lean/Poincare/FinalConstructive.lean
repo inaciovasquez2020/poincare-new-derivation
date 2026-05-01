@@ -191,7 +191,16 @@ lemma step_locality_support :
     ∃ S : Finset Nat,
       S.card = 1 ∧
       ∀ u : Nat, u ∉ S → vertexDefect (step K) u = vertexDefect K u :=
-by sorry
+by
+  intro K hPhi
+  obtain ⟨v, hv, _huniq⟩ := step_changes_exactly_one_vertex K hPhi
+  refine ⟨{v}, by simp, ?_⟩
+  intro u hu
+  have hne : u ≠ v := by
+    intro huv
+    apply hu
+    simp [huv]
+  exact hv.2 u hne
 
 lemma exact_local_to_global_descent :
   ∀ K : Triangulation,
