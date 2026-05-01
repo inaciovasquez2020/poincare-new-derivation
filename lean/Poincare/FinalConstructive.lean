@@ -40,8 +40,21 @@ lemma vertexDefect_zero_iff_degree_target :
 
 lemma Phi_zero_iff_all_vertices_balanced :
   ∀ K : Triangulation,
-    Phi K = 0 ↔ ∀ v ∈ allVerts K, vertexDegree K v = targetDegree :=
-by sorry
+    Phi K = 0 ↔ ∀ v ∈ allVerts K, vertexDegree K v = targetDegree := by
+  intro K
+  constructor
+  · intro hPhi v hv
+    have hdef : vertexDefect K v = 0 := by
+      have hδ := (Phi_zero_iff_local_zero K).mp hPhi v hv
+      simpa [delta] using hδ
+    exact (vertexDefect_zero_iff_degree_target K v hv).mp hdef
+  · intro hbal
+    apply (Phi_zero_iff_local_zero K).mpr
+    intro v hv
+    have hdeg : vertexDegree K v = targetDegree := hbal v hv
+    have hdef : vertexDefect K v = 0 :=
+      (vertexDefect_zero_iff_degree_target K v hv).mpr hdeg
+    simpa [delta] using hdef
 
 lemma normalization_implies_S3_constructive :
   ∀ K : Triangulation,
