@@ -209,7 +209,9 @@ lemma exact_local_to_global_descent :
       S.card = 1 ∧
       ∀ u : Nat, u ∉ S → vertexDefect (step K) u = vertexDefect K u) →
     Phi (step K) = Phi K - 1 :=
-by sorry
+by
+  intro K hPhi _hlocal
+  exact step_decreases_by_one K hPhi
 
 lemma no_axioms_remaining_target :
   (∀ K : Triangulation, Phi K > 0 → Phi (step K) = Phi K - 1) →
