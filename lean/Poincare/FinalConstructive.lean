@@ -2,14 +2,23 @@ import Poincare.Triangulation
 import Poincare.Moves
 import Poincare.Descent
 import Poincare.DefectBalance
+import Poincare.PositiveVertexDefectExists
 
 namespace Poincare
 
 lemma pivotVertex_nonempty_of_Phi_pos :
   ∀ K : Triangulation,
     Phi K > 0 →
-    pivotVertex K ≠ none :=
-by sorry
+    pivotVertex K ≠ none := by
+  intro K hPhi
+  classical
+  obtain ⟨v, hv, _⟩ := positive_vertexDefect_exists K hPhi
+  unfold pivotVertex
+  cases hxs : allVerts K with
+  | nil =>
+      simp [hxs] at hv
+  | cons a xs =>
+      simp [hxs]
 
 lemma vertexDefect_zero_iff_degree_target :
   ∀ K : Triangulation,
