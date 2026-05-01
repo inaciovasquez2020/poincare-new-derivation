@@ -59,8 +59,11 @@ lemma Phi_zero_iff_all_vertices_balanced :
 lemma normalization_implies_S3_constructive :
   ∀ K : Triangulation,
     (∀ v ∈ allVerts K, vertexDegree K v = targetDegree) →
-    S3 K :=
-by sorry
+    S3 K := by
+  intro K hbal
+  have hPhi : Phi K = 0 :=
+    (Phi_zero_iff_all_vertices_balanced K).mpr hbal
+  simpa [S3, normalized] using hPhi
 
 lemma correctness_constructive :
   ∀ K : Triangulation,
