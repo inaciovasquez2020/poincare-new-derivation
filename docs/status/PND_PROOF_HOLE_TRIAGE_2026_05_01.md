@@ -2,16 +2,16 @@
 
 Conditional.
 
-- Total `sorry`: **53**
+- Total `sorry`: **52**
 - Total `admit`: **0**
 - Total `axiom`: **31**
-- Total holes: **84**
+- Total holes: **83**
 
 This is a proof-hole inventory only. It does not assert theorem-level closure.
 
 | File | sorry | admit | axiom | total |
 |---|---:|---:|---:|---:|
-| `lean/Poincare/FinalConstructive.lean` | 28 | 0 | 0 | 28 |
+| `lean/Poincare/FinalConstructive.lean` | 27 | 0 | 0 | 27 |
 | `lean/Oblivion/CanonicalCodes.lean` | 16 | 0 | 0 | 16 |
 | `lean/Regge/HolonomyMatrixModel.lean` | 0 | 0 | 11 | 11 |
 | `Poincare/GreedyDescent.lean` | 5 | 0 | 0 | 5 |

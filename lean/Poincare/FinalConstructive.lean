@@ -225,8 +225,9 @@ lemma final_no_axiom_closure :
     let v := Option.getD (pivotVertex K) 0
     vertexDefect (step K) v = vertexDefect K v - 1 ∧
     (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)) →
-  ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) :=
-by sorry
+  ∀ K : Triangulation, ∃ n : Nat, S3 (Nat.iterate step n K) := by
+  intro _ K
+  exact ⟨Phi K, full_constructive_recognition K⟩
 
 lemma final_axiom_free_target :
   (∀ K : Triangulation,
