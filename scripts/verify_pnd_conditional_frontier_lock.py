@@ -16,10 +16,10 @@ REQUIRED_STRINGS = [
     "Build success verifies artifact integrity only.",
     "No unconditional Poincaré theorem is asserted.",
     "This document does not assert theorem-level closure.",
-    "Total sorry: 48",
+    "Total sorry: 47",
     "Total admit: 0",
     "Total axiom: 31",
-    "Total holes: 79",
+    "Total holes: 78",
     "## Weakest remaining mathematical obligations",
     "- Constructive move realization.",
     "- Unit Phi-drop from move realization.",
@@ -29,7 +29,7 @@ REQUIRED_STRINGS = [
 ]
 
 REQUIRED_ROWS = [
-    "| `lean/Poincare/FinalConstructive.lean` | 23 | 0 | 0 | 23 |",
+    "| `lean/Poincare/FinalConstructive.lean` | 22 | 0 | 0 | 22 |",
     "| `lean/Oblivion/CanonicalCodes.lean` | 16 | 0 | 0 | 16 |",
     "| `lean/Regge/HolonomyMatrixModel.lean` | 0 | 0 | 11 | 11 |",
     "| `Poincare/GreedyDescent.lean` | 5 | 0 | 0 | 5 |",
