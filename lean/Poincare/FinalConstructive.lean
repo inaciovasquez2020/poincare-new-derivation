@@ -477,7 +477,16 @@ lemma final_axiom_free_realization :
       vertexDefect explicit_construction v = vertexDefect K v - 1 ∧
       (∀ u ≠ v, vertexDefect explicit_construction u = vertexDefect K u)) →
   ∀ K : Triangulation, ∃! n : Nat, S3 (Nat.iterate step n K) :=
-by sorry
+by
+  intro hmove
+  apply no_sorry_remaining_equivalence
+  · intro K hPhi
+    let v := Option.getD (pivotVertex K) 0
+    have hpivot := pivotVertex_is_getD_of_unique_max K hPhi
+    obtain ⟨K', hK', hdrop, hsame⟩ := hmove K hPhi
+    subst K'
+    exact ⟨v, hpivot.1, hdrop, hsame⟩
+  · exact correctness_constructive
 
 lemma final_exact_index_realization :
   (∀ K : Triangulation,
