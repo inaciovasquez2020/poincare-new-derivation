@@ -8,7 +8,7 @@ It should be treated only as an experimental derivation sketch unless all sorrie
 
 Axiom count: 31
 Admit count: 0
-Sorry count: 64
+Sorry count: 40
 
 ## Axiom locations
 
