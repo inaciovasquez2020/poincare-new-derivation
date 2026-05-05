@@ -1,0 +1,15 @@
+{
+"artifact": "PERELMAN_PL_CONDITIONAL_CLOSURE_2026_05_05",
+"status": "CONDITIONAL_EXTERNAL_THEOREM_ONLY",
+"theorem_closure": false,
+"external_axiom": "Perelman_PL",
+"conditional_theorem": "conditional_PL_poincare_recognition",
+"quarantined_obstruction": "applyMoveImpl_identity",
+"frontier_preserved": true,
+"forbidden_claims": [
+"theorem-level Lean closure",
+"machine-checked proof of Poincare",
+"repository-internal proof of Perelman",
+"repository-internal strict Pachner descent"
+]
+}
