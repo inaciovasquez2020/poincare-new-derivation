@@ -1,8 +1,10 @@
 cff-version: 1.2.0
+message: "If you use this repository, please cite it using the metadata below."
 title: "poincare-new-derivation"
-message: "If you use this repository, please cite it."
-type: software
 authors:
   - family-names: "Vasquez"
-    given-names: "Inacio"
+    given-names: "Inácio F."
+    orcid: "https://orcid.org/0009-0008-8459-3400"
 repository-code: "https://github.com/inaciovasquez2020/poincare-new-derivation"
+url: "https://github.com/inaciovasquez2020/poincare-new-derivation"
+license: "MIT"
