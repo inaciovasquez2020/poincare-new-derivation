@@ -1,0 +1,18 @@
+{
+  "certificate_id": "DSQ_INPUT_SHAPE_SPEC_2026_06_12",
+  "date": "2026-06-12",
+  "scope": "input_shape_only",
+  "lean_module": "Regge.DSQInputShape",
+  "lean_file": "lean/Regge/DSQInputShape.lean",
+  "validation": {
+    "verify_dsq_input_shape": "DSQ_INPUT_SHAPE_SURFACE_FOUND",
+    "lake_env_lean": "passed",
+    "lake_build": "Regge.DSQInputShape passed"
+  },
+  "claim_boundary": {
+    "does_not_define_regge_geometry": true,
+    "does_not_prove_metric_validity": true,
+    "does_not_claim_euclidean_realizability": true,
+    "does_not_close_dsq_theorem": true
+  }
+}
