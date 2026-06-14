@@ -50,7 +50,7 @@ Conditional on:
 
 ## Repository additions
 
-- Hypergraph Final Wall (Chronicles), conditional closure.  
+- Hypergraph Current terminal Wall (Chronicles), conditional closure.  
 - EF-signature invariant and non-collision lemma.  
 - Structured collision experiments (near-injective regime).  
 - Spectral correction: HS operator requires squared resolvent decay.  
