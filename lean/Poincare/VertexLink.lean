@@ -2480,6 +2480,117 @@ theorem vertexLinkEdges_length_eq_six_of_vertexDefect_zero
   omega
 
 
+theorem represented_star_length_ge_three
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v x : Nat)
+    (hrep : VertexLinkVertexRepresented K v x)
+    (hdeg : VertexLinkStarDegreeTwo K v x) :
+    3 ≤ (vertexLinkStarTriangles K v x).length := by
+
+  obtain ⟨σ, hσ⟩ :=
+    (vertexLinkVertexRepresented_iff_star_nonempty
+      K v x).1 hrep
+
+  obtain
+    ⟨ρ₁, ρ₂,
+      hρ₁σ, hρ₂σ, hρ₁ρ₂,
+      hσρ₁, hσρ₂, _⟩ :=
+    hdeg σ hσ
+
+  have hρ₁ :
+      ρ₁ ∈ vertexLinkStarTriangles K v x :=
+    VertexLinkStarAdjacent.right_mem
+      K v x σ ρ₁ hσρ₁
+
+  have hρ₂ :
+      ρ₂ ∈ vertexLinkStarTriangles K v x :=
+    VertexLinkStarAdjacent.right_mem
+      K v x σ ρ₂ hσρ₂
+
+  have hstarNodup :
+      (vertexLinkStarTriangles K v x).Nodup := by
+
+    unfold vertexLinkStarTriangles
+
+    exact
+      (vertexLinkTriangles_nodup
+        K hcore v).filter
+          (fun τ =>
+            decide (x ∈ τ.verts))
+
+  let S :
+      Finset LinkTriangle :=
+    (vertexLinkStarTriangles K v x).toFinset
+
+  let T :
+      Finset LinkTriangle :=
+    {σ, ρ₁, ρ₂}
+
+  have hσS :
+      σ ∈ S := by
+    simpa [S] using hσ
+
+  have hρ₁S :
+      ρ₁ ∈ S := by
+    simpa [S] using hρ₁
+
+  have hρ₂S :
+      ρ₂ ∈ S := by
+    simpa [S] using hρ₂
+
+  have hTS :
+      T ⊆ S := by
+
+    intro τ hτ
+
+    simp only [
+      T,
+      Finset.mem_insert,
+      Finset.mem_singleton
+    ] at hτ
+
+    rcases hτ with hτ | hτ | hτ
+
+    · simpa [hτ] using hσS
+    · simpa [hτ] using hρ₁S
+    · simpa [hτ] using hρ₂S
+
+  have hTcard :
+      T.card = 3 := by
+
+    simp [
+      T,
+      hρ₁σ,
+      hρ₂σ,
+      hρ₁ρ₂,
+      Ne.symm hρ₁σ,
+      Ne.symm hρ₂σ,
+      Ne.symm hρ₁ρ₂
+    ]
+
+  have hScard :
+      S.card =
+        (vertexLinkStarTriangles K v x).length := by
+
+    change
+      (vertexLinkStarTriangles K v x).toFinset.card =
+        (vertexLinkStarTriangles K v x).length
+
+    rw [
+      ← List.toFinset_eq hstarNodup
+    ]
+
+    rfl
+
+  have hcard :=
+    Finset.card_le_card hTS
+
+  rw [hTcard, hScard] at hcard
+
+  exact hcard
+
+
 def VertexLinkClosedSurfaceCertificate
     (K : Triangulation)
     (v : Nat) : Prop :=
