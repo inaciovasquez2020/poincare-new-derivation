@@ -4412,6 +4412,170 @@ theorem vertexLinkVertexEquivFin4_distinct_iff
       K hcore v hcert).injective.ne_iff
 
 
+noncomputable def vertexLinkFaceLabelSupport
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert :
+      VertexLinkTetrahedralBoundaryCertificate
+        K hcore v)
+    (σ : LinkTriangle) :
+    Finset (Fin 4) :=
+  Finset.univ.filter
+    (fun i =>
+      ((vertexLinkVertexEquivFin4
+        K hcore v hcert).symm i).1 ∈ σ.verts)
+
+theorem mem_vertexLinkFaceLabelSupport_iff
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert :
+      VertexLinkTetrahedralBoundaryCertificate
+        K hcore v)
+    (σ : LinkTriangle)
+    (i : Fin 4) :
+    i ∈
+        vertexLinkFaceLabelSupport
+          K hcore v hcert σ
+      ↔
+        ((vertexLinkVertexEquivFin4
+          K hcore v hcert).symm i).1 ∈
+          σ.verts := by
+
+  simp [
+    vertexLinkFaceLabelSupport
+  ]
+
+theorem vertexLinkFin4Label_has_unique_complementary_face
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert :
+      VertexLinkTetrahedralBoundaryCertificate
+        K hcore v)
+    (i : Fin 4) :
+    ∃! σ : LinkTriangle,
+      σ ∈ vertexLinkTriangles K v ∧
+      (∀ y : Nat,
+        y ∈ σ.verts ↔
+          y ∈ vertexLinkVertices K v ∧
+            y ≠
+              ((vertexLinkVertexEquivFin4
+                K hcore v hcert).symm i).1) ∧
+      vertexLinkFaceLabelSupport
+          K hcore v hcert σ =
+        Finset.univ.erase i := by
+
+  let e :
+      ↥((vertexLinkVertices K v).toFinset) ≃
+        Fin 4 :=
+    vertexLinkVertexEquivFin4
+      K hcore v hcert
+
+  let x :
+      ↥((vertexLinkVertices K v).toFinset) :=
+    e.symm i
+
+  have hxV :
+      x.1 ∈ vertexLinkVertices K v := by
+
+    have hxFin :
+        x.1 ∈
+          (vertexLinkVertices K v).toFinset :=
+      x.2
+
+    exact
+      List.mem_toFinset.mp hxFin
+
+  obtain
+    ⟨σ, hσprop, hσuniq⟩ :=
+    hcert.2.2.2.2.2
+      x.1 hxV
+
+  rcases hσprop with
+    ⟨hσ, hsupport⟩
+
+  refine
+    ⟨σ, ?_, ?_⟩
+
+  · refine
+      ⟨hσ, ?_, ?_⟩
+
+    · intro y
+
+      simpa [x, e] using
+        hsupport y
+
+    · ext j
+
+      rw [
+        mem_vertexLinkFaceLabelSupport_iff
+      ]
+
+      rw [hsupport]
+
+      have hjV :
+          (e.symm j).1 ∈
+            vertexLinkVertices K v := by
+
+        have hjFin :
+            (e.symm j).1 ∈
+              (vertexLinkVertices K v).toFinset :=
+          (e.symm j).2
+
+        exact
+          List.mem_toFinset.mp hjFin
+
+      simp only [
+        Finset.mem_erase,
+        Finset.mem_univ,
+        and_true
+      ]
+
+      constructor
+
+      · rintro
+          ⟨_, hval⟩
+
+        intro hji
+
+        subst j
+
+        apply hval
+
+        simp [x, e]
+
+      · intro hji
+
+        refine
+          ⟨hjV, ?_⟩
+
+        intro hval
+
+        apply hji
+
+        have hsub :
+            e.symm j =
+              e.symm i := by
+
+          apply Subtype.ext
+
+          simpa [x, e] using hval
+
+        exact
+          e.symm.injective hsub
+
+  · intro ρ hρ
+
+    apply
+      hσuniq ρ
+
+    exact
+      ⟨hρ.1,
+        hρ.2.1⟩
+
+
 def VertexLinkClosedSurfaceCertificate
     (K : Triangulation)
     (v : Nat) : Prop :=
