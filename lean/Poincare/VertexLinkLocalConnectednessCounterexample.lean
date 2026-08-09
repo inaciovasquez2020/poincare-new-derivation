@@ -1903,4 +1903,50 @@ theorem edgePinchCandidate_vertexLinkConnected_seven :
     (toRoot σ hσ)
     (fromRoot ρ hρ)
 
+theorem edgePinchCandidate_connectedLinkClosedCore :
+    ConnectedLinkClosedCore edgePinchCandidate := by
+  refine ⟨edgePinchCandidate_closedCore, ?_⟩
+
+  intro v hv
+
+  have hsupport :
+      vertexSupport edgePinchCandidate =
+        [0, 1, 2, 3, 4, 5, 6, 7] := by
+    native_decide
+
+  by_cases h0 : v = 0
+  · subst v
+    exact edgePinchCandidate_vertexLinkConnected_zero
+
+  by_cases h1 : v = 1
+  · subst v
+    exact edgePinchCandidate_vertexLinkConnected_one
+
+  by_cases h2 : v = 2
+  · subst v
+    exact edgePinchCandidate_vertexLinkConnected_two
+
+  by_cases h3 : v = 3
+  · subst v
+    exact edgePinchCandidate_vertexLinkConnected_three
+
+  by_cases h4 : v = 4
+  · subst v
+    exact edgePinchCandidate_vertexLinkConnected_four
+
+  by_cases h5 : v = 5
+  · subst v
+    exact edgePinchCandidate_vertexLinkConnected_five
+
+  by_cases h6 : v = 6
+  · subst v
+    exact edgePinchCandidate_vertexLinkConnected_six
+
+  by_cases h7 : v = 7
+  · subst v
+    exact edgePinchCandidate_vertexLinkConnected_seven
+
+  rw [hsupport] at hv
+  simp [h0, h1, h2, h3, h4, h5, h6, h7] at hv
+
 end Poincare
