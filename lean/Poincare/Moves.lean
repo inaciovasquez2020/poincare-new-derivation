@@ -981,4 +981,256 @@ theorem Move23Site.replace_PhiSupport_balance
   rw [hOld, hNew, hRest]
   ac_rfl
 
+
+theorem vertexDefect_of_degree_add_two
+    (K K' : Triangulation) (v : Nat)
+    (hdeg :
+      vertexDegree K' v =
+        vertexDegree K v + 2) :
+    (vertexDegree K v ≤ 2 →
+      vertexDefect K' v + 2 =
+        vertexDefect K v) ∧
+    (vertexDegree K v = 3 →
+      vertexDefect K' v =
+        vertexDefect K v) ∧
+    (4 ≤ vertexDegree K v →
+      vertexDefect K' v =
+        vertexDefect K v + 2) := by
+
+  constructor
+  · intro hle
+
+    have hcases :
+        vertexDegree K v = 0 ∨
+        vertexDegree K v = 1 ∨
+        vertexDegree K v = 2 := by
+      omega
+
+    rcases hcases with h0 | h1 | h2
+    · norm_num [
+        vertexDefect,
+        targetDegree,
+        hdeg,
+        h0
+      ]
+    · norm_num [
+        vertexDefect,
+        targetDegree,
+        hdeg,
+        h1
+      ]
+    · norm_num [
+        vertexDefect,
+        targetDegree,
+        hdeg,
+        h2
+      ]
+
+  constructor
+  · intro h3
+
+    norm_num [
+      vertexDefect,
+      targetDegree,
+      hdeg,
+      h3
+    ]
+
+  · intro h4
+
+    have hnonneg :
+        (0 : Int) ≤
+          (vertexDegree K v : Int) - 4 := by
+      omega
+
+    unfold vertexDefect
+    rw [hdeg]
+
+    change
+      Int.natAbs
+          ((((vertexDegree K v + 2 : Nat) : Int) - 4)) =
+        Int.natAbs
+            (((vertexDegree K v : Int) - 4)) +
+          2
+
+    have hrewrite :
+        (((vertexDegree K v + 2 : Nat) : Int) - 4) =
+          ((vertexDegree K v : Int) - 4) + 2 := by
+      omega
+
+    rw [hrewrite]
+
+    rw [
+      Int.natAbs_add_of_nonneg
+        hnonneg
+        (by norm_num)
+    ]
+
+    norm_num
+
+
+theorem Move23Site.replace_PhiSupport_sign
+    (s : Move23Site) (K : Triangulation)
+    (hlegal : s.LegalIn K) :
+    (
+      PhiSupport (s.replace K) < PhiSupport K ↔
+        vertexDegree K s.d ≤ 3 ∧
+        vertexDegree K s.e ≤ 3 ∧
+        (
+          vertexDegree K s.d ≤ 2 ∨
+          vertexDegree K s.e ≤ 2
+        )
+    ) ∧
+    (
+      PhiSupport (s.replace K) = PhiSupport K ↔
+        (
+          vertexDegree K s.d = 3 ∧
+          vertexDegree K s.e = 3
+        ) ∨
+        (
+          vertexDegree K s.d ≤ 2 ∧
+          4 ≤ vertexDegree K s.e
+        ) ∨
+        (
+          4 ≤ vertexDegree K s.d ∧
+          vertexDegree K s.e ≤ 2
+        )
+    ) ∧
+    (
+      PhiSupport K < PhiSupport (s.replace K) ↔
+        3 ≤ vertexDegree K s.d ∧
+        3 ≤ vertexDegree K s.e ∧
+        (
+          4 ≤ vertexDegree K s.d ∨
+          4 ≤ vertexDegree K s.e
+        )
+    ) := by
+
+  have hsite :=
+    s.replace_vertexDegree_site K hlegal
+
+  rcases hsite with
+    ⟨ha, hb, hc, hd, he⟩
+
+  have hbalance :=
+    s.replace_PhiSupport_balance K hlegal
+
+  have hdClass :=
+    vertexDefect_of_degree_add_two
+      K (s.replace K) s.d hd
+
+  have heClass :=
+    vertexDefect_of_degree_add_two
+      K (s.replace K) s.e he
+
+  have hdCases :
+      vertexDegree K s.d ≤ 2 ∨
+      vertexDegree K s.d = 3 ∨
+      4 ≤ vertexDegree K s.d := by
+    omega
+
+  have heCases :
+      vertexDegree K s.e ≤ 2 ∨
+      vertexDegree K s.e = 3 ∨
+      4 ≤ vertexDegree K s.e := by
+    omega
+
+  rcases hdCases with hdLow | hdMid | hdHigh
+
+  · rcases heCases with heLow | heMid | heHigh
+
+    · have hdRel := hdClass.1 hdLow
+      have heRel := heClass.1 heLow
+
+      constructor
+      · constructor <;> omega
+
+      constructor
+      · constructor <;> omega
+      · constructor <;> omega
+
+    · have hdRel := hdClass.1 hdLow
+      have heRel := heClass.2.1 heMid
+
+      constructor
+      · constructor <;> omega
+
+      constructor
+      · constructor <;> omega
+      · constructor <;> omega
+
+    · have hdRel := hdClass.1 hdLow
+      have heRel := heClass.2.2 heHigh
+
+      constructor
+      · constructor <;> omega
+
+      constructor
+      · constructor <;> omega
+      · constructor <;> omega
+
+  · rcases heCases with heLow | heMid | heHigh
+
+    · have hdRel := hdClass.2.1 hdMid
+      have heRel := heClass.1 heLow
+
+      constructor
+      · constructor <;> omega
+
+      constructor
+      · constructor <;> omega
+      · constructor <;> omega
+
+    · have hdRel := hdClass.2.1 hdMid
+      have heRel := heClass.2.1 heMid
+
+      constructor
+      · constructor <;> omega
+
+      constructor
+      · constructor <;> omega
+      · constructor <;> omega
+
+    · have hdRel := hdClass.2.1 hdMid
+      have heRel := heClass.2.2 heHigh
+
+      constructor
+      · constructor <;> omega
+
+      constructor
+      · constructor <;> omega
+      · constructor <;> omega
+
+  · rcases heCases with heLow | heMid | heHigh
+
+    · have hdRel := hdClass.2.2 hdHigh
+      have heRel := heClass.1 heLow
+
+      constructor
+      · constructor <;> omega
+
+      constructor
+      · constructor <;> omega
+      · constructor <;> omega
+
+    · have hdRel := hdClass.2.2 hdHigh
+      have heRel := heClass.2.1 heMid
+
+      constructor
+      · constructor <;> omega
+
+      constructor
+      · constructor <;> omega
+      · constructor <;> omega
+
+    · have hdRel := hdClass.2.2 hdHigh
+      have heRel := heClass.2.2 heHigh
+
+      constructor
+      · constructor <;> omega
+
+      constructor
+      · constructor <;> omega
+      · constructor <;> omega
+
 end Poincare
