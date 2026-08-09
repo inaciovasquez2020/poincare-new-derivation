@@ -269,6 +269,117 @@ theorem LinkTriangle.edges_length
   simp [LinkTriangle.edges]
 
 
+theorem LinkTriangle.edges_nodup
+    (σ : LinkTriangle)
+    (hσ : σ.verts.Nodup) :
+    (σ.edges hσ).Nodup := by
+
+  rcases σ with ⟨a, b, c⟩
+
+  have h :
+      (a ≠ b ∧ a ≠ c) ∧
+      b ≠ c := by
+    simpa [LinkTriangle.verts] using hσ
+
+  rcases h with ⟨⟨hab, hac⟩, hbc⟩
+
+  have hsum :
+      ∀ x y : Nat,
+        ∀ hxy : x ≠ y,
+          (LinkEdge.ofDistinct x y hxy).lo +
+              (LinkEdge.ofDistinct x y hxy).hi =
+            x + y := by
+    intro x y hxy
+    unfold LinkEdge.ofDistinct
+    split
+    · rfl
+    · simp [Nat.add_comm]
+
+  have hab_ac :
+      LinkEdge.ofDistinct a b hab ≠
+        LinkEdge.ofDistinct a c hac := by
+    intro heq
+
+    have hs : a + b = a + c := by
+      calc
+        a + b =
+            (LinkEdge.ofDistinct a b hab).lo +
+              (LinkEdge.ofDistinct a b hab).hi :=
+          (hsum a b hab).symm
+        _ =
+            (LinkEdge.ofDistinct a c hac).lo +
+              (LinkEdge.ofDistinct a c hac).hi :=
+          congrArg
+            (fun e : LinkEdge => e.lo + e.hi)
+            heq
+        _ = a + c :=
+          hsum a c hac
+
+    exact hbc (Nat.add_left_cancel hs)
+
+  have hab_bc :
+      LinkEdge.ofDistinct a b hab ≠
+        LinkEdge.ofDistinct b c hbc := by
+    intro heq
+
+    have hs : a + b = b + c := by
+      calc
+        a + b =
+            (LinkEdge.ofDistinct a b hab).lo +
+              (LinkEdge.ofDistinct a b hab).hi :=
+          (hsum a b hab).symm
+        _ =
+            (LinkEdge.ofDistinct b c hbc).lo +
+              (LinkEdge.ofDistinct b c hbc).hi :=
+          congrArg
+            (fun e : LinkEdge => e.lo + e.hi)
+            heq
+        _ = b + c :=
+          hsum b c hbc
+
+    have hs' : b + a = b + c := by
+      calc
+        b + a = a + b := Nat.add_comm b a
+        _ = b + c := hs
+
+    exact hac (Nat.add_left_cancel hs')
+
+  have hac_bc :
+      LinkEdge.ofDistinct a c hac ≠
+        LinkEdge.ofDistinct b c hbc := by
+    intro heq
+
+    have hs : a + c = b + c := by
+      calc
+        a + c =
+            (LinkEdge.ofDistinct a c hac).lo +
+              (LinkEdge.ofDistinct a c hac).hi :=
+          (hsum a c hac).symm
+        _ =
+            (LinkEdge.ofDistinct b c hbc).lo +
+              (LinkEdge.ofDistinct b c hbc).hi :=
+          congrArg
+            (fun e : LinkEdge => e.lo + e.hi)
+            heq
+        _ = b + c :=
+          hsum b c hbc
+
+    exact hab (Nat.add_right_cancel hs)
+
+  change
+    [
+      LinkEdge.ofDistinct a b hab,
+      LinkEdge.ofDistinct a c hac,
+      LinkEdge.ofDistinct b c hbc
+    ].Nodup
+
+  simp [
+    hab_ac,
+    hab_bc,
+    hac_bc
+  ]
+
+
 theorem LinkTriangle.mem_edges_inTriangle
     (σ : LinkTriangle)
     (hσ : σ.verts.Nodup)
@@ -755,6 +866,60 @@ theorem LinkEdge.RepresentedAt_center_ne
     apply hvNot
     rw [h]
     exact hEdge.2
+
+
+def vertexLinkEdgeIncidences
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat) :
+    List LinkEdge :=
+  (vertexLinkTriangles K v).attach.flatMap
+    (fun σ =>
+      σ.1.edges
+        (vertexLinkTriangles_triangle_nodup
+          K hcore v σ.1 σ.2))
+
+
+theorem vertexLinkEdgeIncidences_length
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat) :
+    (vertexLinkEdgeIncidences K hcore v).length =
+      3 * (vertexLinkTriangles K v).length := by
+
+  rw [
+    vertexLinkEdgeIncidences,
+    List.length_flatMap
+  ]
+
+  simp_rw [LinkTriangle.edges_length]
+
+  have hconst :
+      ∀ l :
+          List
+            {σ : LinkTriangle //
+              σ ∈ vertexLinkTriangles K v},
+        (l.map (fun _ => 3)).sum =
+          3 * l.length := by
+
+    intro l
+
+    induction l with
+
+    | nil =>
+        simp
+
+    | cons σ tl ih =>
+        simp only [
+          List.map_cons,
+          List.sum_cons,
+          List.length_cons
+        ]
+        omega
+
+  rw [hconst]
+
+  simp
 
 
 def vertexLinkEdges
