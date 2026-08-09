@@ -90,6 +90,61 @@ def eraseFirstSameTet (target : Tet) : List Tet → List Tet
       else
         τ :: eraseFirstSameTet target rest
 
+
+theorem eraseFirstSameTet_count_flatMap
+    (target : Tet) (tets : List Tet) (v : Nat)
+    (hex : ∃ τ ∈ tets, SameTetVertices τ target)
+    (hcount :
+      ∀ τ ∈ tets,
+        SameTetVertices τ target →
+        τ.verts.count v = target.verts.count v) :
+    (tets.flatMap Tet.verts).count v =
+      ((eraseFirstSameTet target tets).flatMap Tet.verts).count v +
+        target.verts.count v := by
+  induction tets with
+  | nil =>
+      simp at hex
+  | cons τ rest ih =>
+      by_cases hb : sameTetVerticesBool τ target = true
+      · have hm : SameTetVertices τ target :=
+          (sameTetVerticesBool_eq_true_iff τ target).1 hb
+        have hc :
+            τ.verts.count v = target.verts.count v :=
+          hcount τ (by simp) hm
+        simp [eraseFirstSameTet, hb, hc, Nat.add_comm]
+      · have hbfalse : sameTetVerticesBool τ target = false := by
+          cases hbool : sameTetVerticesBool τ target with
+          | false =>
+              rfl
+          | true =>
+              exact (hb hbool).elim
+
+        have hhead : ¬ SameTetVertices τ target := by
+          intro hm
+          exact hb ((sameTetVerticesBool_eq_true_iff τ target).2 hm)
+
+        have hexrest :
+            ∃ σ ∈ rest, SameTetVertices σ target := by
+          rcases hex with ⟨σ, hmem, hm⟩
+          have hs : σ = τ ∨ σ ∈ rest := by
+            simpa using hmem
+          cases hs with
+          | inl heq =>
+              subst σ
+              exact (hhead hm).elim
+          | inr hrest =>
+              exact ⟨σ, hrest, hm⟩
+
+        have hcountrest :
+            ∀ σ ∈ rest,
+              SameTetVertices σ target →
+              σ.verts.count v = target.verts.count v := by
+          intro σ hmem hm
+          exact hcount σ (by simp [hmem]) hm
+
+        have hi := ih hexrest hcountrest
+        simp [eraseFirstSameTet, hbfalse, hi, Nat.add_assoc]
+
 def Move23Site.replace (s : Move23Site) (K : Triangulation) : Triangulation :=
   let afterLeft := eraseFirstSameTet s.leftTet K.tets
   let afterRight := eraseFirstSameTet s.rightTet afterLeft
