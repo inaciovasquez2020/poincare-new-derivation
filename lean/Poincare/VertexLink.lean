@@ -691,6 +691,78 @@ theorem represented_linkEdge_link_incidence_two
       K hcore v e hrep
 
 
+theorem vertexLinkTriangles_nodup
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat) :
+    (vertexLinkTriangles K v).Nodup := by
+  unfold vertexLinkTriangles
+
+  apply
+    (hcore.2.1.filterMap
+      (fun τ => τ.linkTriangleAt? v))
+
+  intro τ ρ hnotSame
+  intro σ hστ
+  intro ψ hψρ
+  intro hσψ
+
+  have hτExtract :
+      τ.linkTriangleAt? v = some σ := by
+    simpa using hστ
+
+  have hρExtract :
+      ρ.linkTriangleAt? v = some ψ := by
+    simpa using hψρ
+
+  subst ψ
+
+  apply hnotSame
+
+  intro y
+  by_cases hyv : y = v
+
+  · subst y
+
+    have hvτ :
+        v ∈ τ.verts := by
+      rw [← τ.linkTriangleAt?_isSome_iff v]
+      simp [hτExtract]
+
+    have hvρ :
+        v ∈ ρ.verts := by
+      rw [← ρ.linkTriangleAt?_isSome_iff v]
+      simp [hρExtract]
+
+    exact ⟨fun _ => hvρ, fun _ => hvτ⟩
+
+  · constructor
+
+    · intro hyτ
+
+      have hyσ :
+          y ∈ σ.verts :=
+        (τ.mem_linkTriangleAt?_iff
+          v y σ hτExtract hyv).2 hyτ
+
+      exact
+        (ρ.mem_linkTriangleAt?_iff
+          v y σ hρExtract hyv).1 hyσ
+
+    · intro hyρ
+
+      have hyσ :
+          y ∈ σ.verts :=
+        (ρ.mem_linkTriangleAt?_iff
+          v y σ hρExtract hyv).2 hyρ
+
+      exact
+        (τ.mem_linkTriangleAt?_iff
+          v y σ hτExtract hyv).1 hyσ
+
+
+
+
 def LinkTriangle.commonVertexCount
     (σ ρ : LinkTriangle) : Nat :=
   (σ.verts.eraseDups.filter
