@@ -150,4 +150,26 @@ theorem tetrahedronSimplex_points_eq_affineBasis :
 
   rfl
 
+
+/--
+The geometric face opposite `i : Fin 4` has exactly the three tetrahedral
+vertices whose labels lie in `Finset.univ.erase i`.
+-/
+theorem tetrahedronFaceOpposite_vertexSet_eq_image_erase
+    (i : Fin 4) :
+    Set.range
+        (tetrahedronSimplex.faceOpposite i).points =
+      tetrahedronSimplex.points ''
+        (↑(Finset.univ.erase i) : Set (Fin 4)) := by
+
+  rw [
+    Affine.Simplex.range_faceOpposite_points
+  ]
+
+  congr 1
+
+  ext j
+
+  simp
+
 end Poincare
