@@ -951,4 +951,199 @@ theorem edgePinchCandidate_vertexLinkConnected_one :
     (toRoot σ hσ)
     (fromRoot ρ hρ)
 
+theorem edgePinchCandidate_vertexLinkConnected_two :
+    VertexLinkConnected edgePinchCandidate 2 := by
+
+  have hlink :
+      vertexLinkTriangles edgePinchCandidate 2 =
+        [
+          ⟨0, 1, 3⟩,
+          ⟨0, 1, 4⟩,
+          ⟨0, 3, 5⟩,
+          ⟨0, 4, 6⟩,
+          ⟨0, 5, 6⟩,
+          ⟨1, 3, 5⟩,
+          ⟨1, 4, 6⟩,
+          ⟨1, 5, 6⟩
+        ] := by
+    native_decide
+
+  intro σ hσ ρ hρ
+
+  have edgePath
+      (a b : LinkTriangle)
+      (h : VertexLinkAdjacent edgePinchCandidate 2 a b) :
+      Relation.ReflTransGen
+        (VertexLinkAdjacent edgePinchCandidate 2)
+        a b :=
+    Relation.ReflTransGen.single h
+
+  have toRoot :
+      ∀ τ ∈ vertexLinkTriangles edgePinchCandidate 2,
+        Relation.ReflTransGen
+          (VertexLinkAdjacent edgePinchCandidate 2)
+          τ ⟨0, 1, 3⟩ := by
+    intro τ hτ
+
+    by_cases h013 : τ = ⟨0, 1, 3⟩
+    · subst τ
+      exact Relation.ReflTransGen.refl
+
+    by_cases h014 : τ = ⟨0, 1, 4⟩
+    · subst τ
+      exact edgePath _ _ (by native_decide)
+
+    by_cases h035 : τ = ⟨0, 3, 5⟩
+    · subst τ
+      exact edgePath _ _ (by native_decide)
+
+    by_cases h046 : τ = ⟨0, 4, 6⟩
+    · subst τ
+      exact Relation.ReflTransGen.trans
+        (edgePath
+          ⟨0, 4, 6⟩
+          ⟨0, 1, 4⟩
+          (by native_decide))
+        (edgePath
+          ⟨0, 1, 4⟩
+          ⟨0, 1, 3⟩
+          (by native_decide))
+
+    by_cases h056 : τ = ⟨0, 5, 6⟩
+    · subst τ
+      exact Relation.ReflTransGen.trans
+        (edgePath
+          ⟨0, 5, 6⟩
+          ⟨0, 4, 6⟩
+          (by native_decide))
+        (Relation.ReflTransGen.trans
+          (edgePath
+            ⟨0, 4, 6⟩
+            ⟨0, 1, 4⟩
+            (by native_decide))
+          (edgePath
+            ⟨0, 1, 4⟩
+            ⟨0, 1, 3⟩
+            (by native_decide)))
+
+    by_cases h135 : τ = ⟨1, 3, 5⟩
+    · subst τ
+      exact edgePath _ _ (by native_decide)
+
+    by_cases h146 : τ = ⟨1, 4, 6⟩
+    · subst τ
+      exact Relation.ReflTransGen.trans
+        (edgePath
+          ⟨1, 4, 6⟩
+          ⟨0, 1, 4⟩
+          (by native_decide))
+        (edgePath
+          ⟨0, 1, 4⟩
+          ⟨0, 1, 3⟩
+          (by native_decide))
+
+    by_cases h156 : τ = ⟨1, 5, 6⟩
+    · subst τ
+      exact Relation.ReflTransGen.trans
+        (edgePath
+          ⟨1, 5, 6⟩
+          ⟨1, 3, 5⟩
+          (by native_decide))
+        (edgePath
+          ⟨1, 3, 5⟩
+          ⟨0, 1, 3⟩
+          (by native_decide))
+
+    rw [hlink] at hτ
+    simp [
+      h013, h014, h035, h046,
+      h056, h135, h146, h156
+    ] at hτ
+
+  have fromRoot :
+      ∀ τ ∈ vertexLinkTriangles edgePinchCandidate 2,
+        Relation.ReflTransGen
+          (VertexLinkAdjacent edgePinchCandidate 2)
+          ⟨0, 1, 3⟩ τ := by
+    intro τ hτ
+
+    by_cases h013 : τ = ⟨0, 1, 3⟩
+    · subst τ
+      exact Relation.ReflTransGen.refl
+
+    by_cases h014 : τ = ⟨0, 1, 4⟩
+    · subst τ
+      exact edgePath _ _ (by native_decide)
+
+    by_cases h035 : τ = ⟨0, 3, 5⟩
+    · subst τ
+      exact edgePath _ _ (by native_decide)
+
+    by_cases h046 : τ = ⟨0, 4, 6⟩
+    · subst τ
+      exact Relation.ReflTransGen.trans
+        (edgePath
+          ⟨0, 1, 3⟩
+          ⟨0, 1, 4⟩
+          (by native_decide))
+        (edgePath
+          ⟨0, 1, 4⟩
+          ⟨0, 4, 6⟩
+          (by native_decide))
+
+    by_cases h056 : τ = ⟨0, 5, 6⟩
+    · subst τ
+      exact Relation.ReflTransGen.trans
+        (edgePath
+          ⟨0, 1, 3⟩
+          ⟨0, 1, 4⟩
+          (by native_decide))
+        (Relation.ReflTransGen.trans
+          (edgePath
+            ⟨0, 1, 4⟩
+            ⟨0, 4, 6⟩
+            (by native_decide))
+          (edgePath
+            ⟨0, 4, 6⟩
+            ⟨0, 5, 6⟩
+            (by native_decide)))
+
+    by_cases h135 : τ = ⟨1, 3, 5⟩
+    · subst τ
+      exact edgePath _ _ (by native_decide)
+
+    by_cases h146 : τ = ⟨1, 4, 6⟩
+    · subst τ
+      exact Relation.ReflTransGen.trans
+        (edgePath
+          ⟨0, 1, 3⟩
+          ⟨0, 1, 4⟩
+          (by native_decide))
+        (edgePath
+          ⟨0, 1, 4⟩
+          ⟨1, 4, 6⟩
+          (by native_decide))
+
+    by_cases h156 : τ = ⟨1, 5, 6⟩
+    · subst τ
+      exact Relation.ReflTransGen.trans
+        (edgePath
+          ⟨0, 1, 3⟩
+          ⟨1, 3, 5⟩
+          (by native_decide))
+        (edgePath
+          ⟨1, 3, 5⟩
+          ⟨1, 5, 6⟩
+          (by native_decide))
+
+    rw [hlink] at hτ
+    simp [
+      h013, h014, h035, h046,
+      h056, h135, h146, h156
+    ] at hτ
+
+  exact Relation.ReflTransGen.trans
+    (toRoot σ hσ)
+    (fromRoot ρ hρ)
+
 end Poincare
