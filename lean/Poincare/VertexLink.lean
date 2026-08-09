@@ -870,6 +870,44 @@ theorem VertexLinkStarAdjacent.right_mem
   h.2.1
 
 
+def vertexLinkStarGraph
+    (K : Triangulation)
+    (v x : Nat) :
+    SimpleGraph
+      {σ : LinkTriangle //
+        σ ∈ vertexLinkStarTriangles K v x} :=
+  SimpleGraph.fromRel
+    (fun σ ρ =>
+      VertexLinkStarAdjacent
+        K v x σ.1 ρ.1)
+
+
+
+
+@[simp]
+theorem vertexLinkStarGraph_adj
+    (K : Triangulation)
+    (v x : Nat)
+    (σ ρ :
+      {τ : LinkTriangle //
+        τ ∈ vertexLinkStarTriangles K v x}) :
+    (vertexLinkStarGraph K v x).Adj σ ρ ↔
+      σ ≠ ρ ∧
+      VertexLinkStarAdjacent K v x σ.1 ρ.1 := by
+  rw [vertexLinkStarGraph, SimpleGraph.fromRel_adj]
+  constructor
+  · rintro ⟨hne, h | h⟩
+    · exact ⟨hne, h⟩
+    · exact
+        ⟨hne,
+         VertexLinkStarAdjacent.symm
+           K v x ρ.1 σ.1 h⟩
+  · rintro ⟨hne, h⟩
+    exact ⟨hne, Or.inl h⟩
+
+
+
+
 def VertexLinkStarConnected
     (K : Triangulation)
     (v x : Nat) : Prop :=
