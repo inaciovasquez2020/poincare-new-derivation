@@ -1379,4 +1379,75 @@ def VertexLinksLocallyConnected
     VertexLinkLocallyConnected K v
 
 
+
+def VertexLinkClosedSurfaceCertificate
+    (K : Triangulation)
+    (v : Nat) : Prop :=
+  (∀ σ ∈ vertexLinkTriangles K v,
+      σ.verts.Nodup) ∧
+
+  (vertexLinkTriangles K v).Pairwise
+    (fun σ ρ =>
+      ¬ ∀ y : Nat,
+          y ∈ σ.verts ↔
+          y ∈ ρ.verts) ∧
+
+  (∀ e : LinkEdge,
+      e.RepresentedAt K v →
+        ((vertexLinkTriangles K v).filter
+          (fun σ => decide (e.InTriangle σ))).length = 2) ∧
+
+  ∀ x : Nat,
+    VertexLinkVertexRepresented K v x →
+      ∃
+        (σ :
+          {τ : LinkTriangle //
+            τ ∈ vertexLinkStarTriangles K v x}),
+        ∃
+          (p :
+            (vertexLinkStarGraph K v x).Walk σ σ),
+          p.IsCycle ∧
+          p.toSubgraph.verts =
+            (Set.univ :
+              Set
+                {τ : LinkTriangle //
+                  τ ∈ vertexLinkStarTriangles K v x})
+
+
+theorem vertexLinkClosedSurfaceCertificate_of_closedCore
+    (K : Triangulation)
+    (v : Nat)
+    (hcore : ClosedTriangulationCore K)
+    (hlocal : VertexLinkLocallyConnected K v)
+    (hdeg :
+      ∀ x : Nat,
+        VertexLinkVertexRepresented K v x →
+          VertexLinkStarDegreeTwo K v x) :
+    VertexLinkClosedSurfaceCertificate K v := by
+
+  refine ⟨?_, ?_, ?_, ?_⟩
+
+  · intro σ hσ
+    exact
+      vertexLinkTriangles_triangle_nodup
+        K hcore v σ hσ
+
+  · exact
+      vertexLinkTriangles_pairwise_vertexSet_ne
+        K hcore v
+
+  · intro e hrep
+    exact
+      represented_linkEdge_link_incidence_two
+        K hcore v e hrep
+
+  · intro x hrep
+    exact
+      exists_vertexLinkStar_coveringCycle
+        K v x
+        hrep
+        (hlocal x hrep)
+        (hdeg x hrep)
+
+
 end Poincare
