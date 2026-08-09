@@ -717,6 +717,15 @@ def VertexLinkAdjacent
   )
 
 
+instance instDecidableVertexLinkAdjacent
+    (K : Triangulation)
+    (v : Nat)
+    (σ ρ : LinkTriangle) :
+    Decidable (VertexLinkAdjacent K v σ ρ) := by
+  unfold VertexLinkAdjacent
+  infer_instance
+
+
 theorem VertexLinkAdjacent.symm
     (K : Triangulation)
     (v : Nat)
