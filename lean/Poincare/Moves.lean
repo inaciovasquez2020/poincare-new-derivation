@@ -565,4 +565,52 @@ theorem Move23Site.replace_vertexDegree_site
   · omega
   · omega
 
+
+theorem Move23Site.replace_vertexDegree_offSite
+    (s : Move23Site) (K : Triangulation)
+    (hlegal : s.LegalIn K)
+    (v : Nat)
+    (hva : v ≠ s.a)
+    (hvb : v ≠ s.b)
+    (hvc : v ≠ s.c)
+    (hvd : v ≠ s.d)
+    (hve : v ≠ s.e) :
+    vertexDegree (s.replace K) v = vertexDegree K v := by
+
+  have hav : s.a ≠ v := by
+    intro h
+    exact hva h.symm
+
+  have hbv : s.b ≠ v := by
+    intro h
+    exact hvb h.symm
+
+  have hcv : s.c ≠ v := by
+    intro h
+    exact hvc h.symm
+
+  have hdv : s.d ≠ v := by
+    intro h
+    exact hvd h.symm
+
+  have hev : s.e ≠ v := by
+    intro h
+    exact hve h.symm
+
+  have h :=
+    s.replace_vertexDegree_balance K hlegal v
+
+  simp [
+    Move23Site.leftTet,
+    Move23Site.rightTet,
+    Move23Site.newTet₀,
+    Move23Site.newTet₁,
+    Move23Site.newTet₂,
+    Tet.verts,
+    hva, hvb, hvc, hvd, hve,
+    hav, hbv, hcv, hdv, hev
+  ] at h
+
+  omega
+
 end Poincare
