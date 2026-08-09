@@ -275,4 +275,25 @@ theorem vertexLinkComplementaryFace_realizedVertices_eq_tetrahedronFacet
         hτ.2.1,
         hτ.2.2.1⟩
 
+
+/--
+The geometric realization of an abstract vertex-link triangle is the convex
+hull of the geometric realizations of its represented vertices.
+-/
+noncomputable def vertexLinkGeometricFace
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert :
+      VertexLinkTetrahedralBoundaryCertificate
+        K hcore v)
+    (σ : LinkTriangle) :
+    Set TetrahedronAmbient :=
+  convexHull ℝ
+    (vertexLinkGeometricVertex
+          K hcore v hcert ''
+      {x :
+        ↥((vertexLinkVertices K v).toFinset) |
+          x.1 ∈ σ.verts})
+
 end Poincare
