@@ -1117,6 +1117,106 @@ theorem VertexLinkStarDegreeTwo.isCycles
 
 
 
+theorem exists_vertexLinkStar_coveringCycle
+    (K : Triangulation)
+    (v x : Nat)
+    (hrep : VertexLinkVertexRepresented K v x)
+    (hconn : VertexLinkStarConnected K v x)
+    (hdeg : VertexLinkStarDegreeTwo K v x) :
+    ∃
+      (σ :
+        {τ : LinkTriangle //
+          τ ∈ vertexLinkStarTriangles K v x}),
+      ∃
+        (p :
+          (vertexLinkStarGraph K v x).Walk σ σ),
+        p.IsCycle ∧
+        p.toSubgraph.verts =
+          (Set.univ :
+            Set
+              {τ : LinkTriangle //
+                τ ∈ vertexLinkStarTriangles K v x}) := by
+
+  obtain ⟨σ, hσ⟩ :=
+    (vertexLinkVertexRepresented_iff_star_nonempty
+      K v x).1 hrep
+
+  let s :
+      {τ : LinkTriangle //
+        τ ∈ vertexLinkStarTriangles K v x} :=
+    ⟨σ, hσ⟩
+
+  have hpre :
+      (vertexLinkStarGraph K v x).Preconnected :=
+    VertexLinkStarConnected.preconnected
+      K v x hconn
+
+  have hcycles :
+      (vertexLinkStarGraph K v x).IsCycles :=
+    VertexLinkStarDegreeTwo.isCycles
+      K v x hdeg
+
+  obtain
+    ⟨ρ₁, ρ₂,
+      hρ₁σ, hρ₂σ, hρ₁ρ₂,
+      hσρ₁, hσρ₂, hall⟩ :=
+    hdeg σ hσ
+
+  have hρ₁mem :
+      ρ₁ ∈ vertexLinkStarTriangles K v x :=
+    VertexLinkStarAdjacent.right_mem
+      K v x σ ρ₁ hσρ₁
+
+  let r₁ :
+      {τ : LinkTriangle //
+        τ ∈ vertexLinkStarTriangles K v x} :=
+    ⟨ρ₁, hρ₁mem⟩
+
+  have hsr₁ : s ≠ r₁ := by
+    intro heq
+    apply hρ₁σ
+    exact (congrArg Subtype.val heq).symm
+
+  have hn :
+      ((vertexLinkStarGraph K v x).neighborSet s).Nonempty := by
+    refine ⟨r₁, ?_⟩
+    rw [
+      SimpleGraph.mem_neighborSet,
+      vertexLinkStarGraph_adj
+    ]
+    exact ⟨hsr₁, hσρ₁⟩
+
+  have hsupp :
+      ((vertexLinkStarGraph K v x).connectedComponentMk s).supp =
+        (Set.univ :
+          Set
+            {τ : LinkTriangle //
+              τ ∈ vertexLinkStarTriangles K v x}) := by
+    apply Set.eq_univ_of_forall
+    intro t
+    rw [
+      SimpleGraph.ConnectedComponent.mem_supp_iff
+    ]
+    exact
+      SimpleGraph.ConnectedComponent.sound
+        (hpre t s)
+
+  obtain ⟨p, hpCycle, hpVerts⟩ :=
+    hcycles.exists_cycle_toSubgraph_verts_eq_connectedComponentSupp
+      (c :=
+        (vertexLinkStarGraph K v x).connectedComponentMk s)
+      (v := s)
+      (by
+        exact
+          SimpleGraph.ConnectedComponent.connectedComponentMk_mem)
+      hn
+
+  refine ⟨s, p, hpCycle, ?_⟩
+  rw [hpVerts, hsupp]
+
+
+
+
 def VertexLinkLocallyConnected
     (K : Triangulation)
     (v : Nat) : Prop :=
