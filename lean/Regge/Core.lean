@@ -1,6 +1,7 @@
 import Regge.So3Concrete
 import Mathlib.Data.Matrix.Basic
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import Mathlib.LinearAlgebra.Matrix.Nondegenerate
 import Mathlib.Data.Real.Basic
 
 namespace Regge
