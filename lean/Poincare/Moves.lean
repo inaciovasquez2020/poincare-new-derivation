@@ -1,4 +1,5 @@
 import Poincare.Triangulation
+import Mathlib.Tactic
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Multiset.Count
 
@@ -456,5 +457,112 @@ theorem Move23Site.replace_vertexDegree_balance
 
 def applyMove (T : Triangulation) (_ : PachnerMove) : Triangulation := T
 def selectMove (_T : Triangulation) : PachnerMove := PachnerMove.move23
+
+
+theorem Move23Site.replace_vertexDegree_site
+    (s : Move23Site) (K : Triangulation)
+    (hlegal : s.LegalIn K) :
+    vertexDegree (s.replace K) s.a = vertexDegree K s.a ∧
+    vertexDegree (s.replace K) s.b = vertexDegree K s.b ∧
+    vertexDegree (s.replace K) s.c = vertexDegree K s.c ∧
+    vertexDegree (s.replace K) s.d = vertexDegree K s.d + 2 ∧
+    vertexDegree (s.replace K) s.e = vertexDegree K s.e + 2 := by
+
+  have hab : s.a ≠ s.b := by
+    intro h
+    have hs := s.distinct
+    simp [h] at hs
+
+  have hac : s.a ≠ s.c := by
+    intro h
+    have hs := s.distinct
+    simp [h] at hs
+
+  have had : s.a ≠ s.d := by
+    intro h
+    have hs := s.distinct
+    simp [h] at hs
+
+  have hae : s.a ≠ s.e := by
+    intro h
+    have hs := s.distinct
+    simp [h] at hs
+
+  have hbc : s.b ≠ s.c := by
+    intro h
+    have hs := s.distinct
+    simp [h] at hs
+
+  have hbd : s.b ≠ s.d := by
+    intro h
+    have hs := s.distinct
+    simp [h] at hs
+
+  have hbe : s.b ≠ s.e := by
+    intro h
+    have hs := s.distinct
+    simp [h] at hs
+
+  have hcd : s.c ≠ s.d := by
+    intro h
+    have hs := s.distinct
+    simp [h] at hs
+
+  have hce : s.c ≠ s.e := by
+    intro h
+    have hs := s.distinct
+    simp [h] at hs
+
+  have hde : s.d ≠ s.e := by
+    intro h
+    have hs := s.distinct
+    simp [h] at hs
+
+  have hba : s.b ≠ s.a := fun h => hab h.symm
+  have hca : s.c ≠ s.a := fun h => hac h.symm
+  have hda : s.d ≠ s.a := fun h => had h.symm
+  have hea : s.e ≠ s.a := fun h => hae h.symm
+  have hcb : s.c ≠ s.b := fun h => hbc h.symm
+  have hdb : s.d ≠ s.b := fun h => hbd h.symm
+  have heb : s.e ≠ s.b := fun h => hbe h.symm
+  have hdc : s.d ≠ s.c := fun h => hcd h.symm
+  have hec : s.e ≠ s.c := fun h => hce h.symm
+  have hed : s.e ≠ s.d := fun h => hde h.symm
+
+  have hA :=
+    s.replace_vertexDegree_balance K hlegal s.a
+  have hB :=
+    s.replace_vertexDegree_balance K hlegal s.b
+  have hC :=
+    s.replace_vertexDegree_balance K hlegal s.c
+  have hD :=
+    s.replace_vertexDegree_balance K hlegal s.d
+  have hE :=
+    s.replace_vertexDegree_balance K hlegal s.e
+
+  simp [
+    Move23Site.leftTet,
+    Move23Site.rightTet,
+    Move23Site.newTet₀,
+    Move23Site.newTet₁,
+    Move23Site.newTet₂,
+    Tet.verts,
+    hab, hac, had, hae,
+    hbc, hbd, hbe,
+    hcd, hce, hde,
+    hba, hca, hda, hea,
+    hcb, hdb, heb,
+    hdc, hec, hed
+  ] at hA hB hC hD hE
+
+  constructor
+  · omega
+  constructor
+  · omega
+  constructor
+  · omega
+  constructor
+  · omega
+  · omega
 
 end Poincare
