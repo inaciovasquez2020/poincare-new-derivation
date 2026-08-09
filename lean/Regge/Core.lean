@@ -9,7 +9,8 @@ structure SimplicialComplex where
   V : Type u
   E : Type v
 
-axiom TetraGeom : Type
+structure TetraGeom where
+  G : Matrix (Fin 3) (Fin 3) ℝ
 axiom FundamentalGroup : SimplicialComplex → Type
 
 def detG (_ : TetraGeom) : Nat := 1
