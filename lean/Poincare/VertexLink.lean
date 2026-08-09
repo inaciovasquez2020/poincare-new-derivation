@@ -3234,6 +3234,127 @@ theorem vertexLinkEulerCharacteristic_eq_two_of_vertexDefect_zero
   norm_num
 
 
+theorem vertexLinkFace_has_unique_omitted_vertex
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hzero : vertexDefect K v = 0)
+    (hdeg :
+      ∀ x : Nat,
+        VertexLinkVertexRepresented K v x →
+          VertexLinkStarDegreeTwo K v x)
+    (σ : LinkTriangle)
+    (hσ :
+      σ ∈ vertexLinkTriangles K v) :
+    ∃! x : Nat,
+      x ∈ vertexLinkVertices K v ∧
+        x ∉ σ.verts := by
+
+  let V : Finset Nat :=
+    (vertexLinkVertices K v).toFinset
+
+  let S : Finset Nat :=
+    σ.verts.toFinset
+
+  have hVnodup :
+      (vertexLinkVertices K v).Nodup := by
+
+    unfold vertexLinkVertices
+
+    exact
+      eraseDups_nodup_nat
+        ((vertexLinkTriangles K v).flatMap
+          LinkTriangle.verts)
+
+  have hVcard :
+      V.card = 4 := by
+
+    change
+      (vertexLinkVertices K v).toFinset.card = 4
+
+    rw [
+      ← List.toFinset_eq hVnodup
+    ]
+
+    exact
+      vertexLinkVertices_length_eq_four_of_vertexDefect_zero
+        K hcore v hzero hdeg
+
+  have hσnodup :
+      σ.verts.Nodup :=
+    vertexLinkTriangles_triangle_nodup
+      K hcore v σ hσ
+
+  have hScard :
+      S.card = 3 := by
+
+    change
+      σ.verts.toFinset.card = 3
+
+    rw [
+      ← List.toFinset_eq hσnodup
+    ]
+
+    simp [LinkTriangle.verts]
+
+  have hSV :
+      S ⊆ V := by
+
+    intro x hx
+
+    have hxσ :
+        x ∈ σ.verts := by
+      simpa [S] using hx
+
+    have hxV :
+        x ∈ vertexLinkVertices K v :=
+      (mem_vertexLinkVertices_iff
+        K v x).2
+        ⟨σ, hσ, hxσ⟩
+
+    simpa [V] using hxV
+
+  have hInter :
+      S ∩ V = S :=
+    Finset.inter_eq_left.mpr hSV
+
+  have hdiffCard :
+      (V \ S).card = 1 := by
+
+    rw [
+      Finset.card_sdiff,
+      hInter,
+      hVcard,
+      hScard
+    ]
+
+  obtain ⟨x, hx⟩ :=
+    Finset.card_eq_one.mp hdiffCard
+
+  have hxDiff :
+      x ∈ V \ S := by
+    rw [hx]
+    simp
+
+  have hxMain :
+      x ∈ vertexLinkVertices K v ∧
+        x ∉ σ.verts := by
+    simpa [V, S] using hxDiff
+
+  refine
+    ⟨x, hxMain, ?_⟩
+
+  intro y hy
+
+  have hyDiff :
+      y ∈ V \ S := by
+    simpa [V, S] using hy
+
+  rw [hx] at hyDiff
+
+  simpa using hyDiff
+
+
 def VertexLinkClosedSurfaceCertificate
     (K : Triangulation)
     (v : Nat) : Prop :=
