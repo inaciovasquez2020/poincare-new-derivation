@@ -1,4 +1,5 @@
 import Mathlib.Analysis.Convex.GaugeRescale
+import Mathlib.Analysis.Convex.Combination
 import Mathlib.Analysis.Convex.Topology
 import Mathlib.Analysis.Normed.Affine.AddTorsorBases
 import Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional
@@ -171,5 +172,86 @@ theorem tetrahedronFaceOpposite_vertexSet_eq_image_erase
   ext j
 
   simp
+
+/--
+The frontier of the tetrahedral body is exactly the union of its four filled
+facets.
+-/
+theorem tetrahedronFrontier_eq_facetUnion :
+    frontier tetrahedronBody =
+      {p | ∃ i : Fin 4,
+        p ∈ convexHull ℝ
+          (Set.range (tetrahedronSimplex.faceOpposite i).points)} := by
+  rw [tetrahedronBody_isCompact.isClosed.frontier_eq]
+  ext p
+  rw [mem_diff, mem_setOf_eq]
+  rw [tetrahedronBody, tetrahedronAffineBasis.interior_convexHull,
+    tetrahedronAffineBasis.convexHull_eq_nonneg_coord]
+  constructor
+  · rintro ⟨hpnonneg, hpnotpos⟩
+    change ¬ ∀ i, 0 < tetrahedronAffineBasis.coord i p at hpnotpos
+    rw [not_forall] at hpnotpos
+    simp only [not_lt] at hpnotpos
+    obtain ⟨i, hi⟩ := hpnotpos
+    have hizero : tetrahedronAffineBasis.coord i p = 0 :=
+      le_antisymm hi (hpnonneg i)
+    refine ⟨i, ?_⟩
+    let w : Fin 4 → ℝ := fun j => tetrahedronAffineBasis.coord j p
+    have hsum : ∑ j, w j = 1 :=
+      tetrahedronAffineBasis.sum_coord_apply_eq_one p
+    have hsum_erase : ∑ j ∈ Finset.univ.erase i, w j = 1 := by
+      rw [Finset.sum_erase]
+      · simpa [w, hizero] using hsum
+      · exact hizero
+    have hface : ∀ j ∈ Finset.univ.erase i,
+        tetrahedronSimplex.points j ∈
+          Set.range (tetrahedronSimplex.faceOpposite i).points := by
+      intro j hj
+      rw [Affine.Simplex.range_faceOpposite_points]
+      exact ⟨j, by simpa using hj, rfl⟩
+    have hmem := Finset.centerMass_mem_convexHull
+      (s := Set.range (tetrahedronSimplex.faceOpposite i).points)
+      (z := tetrahedronSimplex.points)
+      (Finset.univ.erase i) (fun j _ => hpnonneg j)
+      (hsum_erase.symm ▸ zero_lt_one) hface
+    rw [← affineCombination_eq_centerMass hsum_erase] at hmem
+    have heq : (Finset.univ.erase i).affineCombination ℝ
+        tetrahedronSimplex.points w = p := by
+      rw [Finset.affineCombination_eq_weightedVSubOfPoint_vadd_of_sum_eq_one
+        (Finset.univ.erase i) w tetrahedronSimplex.points hsum_erase
+        (tetrahedronSimplex.points i)]
+      rw [← tetrahedronAffineBasis.affineCombination_coord_eq_self p]
+      simp only [tetrahedronSimplex_points_eq_affineBasis]
+      rw [Finset.affineCombination_eq_weightedVSubOfPoint_vadd_of_sum_eq_one
+        Finset.univ w tetrahedronAffineBasis hsum (tetrahedronAffineBasis i)]
+      simp [w]
+    rwa [heq] at hmem
+  · rintro ⟨i, hpface⟩
+    have hsubset :
+        convexHull ℝ (Set.range (tetrahedronSimplex.faceOpposite i).points) ⊆
+          convexHull ℝ (Set.range tetrahedronAffineBasis) := by
+      apply convexHull_mono
+      rw [Affine.Simplex.range_faceOpposite_points,
+        tetrahedronSimplex_points_eq_affineBasis]
+      exact Set.image_subset_range _ _
+    have hpbodymem : p ∈ convexHull ℝ (Set.range tetrahedronAffineBasis) :=
+      hsubset hpface
+    have hpbody : ∀ j, 0 ≤ tetrahedronAffineBasis.coord j p := by
+      rwa [tetrahedronAffineBasis.convexHull_eq_nonneg_coord] at hpbodymem
+    refine ⟨hpbody, ?_⟩
+    intro hpinterior
+    have hpaff : p ∈ affineSpan ℝ
+        (Set.range (tetrahedronSimplex.faceOpposite i).points) :=
+      (convexHull_min (subset_affineSpan ℝ _) (affineSpan ℝ _).convex) hpface
+    have hsum := tetrahedronAffineBasis.sum_coord_apply_eq_one p
+    have hizero : tetrahedronAffineBasis.coord i p = 0 := by
+      have := (Affine.Simplex.affineCombination_mem_affineSpan_faceOpposite_iff
+        (s := tetrahedronSimplex) (i := i) hsum).mp ?_
+      · simpa [tetrahedronSimplex_points_eq_affineBasis] using this
+      · simpa [tetrahedronSimplex_points_eq_affineBasis,
+          tetrahedronAffineBasis.affineCombination_coord_eq_self p] using hpaff
+    have hipos := hpinterior i
+    rw [hizero] at hipos
+    exact (lt_irrefl 0) hipos
 
 end Poincare

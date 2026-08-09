@@ -392,4 +392,137 @@ noncomputable def vertexLinkGeometricRealization
       p ∈ vertexLinkGeometricFace
         K hcore v hcert σ}
 
+/--
+The certified geometric realization of the complete abstract vertex link is
+exactly the tetrahedral frontier.
+-/
+theorem vertexLinkGeometricRealization_eq_tetrahedronFrontier
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert : VertexLinkTetrahedralBoundaryCertificate K hcore v) :
+    vertexLinkGeometricRealization K hcore v hcert =
+      frontier tetrahedronBody := by
+  rw [tetrahedronFrontier_eq_facetUnion]
+  ext p
+  constructor
+  · rintro ⟨σ, hσ, hpσ⟩
+    let e := vertexLinkVertexEquivFin4 K hcore v hcert
+    let S := vertexLinkFaceLabelSupport K hcore v hcert σ
+    have hnodup := vertexLinkTriangles_triangle_nodup K hcore v σ hσ
+    have hScard : S.card ≤ 3 := by
+      have hmap : Set.MapsTo (fun i : Fin 4 => (e.symm i).1)
+          (↑S : Set (Fin 4)) (↑σ.verts.toFinset : Set Nat) := by
+        intro i hi
+        change i ∈ vertexLinkFaceLabelSupport K hcore v hcert σ at hi
+        rw [mem_vertexLinkFaceLabelSupport_iff] at hi
+        simpa [e] using hi
+      have hinj : Set.InjOn (fun i : Fin 4 => (e.symm i).1)
+          (↑S : Set (Fin 4)) := by
+        intro i _ j _ hij
+        apply e.symm.injective
+        apply Subtype.ext
+        exact hij
+      calc
+        S.card ≤ σ.verts.toFinset.card :=
+          Finset.card_le_card_of_injOn _ hmap hinj
+        _ = σ.verts.length := List.toFinset_card_of_nodup hnodup
+        _ = 3 := by simp [LinkTriangle.verts]
+    have hmissing : ∃ i : Fin 4, i ∉ S := by
+      by_contra h
+      push_neg at h
+      have hSuniv : S = Finset.univ := Finset.eq_univ_of_forall h
+      rw [hSuniv] at hScard
+      simp at hScard
+    obtain ⟨i, hi⟩ := hmissing
+    let x : ↥((vertexLinkVertices K v).toFinset) := e.symm i
+    have hxV : x.1 ∈ vertexLinkVertices K v :=
+      List.mem_toFinset.mp x.2
+    have hxnot : x.1 ∉ σ.verts := by
+      intro hx
+      apply hi
+      change i ∈ vertexLinkFaceLabelSupport K hcore v hcert σ
+      rw [mem_vertexLinkFaceLabelSupport_iff]
+      simpa [x, e] using hx
+    have hσsubset : σ.verts.toFinset ⊆
+        (vertexLinkVertices K v).toFinset.erase x.1 := by
+      intro y hy
+      have hylist : y ∈ σ.verts := List.mem_toFinset.mp hy
+      have hyV : y ∈ vertexLinkVertices K v :=
+        (mem_vertexLinkVertices_iff K v y).2 ⟨σ, hσ, hylist⟩
+      simp only [Finset.mem_erase]
+      exact ⟨fun hyx => hxnot (hyx ▸ hylist), List.mem_toFinset.mpr hyV⟩
+    have hσsupport : ∀ y : Nat,
+        y ∈ σ.verts ↔ y ∈ vertexLinkVertices K v ∧ y ≠ x.1 := by
+      have hcardV : (vertexLinkVertices K v).toFinset.card = 4 := by
+        have hVnodup : (vertexLinkVertices K v).Nodup := by
+          unfold vertexLinkVertices
+          exact eraseDups_nodup_nat _
+        rw [List.toFinset_card_of_nodup hVnodup]
+        exact hcert.1
+      have hcardErase : ((vertexLinkVertices K v).toFinset.erase x.1).card = 3 := by
+        rw [Finset.card_erase_of_mem x.2, hcardV]
+      have heq : σ.verts.toFinset =
+          (vertexLinkVertices K v).toFinset.erase x.1 := by
+        apply Finset.eq_of_subset_of_card_le hσsubset
+        rw [hcardErase, List.toFinset_card_of_nodup hnodup]
+        simp [LinkTriangle.verts]
+      intro y
+      rw [← List.mem_toFinset, heq]
+      simp [List.mem_toFinset, and_comm]
+    obtain ⟨τ, hτ, huniq⟩ :=
+      vertexLinkFin4Label_has_unique_complementary_face K hcore v hcert i
+    have hστ : σ = τ := by
+      apply huniq σ
+      refine ⟨hσ, ?_, ?_⟩
+      · simpa [x, e] using hσsupport
+      · ext j
+        rw [mem_vertexLinkFaceLabelSupport_iff]
+        rw [hσsupport]
+        simp only [Finset.mem_erase, Finset.mem_univ, and_true]
+        constructor
+        · rintro ⟨_, hj⟩
+          intro hji
+          subst j
+          apply hj
+          simp [x, e]
+        · intro hji
+          refine ⟨List.mem_toFinset.mp ((e.symm j).2), ?_⟩
+          intro hval
+          apply hji
+          apply e.symm.injective
+          apply Subtype.ext
+          simpa [x, e] using hval
+    rw [hστ] at hpσ
+    obtain ⟨ρ, hρ, _⟩ :=
+      vertexLinkComplementaryFace_geometricFace_eq_tetrahedronFacetConvexHull
+        K hcore v hcert i
+    have hρτ : ρ = τ := by
+      apply huniq ρ
+      exact ⟨hρ.1, hρ.2.1, hρ.2.2.1⟩
+    rw [hρτ] at hρ
+    exact ⟨i, hρ.2.2.2 ▸ hpσ⟩
+  · rintro ⟨i, hp⟩
+    obtain ⟨σ, hσ, _⟩ :=
+      vertexLinkComplementaryFace_geometricFace_eq_tetrahedronFacetConvexHull
+        K hcore v hcert i
+    rcases hσ with ⟨hσtri, _, _, hσface⟩
+    exact ⟨σ, hσtri, hσface ▸ hp⟩
+
+/--
+The subtype of the certified geometric vertex-link realization is
+homeomorphic to the unit two-sphere in the ambient Euclidean three-space.
+-/
+noncomputable def vertexLinkGeometricRealizationHomeomorphUnitSphere
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert : VertexLinkTetrahedralBoundaryCertificate K hcore v) :
+    ↥(vertexLinkGeometricRealization K hcore v hcert) ≃ₜ
+      ↥(Metric.sphere (0 : TetrahedronAmbient) 1) :=
+  (Homeomorph.setCongr
+      (vertexLinkGeometricRealization_eq_tetrahedronFrontier
+        K hcore v hcert)).trans
+    tetrahedronFrontierHomeomorphUnitSphere
+
 end Poincare
