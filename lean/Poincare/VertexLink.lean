@@ -2741,6 +2741,215 @@ theorem vertexLinkVertexIncidences_count_eq_star_length
       hnodup
 
 
+theorem vertexLink_sum_star_lengths_eq_three_mul_faces
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat) :
+    ∑ x ∈ (vertexLinkVertices K v).toFinset,
+      (vertexLinkStarTriangles K v x).length =
+        3 * (vertexLinkTriangles K v).length := by
+
+  let I :=
+    vertexLinkVertexIncidences K v
+
+  have hVI :
+      vertexLinkVertices K v =
+        I.eraseDups := by
+    rfl
+
+  have hsupport :
+      I.toFinset =
+        (vertexLinkVertices K v).toFinset := by
+
+    ext x
+
+    simp [hVI]
+
+  have hsumCount :
+      ∑ x ∈ I.toFinset,
+        I.count x =
+          I.length := by
+
+    have h :=
+      Multiset.sum_count_eq_card
+        (s := I.toFinset)
+        (m := (↑I : Multiset Nat))
+        (by
+          intro x hx
+          simpa using hx)
+
+    simpa using h
+
+  have hsumStar :
+      ∑ x ∈ I.toFinset,
+        (vertexLinkStarTriangles K v x).length =
+      ∑ x ∈ I.toFinset,
+        I.count x := by
+
+    apply Finset.sum_congr rfl
+
+    intro x hx
+
+    have hcount :=
+      vertexLinkVertexIncidences_count_eq_star_length
+        K hcore v x
+
+    simpa [I] using hcount.symm
+
+  calc
+    (∑ x ∈ (vertexLinkVertices K v).toFinset,
+        (vertexLinkStarTriangles K v x).length) =
+        ∑ x ∈ I.toFinset,
+          (vertexLinkStarTriangles K v x).length := by
+      rw [hsupport]
+
+    _ =
+        ∑ x ∈ I.toFinset,
+          I.count x :=
+      hsumStar
+
+    _ =
+        I.length :=
+      hsumCount
+
+    _ =
+        3 * (vertexLinkTriangles K v).length := by
+      simpa [I] using
+        vertexLinkVertexIncidences_length K v
+
+
+theorem vertexLink_three_mul_vertices_le_three_mul_faces_of_all_degree_two
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hdeg :
+      ∀ x : Nat,
+        VertexLinkVertexRepresented K v x →
+          VertexLinkStarDegreeTwo K v x) :
+    3 * (vertexLinkVertices K v).length ≤
+      3 * (vertexLinkTriangles K v).length := by
+
+  have hVnodup :
+      (vertexLinkVertices K v).Nodup := by
+
+    unfold vertexLinkVertices
+
+    exact
+      eraseDups_nodup_nat
+        ((vertexLinkTriangles K v).flatMap
+          LinkTriangle.verts)
+
+  have hVcard :
+      (vertexLinkVertices K v).toFinset.card =
+        (vertexLinkVertices K v).length := by
+
+    rw [
+      ← List.toFinset_eq hVnodup
+    ]
+
+    rfl
+
+  have hlocal :
+      ∀ x ∈ (vertexLinkVertices K v).toFinset,
+        3 ≤ (vertexLinkStarTriangles K v x).length := by
+
+    intro x hx
+
+    have hxV :
+        x ∈ vertexLinkVertices K v := by
+      simpa using hx
+
+    have hrep :
+        VertexLinkVertexRepresented K v x :=
+      (mem_vertexLinkVertices_iff
+        K v x).1 hxV
+
+    exact
+      represented_star_length_ge_three
+        K hcore v x
+        hrep
+        (hdeg x hrep)
+
+  have hsumLower :
+      3 * (vertexLinkVertices K v).toFinset.card ≤
+        ∑ x ∈ (vertexLinkVertices K v).toFinset,
+          (vertexLinkStarTriangles K v x).length := by
+
+    calc
+      3 * (vertexLinkVertices K v).toFinset.card =
+          ∑ x ∈ (vertexLinkVertices K v).toFinset, 3 := by
+        simp [Nat.mul_comm]
+
+      _ ≤
+          ∑ x ∈ (vertexLinkVertices K v).toFinset,
+            (vertexLinkStarTriangles K v x).length := by
+
+        apply Finset.sum_le_sum
+
+        intro x hx
+
+        exact
+          hlocal x hx
+
+  have hsum :=
+    vertexLink_sum_star_lengths_eq_three_mul_faces
+      K hcore v
+
+  calc
+    3 * (vertexLinkVertices K v).length =
+        3 * (vertexLinkVertices K v).toFinset.card := by
+      rw [hVcard]
+
+    _ ≤
+        ∑ x ∈ (vertexLinkVertices K v).toFinset,
+          (vertexLinkStarTriangles K v x).length :=
+      hsumLower
+
+    _ =
+        3 * (vertexLinkTriangles K v).length :=
+      hsum
+
+
+theorem vertexLinkVertices_length_le_faces_of_all_degree_two
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hdeg :
+      ∀ x : Nat,
+        VertexLinkVertexRepresented K v x →
+          VertexLinkStarDegreeTwo K v x) :
+    (vertexLinkVertices K v).length ≤
+      (vertexLinkTriangles K v).length := by
+
+  have h :=
+    vertexLink_three_mul_vertices_le_three_mul_faces_of_all_degree_two
+      K hcore v hdeg
+
+  omega
+
+
+theorem vertexLinkVertices_length_le_four_of_vertexDefect_zero
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hzero : vertexDefect K v = 0)
+    (hdeg :
+      ∀ x : Nat,
+        VertexLinkVertexRepresented K v x →
+          VertexLinkStarDegreeTwo K v x) :
+    (vertexLinkVertices K v).length ≤ 4 := by
+
+  have hVF :=
+    vertexLinkVertices_length_le_faces_of_all_degree_two
+      K hcore v hdeg
+
+  have hF :=
+    vertexLinkTriangles_length_eq_four_of_vertexDefect_zero
+      K hcore v hzero
+
+  omega
+
+
 def VertexLinkClosedSurfaceCertificate
     (K : Triangulation)
     (v : Nat) : Prop :=
