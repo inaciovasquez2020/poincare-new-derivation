@@ -2431,6 +2431,55 @@ theorem vertexLink_three_mul_faces_eq_two_mul_edges
         K hcore v
 
 
+theorem vertexLinkTriangles_length_eq_four_of_vertexDefect_zero
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hzero : vertexDefect K v = 0) :
+    (vertexLinkTriangles K v).length = 4 := by
+
+  have hdegInt :
+      (vertexDegree K v : Int) - 4 = 0 := by
+    simpa [
+      vertexDefect,
+      targetDegree
+    ] using hzero
+
+  have hdeg :
+      vertexDegree K v = 4 := by
+    omega
+
+  calc
+    (vertexLinkTriangles K v).length =
+        vertexDegree K v :=
+      vertexLinkTriangles_length_eq_vertexDegree
+        K hcore v
+
+    _ = 4 :=
+      hdeg
+
+
+theorem vertexLinkEdges_length_eq_six_of_vertexDefect_zero
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hzero : vertexDefect K v = 0) :
+    (vertexLinkEdges K hcore v).length = 6 := by
+
+  have hF :
+      (vertexLinkTriangles K v).length = 4 :=
+    vertexLinkTriangles_length_eq_four_of_vertexDefect_zero
+      K hcore v hzero
+
+  have hdouble :=
+    vertexLink_three_mul_faces_eq_two_mul_edges
+      K hcore v
+
+  rw [hF] at hdouble
+
+  omega
+
+
 def VertexLinkClosedSurfaceCertificate
     (K : Triangulation)
     (v : Nat) : Prop :=
