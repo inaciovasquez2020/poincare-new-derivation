@@ -37,7 +37,7 @@ def PhiSupport (K : Triangulation) : Nat :=
   (vertexSupport K).foldl (fun acc v => acc + vertexDefect K v) 0
 
 def normalized (K : Triangulation) : Prop :=
-  Phi K = 0
+  PhiSupport K = 0
 
 def S3 (K : Triangulation) : Prop :=
   normalized K
