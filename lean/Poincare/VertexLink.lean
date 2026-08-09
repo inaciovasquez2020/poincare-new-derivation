@@ -2950,6 +2950,244 @@ theorem vertexLinkVertices_length_le_four_of_vertexDefect_zero
   omega
 
 
+theorem vertexLinkVertices_length_ge_four_of_four_faces
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hF :
+      (vertexLinkTriangles K v).length = 4) :
+    4 ≤ (vertexLinkVertices K v).length := by
+
+  by_contra hnot
+
+  have hVle :
+      (vertexLinkVertices K v).length ≤ 3 := by
+    omega
+
+  cases hL :
+      vertexLinkTriangles K v with
+
+  | nil =>
+      simp [hL] at hF
+
+  | cons σ tl =>
+
+      cases htl :
+          tl with
+
+      | nil =>
+          simp [hL, htl] at hF
+
+      | cons ρ rest =>
+
+          have hσ :
+              σ ∈ vertexLinkTriangles K v := by
+            rw [hL]
+            simp
+
+          have hρ :
+              ρ ∈ vertexLinkTriangles K v := by
+            rw [hL, htl]
+            simp
+
+          have hσNodup :
+              σ.verts.Nodup :=
+            vertexLinkTriangles_triangle_nodup
+              K hcore v σ hσ
+
+          have hρNodup :
+              ρ.verts.Nodup :=
+            vertexLinkTriangles_triangle_nodup
+              K hcore v ρ hρ
+
+          have hpair :=
+            vertexLinkTriangles_pairwise_vertexSet_ne
+              K hcore v
+
+          rw [hL, htl] at hpair
+
+          have hgeom :
+              ¬ ∀ y : Nat,
+                  y ∈ σ.verts ↔
+                    y ∈ ρ.verts := by
+
+            cases hpair with
+
+            | cons hhead htail =>
+
+                exact
+                  hhead ρ
+                    (by simp)
+
+          let V :
+              Finset Nat :=
+            (vertexLinkVertices K v).toFinset
+
+          let S :
+              Finset Nat :=
+            σ.verts.toFinset
+
+          let R :
+              Finset Nat :=
+            ρ.verts.toFinset
+
+          have hVnodup :
+              (vertexLinkVertices K v).Nodup := by
+
+            unfold vertexLinkVertices
+
+            exact
+              eraseDups_nodup_nat
+                ((vertexLinkTriangles K v).flatMap
+                  LinkTriangle.verts)
+
+          have hVcard :
+              V.card =
+                (vertexLinkVertices K v).length := by
+
+            change
+              (vertexLinkVertices K v).toFinset.card =
+                (vertexLinkVertices K v).length
+
+            rw [
+              ← List.toFinset_eq hVnodup
+            ]
+
+            rfl
+
+          have hScard :
+              S.card = 3 := by
+
+            change
+              σ.verts.toFinset.card = 3
+
+            rw [
+              ← List.toFinset_eq hσNodup
+            ]
+
+            simp [LinkTriangle.verts]
+
+          have hRcard :
+              R.card = 3 := by
+
+            change
+              ρ.verts.toFinset.card = 3
+
+            rw [
+              ← List.toFinset_eq hρNodup
+            ]
+
+            simp [LinkTriangle.verts]
+
+          have hSV :
+              S ⊆ V := by
+
+            intro y hy
+
+            have hyσ :
+                y ∈ σ.verts := by
+              simpa [S] using hy
+
+            have hyGlobal :
+                y ∈ vertexLinkVertices K v :=
+              (mem_vertexLinkVertices_iff
+                K v y).2
+                ⟨σ, hσ, hyσ⟩
+
+            simpa [V] using hyGlobal
+
+          have hRV :
+              R ⊆ V := by
+
+            intro y hy
+
+            have hyρ :
+                y ∈ ρ.verts := by
+              simpa [R] using hy
+
+            have hyGlobal :
+                y ∈ vertexLinkVertices K v :=
+              (mem_vertexLinkVertices_iff
+                K v y).2
+                ⟨ρ, hρ, hyρ⟩
+
+            simpa [V] using hyGlobal
+
+          have hVcardLe :
+              V.card ≤ 3 := by
+            rw [hVcard]
+            exact hVle
+
+          have hSVeq :
+              S = V := by
+
+            apply
+              Finset.eq_of_subset_of_card_le
+                hSV
+
+            omega
+
+          have hRVeq :
+              R = V := by
+
+            apply
+              Finset.eq_of_subset_of_card_le
+                hRV
+
+            omega
+
+          have hSR :
+              S = R :=
+            hSVeq.trans hRVeq.symm
+
+          have hsame :
+              ∀ y : Nat,
+                y ∈ σ.verts ↔
+                  y ∈ ρ.verts := by
+
+            intro y
+
+            have hmem :=
+              congrArg
+                (fun T : Finset Nat =>
+                  y ∈ T)
+                hSR
+
+            simpa [S, R] using hmem
+
+          exact
+            hgeom hsame
+
+
+theorem vertexLinkVertices_length_eq_four_of_vertexDefect_zero
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hzero : vertexDefect K v = 0)
+    (hdeg :
+      ∀ x : Nat,
+        VertexLinkVertexRepresented K v x →
+          VertexLinkStarDegreeTwo K v x) :
+    (vertexLinkVertices K v).length = 4 := by
+
+  have hF :
+      (vertexLinkTriangles K v).length = 4 :=
+    vertexLinkTriangles_length_eq_four_of_vertexDefect_zero
+      K hcore v hzero
+
+  have hlo :
+      4 ≤ (vertexLinkVertices K v).length :=
+    vertexLinkVertices_length_ge_four_of_four_faces
+      K hcore v hF
+
+  have hhi :
+      (vertexLinkVertices K v).length ≤ 4 :=
+    vertexLinkVertices_length_le_four_of_vertexDefect_zero
+      K hcore v hzero hdeg
+
+  omega
+
+
 def VertexLinkClosedSurfaceCertificate
     (K : Triangulation)
     (v : Nat) : Prop :=
