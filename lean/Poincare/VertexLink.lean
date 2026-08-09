@@ -4056,6 +4056,155 @@ theorem vertexLinkEveryRepresentedVertex_has_unique_complementary_face
         ⟨hx, hxρ⟩⟩
 
 
+theorem vertexLinkEveryDistinctRepresentedVertexPair_is_edge
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hzero : vertexDefect K v = 0)
+    (hdeg :
+      ∀ x : Nat,
+        VertexLinkVertexRepresented K v x →
+          VertexLinkStarDegreeTwo K v x)
+    (a b : Nat)
+    (ha :
+      a ∈ vertexLinkVertices K v)
+    (hb :
+      b ∈ vertexLinkVertices K v)
+    (hne :
+      a ≠ b) :
+    LinkEdge.ofDistinct a b hne ∈
+      vertexLinkEdges K hcore v := by
+
+  let V : Finset Nat :=
+    (vertexLinkVertices K v).toFinset
+
+  have hVnodup :
+      (vertexLinkVertices K v).Nodup := by
+
+    unfold vertexLinkVertices
+
+    exact
+      eraseDups_nodup_nat
+        ((vertexLinkTriangles K v).flatMap
+          LinkTriangle.verts)
+
+  have hVcard :
+      V.card = 4 := by
+
+    change
+      (vertexLinkVertices K v).toFinset.card = 4
+
+    rw [
+      ← List.toFinset_eq hVnodup
+    ]
+
+    exact
+      vertexLinkVertices_length_eq_four_of_vertexDefect_zero
+        K hcore v hzero hdeg
+
+  have haV :
+      a ∈ V := by
+    simpa [V] using ha
+
+  have hbV :
+      b ∈ V := by
+    simpa [V] using hb
+
+  have hEraseA :
+      (V.erase a).card = 3 := by
+
+    rw [
+      Finset.card_erase_of_mem haV,
+      hVcard
+    ]
+
+  have hbEraseA :
+      b ∈ V.erase a := by
+
+    simp [
+      hbV,
+      Ne.symm hne
+    ]
+
+  have hEraseAB :
+      ((V.erase a).erase b).card = 2 := by
+
+    rw [
+      Finset.card_erase_of_mem hbEraseA,
+      hEraseA
+    ]
+
+  have hpos :
+      0 < ((V.erase a).erase b).card := by
+    omega
+
+  obtain
+    ⟨x, hxEraseAB⟩ :=
+    Finset.card_pos.mp hpos
+
+  have hxb :
+      x ≠ b :=
+    (Finset.mem_erase.mp hxEraseAB).1
+
+  have hxEraseA :
+      x ∈ V.erase a :=
+    (Finset.mem_erase.mp hxEraseAB).2
+
+  have hxa :
+      x ≠ a :=
+    (Finset.mem_erase.mp hxEraseA).1
+
+  have hxV :
+      x ∈ V :=
+    (Finset.mem_erase.mp hxEraseA).2
+
+  have hx :
+      x ∈ vertexLinkVertices K v := by
+    simpa [V] using hxV
+
+  obtain
+    ⟨σ, hσprop, hσuniq⟩ :=
+    vertexLinkEveryRepresentedVertex_has_unique_complementary_face
+      K hcore v hzero hdeg
+      x hx
+
+  rcases hσprop with
+    ⟨hσ, hsupport⟩
+
+  have haσ :
+      a ∈ σ.verts := by
+
+    apply
+      (hsupport a).2
+
+    exact
+      ⟨ha, Ne.symm hxa⟩
+
+  have hbσ :
+      b ∈ σ.verts := by
+
+    apply
+      (hsupport b).2
+
+    exact
+      ⟨hb, Ne.symm hxb⟩
+
+  have heIn :
+      (LinkEdge.ofDistinct a b hne).InTriangle σ :=
+    LinkEdge.ofDistinct_inTriangle
+      σ a b hne haσ hbσ
+
+  have hrep :
+      (LinkEdge.ofDistinct a b hne).RepresentedAt K v :=
+    ⟨σ, hσ, heIn⟩
+
+  exact
+    (mem_vertexLinkEdges_iff
+      K hcore v
+      (LinkEdge.ofDistinct a b hne)).2
+      hrep
+
+
 def VertexLinkClosedSurfaceCertificate
     (K : Triangulation)
     (v : Nat) : Prop :=
