@@ -879,6 +879,24 @@ def VertexLinkStarConnected
         σ ρ
 
 
+def VertexLinkStarDegreeTwo
+    (K : Triangulation)
+    (v x : Nat) : Prop :=
+  ∀ σ ∈ vertexLinkStarTriangles K v x,
+    ∃ ρ₁ ρ₂ : LinkTriangle,
+      ρ₁ ≠ σ ∧
+      ρ₂ ≠ σ ∧
+      ρ₁ ≠ ρ₂ ∧
+      VertexLinkStarAdjacent K v x σ ρ₁ ∧
+      VertexLinkStarAdjacent K v x σ ρ₂ ∧
+      ∀ ρ : LinkTriangle,
+        ρ ≠ σ →
+        VertexLinkStarAdjacent K v x σ ρ →
+        ρ = ρ₁ ∨ ρ = ρ₂
+
+
+
+
 def VertexLinkLocallyConnected
     (K : Triangulation)
     (v : Nat) : Prop :=
