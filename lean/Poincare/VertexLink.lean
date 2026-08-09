@@ -868,6 +868,103 @@ theorem LinkEdge.RepresentedAt_center_ne
     exact hEdge.2
 
 
+theorem vertexLinkTriangles_length_eq_vertexDegree
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat) :
+    (vertexLinkTriangles K v).length =
+      vertexDegree K v := by
+
+  have haux :
+      ∀ tets : List Tet,
+        (∀ τ ∈ tets, τ.verts.Nodup) →
+        (tets.filterMap
+          (fun τ =>
+            τ.linkTriangleAt? v)).length =
+          (tets.flatMap Tet.verts).count v := by
+
+    intro tets hnodup
+
+    induction tets with
+
+    | nil =>
+        simp
+
+    | cons τ tl ih =>
+
+        have hτ :
+            τ.verts.Nodup :=
+          hnodup τ (by simp)
+
+        have htl :
+            ∀ ρ ∈ tl,
+              ρ.verts.Nodup := by
+
+          intro ρ hρ
+
+          exact
+            hnodup ρ
+              (by simp [hρ])
+
+        have ih' :=
+          ih htl
+
+        by_cases hv :
+            v ∈ τ.verts
+
+        · have hcount :
+              τ.verts.count v = 1 :=
+            List.count_eq_one_of_mem
+              hτ hv
+
+          cases hopt :
+              τ.linkTriangleAt? v with
+
+          | none =>
+
+              have hnot :
+                  v ∉ τ.verts :=
+                (Tet.linkTriangleAt?_eq_none_iff
+                  τ v).1 hopt
+
+              exact
+                (hnot hv).elim
+
+          | some σ =>
+
+              simp [
+                hopt,
+                List.count_append,
+                hcount,
+                ih',
+                Nat.add_comm
+              ]
+
+        · have hnone :
+              τ.linkTriangleAt? v = none :=
+            (Tet.linkTriangleAt?_eq_none_iff
+              τ v).2 hv
+
+          have hcount :
+              τ.verts.count v = 0 :=
+            (List.count_eq_zero).2 hv
+
+          simp [
+            hnone,
+            List.count_append,
+            hcount,
+            ih'
+          ]
+
+
+  simpa [
+    vertexLinkTriangles,
+    vertexDegree,
+    allVerts
+  ] using
+    haux K.tets hcore.1
+
+
 def vertexLinkEdgeIncidences
     (K : Triangulation)
     (hcore : ClosedTriangulationCore K)
