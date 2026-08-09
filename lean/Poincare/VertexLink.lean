@@ -763,4 +763,125 @@ theorem ConnectedLinkClosedCore.vertexLinkConnected
   h.2 v hv
 
 
+
+def vertexLinkStarTriangles
+    (K : Triangulation)
+    (v x : Nat) : List LinkTriangle :=
+  (vertexLinkTriangles K v).filter
+    (fun σ => decide (x ∈ σ.verts))
+
+
+theorem mem_vertexLinkStarTriangles_iff
+    (K : Triangulation)
+    (v x : Nat)
+    (σ : LinkTriangle) :
+    σ ∈ vertexLinkStarTriangles K v x ↔
+      σ ∈ vertexLinkTriangles K v ∧
+      x ∈ σ.verts := by
+  simp [
+    vertexLinkStarTriangles
+  ]
+
+
+def VertexLinkVertexRepresented
+    (K : Triangulation)
+    (v x : Nat) : Prop :=
+  ∃ σ ∈ vertexLinkTriangles K v,
+    x ∈ σ.verts
+
+
+theorem vertexLinkVertexRepresented_iff_star_nonempty
+    (K : Triangulation)
+    (v x : Nat) :
+    VertexLinkVertexRepresented K v x ↔
+      ∃ σ,
+        σ ∈ vertexLinkStarTriangles K v x := by
+
+  constructor
+
+  · rintro ⟨σ, hσ, hx⟩
+    exact
+      ⟨σ,
+       (mem_vertexLinkStarTriangles_iff
+          K v x σ).2
+          ⟨hσ, hx⟩⟩
+
+  · rintro ⟨σ, hσ⟩
+    have h :=
+      (mem_vertexLinkStarTriangles_iff
+        K v x σ).1 hσ
+    exact
+      ⟨σ, h.1, h.2⟩
+
+
+def VertexLinkStarAdjacent
+    (K : Triangulation)
+    (v x : Nat)
+    (σ ρ : LinkTriangle) : Prop :=
+  σ ∈ vertexLinkStarTriangles K v x ∧
+  ρ ∈ vertexLinkStarTriangles K v x ∧
+  ∃ y : Nat,
+    y ≠ x ∧
+    y ∈ σ.verts ∧
+    y ∈ ρ.verts
+
+
+theorem VertexLinkStarAdjacent.symm
+    (K : Triangulation)
+    (v x : Nat)
+    (σ ρ : LinkTriangle) :
+    VertexLinkStarAdjacent K v x σ ρ →
+      VertexLinkStarAdjacent K v x ρ σ := by
+
+  rintro
+    ⟨hσ, hρ, y, hyx, hyσ, hyρ⟩
+
+  exact
+    ⟨hρ, hσ, y, hyx, hyρ, hyσ⟩
+
+
+theorem VertexLinkStarAdjacent.left_mem
+    (K : Triangulation)
+    (v x : Nat)
+    (σ ρ : LinkTriangle)
+    (h :
+      VertexLinkStarAdjacent K v x σ ρ) :
+    σ ∈ vertexLinkStarTriangles K v x :=
+  h.1
+
+
+theorem VertexLinkStarAdjacent.right_mem
+    (K : Triangulation)
+    (v x : Nat)
+    (σ ρ : LinkTriangle)
+    (h :
+      VertexLinkStarAdjacent K v x σ ρ) :
+    ρ ∈ vertexLinkStarTriangles K v x :=
+  h.2.1
+
+
+def VertexLinkStarConnected
+    (K : Triangulation)
+    (v x : Nat) : Prop :=
+  ∀ σ ∈ vertexLinkStarTriangles K v x,
+    ∀ ρ ∈ vertexLinkStarTriangles K v x,
+      Relation.ReflTransGen
+        (VertexLinkStarAdjacent K v x)
+        σ ρ
+
+
+def VertexLinkLocallyConnected
+    (K : Triangulation)
+    (v : Nat) : Prop :=
+  ∀ x : Nat,
+    VertexLinkVertexRepresented K v x →
+      VertexLinkStarConnected K v x
+
+
+def VertexLinksLocallyConnected
+    (K : Triangulation) : Prop :=
+  ∀ v ∈ vertexSupport K,
+    VertexLinkLocallyConnected K v
+
+
 end Poincare
