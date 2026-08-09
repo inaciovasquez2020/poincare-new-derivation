@@ -3578,6 +3578,117 @@ theorem vertexLinkFaces_same_omitted_vertex_same_support
   simpa [S, R] using hmem
 
 
+theorem vertexLinkDistinctFaces_cannot_share_omitted_vertex
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hzero : vertexDefect K v = 0)
+    (hdeg :
+      ∀ x : Nat,
+        VertexLinkVertexRepresented K v x →
+          VertexLinkStarDegreeTwo K v x)
+    (σ ρ : LinkTriangle)
+    (hσ : σ ∈ vertexLinkTriangles K v)
+    (hρ : ρ ∈ vertexLinkTriangles K v)
+    (hne : σ ≠ ρ) :
+    ¬ ∃ x : Nat,
+      (x ∈ vertexLinkVertices K v ∧
+        x ∉ σ.verts) ∧
+      (x ∈ vertexLinkVertices K v ∧
+        x ∉ ρ.verts) := by
+
+  have hpair :=
+    vertexLinkTriangles_pairwise_vertexSet_ne
+      K hcore v
+
+  have hpair_mem :
+      ∀ (l : List LinkTriangle),
+        l.Pairwise
+          (fun α β =>
+            ¬ ∀ y : Nat,
+              y ∈ α.verts ↔
+                y ∈ β.verts) →
+        ∀ α ∈ l,
+          ∀ β ∈ l,
+            α ≠ β →
+              ¬ ∀ y : Nat,
+                y ∈ α.verts ↔
+                  y ∈ β.verts := by
+
+    intro l
+
+    induction l with
+
+    | nil =>
+
+        intro hp α hα
+
+        simp at hα
+
+    | cons τ tl ih =>
+
+        intro hp α hα β hβ hαβ
+
+        cases hp with
+
+        | cons hhead htail =>
+
+            simp only [
+              List.mem_cons
+            ] at hα hβ
+
+            rcases hα with rfl | hα
+
+            · rcases hβ with rfl | hβ
+
+              · exact
+                  (hαβ rfl).elim
+
+              · exact
+                  hhead β hβ
+
+            · rcases hβ with rfl | hβ
+
+              · intro hsame
+
+                exact
+                  (hhead α hα)
+                    (fun y =>
+                      (hsame y).symm)
+
+              · exact
+                  ih
+                    htail
+                    α hα
+                    β hβ
+                    hαβ
+
+  have hgeom :
+      ¬ ∀ y : Nat,
+        y ∈ σ.verts ↔
+          y ∈ ρ.verts :=
+    hpair_mem
+      (vertexLinkTriangles K v)
+      hpair
+      σ hσ
+      ρ hρ
+      hne
+
+  rintro
+    ⟨x, hxσ, hxρ⟩
+
+  have hsame :=
+    vertexLinkFaces_same_omitted_vertex_same_support
+      K hcore v hzero hdeg
+      σ ρ
+      hσ hρ
+      x
+      hxσ hxρ
+
+  exact
+    hgeom hsame
+
+
 def VertexLinkClosedSurfaceCertificate
     (K : Triangulation)
     (v : Nat) : Prop :=
