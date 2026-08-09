@@ -1,4 +1,5 @@
 import Regge.So3Concrete
+import Mathlib.Data.Matrix.Basic
 
 namespace Regge
 
