@@ -18,10 +18,13 @@ axiom FundamentalGroup : SimplicialComplex → Type
 
 def detG (σ : TetraGeom) : ℝ :=
   Matrix.det σ.G
-def LocalIndependent (_ : TetraGeom) : Prop := True
+def LocalIndependent (σ : TetraGeom) : Prop :=
+  ∀ v : Fin 3 → ℝ, Matrix.mulVec σ.G v = 0 → v = 0
 
 theorem det_nonzero_implies_local_rigidity
-  (σ : TetraGeom) (_h : detG σ ≠ 0) : LocalIndependent σ := by
-  trivial
+  (σ : TetraGeom) (h : detG σ ≠ 0) : LocalIndependent σ := by
+  intro v hv
+  exact Matrix.eq_zero_of_mulVec_eq_zero
+    (M := σ.G) (by simpa [detG] using h) hv
 
 end Regge
