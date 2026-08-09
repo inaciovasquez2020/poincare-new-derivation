@@ -3689,6 +3689,251 @@ theorem vertexLinkDistinctFaces_cannot_share_omitted_vertex
     hgeom hsame
 
 
+theorem vertexLinkEveryRepresentedVertex_is_omitted_by_face
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hzero : vertexDefect K v = 0)
+    (hdeg :
+      ∀ x : Nat,
+        VertexLinkVertexRepresented K v x →
+          VertexLinkStarDegreeTwo K v x)
+    (x : Nat)
+    (hx :
+      x ∈ vertexLinkVertices K v) :
+    ∃ σ ∈ vertexLinkTriangles K v,
+      x ∉ σ.verts := by
+
+  classical
+
+  let Faces : Finset LinkTriangle :=
+    (vertexLinkTriangles K v).toFinset
+
+  let V : Finset Nat :=
+    (vertexLinkVertices K v).toFinset
+
+  let missingVertex : LinkTriangle → Nat :=
+    fun σ =>
+      if hσ :
+          σ ∈ vertexLinkTriangles K v then
+        Classical.choose
+          (vertexLinkFace_has_unique_omitted_vertex
+            K hcore v hzero hdeg σ hσ).exists
+      else
+        0
+
+  have hmissing :
+      ∀ σ : LinkTriangle,
+        ∀ hσ :
+          σ ∈ vertexLinkTriangles K v,
+        missingVertex σ ∈ vertexLinkVertices K v ∧
+          missingVertex σ ∉ σ.verts := by
+
+    intro σ hσ
+
+    simp only [
+      missingVertex,
+      dif_pos hσ
+    ]
+
+    exact
+      Classical.choose_spec
+        (vertexLinkFace_has_unique_omitted_vertex
+          K hcore v hzero hdeg σ hσ).exists
+
+  have hFacesNodup :
+      (vertexLinkTriangles K v).Nodup :=
+    vertexLinkTriangles_nodup
+      K hcore v
+
+  have hFacesCard :
+      Faces.card = 4 := by
+
+    change
+      (vertexLinkTriangles K v).toFinset.card = 4
+
+    rw [
+      ← List.toFinset_eq hFacesNodup
+    ]
+
+    exact
+      vertexLinkTriangles_length_eq_four_of_vertexDefect_zero
+        K hcore v hzero
+
+  have hVnodup :
+      (vertexLinkVertices K v).Nodup := by
+
+    unfold vertexLinkVertices
+
+    exact
+      eraseDups_nodup_nat
+        ((vertexLinkTriangles K v).flatMap
+          LinkTriangle.verts)
+
+  have hVcard :
+      V.card = 4 := by
+
+    change
+      (vertexLinkVertices K v).toFinset.card = 4
+
+    rw [
+      ← List.toFinset_eq hVnodup
+    ]
+
+    exact
+      vertexLinkVertices_length_eq_four_of_vertexDefect_zero
+        K hcore v hzero hdeg
+
+  have hinj :
+      Set.InjOn
+        missingVertex
+        (↑Faces : Set LinkTriangle) := by
+
+    intro σ hσ ρ hρ heq
+
+    have hσF :
+        σ ∈ Faces := by
+      simpa using hσ
+
+    have hρF :
+        ρ ∈ Faces := by
+      simpa using hρ
+
+    have hσList :
+        σ ∈ vertexLinkTriangles K v := by
+      simpa [Faces] using hσF
+
+    have hρList :
+        ρ ∈ vertexLinkTriangles K v := by
+      simpa [Faces] using hρF
+
+    by_contra hne
+
+    have hσmissing :=
+      hmissing σ hσList
+
+    have hρmissing :=
+      hmissing ρ hρList
+
+    have hρmissing' :
+        missingVertex σ ∈ vertexLinkVertices K v ∧
+          missingVertex σ ∉ ρ.verts := by
+
+      rw [heq]
+
+      exact hρmissing
+
+    have hbad :=
+      vertexLinkDistinctFaces_cannot_share_omitted_vertex
+        K hcore v hzero hdeg
+        σ ρ
+        hσList hρList
+        hne
+
+    exact
+      hbad
+        ⟨missingVertex σ,
+          hσmissing,
+          hρmissing'⟩
+
+  let O : Finset Nat :=
+    Faces.image missingVertex
+
+  have hOcardFaces :
+      O.card = Faces.card := by
+
+    change
+      (Faces.image missingVertex).card =
+        Faces.card
+
+    exact
+      Finset.card_image_iff.mpr
+        hinj
+
+  have hOcard :
+      O.card = 4 := by
+
+    rw [
+      hOcardFaces,
+      hFacesCard
+    ]
+
+  have hOV :
+      O ⊆ V := by
+
+    intro y hy
+
+    have hyImage :
+        y ∈ Faces.image missingVertex := by
+      simpa [O] using hy
+
+    rcases
+      Finset.mem_image.mp hyImage with
+      ⟨σ, hσF, hσy⟩
+
+    have hσList :
+        σ ∈ vertexLinkTriangles K v := by
+      simpa [Faces] using hσF
+
+    have hσmissing :=
+      hmissing σ hσList
+
+    have hyVertex :
+        y ∈ vertexLinkVertices K v := by
+
+      rw [← hσy]
+
+      exact hσmissing.1
+
+    simpa [V] using hyVertex
+
+  have hOVeq :
+      O = V := by
+
+    apply
+      Finset.eq_of_subset_of_card_le
+        hOV
+
+    rw [
+      hVcard,
+      hOcard
+    ]
+
+  have hxV :
+      x ∈ V := by
+    simpa [V] using hx
+
+  have hxO :
+      x ∈ O := by
+
+    rw [hOVeq]
+
+    exact hxV
+
+  have hxImage :
+      x ∈ Faces.image missingVertex := by
+    simpa [O] using hxO
+
+  rcases
+    Finset.mem_image.mp hxImage with
+    ⟨σ, hσF, hσx⟩
+
+  have hσList :
+      σ ∈ vertexLinkTriangles K v := by
+    simpa [Faces] using hσF
+
+  have hσmissing :=
+    hmissing σ hσList
+
+  refine
+    ⟨σ, hσList, ?_⟩
+
+  rw [← hσx]
+
+  exact
+    hσmissing.2
+
+
 def VertexLinkClosedSurfaceCertificate
     (K : Triangulation)
     (v : Nat) : Prop :=
