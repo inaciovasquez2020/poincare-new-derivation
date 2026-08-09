@@ -1233,4 +1233,58 @@ theorem Move23Site.replace_PhiSupport_sign
       · constructor <;> omega
       · constructor <;> omega
 
+
+theorem exists_positive_PhiSupport_without_legal_move23 :
+    ∃ K : Triangulation,
+      PhiSupport K = 12 ∧
+      ∀ s : Move23Site, ¬ s.LegalIn K := by
+
+  let τ : Tet :=
+    ⟨0, 1, 2, 3⟩
+
+  let K : Triangulation :=
+    { tets := [τ] }
+
+  refine ⟨K, ?_, ?_⟩
+
+  · native_decide
+
+  · intro s hlegal
+
+    have hrealized : s.RealizedIn K :=
+      hlegal.1
+
+    rcases hrealized with
+      ⟨hleft, hright⟩
+
+    rcases hleft with
+      ⟨τL, hτLmem, hL⟩
+
+    rcases hright with
+      ⟨τR, hτRmem, hR⟩
+
+    have hτL : τL = τ := by
+      simpa [K] using hτLmem
+
+    have hτR : τR = τ := by
+      simpa [K] using hτRmem
+
+    subst τL
+    subst τR
+
+    apply s.leftTet_not_same_rightTet
+
+    intro v
+    constructor
+
+    · intro hvLeft
+      have hvTau : v ∈ τ.verts :=
+        (hL v).2 hvLeft
+      exact (hR v).1 hvTau
+
+    · intro hvRight
+      have hvTau : v ∈ τ.verts :=
+        (hR v).2 hvRight
+      exact (hL v).1 hvTau
+
 end Poincare
