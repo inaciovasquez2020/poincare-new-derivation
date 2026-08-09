@@ -2591,6 +2591,156 @@ theorem represented_star_length_ge_three
   exact hcard
 
 
+def vertexLinkVertexIncidences
+    (K : Triangulation)
+    (v : Nat) :
+    List Nat :=
+  (vertexLinkTriangles K v).flatMap
+    LinkTriangle.verts
+
+
+theorem vertexLinkVertices_eq_vertexIncidences_eraseDups
+    (K : Triangulation)
+    (v : Nat) :
+    vertexLinkVertices K v =
+      (vertexLinkVertexIncidences K v).eraseDups := by
+  rfl
+
+
+theorem vertexLinkVertexIncidences_length
+    (K : Triangulation)
+    (v : Nat) :
+    (vertexLinkVertexIncidences K v).length =
+      3 * (vertexLinkTriangles K v).length := by
+
+  rw [
+    vertexLinkVertexIncidences,
+    List.length_flatMap
+  ]
+
+  have hconst :
+      ∀ l : List LinkTriangle,
+        (l.map
+          (fun σ =>
+            σ.verts.length)).sum =
+          3 * l.length := by
+
+    intro l
+
+    induction l with
+
+    | nil =>
+        simp
+
+    | cons σ tl ih =>
+
+        have hσ :
+            σ.verts.length = 3 := by
+          simp [LinkTriangle.verts]
+
+        simp only [
+          List.map_cons,
+          List.sum_cons,
+          List.length_cons
+        ]
+
+        rw [hσ, ih]
+
+        omega
+
+  exact
+    hconst
+      (vertexLinkTriangles K v)
+
+
+theorem vertexLinkVertexIncidences_count_eq_star_length
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v x : Nat) :
+    (vertexLinkVertexIncidences K v).count x =
+      (vertexLinkStarTriangles K v x).length := by
+
+  have haux :
+      ∀ l : List LinkTriangle,
+        (∀ σ ∈ l,
+          σ.verts.Nodup) →
+        (l.flatMap LinkTriangle.verts).count x =
+          (l.filter
+            (fun σ =>
+              decide (x ∈ σ.verts))).length := by
+
+    intro l hnodup
+
+    induction l with
+
+    | nil =>
+        simp
+
+    | cons σ tl ih =>
+
+        have hσ :
+            σ.verts.Nodup :=
+          hnodup σ (by simp)
+
+        have htl :
+            ∀ ρ ∈ tl,
+              ρ.verts.Nodup := by
+
+          intro ρ hρ
+
+          exact
+            hnodup ρ
+              (by simp [hρ])
+
+        have ih' :=
+          ih htl
+
+        by_cases hx :
+            x ∈ σ.verts
+
+        · have hcount :
+              σ.verts.count x = 1 :=
+            List.count_eq_one_of_mem
+              hσ hx
+
+          simp [
+            List.count_append,
+            hcount,
+            ih',
+            hx,
+            Nat.add_comm
+          ]
+
+        · have hcount :
+              σ.verts.count x = 0 :=
+            (List.count_eq_zero).2 hx
+
+          simp [
+            List.count_append,
+            hcount,
+            ih',
+            hx
+          ]
+
+  have hnodup :
+      ∀ σ ∈ vertexLinkTriangles K v,
+        σ.verts.Nodup := by
+
+    intro σ hσ
+
+    exact
+      vertexLinkTriangles_triangle_nodup
+        K hcore v σ hσ
+
+  simpa [
+    vertexLinkVertexIncidences,
+    vertexLinkStarTriangles
+  ] using
+    haux
+      (vertexLinkTriangles K v)
+      hnodup
+
+
 def VertexLinkClosedSurfaceCertificate
     (K : Triangulation)
     (v : Nat) : Prop :=
