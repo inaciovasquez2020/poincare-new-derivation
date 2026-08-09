@@ -54,6 +54,12 @@ def Move23Site.SharedFaceExactlyTwo
         s.b ∈ τ.verts ∧
         s.c ∈ τ.verts)).length = 2
 
+
+def Move23Site.LegalIn (s : Move23Site) (K : Triangulation) : Prop :=
+  s.RealizedIn K ∧
+  s.SharedFaceExactlyTwo K ∧
+  s.NewEdgeAbsent K
+
 def applyMove (T : Triangulation) (_ : PachnerMove) : Triangulation := T
 def selectMove (_T : Triangulation) : PachnerMove := PachnerMove.move23
 
