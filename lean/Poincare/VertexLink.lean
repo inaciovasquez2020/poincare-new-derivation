@@ -3188,6 +3188,52 @@ theorem vertexLinkVertices_length_eq_four_of_vertexDefect_zero
   omega
 
 
+def vertexLinkEulerCharacteristic
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat) : Int :=
+  ((vertexLinkVertices K v).length : Int) -
+    ((vertexLinkEdges K hcore v).length : Int) +
+    ((vertexLinkTriangles K v).length : Int)
+
+
+theorem vertexLinkEulerCharacteristic_eq_two_of_vertexDefect_zero
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hzero : vertexDefect K v = 0)
+    (hdeg :
+      ∀ x : Nat,
+        VertexLinkVertexRepresented K v x →
+          VertexLinkStarDegreeTwo K v x) :
+    vertexLinkEulerCharacteristic K hcore v = 2 := by
+
+  have hV :
+      (vertexLinkVertices K v).length = 4 :=
+    vertexLinkVertices_length_eq_four_of_vertexDefect_zero
+      K hcore v hzero hdeg
+
+  have hE :
+      (vertexLinkEdges K hcore v).length = 6 :=
+    vertexLinkEdges_length_eq_six_of_vertexDefect_zero
+      K hcore v hzero
+
+  have hF :
+      (vertexLinkTriangles K v).length = 4 :=
+    vertexLinkTriangles_length_eq_four_of_vertexDefect_zero
+      K hcore v hzero
+
+  unfold vertexLinkEulerCharacteristic
+
+  rw [
+    hV,
+    hE,
+    hF
+  ]
+
+  norm_num
+
+
 def VertexLinkClosedSurfaceCertificate
     (K : Triangulation)
     (v : Nat) : Prop :=
