@@ -3355,6 +3355,229 @@ theorem vertexLinkFace_has_unique_omitted_vertex
   simpa using hyDiff
 
 
+theorem vertexLinkFaces_same_omitted_vertex_same_support
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hzero : vertexDefect K v = 0)
+    (hdeg :
+      ∀ x : Nat,
+        VertexLinkVertexRepresented K v x →
+          VertexLinkStarDegreeTwo K v x)
+    (σ ρ : LinkTriangle)
+    (hσ : σ ∈ vertexLinkTriangles K v)
+    (hρ : ρ ∈ vertexLinkTriangles K v)
+    (x : Nat)
+    (hxσ :
+      x ∈ vertexLinkVertices K v ∧
+        x ∉ σ.verts)
+    (hxρ :
+      x ∈ vertexLinkVertices K v ∧
+        x ∉ ρ.verts) :
+    ∀ y : Nat,
+      y ∈ σ.verts ↔
+        y ∈ ρ.verts := by
+
+  let V : Finset Nat :=
+    (vertexLinkVertices K v).toFinset
+
+  let S : Finset Nat :=
+    σ.verts.toFinset
+
+  let R : Finset Nat :=
+    ρ.verts.toFinset
+
+  have hVnodup :
+      (vertexLinkVertices K v).Nodup := by
+
+    unfold vertexLinkVertices
+
+    exact
+      eraseDups_nodup_nat
+        ((vertexLinkTriangles K v).flatMap
+          LinkTriangle.verts)
+
+  have hVcard :
+      V.card = 4 := by
+
+    change
+      (vertexLinkVertices K v).toFinset.card = 4
+
+    rw [
+      ← List.toFinset_eq hVnodup
+    ]
+
+    exact
+      vertexLinkVertices_length_eq_four_of_vertexDefect_zero
+        K hcore v hzero hdeg
+
+  have hσnodup :
+      σ.verts.Nodup :=
+    vertexLinkTriangles_triangle_nodup
+      K hcore v σ hσ
+
+  have hρnodup :
+      ρ.verts.Nodup :=
+    vertexLinkTriangles_triangle_nodup
+      K hcore v ρ hρ
+
+  have hScard :
+      S.card = 3 := by
+
+    change
+      σ.verts.toFinset.card = 3
+
+    rw [
+      ← List.toFinset_eq hσnodup
+    ]
+
+    simp [LinkTriangle.verts]
+
+  have hRcard :
+      R.card = 3 := by
+
+    change
+      ρ.verts.toFinset.card = 3
+
+    rw [
+      ← List.toFinset_eq hρnodup
+    ]
+
+    simp [LinkTriangle.verts]
+
+  have hSV :
+      S ⊆ V := by
+
+    intro y hy
+
+    have hyσ :
+        y ∈ σ.verts := by
+      simpa [S] using hy
+
+    have hyV :
+        y ∈ vertexLinkVertices K v :=
+      (mem_vertexLinkVertices_iff
+        K v y).2
+        ⟨σ, hσ, hyσ⟩
+
+    simpa [V] using hyV
+
+  have hRV :
+      R ⊆ V := by
+
+    intro y hy
+
+    have hyρ :
+        y ∈ ρ.verts := by
+      simpa [R] using hy
+
+    have hyV :
+        y ∈ vertexLinkVertices K v :=
+      (mem_vertexLinkVertices_iff
+        K v y).2
+        ⟨ρ, hρ, hyρ⟩
+
+    simpa [V] using hyV
+
+  have hxV :
+      x ∈ V := by
+    simpa [V] using hxσ.1
+
+  have hxS :
+      x ∉ S := by
+    simpa [S] using hxσ.2
+
+  have hxR :
+      x ∉ R := by
+    simpa [R] using hxρ.2
+
+  have hSsub :
+      S ⊆ V.erase x := by
+
+    intro y hy
+
+    have hyV :
+        y ∈ V :=
+      hSV hy
+
+    have hyne :
+        y ≠ x := by
+
+      intro hyx
+      subst y
+
+      exact
+        hxS hy
+
+    simp [
+      hyV,
+      hyne
+    ]
+
+  have hRsub :
+      R ⊆ V.erase x := by
+
+    intro y hy
+
+    have hyV :
+        y ∈ V :=
+      hRV hy
+
+    have hyne :
+        y ≠ x := by
+
+      intro hyx
+      subst y
+
+      exact
+        hxR hy
+
+    simp [
+      hyV,
+      hyne
+    ]
+
+  have hEraseCard :
+      (V.erase x).card = 3 := by
+
+    rw [
+      Finset.card_erase_of_mem hxV,
+      hVcard
+    ]
+
+  have hSeq :
+      S = V.erase x := by
+
+    apply
+      Finset.eq_of_subset_of_card_le
+        hSsub
+
+    omega
+
+  have hReq :
+      R = V.erase x := by
+
+    apply
+      Finset.eq_of_subset_of_card_le
+        hRsub
+
+    omega
+
+  have hSR :
+      S = R :=
+    hSeq.trans hReq.symm
+
+  intro y
+
+  have hmem :=
+    congrArg
+      (fun T : Finset Nat =>
+        y ∈ T)
+      hSR
+
+  simpa [S, R] using hmem
+
+
 def VertexLinkClosedSurfaceCertificate
     (K : Triangulation)
     (v : Nat) : Prop :=
