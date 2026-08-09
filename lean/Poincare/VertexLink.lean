@@ -688,4 +688,55 @@ theorem represented_linkEdge_link_incidence_two
     represented_linkEdge_ambient_incidence_two
       K hcore v e hrep
 
+
+def LinkTriangle.commonVertexCount
+    (σ ρ : LinkTriangle) : Nat :=
+  (σ.verts.eraseDups.filter
+    (fun x => ρ.verts.contains x)).length
+
+def LinkTriangle.SharesEdge
+    (σ ρ : LinkTriangle) : Prop :=
+  2 ≤ σ.commonVertexCount ρ
+
+instance instDecidableLinkTriangleSharesEdge
+    (σ ρ : LinkTriangle) :
+    Decidable (σ.SharesEdge ρ) := by
+  unfold LinkTriangle.SharesEdge
+  infer_instance
+
+
+def VertexLinkAdjacent
+    (K : Triangulation)
+    (v : Nat)
+    (σ ρ : LinkTriangle) : Prop :=
+  σ ∈ vertexLinkTriangles K v ∧
+  ρ ∈ vertexLinkTriangles K v ∧
+  (
+    σ.SharesEdge ρ ∨
+    ρ.SharesEdge σ
+  )
+
+
+theorem VertexLinkAdjacent.symm
+    (K : Triangulation)
+    (v : Nat)
+    (σ ρ : LinkTriangle) :
+    VertexLinkAdjacent K v σ ρ →
+      VertexLinkAdjacent K v ρ σ := by
+  rintro ⟨hσ, hρ, hshare⟩
+  refine ⟨hρ, hσ, ?_⟩
+  rcases hshare with h | h
+  · exact Or.inr h
+  · exact Or.inl h
+
+
+def VertexLinkConnected
+    (K : Triangulation)
+    (v : Nat) : Prop :=
+  ∀ σ ∈ vertexLinkTriangles K v,
+    ∀ ρ ∈ vertexLinkTriangles K v,
+      Relation.ReflTransGen
+        (VertexLinkAdjacent K v)
+        σ ρ
+
 end Poincare
