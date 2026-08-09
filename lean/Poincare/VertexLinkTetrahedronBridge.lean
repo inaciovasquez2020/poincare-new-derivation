@@ -296,4 +296,81 @@ noncomputable def vertexLinkGeometricFace
         ↥((vertexLinkVertices K v).toFinset) |
           x.1 ∈ σ.verts})
 
+
+/--
+The unique certified complementary abstract link face at label `i`, when
+realized as the convex hull of its geometric vertices, is exactly the convex
+hull of the geometric tetrahedron facet opposite `i`.
+-/
+theorem vertexLinkComplementaryFace_geometricFace_eq_tetrahedronFacetConvexHull
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert :
+      VertexLinkTetrahedralBoundaryCertificate
+        K hcore v)
+    (i : Fin 4) :
+    ∃! σ : LinkTriangle,
+      σ ∈ vertexLinkTriangles K v ∧
+      (∀ y : Nat,
+        y ∈ σ.verts ↔
+          y ∈ vertexLinkVertices K v ∧
+            y ≠
+              ((vertexLinkVertexEquivFin4
+                K hcore v hcert).symm i).1) ∧
+      vertexLinkFaceLabelSupport
+          K hcore v hcert σ =
+        Finset.univ.erase i ∧
+      vertexLinkGeometricFace
+          K hcore v hcert σ =
+        convexHull ℝ
+          (Set.range
+            (tetrahedronSimplex.faceOpposite i).points) := by
+
+  obtain ⟨σ, hσ, hunique⟩ :=
+    vertexLinkFin4Label_has_unique_complementary_face
+      K hcore v hcert i
+
+  rcases hσ with
+    ⟨hσtri, hσverts, hσsupport⟩
+
+  have hrealized :
+      vertexLinkGeometricVertex
+            K hcore v hcert ''
+          {x :
+            ↥((vertexLinkVertices K v).toFinset) |
+              x.1 ∈ σ.verts} =
+        Set.range
+          (tetrahedronSimplex.faceOpposite i).points := by
+
+    rw [
+      vertexLinkGeometricVertex_image_faceSupport
+        K hcore v hcert σ,
+      hσsupport
+    ]
+
+    exact
+      (tetrahedronFaceOpposite_vertexSet_eq_image_erase i).symm
+
+  refine
+    ⟨σ, ?_, ?_⟩
+
+  · refine
+      ⟨hσtri,
+        hσverts,
+        hσsupport,
+        ?_⟩
+
+    unfold vertexLinkGeometricFace
+    rw [hrealized]
+
+  · intro τ hτ
+
+    apply hunique τ
+
+    exact
+      ⟨hτ.1,
+        hτ.2.1,
+        hτ.2.2.1⟩
+
 end Poincare
