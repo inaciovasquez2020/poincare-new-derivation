@@ -93,4 +93,80 @@ theorem Tet.linkTriangleAt?_isSome_iff
   rw [ne_eq, Tet.linkTriangleAt?_eq_none_iff]
   simp
 
+
+theorem Tet.linkTriangleAt?_nodup
+    (τ : Tet)
+    (v : Nat)
+    (σ : LinkTriangle)
+    (hτ : τ.verts.Nodup)
+    (hσ : τ.linkTriangleAt? v = some σ) :
+    σ.verts.Nodup := by
+
+  unfold Tet.linkTriangleAt? at hσ
+
+  by_cases h0 : v = τ.v0
+  · rw [if_pos h0] at hσ
+    injection hσ with hs
+    subst σ
+    simp_all [
+      Tet.verts,
+      LinkTriangle.verts
+    ]
+
+  · rw [if_neg h0] at hσ
+
+    by_cases h1 : v = τ.v1
+    · rw [if_pos h1] at hσ
+      injection hσ with hs
+      subst σ
+      simp_all [
+        Tet.verts,
+        LinkTriangle.verts
+      ]
+
+    · rw [if_neg h1] at hσ
+
+      by_cases h2 : v = τ.v2
+      · rw [if_pos h2] at hσ
+        injection hσ with hs
+        subst σ
+        simp_all [
+          Tet.verts,
+          LinkTriangle.verts
+        ]
+
+      · rw [if_neg h2] at hσ
+
+        by_cases h3 : v = τ.v3
+        · rw [if_pos h3] at hσ
+          injection hσ with hs
+          subst σ
+          simp_all [
+            Tet.verts,
+            LinkTriangle.verts
+          ]
+
+        · rw [if_neg h3] at hσ
+          simp at hσ
+
+
+theorem vertexLinkTriangles_triangle_nodup
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (σ : LinkTriangle)
+    (hσ : σ ∈ vertexLinkTriangles K v) :
+    σ.verts.Nodup := by
+
+  rcases
+      (mem_vertexLinkTriangles_iff K v σ).1 hσ with
+    ⟨τ, hτK, hExtract⟩
+
+  have hτNodup : τ.verts.Nodup :=
+    hcore.1 τ hτK
+
+  exact
+    τ.linkTriangleAt?_nodup
+      v σ hτNodup hExtract
+
 end Poincare
