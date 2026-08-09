@@ -390,6 +390,70 @@ def Move23Site.replace (s : Move23Site) (K : Triangulation) : Triangulation :=
       s.newTet₂ ::
       afterRight }
 
+
+theorem Move23Site.replace_vertexDegree_balance
+    (s : Move23Site) (K : Triangulation)
+    (hlegal : s.LegalIn K)
+    (v : Nat) :
+    vertexDegree K v +
+        s.newTet₀.verts.count v +
+        s.newTet₁.verts.count v +
+        s.newTet₂.verts.count v =
+      vertexDegree (s.replace K) v +
+        s.leftTet.verts.count v +
+        s.rightTet.verts.count v := by
+  have hErase :=
+    s.twoSourceErasure_count K hlegal v
+
+  have hReplace :
+      ((s.replace K).tets.flatMap Tet.verts).count v =
+        s.newTet₀.verts.count v +
+          s.newTet₁.verts.count v +
+          s.newTet₂.verts.count v +
+          ((eraseFirstSameTet s.rightTet
+            (eraseFirstSameTet s.leftTet K.tets)).flatMap
+              Tet.verts).count v := by
+    simp [Move23Site.replace, Nat.add_assoc]
+
+  change
+    (K.tets.flatMap Tet.verts).count v +
+        s.newTet₀.verts.count v +
+        s.newTet₁.verts.count v +
+        s.newTet₂.verts.count v =
+      ((s.replace K).tets.flatMap Tet.verts).count v +
+        s.leftTet.verts.count v +
+        s.rightTet.verts.count v
+
+  calc
+    (K.tets.flatMap Tet.verts).count v +
+          s.newTet₀.verts.count v +
+          s.newTet₁.verts.count v +
+          s.newTet₂.verts.count v =
+        (((eraseFirstSameTet s.rightTet
+            (eraseFirstSameTet s.leftTet K.tets)).flatMap
+              Tet.verts).count v +
+          s.leftTet.verts.count v +
+          s.rightTet.verts.count v) +
+          s.newTet₀.verts.count v +
+          s.newTet₁.verts.count v +
+          s.newTet₂.verts.count v := by
+            rw [hErase]
+    _ =
+        (s.newTet₀.verts.count v +
+          s.newTet₁.verts.count v +
+          s.newTet₂.verts.count v +
+          ((eraseFirstSameTet s.rightTet
+            (eraseFirstSameTet s.leftTet K.tets)).flatMap
+              Tet.verts).count v) +
+          s.leftTet.verts.count v +
+          s.rightTet.verts.count v := by
+            ac_rfl
+    _ =
+        ((s.replace K).tets.flatMap Tet.verts).count v +
+          s.leftTet.verts.count v +
+          s.rightTet.verts.count v := by
+            rw [← hReplace]
+
 def applyMove (T : Triangulation) (_ : PachnerMove) : Triangulation := T
 def selectMove (_T : Triangulation) : PachnerMove := PachnerMove.move23
 
