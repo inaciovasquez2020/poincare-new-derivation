@@ -11,3 +11,4 @@ import Poincare.SolveStepBuild
 import Poincare.MoveSemanticsBuild
 
 import Poincare.ZeroDefect
+import Poincare.VertexLink
