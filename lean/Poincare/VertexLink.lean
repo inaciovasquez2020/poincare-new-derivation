@@ -1849,6 +1849,265 @@ def VertexLinksLocallyConnected
 
 
 
+theorem vertexLinkEdgeIncidences_count_eq_link_incidence
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (e : LinkEdge) :
+    (vertexLinkEdgeIncidences K hcore v).count e =
+      ((vertexLinkTriangles K v).filter
+        (fun σ => decide (e.InTriangle σ))).length := by
+
+  have hcountZero :
+      ∀ {l : List LinkEdge},
+        e ∉ l →
+          l.count e = 0 := by
+
+    intro l hnot
+
+    induction l with
+
+    | nil =>
+        simp
+
+    | cons a tl ih =>
+        have hnotTail : e ∉ tl := by
+          intro he
+          apply hnot
+          simp [he]
+
+        have hae : a ≠ e := by
+          intro hae
+          apply hnot
+          subst a
+          simp
+
+        simp [
+          hae,
+          ih hnotTail
+        ]
+
+
+  have hcountOne :
+      ∀ {l : List LinkEdge},
+        l.Nodup →
+        e ∈ l →
+          l.count e = 1 := by
+
+    intro l hnodup hmem
+
+    induction l with
+
+    | nil =>
+        simp at hmem
+
+    | cons a tl ih =>
+        rw [List.nodup_cons] at hnodup
+
+        rcases hnodup with
+          ⟨haNotMem, htlNodup⟩
+
+        simp only [List.mem_cons] at hmem
+
+        rcases hmem with heq | hmem
+
+        · subst a
+
+          have hzero :
+              tl.count e = 0 :=
+            hcountZero haNotMem
+
+          simp [hzero]
+
+        · have hae : a ≠ e := by
+            intro hae
+            subst a
+            exact haNotMem hmem
+
+          have htail :
+              tl.count e = 1 :=
+            ih htlNodup hmem
+
+          simp [
+            hae,
+            htail
+          ]
+
+
+  have hlocal :
+      ∀ σ :
+          {τ : LinkTriangle //
+            τ ∈ vertexLinkTriangles K v},
+        (σ.1.edges
+          (vertexLinkTriangles_triangle_nodup
+            K hcore v σ.1 σ.2)).count e =
+          if decide (e.InTriangle σ.1) then
+            1
+          else
+            0 := by
+
+    intro σ
+
+    let hσnodup :=
+      vertexLinkTriangles_triangle_nodup
+        K hcore v σ.1 σ.2
+
+    by_cases hin :
+        e.InTriangle σ.1
+
+    · have hmem :
+          e ∈ σ.1.edges hσnodup :=
+        LinkTriangle.inTriangle_mem_edges
+          σ.1 hσnodup e hin
+
+      have hcount :
+          (σ.1.edges hσnodup).count e = 1 :=
+        hcountOne
+          (LinkTriangle.edges_nodup
+            σ.1 hσnodup)
+          hmem
+
+      simpa [hin] using hcount
+
+    · have hnotmem :
+          e ∉ σ.1.edges hσnodup := by
+        intro hmem
+        exact hin
+          (LinkTriangle.mem_edges_inTriangle
+            σ.1 hσnodup e hmem)
+
+      have hcount :
+          (σ.1.edges hσnodup).count e = 0 :=
+        hcountZero hnotmem
+
+      simpa [hin] using hcount
+
+
+  have hflat :
+      ∀ l :
+          List
+            {τ : LinkTriangle //
+              τ ∈ vertexLinkTriangles K v},
+        (l.flatMap
+          (fun σ =>
+            σ.1.edges
+              (vertexLinkTriangles_triangle_nodup
+                K hcore v σ.1 σ.2))).count e =
+          (l.map
+            (fun σ =>
+              (σ.1.edges
+                (vertexLinkTriangles_triangle_nodup
+                  K hcore v σ.1 σ.2)).count e)).sum := by
+
+    intro l
+
+    induction l with
+
+    | nil =>
+        simp
+
+    | cons σ tl ih =>
+        simp [
+          List.count_append,
+          ih
+        ]
+
+
+  have hIndicator :
+      ∀ (α : Type)
+        (l : List α)
+        (p : α → Bool),
+        (l.map
+          (fun x =>
+            if p x then 1 else 0)).sum =
+          (l.filter p).length := by
+
+    intro α l p
+
+    induction l with
+
+    | nil =>
+        simp
+
+    | cons a tl ih =>
+        cases hpa : p a <;>
+          simp [
+            hpa,
+            ih,
+            Nat.add_comm
+          ]
+
+
+  have hAttachIndicator :
+      ∀ (α : Type)
+        (l : List α)
+        (p : α → Bool),
+        (l.attach.map
+          (fun x =>
+            if p x.1 then 1 else 0)).sum =
+          (l.filter p).length := by
+
+    intro α l p
+
+    have hproj :=
+      congrArg
+        (fun xs : List α =>
+          (xs.map
+            (fun x =>
+              if p x then 1 else 0)).sum)
+        (List.attach_map_subtype_val l)
+
+    calc
+      (l.attach.map
+          (fun x =>
+            if p x.1 then 1 else 0)).sum =
+        (l.map
+          (fun x =>
+            if p x then 1 else 0)).sum := by
+          simpa only [
+            List.map_map,
+            Function.comp_apply
+          ] using hproj
+
+      _ = (l.filter p).length :=
+        hIndicator α l p
+
+
+  rw [vertexLinkEdgeIncidences]
+
+  rw [
+    hflat
+      (vertexLinkTriangles K v).attach
+  ]
+
+  simp_rw [hlocal]
+
+  exact
+    hAttachIndicator
+      LinkTriangle
+      (vertexLinkTriangles K v)
+      (fun σ =>
+        decide (e.InTriangle σ))
+
+
+theorem represented_linkEdge_edgeIncidences_count_two
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (e : LinkEdge)
+    (hrep : e.RepresentedAt K v) :
+    (vertexLinkEdgeIncidences K hcore v).count e = 2 := by
+
+  rw [
+    vertexLinkEdgeIncidences_count_eq_link_incidence
+      K hcore v e
+  ]
+
+  exact
+    represented_linkEdge_link_incidence_two
+      K hcore v e hrep
+
+
 def VertexLinkClosedSurfaceCertificate
     (K : Triangulation)
     (v : Nat) : Prop :=
