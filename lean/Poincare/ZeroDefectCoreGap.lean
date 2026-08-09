@@ -46,4 +46,54 @@ theorem phi_sum_zero_implies_supportwise_zero :
       (by simpa [Phi] using hPhi)
   exact hmain.2 v hv
 
+
+theorem phiSupport_zero_iff_phi_zero
+    (K : Triangulation) :
+    PhiSupport K = 0 ↔ Phi K = 0 := by
+  have hfold_zero :
+      ∀ vs : List Nat,
+        (∀ v ∈ vs, vertexDefect K v = 0) →
+        vs.foldl (fun acc v => acc + vertexDefect K v) 0 = 0 := by
+    intro vs hvs
+    induction vs with
+    | nil =>
+        simp
+    | cons a t ih =>
+        have ha : vertexDefect K a = 0 := hvs a (by simp)
+        have ht : ∀ v ∈ t, vertexDefect K v = 0 := by
+          intro v hv
+          exact hvs v (by simp [hv])
+        simp [ha, ih ht]
+
+  constructor
+  · intro hSupport
+    have hsupport_zero :
+        ∀ v ∈ vertexSupport K, vertexDefect K v = 0 := by
+      have hmain :=
+        foldl_add_fn_eq_zero_supportwise
+          (f := fun x => vertexDefect K x)
+          (l := vertexSupport K)
+          (acc := 0)
+          (by simpa [PhiSupport] using hSupport)
+      exact hmain.2
+
+    have hall_zero :
+        ∀ v ∈ allVerts K, vertexDefect K v = 0 := by
+      intro v hv
+      exact hsupport_zero v ((mem_vertexSupport_iff K v).2 hv)
+
+    simpa [Phi] using hfold_zero (allVerts K) hall_zero
+
+  · intro hPhi
+    have hall_zero :
+        ∀ v ∈ allVerts K, vertexDefect K v = 0 :=
+      phi_sum_zero_implies_supportwise_zero K hPhi
+
+    have hsupport_zero :
+        ∀ v ∈ vertexSupport K, vertexDefect K v = 0 := by
+      intro v hv
+      exact hall_zero v ((mem_vertexSupport_iff K v).1 hv)
+
+    simpa [PhiSupport] using hfold_zero (vertexSupport K) hsupport_zero
+
 end Poincare
