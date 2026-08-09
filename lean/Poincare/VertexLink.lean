@@ -763,6 +763,82 @@ theorem vertexLinkTriangles_nodup
 
 
 
+theorem vertexLinkTriangles_pairwise_vertexSet_ne
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat) :
+    (vertexLinkTriangles K v).Pairwise
+      (fun σ ρ =>
+        ¬ ∀ y : Nat,
+            y ∈ σ.verts ↔
+            y ∈ ρ.verts) := by
+  unfold vertexLinkTriangles
+
+  apply
+    hcore.2.1.filterMap
+      (fun τ => τ.linkTriangleAt? v)
+
+  intro τ ρ hnotSame
+  intro σ hτExtract
+  intro ψ hρExtract
+  intro hsame
+
+  apply hnotSame
+
+  intro y
+  by_cases hyv : y = v
+
+  · subst y
+
+    have hvτ :
+        v ∈ τ.verts := by
+      rw [← τ.linkTriangleAt?_isSome_iff v]
+      simp [hτExtract]
+
+    have hvρ :
+        v ∈ ρ.verts := by
+      rw [← ρ.linkTriangleAt?_isSome_iff v]
+      simp [hρExtract]
+
+    exact
+      ⟨fun _ => hvρ,
+       fun _ => hvτ⟩
+
+  · constructor
+
+    · intro hyτ
+
+      have hyσ :
+          y ∈ σ.verts :=
+        (τ.mem_linkTriangleAt?_iff
+          v y σ hτExtract hyv).2 hyτ
+
+      have hyψ :
+          y ∈ ψ.verts :=
+        (hsame y).1 hyσ
+
+      exact
+        (ρ.mem_linkTriangleAt?_iff
+          v y ψ hρExtract hyv).1 hyψ
+
+    · intro hyρ
+
+      have hyψ :
+          y ∈ ψ.verts :=
+        (ρ.mem_linkTriangleAt?_iff
+          v y ψ hρExtract hyv).2 hyρ
+
+      have hyσ :
+          y ∈ σ.verts :=
+        (hsame y).2 hyψ
+
+      exact
+        (τ.mem_linkTriangleAt?_iff
+          v y σ hτExtract hyv).1 hyσ
+
+
+
+
 def LinkTriangle.commonVertexCount
     (σ ρ : LinkTriangle) : Nat :=
   (σ.verts.eraseDups.filter
