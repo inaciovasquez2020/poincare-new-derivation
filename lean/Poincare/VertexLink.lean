@@ -949,6 +949,24 @@ def VertexLinkVertexRepresented
     x ∈ σ.verts
 
 
+def vertexLinkVertices
+    (K : Triangulation)
+    (v : Nat) : List Nat :=
+  ((vertexLinkTriangles K v).flatMap
+    LinkTriangle.verts).eraseDups
+
+
+theorem mem_vertexLinkVertices_iff
+    (K : Triangulation)
+    (v x : Nat) :
+    x ∈ vertexLinkVertices K v ↔
+      VertexLinkVertexRepresented K v x := by
+  simp [
+    vertexLinkVertices,
+    VertexLinkVertexRepresented
+  ]
+
+
 theorem vertexLinkVertexRepresented_iff_star_nonempty
     (K : Triangulation)
     (v x : Nat) :
