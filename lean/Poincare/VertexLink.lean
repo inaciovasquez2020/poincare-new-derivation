@@ -399,4 +399,293 @@ theorem represented_linkEdge_ambient_incidence_two
       hfaceNodup
       hrepresented
 
+
+instance instDecidableLinkEdgeInTriangle
+    (e : LinkEdge)
+    (σ : LinkTriangle) :
+    Decidable (e.InTriangle σ) := by
+  unfold LinkEdge.InTriangle
+  infer_instance
+
+
+theorem Tet.mem_linkTriangleAt?_iff
+    (τ : Tet)
+    (v x : Nat)
+    (σ : LinkTriangle)
+    (hσ : τ.linkTriangleAt? v = some σ)
+    (hxv : x ≠ v) :
+    x ∈ σ.verts ↔ x ∈ τ.verts := by
+
+  constructor
+
+  · intro hx
+    exact
+      τ.linkTriangleAt?_verts_subset
+        v σ hσ x hx
+
+  · intro hxTet
+
+    unfold Tet.linkTriangleAt? at hσ
+
+    by_cases h0 : v = τ.v0
+    · rw [if_pos h0] at hσ
+      injection hσ with hs
+      subst σ
+      simp_all [
+        Tet.verts,
+        LinkTriangle.verts
+      ]
+
+    · rw [if_neg h0] at hσ
+
+      by_cases h1 : v = τ.v1
+      · rw [if_pos h1] at hσ
+        injection hσ with hs
+        subst σ
+        simp_all [
+          Tet.verts,
+          LinkTriangle.verts
+        ]
+
+      · rw [if_neg h1] at hσ
+
+        by_cases h2 : v = τ.v2
+        · rw [if_pos h2] at hσ
+          injection hσ with hs
+          subst σ
+          simp_all [
+            Tet.verts,
+            LinkTriangle.verts
+          ]
+
+        · rw [if_neg h2] at hσ
+
+          by_cases h3 : v = τ.v3
+          · rw [if_pos h3] at hσ
+            injection hσ with hs
+            subst σ
+            simp_all [
+              Tet.verts,
+              LinkTriangle.verts
+            ]
+
+          · rw [if_neg h3] at hσ
+            simp at hσ
+
+
+theorem Tet.linkTriangleAt?_edge_iff
+    (τ : Tet)
+    (v : Nat)
+    (σ : LinkTriangle)
+    (e : LinkEdge)
+    (hσ : τ.linkTriangleAt? v = some σ)
+    (hlo : e.lo ≠ v)
+    (hhi : e.hi ≠ v) :
+    e.InTriangle σ ↔
+      v ∈ τ.verts ∧
+      e.lo ∈ τ.verts ∧
+      e.hi ∈ τ.verts := by
+
+  have hvSome :
+      (τ.linkTriangleAt? v).isSome = true := by
+    rw [hσ]
+    rfl
+
+  have hvTet : v ∈ τ.verts :=
+    (τ.linkTriangleAt?_isSome_iff v).1 hvSome
+
+  have hloIff :
+      e.lo ∈ σ.verts ↔
+        e.lo ∈ τ.verts :=
+    τ.mem_linkTriangleAt?_iff
+      v e.lo σ hσ hlo
+
+  have hhiIff :
+      e.hi ∈ σ.verts ↔
+        e.hi ∈ τ.verts :=
+    τ.mem_linkTriangleAt?_iff
+      v e.hi σ hσ hhi
+
+  constructor
+
+  · intro hEdge
+    exact
+      ⟨hvTet,
+       hloIff.1 hEdge.1,
+       hhiIff.1 hEdge.2⟩
+
+  · rintro ⟨_, hloTet, hhiTet⟩
+    exact
+      ⟨hloIff.2 hloTet,
+       hhiIff.2 hhiTet⟩
+
+
+theorem LinkEdge.RepresentedAt_center_ne
+    (e : LinkEdge)
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hrep : e.RepresentedAt K v) :
+    v ≠ e.lo ∧
+    v ≠ e.hi := by
+
+  rcases hrep with
+    ⟨σ, hσLink, hEdge⟩
+
+  rcases
+      (mem_vertexLinkTriangles_iff K v σ).1 hσLink with
+    ⟨τ, hτK, hExtract⟩
+
+  have hτNodup : τ.verts.Nodup :=
+    hcore.1 τ hτK
+
+  have hvNot :
+      v ∉ σ.verts :=
+    τ.linkTriangleAt?_vertex_not_mem
+      v σ hτNodup hExtract
+
+  constructor
+
+  · intro h
+    apply hvNot
+    rw [h]
+    exact hEdge.1
+
+  · intro h
+    apply hvNot
+    rw [h]
+    exact hEdge.2
+
+
+theorem linkEdge_filterMap_incidence_count_eq
+    (tets : List Tet)
+    (v : Nat)
+    (e : LinkEdge)
+    (hvlo : v ≠ e.lo)
+    (hvhi : v ≠ e.hi) :
+    ((tets.filterMap
+        (fun τ => τ.linkTriangleAt? v)).filter
+      (fun σ => decide (e.InTriangle σ))).length =
+    (tets.filter
+      (fun τ =>
+        decide (
+          v ∈ τ.verts ∧
+          e.lo ∈ τ.verts ∧
+          e.hi ∈ τ.verts))).length := by
+
+  induction tets with
+
+  | nil =>
+      simp
+
+  | cons τ rest ih =>
+
+      cases hopt :
+          τ.linkTriangleAt? v with
+
+      | none =>
+
+          have hvNot : v ∉ τ.verts :=
+            (τ.linkTriangleAt?_eq_none_iff v).1 hopt
+
+          simp [
+            hopt,
+            hvNot,
+            ih
+          ]
+
+      | some σ =>
+
+          have hEdgeIff :
+              e.InTriangle σ ↔
+                v ∈ τ.verts ∧
+                e.lo ∈ τ.verts ∧
+                e.hi ∈ τ.verts :=
+            τ.linkTriangleAt?_edge_iff
+              v σ e hopt
+              (Ne.symm hvlo)
+              (Ne.symm hvhi)
+
+          by_cases hEdge :
+              e.InTriangle σ
+
+          · have hAmbient :
+                v ∈ τ.verts ∧
+                e.lo ∈ τ.verts ∧
+                e.hi ∈ τ.verts :=
+              hEdgeIff.1 hEdge
+
+            simp [
+              hopt,
+              hEdge,
+              hAmbient,
+              ih
+            ]
+
+          · have hAmbient :
+                ¬ (
+                  v ∈ τ.verts ∧
+                  e.lo ∈ τ.verts ∧
+                  e.hi ∈ τ.verts
+                ) := by
+              intro h
+              exact hEdge (hEdgeIff.2 h)
+
+            simp [
+              hopt,
+              hEdge,
+              hAmbient,
+              ih
+            ]
+
+
+theorem vertexLinkTriangles_edge_incidence_count_eq
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (e : LinkEdge)
+    (hrep : e.RepresentedAt K v) :
+    ((vertexLinkTriangles K v).filter
+      (fun σ => decide (e.InTriangle σ))).length =
+    (K.tets.filter
+      (fun τ =>
+        decide (
+          v ∈ τ.verts ∧
+          e.lo ∈ τ.verts ∧
+          e.hi ∈ τ.verts))).length := by
+
+  have hne :
+      v ≠ e.lo ∧
+      v ≠ e.hi :=
+    e.RepresentedAt_center_ne
+      K hcore v hrep
+
+  unfold vertexLinkTriangles
+
+  exact
+    linkEdge_filterMap_incidence_count_eq
+      K.tets
+      v e
+      hne.1
+      hne.2
+
+
+theorem represented_linkEdge_link_incidence_two
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (e : LinkEdge)
+    (hrep : e.RepresentedAt K v) :
+    ((vertexLinkTriangles K v).filter
+      (fun σ => decide (e.InTriangle σ))).length = 2 := by
+
+  rw [
+    vertexLinkTriangles_edge_incidence_count_eq
+      K hcore v e hrep
+  ]
+
+  exact
+    represented_linkEdge_ambient_incidence_two
+      K hcore v e hrep
+
 end Poincare
