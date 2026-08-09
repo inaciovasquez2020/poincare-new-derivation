@@ -3934,6 +3934,128 @@ theorem vertexLinkEveryRepresentedVertex_is_omitted_by_face
     hσmissing.2
 
 
+theorem vertexLinkEveryRepresentedVertex_has_unique_complementary_face
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hzero : vertexDefect K v = 0)
+    (hdeg :
+      ∀ x : Nat,
+        VertexLinkVertexRepresented K v x →
+          VertexLinkStarDegreeTwo K v x)
+    (x : Nat)
+    (hx :
+      x ∈ vertexLinkVertices K v) :
+    ∃! σ : LinkTriangle,
+      σ ∈ vertexLinkTriangles K v ∧
+        ∀ y : Nat,
+          y ∈ σ.verts ↔
+            y ∈ vertexLinkVertices K v ∧
+              y ≠ x := by
+
+  obtain
+    ⟨σ, hσ, hxσ⟩ :=
+    vertexLinkEveryRepresentedVertex_is_omitted_by_face
+      K hcore v hzero hdeg x hx
+
+  obtain
+    ⟨z, hz, hzuniq⟩ :=
+    vertexLinkFace_has_unique_omitted_vertex
+      K hcore v hzero hdeg σ hσ
+
+  have hsupport :
+      ∀ y : Nat,
+        y ∈ σ.verts ↔
+          y ∈ vertexLinkVertices K v ∧
+            y ≠ x := by
+
+    intro y
+
+    constructor
+
+    · intro hyσ
+
+      have hyV :
+          y ∈ vertexLinkVertices K v :=
+        (mem_vertexLinkVertices_iff
+          K v y).2
+          ⟨σ, hσ, hyσ⟩
+
+      have hyne :
+          y ≠ x := by
+
+        intro hyx
+
+        subst y
+
+        exact
+          hxσ hyσ
+
+      exact
+        ⟨hyV, hyne⟩
+
+    · rintro
+        ⟨hyV, hyne⟩
+
+      by_contra hyσ
+
+      have hyMissing :
+          y ∈ vertexLinkVertices K v ∧
+            y ∉ σ.verts :=
+        ⟨hyV, hyσ⟩
+
+      have hxMissing :
+          x ∈ vertexLinkVertices K v ∧
+            x ∉ σ.verts :=
+        ⟨hx, hxσ⟩
+
+      have hyz :
+          y = z :=
+        hzuniq y hyMissing
+
+      have hxz :
+          x = z :=
+        hzuniq x hxMissing
+
+      exact
+        hyne
+          (hyz.trans hxz.symm)
+
+  refine
+    ⟨σ, ⟨hσ, hsupport⟩, ?_⟩
+
+  intro ρ hρprop
+
+  rcases hρprop with
+    ⟨hρ, hρsupport⟩
+
+  have hxρ :
+      x ∉ ρ.verts := by
+
+    intro hxρmem
+
+    have hxrhs :=
+      (hρsupport x).1 hxρmem
+
+    exact
+      hxrhs.2 rfl
+
+  by_contra hρσ
+
+  have hbad :=
+    vertexLinkDistinctFaces_cannot_share_omitted_vertex
+      K hcore v hzero hdeg
+      σ ρ
+      hσ hρ
+      (Ne.symm hρσ)
+
+  exact
+    hbad
+      ⟨x,
+        ⟨hx, hxσ⟩,
+        ⟨hx, hxρ⟩⟩
+
+
 def VertexLinkClosedSurfaceCertificate
     (K : Triangulation)
     (v : Nat) : Prop :=
