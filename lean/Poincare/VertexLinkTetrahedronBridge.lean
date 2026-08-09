@@ -373,4 +373,23 @@ theorem vertexLinkComplementaryFace_geometricFace_eq_tetrahedronFacetConvexHull
         hτ.2.1,
         hτ.2.2.1⟩
 
+
+/--
+The geometric realization of the complete abstract vertex link is the union
+of the filled geometric realizations of all of its `LinkTriangle`s.
+-/
+noncomputable def vertexLinkGeometricRealization
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert :
+      VertexLinkTetrahedralBoundaryCertificate
+        K hcore v) :
+    Set TetrahedronAmbient :=
+  {p |
+    ∃ σ : LinkTriangle,
+      σ ∈ vertexLinkTriangles K v ∧
+      p ∈ vertexLinkGeometricFace
+        K hcore v hcert σ}
+
 end Poincare
