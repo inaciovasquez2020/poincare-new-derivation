@@ -1,9 +1,12 @@
 import Poincare.Triangulation
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Tactic
 import Mathlib.Data.Finset.Card
 import Mathlib.Data.Multiset.Count
 
 namespace Poincare
+
+open scoped BigOperators
 
 inductive PachnerMove where
 | move23
@@ -713,5 +716,269 @@ theorem Move23Site.replace_vertexSupport_mem_iff
       K hlegal v hva hvb hvc hvd hve
 
   rw [hoff]
+
+
+theorem eraseDups_nodup_nat :
+    ∀ xs : List Nat, xs.eraseDups.Nodup
+  | [] => by
+      simp
+  | x :: xs => by
+      rw [List.eraseDups_cons]
+
+      apply List.Nodup.cons
+      · intro hx
+
+        have hxFilter :
+            x ∈ List.filter (fun b : Nat => ! b == x) xs := by
+          exact (List.mem_eraseDups.mp hx)
+
+        simp at hxFilter
+
+      · exact
+          eraseDups_nodup_nat
+            (List.filter (fun b : Nat => ! b == x) xs)
+termination_by xs => xs.length
+decreasing_by
+  have hle :
+      (List.filter (fun b : Nat => ! b == x) xs).length ≤
+        xs.length :=
+    List.length_filter_le
+      (fun b : Nat => ! b == x) xs
+
+  simpa using Nat.lt_succ_of_le hle
+
+
+theorem phiSupport_eq_finset_sum
+    (K : Triangulation) :
+    PhiSupport K =
+      ∑ v ∈ (vertexSupport K).toFinset,
+        vertexDefect K v := by
+  unfold PhiSupport
+
+  have hnodup : (vertexSupport K).Nodup := by
+    unfold vertexSupport
+    exact eraseDups_nodup_nat (allVerts K)
+
+  have aux :
+      ∀ (xs : List Nat) (acc : Nat),
+        xs.Nodup →
+        xs.foldl
+            (fun a v => a + vertexDefect K v) acc =
+          acc +
+            ∑ v ∈ xs.toFinset,
+              vertexDefect K v := by
+    intro xs
+    induction xs with
+    | nil =>
+        intro acc _
+        simp
+    | cons x xs ih =>
+        intro acc h
+        have hh : x ∉ xs ∧ xs.Nodup := by
+          simpa using h
+        rcases hh with ⟨hx, hxs⟩
+
+        simp only [List.foldl]
+        rw [ih (acc + vertexDefect K x) hxs]
+        simp [hx, Nat.add_assoc]
+
+  simpa using aux (vertexSupport K) 0 hnodup
+
+
+theorem Move23Site.replace_PhiSupport_balance
+    (s : Move23Site) (K : Triangulation)
+    (hlegal : s.LegalIn K) :
+    PhiSupport K +
+        vertexDefect (s.replace K) s.d +
+        vertexDefect (s.replace K) s.e =
+      PhiSupport (s.replace K) +
+        vertexDefect K s.d +
+        vertexDefect K s.e := by
+
+  let S : Finset Nat :=
+    (vertexSupport K).toFinset
+
+  have hSupportFinset :
+      (vertexSupport (s.replace K)).toFinset = S := by
+    ext x
+    simpa [S] using
+      s.replace_vertexSupport_mem_iff K hlegal x
+
+  have hrealized : s.RealizedIn K :=
+    hlegal.1
+
+  rcases hrealized with ⟨hleft, hright⟩
+  rcases hleft with ⟨τd, hτdK, hτdMatch⟩
+  rcases hright with ⟨τe, hτeK, hτeMatch⟩
+
+  have hdTarget : s.d ∈ s.leftTet.verts := by
+    simp [Move23Site.leftTet, Tet.verts]
+
+  have heTarget : s.e ∈ s.rightTet.verts := by
+    simp [Move23Site.rightTet, Tet.verts]
+
+  have hdTau : s.d ∈ τd.verts :=
+    (hτdMatch s.d).2 hdTarget
+
+  have heTau : s.e ∈ τe.verts :=
+    (hτeMatch s.e).2 heTarget
+
+  have hdSupport : s.d ∈ vertexSupport K := by
+    rw [mem_vertexSupport_iff]
+    simp only [allVerts, List.mem_flatMap]
+    exact ⟨τd, hτdK, hdTau⟩
+
+  have heSupport : s.e ∈ vertexSupport K := by
+    rw [mem_vertexSupport_iff]
+    simp only [allVerts, List.mem_flatMap]
+    exact ⟨τe, hτeK, heTau⟩
+
+  have hdS : s.d ∈ S := by
+    simpa [S] using hdSupport
+
+  have heS : s.e ∈ S := by
+    simpa [S] using heSupport
+
+  have hde : s.d ≠ s.e := by
+    intro h
+    have hs := s.distinct
+    simp [h] at hs
+
+  have hed : s.e ≠ s.d := by
+    intro h
+    exact hde h.symm
+
+  have heErase : s.e ∈ S.erase s.d := by
+    simp [heS, hed]
+
+  have hsite :=
+    s.replace_vertexDegree_site K hlegal
+
+  rcases hsite with
+    ⟨ha, hb, hc, hd, he⟩
+
+  have hDegreeExceptDE :
+      ∀ v : Nat,
+        v ≠ s.d →
+        v ≠ s.e →
+        vertexDegree (s.replace K) v =
+          vertexDegree K v := by
+    intro v hvd hve
+
+    by_cases hva : v = s.a
+    · subst v
+      exact ha
+
+    by_cases hvb : v = s.b
+    · subst v
+      exact hb
+
+    by_cases hvc : v = s.c
+    · subst v
+      exact hc
+
+    exact
+      s.replace_vertexDegree_offSite
+        K hlegal v hva hvb hvc hvd hve
+
+  have hDefectExceptDE :
+      ∀ v : Nat,
+        v ≠ s.d →
+        v ≠ s.e →
+        vertexDefect (s.replace K) v =
+          vertexDefect K v := by
+    intro v hvd hve
+    unfold vertexDefect
+    rw [hDegreeExceptDE v hvd hve]
+
+  have hRest :
+      (∑ v ∈ (S.erase s.d).erase s.e,
+          vertexDefect (s.replace K) v) =
+        ∑ v ∈ (S.erase s.d).erase s.e,
+          vertexDefect K v := by
+    apply Finset.sum_congr rfl
+    intro v hv
+
+    have hve : v ≠ s.e :=
+      (Finset.mem_erase.mp hv).1
+
+    have hvEraseD : v ∈ S.erase s.d :=
+      (Finset.mem_erase.mp hv).2
+
+    have hvd : v ≠ s.d :=
+      (Finset.mem_erase.mp hvEraseD).1
+
+    exact hDefectExceptDE v hvd hve
+
+  have hOld :
+      (∑ v ∈ S, vertexDefect K v) =
+        (∑ v ∈ (S.erase s.d).erase s.e,
+            vertexDefect K v) +
+          vertexDefect K s.e +
+          vertexDefect K s.d := by
+    calc
+      (∑ v ∈ S, vertexDefect K v) =
+          (∑ v ∈ S.erase s.d,
+              vertexDefect K v) +
+            vertexDefect K s.d :=
+        (Finset.sum_erase_add
+          S (vertexDefect K) hdS).symm
+
+      _ =
+          ((∑ v ∈ (S.erase s.d).erase s.e,
+              vertexDefect K v) +
+            vertexDefect K s.e) +
+            vertexDefect K s.d := by
+        rw [
+          (Finset.sum_erase_add
+            (S.erase s.d)
+            (vertexDefect K)
+            heErase).symm
+        ]
+
+  have hNew :
+      (∑ v ∈ S, vertexDefect (s.replace K) v) =
+        (∑ v ∈ (S.erase s.d).erase s.e,
+            vertexDefect (s.replace K) v) +
+          vertexDefect (s.replace K) s.e +
+          vertexDefect (s.replace K) s.d := by
+    calc
+      (∑ v ∈ S, vertexDefect (s.replace K) v) =
+          (∑ v ∈ S.erase s.d,
+              vertexDefect (s.replace K) v) +
+            vertexDefect (s.replace K) s.d :=
+        (Finset.sum_erase_add
+          S
+          (vertexDefect (s.replace K))
+          hdS).symm
+
+      _ =
+          ((∑ v ∈ (S.erase s.d).erase s.e,
+              vertexDefect (s.replace K) v) +
+            vertexDefect (s.replace K) s.e) +
+            vertexDefect (s.replace K) s.d := by
+        rw [
+          (Finset.sum_erase_add
+            (S.erase s.d)
+            (vertexDefect (s.replace K))
+            heErase).symm
+        ]
+
+  rw [
+    phiSupport_eq_finset_sum K,
+    phiSupport_eq_finset_sum (s.replace K),
+    hSupportFinset
+  ]
+
+  change
+    (∑ v ∈ S, vertexDefect K v) +
+        vertexDefect (s.replace K) s.d +
+        vertexDefect (s.replace K) s.e =
+      (∑ v ∈ S, vertexDefect (s.replace K) v) +
+        vertexDefect K s.d +
+        vertexDefect K s.e
+
+  rw [hOld, hNew, hRest]
+  ac_rfl
 
 end Poincare
