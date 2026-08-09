@@ -15,6 +15,13 @@ def Tet.verts (τ : Tet) : List Nat :=
 def allVerts (K : Triangulation) : List Nat :=
   K.tets.flatMap Tet.verts
 
+def vertexSupport (K : Triangulation) : List Nat :=
+  (allVerts K).eraseDups
+
+theorem mem_vertexSupport_iff (K : Triangulation) (v : Nat) :
+    v ∈ vertexSupport K ↔ v ∈ allVerts K := by
+  simp [vertexSupport]
+
 def vertexDegree (K : Triangulation) (v : Nat) : Nat :=
   (allVerts K).count v
 
