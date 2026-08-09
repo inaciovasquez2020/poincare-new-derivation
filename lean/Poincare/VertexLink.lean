@@ -919,6 +919,83 @@ def VertexLinkStarConnected
         σ ρ
 
 
+theorem VertexLinkStarConnected.preconnected
+    (K : Triangulation)
+    (v x : Nat)
+    (hconn : VertexLinkStarConnected K v x) :
+    (vertexLinkStarGraph K v x).Preconnected := by
+  intro σ ρ
+
+  have lift :
+      ∀ {a b : LinkTriangle},
+        Relation.ReflTransGen
+            (VertexLinkStarAdjacent K v x)
+            a b →
+        ∀ (ha : a ∈ vertexLinkStarTriangles K v x)
+          (hb : b ∈ vertexLinkStarTriangles K v x),
+          (vertexLinkStarGraph K v x).Reachable
+            ⟨a, ha⟩
+            ⟨b, hb⟩ := by
+    intro a b hpath
+    induction hpath with
+    | refl =>
+        intro ha hb
+        have heq :
+            (⟨a, ha⟩ :
+              {τ : LinkTriangle //
+                τ ∈ vertexLinkStarTriangles K v x}) =
+            ⟨a, hb⟩ := by
+          have hp : ha = hb :=
+            Subsingleton.elim ha hb
+          cases hp
+          rfl
+        rw [← heq]
+    | tail hprev hstep ih =>
+        intro ha hc
+
+        have hmid :
+            _ ∈ vertexLinkStarTriangles K v x :=
+          VertexLinkStarAdjacent.left_mem
+            K v x _ _ hstep
+
+        let mid :
+            {τ : LinkTriangle //
+              τ ∈ vertexLinkStarTriangles K v x} :=
+          ⟨_, hmid⟩
+
+        let finish :
+            {τ : LinkTriangle //
+              τ ∈ vertexLinkStarTriangles K v x} :=
+          ⟨_, hc⟩
+
+        have hreachMid :
+            (vertexLinkStarGraph K v x).Reachable
+              ⟨a, ha⟩ mid := by
+          exact ih ha hmid
+
+        have hreachStep :
+            (vertexLinkStarGraph K v x).Reachable
+              mid finish := by
+          by_cases heq : mid = finish
+          · rw [heq]
+          · apply SimpleGraph.Adj.reachable
+            rw [vertexLinkStarGraph_adj]
+            exact ⟨heq, hstep⟩
+
+        exact
+          SimpleGraph.Reachable.trans
+            hreachMid
+            hreachStep
+
+  exact
+    lift
+      (hconn σ.1 σ.2 ρ.1 ρ.2)
+      σ.2
+      ρ.2
+
+
+
+
 def VertexLinkStarDegreeTwo
     (K : Triangulation)
     (v x : Nat) : Prop :=
