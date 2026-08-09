@@ -207,6 +207,51 @@ theorem Move23Site.sourceMatch_count_eq
 
     rw [hτzero, htargetzero]
 
+
+theorem Move23Site.leftTet_not_same_rightTet
+    (s : Move23Site) :
+    ¬ SameTetVertices s.leftTet s.rightTet := by
+  intro h
+
+  have hdLeft : s.d ∈ s.leftTet.verts := by
+    simp [Move23Site.leftTet, Tet.verts]
+
+  have hdRight : s.d ∈ s.rightTet.verts :=
+    (h s.d).1 hdLeft
+
+  have hdCases :
+      s.d = s.a ∨
+      s.d = s.b ∨
+      s.d = s.c ∨
+      s.d = s.e := by
+    simpa [Move23Site.rightTet, Tet.verts] using hdRight
+
+  have had : s.a ≠ s.d := by
+    intro had
+    have hs := s.distinct
+    simp [had] at hs
+
+  have hbd : s.b ≠ s.d := by
+    intro hbd
+    have hs := s.distinct
+    simp [hbd] at hs
+
+  have hcd : s.c ≠ s.d := by
+    intro hcd
+    have hs := s.distinct
+    simp [hcd] at hs
+
+  have hde : s.d ≠ s.e := by
+    intro hde
+    have hs := s.distinct
+    simp [hde] at hs
+
+  rcases hdCases with hda | hdb | hdc | hdeq
+  · exact had hda.symm
+  · exact hbd hdb.symm
+  · exact hcd hdc.symm
+  · exact hde hdeq
+
 def Move23Site.replace (s : Move23Site) (K : Triangulation) : Triangulation :=
   let afterLeft := eraseFirstSameTet s.leftTet K.tets
   let afterRight := eraseFirstSameTet s.rightTet afterLeft
