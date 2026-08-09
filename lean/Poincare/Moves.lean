@@ -613,4 +613,105 @@ theorem Move23Site.replace_vertexDegree_offSite
 
   omega
 
+
+theorem Move23Site.replace_vertexSupport_mem_iff
+    (s : Move23Site) (K : Triangulation)
+    (hlegal : s.LegalIn K)
+    (v : Nat) :
+    v ∈ vertexSupport (s.replace K) ↔
+      v ∈ vertexSupport K := by
+
+  have hsupportDegree :
+      ∀ (J : Triangulation) (x : Nat),
+        x ∈ vertexSupport J ↔ 0 < vertexDegree J x := by
+    intro J x
+    rw [mem_vertexSupport_iff]
+    change x ∈ allVerts J ↔ 0 < (allVerts J).count x
+    simpa using
+      ((Multiset.count_pos
+        (a := x)
+        (s := (↑(allVerts J) : Multiset Nat))).symm)
+
+  have hrealized : s.RealizedIn K := hlegal.1
+  rcases hrealized with ⟨hleft, hright⟩
+  rcases hleft with ⟨τd, hτdK, hτdMatch⟩
+  rcases hright with ⟨τe, hτeK, hτeMatch⟩
+
+  have hdTarget : s.d ∈ s.leftTet.verts := by
+    simp [Move23Site.leftTet, Tet.verts]
+
+  have heTarget : s.e ∈ s.rightTet.verts := by
+    simp [Move23Site.rightTet, Tet.verts]
+
+  have hdTau : s.d ∈ τd.verts :=
+    (hτdMatch s.d).2 hdTarget
+
+  have heTau : s.e ∈ τe.verts :=
+    (hτeMatch s.e).2 heTarget
+
+  have hdAll : s.d ∈ allVerts K := by
+    simp only [allVerts, List.mem_flatMap]
+    exact ⟨τd, hτdK, hdTau⟩
+
+  have heAll : s.e ∈ allVerts K := by
+    simp only [allVerts, List.mem_flatMap]
+    exact ⟨τe, hτeK, heTau⟩
+
+  have hdSupport : s.d ∈ vertexSupport K :=
+    (mem_vertexSupport_iff K s.d).2 hdAll
+
+  have heSupport : s.e ∈ vertexSupport K :=
+    (mem_vertexSupport_iff K s.e).2 heAll
+
+  have hdPos : 0 < vertexDegree K s.d :=
+    (hsupportDegree K s.d).1 hdSupport
+
+  have hePos : 0 < vertexDegree K s.e :=
+    (hsupportDegree K s.e).1 heSupport
+
+  have hsite :=
+    s.replace_vertexDegree_site K hlegal
+
+  rcases hsite with
+    ⟨ha, hb, hc, hd, he⟩
+
+  rw [
+    hsupportDegree (s.replace K) v,
+    hsupportDegree K v
+  ]
+
+  by_cases hva : v = s.a
+  · subst v
+    rw [ha]
+
+  by_cases hvb : v = s.b
+  · subst v
+    rw [hb]
+
+  by_cases hvc : v = s.c
+  · subst v
+    rw [hc]
+
+  by_cases hvd : v = s.d
+  · subst v
+    constructor
+    · intro _
+      exact hdPos
+    · intro _
+      omega
+
+  by_cases hve : v = s.e
+  · subst v
+    constructor
+    · intro _
+      exact hePos
+    · intro _
+      omega
+
+  have hoff :=
+    s.replace_vertexDegree_offSite
+      K hlegal v hva hvb hvc hvd hve
+
+  rw [hoff]
+
 end Poincare
