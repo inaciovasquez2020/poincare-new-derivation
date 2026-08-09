@@ -15,7 +15,8 @@ structure TetraGeom where
   G : Matrix (Fin 3) (Fin 3) ℝ
 axiom FundamentalGroup : SimplicialComplex → Type
 
-def detG (_ : TetraGeom) : Nat := 1
+def detG (σ : TetraGeom) : ℝ :=
+  Matrix.det σ.G
 def LocalIndependent (_ : TetraGeom) : Prop := True
 
 theorem det_nonzero_implies_local_rigidity
