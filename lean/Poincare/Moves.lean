@@ -45,6 +45,15 @@ def Move23Site.RealizedIn (s : Move23Site) (K : Triangulation) : Prop :=
 def Move23Site.NewEdgeAbsent (s : Move23Site) (K : Triangulation) : Prop :=
   ∀ τ ∈ K.tets, ¬ (s.d ∈ τ.verts ∧ s.e ∈ τ.verts)
 
+
+def Move23Site.SharedFaceExactlyTwo
+    (s : Move23Site) (K : Triangulation) : Prop :=
+  (K.tets.filter
+      (fun τ =>
+        s.a ∈ τ.verts ∧
+        s.b ∈ τ.verts ∧
+        s.c ∈ τ.verts)).length = 2
+
 def applyMove (T : Triangulation) (_ : PachnerMove) : Triangulation := T
 def selectMove (_T : Triangulation) : PachnerMove := PachnerMove.move23
 
