@@ -61,10 +61,13 @@ theorem global_s3_of_links_and_pi1 :
     simply_connected K →
     S3 K := by
   intro K hlinks _
-  unfold S3 normalized
-  apply (Phi_zero_iff_local_zero K).2
-  intro v hv
-  simpa [spherical_link] using hlinks v hv
+  have hlocal : ∀ v ∈ allVerts K, delta K v = 0 := by
+    intro v hv
+    simpa [spherical_link] using hlinks v hv
+  have hPhi : Phi K = 0 :=
+    (Phi_zero_iff_local_zero K).2 hlocal
+  unfold S3
+  simpa [normalized, phiSupport_zero_iff_phi_zero] using hPhi
 
 theorem invariant_zero_implies_pi1_trivial :
   ∀ T : Triangulation, invariant T = 0 → simply_connected T := by
