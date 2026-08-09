@@ -60,6 +60,28 @@ def Move23Site.LegalIn (s : Move23Site) (K : Triangulation) : Prop :=
   s.SharedFaceExactlyTwo K ∧
   s.NewEdgeAbsent K
 
+
+def sameTetVerticesBool (τ σ : Tet) : Bool :=
+  τ.verts.all (fun v => σ.verts.contains v) &&
+  σ.verts.all (fun v => τ.verts.contains v)
+
+def eraseFirstSameTet (target : Tet) : List Tet → List Tet
+  | [] => []
+  | τ :: rest =>
+      if sameTetVerticesBool τ target then
+        rest
+      else
+        τ :: eraseFirstSameTet target rest
+
+def Move23Site.replace (s : Move23Site) (K : Triangulation) : Triangulation :=
+  let afterLeft := eraseFirstSameTet s.leftTet K.tets
+  let afterRight := eraseFirstSameTet s.rightTet afterLeft
+  { tets :=
+      s.newTet₀ ::
+      s.newTet₁ ::
+      s.newTet₂ ::
+      afterRight }
+
 def applyMove (T : Triangulation) (_ : PachnerMove) : Triangulation := T
 def selectMove (_T : Triangulation) : PachnerMove := PachnerMove.move23
 
