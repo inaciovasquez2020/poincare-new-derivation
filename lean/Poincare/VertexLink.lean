@@ -2108,6 +2108,232 @@ theorem represented_linkEdge_edgeIncidences_count_two
       K hcore v e hrep
 
 
+theorem linkEdge_eraseDups_nodup :
+    ∀ xs : List LinkEdge,
+      xs.eraseDups.Nodup
+  | [] => by
+      simp
+
+  | x :: xs => by
+      rw [List.eraseDups_cons]
+
+      apply List.Nodup.cons
+
+      · intro hx
+
+        have hxFilter :
+            x ∈
+              List.filter
+                (fun b : LinkEdge =>
+                  ! b == x)
+                xs := by
+
+          exact
+            List.mem_eraseDups.mp hx
+
+        simp at hxFilter
+
+      · exact
+          linkEdge_eraseDups_nodup
+            (List.filter
+              (fun b : LinkEdge =>
+                ! b == x)
+              xs)
+
+termination_by xs => xs.length
+
+decreasing_by
+  have hle :
+      (List.filter
+        (fun b : LinkEdge =>
+          ! b == x)
+        xs).length ≤
+      xs.length :=
+    List.length_filter_le
+      (fun b : LinkEdge =>
+        ! b == x)
+      xs
+
+  simpa using
+    Nat.lt_succ_of_le hle
+
+
+theorem vertexLinkEdgeIncidences_length_eq_two_mul_edges_length
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat) :
+    (vertexLinkEdgeIncidences K hcore v).length =
+      2 * (vertexLinkEdges K hcore v).length := by
+
+  let I :=
+    vertexLinkEdgeIncidences K hcore v
+
+  let E :=
+    vertexLinkEdges K hcore v
+
+
+  have hEI :
+      E = I.eraseDups := by
+    rfl
+
+
+  have hEnodup :
+      E.Nodup := by
+
+    rw [hEI]
+
+    exact
+      linkEdge_eraseDups_nodup I
+
+
+  have hEcard :
+      E.toFinset.card =
+        E.length := by
+
+    rw [
+      ← List.toFinset_eq hEnodup
+    ]
+
+    rfl
+
+
+  have hsupport :
+      I.toFinset =
+        E.toFinset := by
+
+    ext e
+
+    simp [hEI]
+
+
+  have hsupportCard :
+      I.toFinset.card =
+        E.length := by
+
+    calc
+      I.toFinset.card =
+          E.toFinset.card :=
+        congrArg Finset.card hsupport
+
+      _ = E.length :=
+        hEcard
+
+
+  have hsumCount :
+      ∑ e ∈ I.toFinset,
+        I.count e =
+          I.length := by
+
+    have h :=
+      Multiset.sum_count_eq_card
+        (s := I.toFinset)
+        (m := (↑I : Multiset LinkEdge))
+        (by
+          intro e he
+
+          simpa using he)
+
+    simpa using h
+
+
+  have hcountTwo :
+      ∀ e ∈ I.toFinset,
+        I.count e = 2 := by
+
+    intro e he
+
+    have heI :
+        e ∈ I := by
+      simpa using he
+
+    have heE :
+        e ∈ E := by
+
+      rw [hEI]
+
+      exact
+        List.mem_eraseDups.mpr heI
+
+    have heGlobal :
+        e ∈ vertexLinkEdges K hcore v := by
+      simpa [E] using heE
+
+    have hrep :
+        e.RepresentedAt K v :=
+      (mem_vertexLinkEdges_iff
+        K hcore v e).1 heGlobal
+
+    have hcount :=
+      represented_linkEdge_edgeIncidences_count_two
+        K hcore v e hrep
+
+    simpa [I] using hcount
+
+
+  have hsumTwo :
+      ∑ e ∈ I.toFinset,
+        I.count e =
+          2 * I.toFinset.card := by
+
+    calc
+      (∑ e ∈ I.toFinset,
+          I.count e) =
+        ∑ e ∈ I.toFinset, 2 := by
+
+          apply Finset.sum_congr rfl
+
+          intro e he
+
+          exact
+            hcountTwo e he
+
+      _ =
+          2 * I.toFinset.card := by
+        simp [Nat.mul_comm]
+
+
+  have hI :
+      I.length =
+        2 * E.length := by
+
+    calc
+      I.length =
+          ∑ e ∈ I.toFinset,
+            I.count e :=
+        hsumCount.symm
+
+      _ =
+          2 * I.toFinset.card :=
+        hsumTwo
+
+      _ =
+          2 * E.length := by
+        rw [hsupportCard]
+
+
+  simpa [I, E] using hI
+
+
+theorem vertexLink_three_mul_faces_eq_two_mul_edges
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat) :
+    3 * (vertexLinkTriangles K v).length =
+      2 * (vertexLinkEdges K hcore v).length := by
+
+  calc
+    3 * (vertexLinkTriangles K v).length =
+        (vertexLinkEdgeIncidences
+          K hcore v).length :=
+      (vertexLinkEdgeIncidences_length
+        K hcore v).symm
+
+    _ =
+        2 * (vertexLinkEdges K hcore v).length :=
+      vertexLinkEdgeIncidences_length_eq_two_mul_edges_length
+        K hcore v
+
+
 def VertexLinkClosedSurfaceCertificate
     (K : Triangulation)
     (v : Nat) : Prop :=
