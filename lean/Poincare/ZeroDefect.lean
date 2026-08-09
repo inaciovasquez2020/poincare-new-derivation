@@ -89,4 +89,13 @@ theorem zero_defect_characterization_unconditional
   have hsc : simply_connected T := invariant_zero_implies_pi1_trivial T hI
   exact zero_defect_characterization_conditional T hΦ hsc
 
+
+theorem PhiSupport_zero_iff_local_zero :
+    ∀ K : Triangulation,
+      PhiSupport K = 0 ↔
+        ∀ v ∈ allVerts K, delta K v = 0 := by
+  intro K
+  rw [phiSupport_zero_iff_phi_zero K]
+  exact Phi_zero_iff_local_zero K
+
 end Poincare
