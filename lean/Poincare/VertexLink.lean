@@ -226,6 +226,87 @@ def LinkEdge.InTriangle
   e.lo ∈ σ.verts ∧
   e.hi ∈ σ.verts
 
+theorem LinkEdge.ofDistinct_inTriangle
+    (σ : LinkTriangle)
+    (a b : Nat)
+    (hne : a ≠ b)
+    (ha : a ∈ σ.verts)
+    (hb : b ∈ σ.verts) :
+    (LinkEdge.ofDistinct a b hne).InTriangle σ := by
+
+  unfold LinkEdge.ofDistinct
+  split
+  · exact ⟨ha, hb⟩
+  · exact ⟨hb, ha⟩
+
+
+def LinkTriangle.edges
+    (σ : LinkTriangle)
+    (hσ : σ.verts.Nodup) :
+    List LinkEdge := by
+
+  rcases σ with ⟨a, b, c⟩
+
+  have h :
+      (a ≠ b ∧ a ≠ c) ∧
+      b ≠ c := by
+    simpa [LinkTriangle.verts] using hσ
+
+  exact [
+    LinkEdge.ofDistinct a b h.1.1,
+    LinkEdge.ofDistinct a c h.1.2,
+    LinkEdge.ofDistinct b c h.2
+  ]
+
+
+@[simp]
+theorem LinkTriangle.edges_length
+    (σ : LinkTriangle)
+    (hσ : σ.verts.Nodup) :
+    (σ.edges hσ).length = 3 := by
+
+  rcases σ with ⟨a, b, c⟩
+  simp [LinkTriangle.edges]
+
+
+theorem LinkTriangle.mem_edges_inTriangle
+    (σ : LinkTriangle)
+    (hσ : σ.verts.Nodup)
+    (e : LinkEdge)
+    (he : e ∈ σ.edges hσ) :
+    e.InTriangle σ := by
+
+  rcases σ with ⟨a, b, c⟩
+
+  simp only [
+    LinkTriangle.edges,
+    List.mem_cons
+  ] at he
+
+  rcases he with he | he
+
+  · subst e
+    apply LinkEdge.ofDistinct_inTriangle
+    · simp [LinkTriangle.verts]
+    · simp [LinkTriangle.verts]
+
+  · rcases he with he | he
+
+    · subst e
+      apply LinkEdge.ofDistinct_inTriangle
+      · simp [LinkTriangle.verts]
+      · simp [LinkTriangle.verts]
+
+    · rcases he with he | he
+
+      · subst e
+        apply LinkEdge.ofDistinct_inTriangle
+        · simp [LinkTriangle.verts]
+        · simp [LinkTriangle.verts]
+
+      · simp at he
+
+
 def LinkEdge.RepresentedAt
     (e : LinkEdge)
     (K : Triangulation)
