@@ -148,4 +148,64 @@ theorem vertexLinkGeometricVertex_range
       vertexLinkGeometricVertex
     ]
 
+
+theorem vertexLinkGeometricVertex_image_faceSupport
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert :
+      VertexLinkTetrahedralBoundaryCertificate
+        K hcore v)
+    (σ : LinkTriangle) :
+    vertexLinkGeometricVertex
+          K hcore v hcert ''
+        {x :
+          ↥((vertexLinkVertices K v).toFinset) |
+            x.1 ∈ σ.verts} =
+      tetrahedronSimplex.points ''
+        (↑(vertexLinkFaceLabelSupport
+          K hcore v hcert σ) : Set (Fin 4)) := by
+
+  ext p
+  constructor
+
+  · rintro ⟨x, hx, rfl⟩
+    refine
+      ⟨vertexLinkVertexEquivFin4
+          K hcore v hcert x,
+        ?_,
+        rfl⟩
+
+    change
+      vertexLinkVertexEquivFin4
+          K hcore v hcert x ∈
+        vertexLinkFaceLabelSupport
+          K hcore v hcert σ
+
+    rw [mem_vertexLinkFaceLabelSupport_iff]
+    simpa using hx
+
+  · rintro ⟨i, hi, rfl⟩
+
+    change
+      i ∈
+        vertexLinkFaceLabelSupport
+          K hcore v hcert σ at hi
+
+    rw [mem_vertexLinkFaceLabelSupport_iff] at hi
+
+    let x :
+        ↥((vertexLinkVertices K v).toFinset) :=
+      (vertexLinkVertexEquivFin4
+        K hcore v hcert).symm i
+
+    refine ⟨x, ?_, ?_⟩
+
+    · simpa [x] using hi
+
+    · simp [
+        x,
+        vertexLinkGeometricVertex
+      ]
+
 end Poincare
