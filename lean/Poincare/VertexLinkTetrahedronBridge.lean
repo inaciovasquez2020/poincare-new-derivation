@@ -208,4 +208,71 @@ theorem vertexLinkGeometricVertex_image_faceSupport
         vertexLinkGeometricVertex
       ]
 
+
+/--
+For every `Fin 4` label, the unique certified complementary abstract
+`LinkTriangle` is realized on exactly the vertex set of the corresponding
+geometric tetrahedron facet opposite that label.
+-/
+theorem vertexLinkComplementaryFace_realizedVertices_eq_tetrahedronFacet
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert :
+      VertexLinkTetrahedralBoundaryCertificate
+        K hcore v)
+    (i : Fin 4) :
+    ∃! σ : LinkTriangle,
+      σ ∈ vertexLinkTriangles K v ∧
+      (∀ y : Nat,
+        y ∈ σ.verts ↔
+          y ∈ vertexLinkVertices K v ∧
+            y ≠
+              ((vertexLinkVertexEquivFin4
+                K hcore v hcert).symm i).1) ∧
+      vertexLinkFaceLabelSupport
+          K hcore v hcert σ =
+        Finset.univ.erase i ∧
+      vertexLinkGeometricVertex
+            K hcore v hcert ''
+          {x :
+            ↥((vertexLinkVertices K v).toFinset) |
+              x.1 ∈ σ.verts} =
+        Set.range
+          (tetrahedronSimplex.faceOpposite i).points := by
+
+  obtain ⟨σ, hσ, hunique⟩ :=
+    vertexLinkFin4Label_has_unique_complementary_face
+      K hcore v hcert i
+
+  rcases hσ with
+    ⟨hσtri, hσverts, hσsupport⟩
+
+  refine
+    ⟨σ, ?_, ?_⟩
+
+  · refine
+      ⟨hσtri,
+        hσverts,
+        hσsupport,
+        ?_⟩
+
+    rw [
+      vertexLinkGeometricVertex_image_faceSupport
+        K hcore v hcert σ,
+      hσsupport
+    ]
+
+    exact
+      (tetrahedronFaceOpposite_vertexSet_eq_image_erase i).symm
+
+  · intro τ hτ
+
+    apply hunique τ
+
+    exact
+      ⟨hτ.1,
+        hτ.2.1,
+        hτ.2.2.1⟩
+
 end Poincare
