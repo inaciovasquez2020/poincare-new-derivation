@@ -937,6 +937,91 @@ def VertexLinkStarDegreeTwo
 
 
 
+theorem VertexLinkStarDegreeTwo.isCycles
+    (K : Triangulation)
+    (v x : Nat)
+    (hdeg : VertexLinkStarDegreeTwo K v x) :
+    (vertexLinkStarGraph K v x).IsCycles := by
+  intro σ _
+  obtain
+    ⟨ρ₁, ρ₂,
+      hρ₁σ, hρ₂σ, hρ₁ρ₂,
+      hσρ₁, hσρ₂, hall⟩ :=
+    hdeg σ.1 σ.2
+
+  have hρ₁mem :
+      ρ₁ ∈ vertexLinkStarTriangles K v x :=
+    VertexLinkStarAdjacent.right_mem
+      K v x σ.1 ρ₁ hσρ₁
+
+  have hρ₂mem :
+      ρ₂ ∈ vertexLinkStarTriangles K v x :=
+    VertexLinkStarAdjacent.right_mem
+      K v x σ.1 ρ₂ hσρ₂
+
+  let r₁ :
+      {τ : LinkTriangle //
+        τ ∈ vertexLinkStarTriangles K v x} :=
+    ⟨ρ₁, hρ₁mem⟩
+
+  let r₂ :
+      {τ : LinkTriangle //
+        τ ∈ vertexLinkStarTriangles K v x} :=
+    ⟨ρ₂, hρ₂mem⟩
+
+  have hr₁σ : r₁ ≠ σ := by
+    intro heq
+    apply hρ₁σ
+    exact congrArg Subtype.val heq
+
+  have hr₂σ : r₂ ≠ σ := by
+    intro heq
+    apply hρ₂σ
+    exact congrArg Subtype.val heq
+
+  have hr₁r₂ : r₁ ≠ r₂ := by
+    intro heq
+    apply hρ₁ρ₂
+    exact congrArg Subtype.val heq
+
+  have hneighbors :
+      (vertexLinkStarGraph K v x).neighborSet σ =
+        {r₁, r₂} := by
+    ext ρ
+    simp only [
+      SimpleGraph.mem_neighborSet,
+      vertexLinkStarGraph_adj,
+      Set.mem_insert_iff,
+      Set.mem_singleton_iff
+    ]
+    constructor
+    · rintro ⟨hσρ, hstar⟩
+      have hval :
+          ρ.1 ≠ σ.1 := by
+        intro heq
+        apply hσρ
+        apply Subtype.ext
+        exact heq.symm
+      rcases hall ρ.1 hval hstar with h | h
+      · left
+        apply Subtype.ext
+        exact h
+      · right
+        apply Subtype.ext
+        exact h
+    · intro h
+      rcases h with h | h
+      · subst ρ
+        exact ⟨hr₁σ.symm, hσρ₁⟩
+      · subst ρ
+        exact ⟨hr₂σ.symm, hσρ₂⟩
+
+  rw [hneighbors]
+  simp [hr₁r₂]
+
+
+
+
 def VertexLinkLocallyConnected
     (K : Triangulation)
     (v : Nat) : Prop :=
