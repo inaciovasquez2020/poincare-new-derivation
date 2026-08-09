@@ -1450,4 +1450,41 @@ theorem vertexLinkClosedSurfaceCertificate_of_closedCore
         (hdeg x hrep)
 
 
+
+def VertexLinkConnectedClosedSurfaceCertificate
+    (K : Triangulation)
+    (v : Nat) : Prop :=
+  VertexLinkClosedSurfaceCertificate K v ∧
+  VertexLinkConnected K v
+
+
+theorem connectedLinkClosedCore_vertexLinks_connectedClosedSurfaceCertificate
+    (K : Triangulation)
+    (hconnected : ConnectedLinkClosedCore K)
+    (hlocal : VertexLinksLocallyConnected K)
+    (hdeg :
+      ∀ v ∈ vertexSupport K,
+        ∀ x : Nat,
+          VertexLinkVertexRepresented K v x →
+            VertexLinkStarDegreeTwo K v x) :
+    ∀ v ∈ vertexSupport K,
+      VertexLinkConnectedClosedSurfaceCertificate K v := by
+
+  intro v hv
+
+  refine ⟨?_, ?_⟩
+
+  · exact
+      vertexLinkClosedSurfaceCertificate_of_closedCore
+        K v
+        (ConnectedLinkClosedCore.closedCore
+          K hconnected)
+        (hlocal v hv)
+        (hdeg v hv)
+
+  · exact
+      ConnectedLinkClosedCore.vertexLinkConnected
+        K hconnected v hv
+
+
 end Poincare
