@@ -309,6 +309,78 @@ theorem Move23Site.rightMatch_survives_eraseLeft
             refine ⟨ρ, ?_, hρright⟩
             simp [eraseFirstSameTet, hbfalse, hρmem]
 
+
+theorem Move23Site.twoSourceErasure_count
+    (s : Move23Site) (K : Triangulation)
+    (hlegal : s.LegalIn K)
+    (v : Nat) :
+    (K.tets.flatMap Tet.verts).count v =
+      ((eraseFirstSameTet s.rightTet
+        (eraseFirstSameTet s.leftTet K.tets)).flatMap Tet.verts).count v +
+        s.leftTet.verts.count v +
+        s.rightTet.verts.count v := by
+  have hrealized : s.RealizedIn K := hlegal.1
+  rcases hrealized with ⟨hleft, hright⟩
+
+  have hleftGuard :
+      ∀ τ ∈ K.tets,
+        SameTetVertices τ s.leftTet →
+        τ.verts.count v = s.leftTet.verts.count v := by
+    intro τ _ hmatch
+    exact
+      s.sourceMatch_count_eq
+        s.leftTet τ (Or.inl rfl) hmatch v
+
+  have hleftErase :
+      (K.tets.flatMap Tet.verts).count v =
+        ((eraseFirstSameTet s.leftTet K.tets).flatMap Tet.verts).count v +
+          s.leftTet.verts.count v :=
+    eraseFirstSameTet_count_flatMap
+      s.leftTet K.tets v hleft hleftGuard
+
+  have hrightSurvives :
+      ∃ τ ∈ eraseFirstSameTet s.leftTet K.tets,
+        SameTetVertices τ s.rightTet :=
+    s.rightMatch_survives_eraseLeft K.tets hright
+
+  have hrightGuard :
+      ∀ τ ∈ eraseFirstSameTet s.leftTet K.tets,
+        SameTetVertices τ s.rightTet →
+        τ.verts.count v = s.rightTet.verts.count v := by
+    intro τ _ hmatch
+    exact
+      s.sourceMatch_count_eq
+        s.rightTet τ (Or.inr rfl) hmatch v
+
+  have hrightErase :
+      ((eraseFirstSameTet s.leftTet K.tets).flatMap Tet.verts).count v =
+        ((eraseFirstSameTet s.rightTet
+          (eraseFirstSameTet s.leftTet K.tets)).flatMap Tet.verts).count v +
+          s.rightTet.verts.count v :=
+    eraseFirstSameTet_count_flatMap
+      s.rightTet
+      (eraseFirstSameTet s.leftTet K.tets)
+      v
+      hrightSurvives
+      hrightGuard
+
+  calc
+    (K.tets.flatMap Tet.verts).count v =
+        ((eraseFirstSameTet s.leftTet K.tets).flatMap Tet.verts).count v +
+          s.leftTet.verts.count v := hleftErase
+    _ =
+        (((eraseFirstSameTet s.rightTet
+          (eraseFirstSameTet s.leftTet K.tets)).flatMap Tet.verts).count v +
+          s.rightTet.verts.count v) +
+          s.leftTet.verts.count v := by
+            rw [hrightErase]
+    _ =
+        ((eraseFirstSameTet s.rightTet
+          (eraseFirstSameTet s.leftTet K.tets)).flatMap Tet.verts).count v +
+          s.leftTet.verts.count v +
+          s.rightTet.verts.count v := by
+            ac_rfl
+
 def Move23Site.replace (s : Move23Site) (K : Triangulation) : Triangulation :=
   let afterLeft := eraseFirstSameTet s.leftTet K.tets
   let afterRight := eraseFirstSameTet s.rightTet afterLeft
