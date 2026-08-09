@@ -1,6 +1,7 @@
 import Poincare.Validity
 import Mathlib.Combinatorics.SimpleGraph.Basic
 import Mathlib.Combinatorics.SimpleGraph.Matching
+import Mathlib.Data.Fintype.EquivFin
 
 namespace Poincare
 
@@ -4343,6 +4344,72 @@ theorem vertexLinkTetrahedralBoundaryCertificate_of_vertexDefect_zero
       vertexLinkEveryRepresentedVertex_has_unique_complementary_face
         K hcore v hzero hdeg
         x hx
+
+
+noncomputable def vertexLinkVertexEquivFin4
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert :
+      VertexLinkTetrahedralBoundaryCertificate
+        K hcore v) :
+    ↥((vertexLinkVertices K v).toFinset) ≃
+      Fin 4 := by
+
+  apply
+    Finset.equivFinOfCardEq
+
+  have hVnodup :
+      (vertexLinkVertices K v).Nodup := by
+
+    unfold vertexLinkVertices
+
+    exact
+      eraseDups_nodup_nat
+        ((vertexLinkTriangles K v).flatMap
+          LinkTriangle.verts)
+
+  rw [
+    ← List.toFinset_eq hVnodup
+  ]
+
+  exact
+    hcert.1
+
+theorem vertexLinkVertexEquivFin4_bijective
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert :
+      VertexLinkTetrahedralBoundaryCertificate
+        K hcore v) :
+    Function.Bijective
+      (vertexLinkVertexEquivFin4
+        K hcore v hcert) := by
+
+  exact
+    (vertexLinkVertexEquivFin4
+      K hcore v hcert).bijective
+
+theorem vertexLinkVertexEquivFin4_distinct_iff
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert :
+      VertexLinkTetrahedralBoundaryCertificate
+        K hcore v)
+    (x y :
+      ↥((vertexLinkVertices K v).toFinset)) :
+    vertexLinkVertexEquivFin4
+          K hcore v hcert x ≠
+        vertexLinkVertexEquivFin4
+          K hcore v hcert y
+      ↔
+        x ≠ y := by
+
+  exact
+    (vertexLinkVertexEquivFin4
+      K hcore v hcert).injective.ne_iff
 
 
 def VertexLinkClosedSurfaceCertificate
