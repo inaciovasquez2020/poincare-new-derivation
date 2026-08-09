@@ -1,5 +1,6 @@
 import Poincare.Validity
 import Mathlib.Combinatorics.SimpleGraph.Basic
+import Mathlib.Combinatorics.SimpleGraph.Matching
 
 namespace Poincare
 
