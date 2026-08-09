@@ -65,6 +65,23 @@ def sameTetVerticesBool (τ σ : Tet) : Bool :=
   τ.verts.all (fun v => σ.verts.contains v) &&
   σ.verts.all (fun v => τ.verts.contains v)
 
+
+theorem sameTetVerticesBool_eq_true_iff
+    (τ σ : Tet) :
+    sameTetVerticesBool τ σ = true ↔ SameTetVertices τ σ := by
+  simp [sameTetVerticesBool, SameTetVertices]
+  constructor
+  · rintro ⟨hτσ, hστ⟩ v
+    constructor
+    · exact hτσ v
+    · exact hστ v
+  · intro h
+    constructor
+    · intro v hv
+      exact (h v).1 hv
+    · intro v hv
+      exact (h v).2 hv
+
 def eraseFirstSameTet (target : Tet) : List Tet → List Tet
   | [] => []
   | τ :: rest =>
