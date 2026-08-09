@@ -176,6 +176,49 @@ structure LinkEdge where
   lo : Nat
   hi : Nat
   sorted : lo < hi
+deriving DecidableEq
+
+
+def LinkEdge.ofDistinct
+    (a b : Nat)
+    (hne : a ≠ b) : LinkEdge :=
+  if hab : a < b then
+    ⟨a, b, hab⟩
+  else
+    ⟨b, a,
+      Nat.lt_of_le_of_ne
+        (Nat.le_of_not_gt hab)
+        (Ne.symm hne)⟩
+
+
+theorem LinkEdge.ofDistinct_symm
+    (a b : Nat)
+    (hne : a ≠ b) :
+    LinkEdge.ofDistinct a b hne =
+      LinkEdge.ofDistinct b a (Ne.symm hne) := by
+
+  by_cases hab : a < b
+
+  · have hba : ¬ b < a := by
+      exact lt_asymm hab
+
+    simp [
+      LinkEdge.ofDistinct,
+      hab,
+      hba
+    ]
+
+  · have hba : b < a :=
+      Nat.lt_of_le_of_ne
+        (Nat.le_of_not_gt hab)
+        (Ne.symm hne)
+
+    simp [
+      LinkEdge.ofDistinct,
+      hab,
+      hba
+    ]
+
 
 def LinkEdge.InTriangle
     (e : LinkEdge)
