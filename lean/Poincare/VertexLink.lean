@@ -4267,6 +4267,84 @@ theorem vertexLinkRepresentedEdge_has_canonical_endpoints
       hcanonical⟩
 
 
+def VertexLinkTetrahedralBoundaryCertificate
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat) : Prop :=
+  (vertexLinkVertices K v).length = 4 ∧
+  (vertexLinkEdges K hcore v).length = 6 ∧
+  (vertexLinkTriangles K v).length = 4 ∧
+  (∀ a b : Nat,
+      a ∈ vertexLinkVertices K v →
+      b ∈ vertexLinkVertices K v →
+      ∀ hne : a ≠ b,
+        LinkEdge.ofDistinct a b hne ∈
+          vertexLinkEdges K hcore v) ∧
+  (∀ e : LinkEdge,
+      e ∈ vertexLinkEdges K hcore v →
+        e.lo ∈ vertexLinkVertices K v ∧
+        e.hi ∈ vertexLinkVertices K v ∧
+        e =
+          LinkEdge.ofDistinct
+            e.lo e.hi
+            e.sorted.ne) ∧
+  ∀ x : Nat,
+    x ∈ vertexLinkVertices K v →
+      ∃! σ : LinkTriangle,
+        σ ∈ vertexLinkTriangles K v ∧
+        ∀ y : Nat,
+          y ∈ σ.verts ↔
+            y ∈ vertexLinkVertices K v ∧
+            y ≠ x
+
+theorem vertexLinkTetrahedralBoundaryCertificate_of_vertexDefect_zero
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hzero : vertexDefect K v = 0)
+    (hdeg :
+      ∀ x : Nat,
+        VertexLinkVertexRepresented K v x →
+          VertexLinkStarDegreeTwo K v x) :
+    VertexLinkTetrahedralBoundaryCertificate
+      K hcore v := by
+
+  refine
+    ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+
+  · exact
+      vertexLinkVertices_length_eq_four_of_vertexDefect_zero
+        K hcore v hzero hdeg
+
+  · exact
+      vertexLinkEdges_length_eq_six_of_vertexDefect_zero
+        K hcore v hzero
+
+  · exact
+      vertexLinkTriangles_length_eq_four_of_vertexDefect_zero
+        K hcore v hzero
+
+  · intro a b ha hb hne
+
+    exact
+      vertexLinkEveryDistinctRepresentedVertexPair_is_edge
+        K hcore v hzero hdeg
+        a b ha hb hne
+
+  · intro e he
+
+    exact
+      vertexLinkRepresentedEdge_has_canonical_endpoints
+        K hcore v e he
+
+  · intro x hx
+
+    exact
+      vertexLinkEveryRepresentedVertex_has_unique_complementary_face
+        K hcore v hzero hdeg
+        x hx
+
+
 def VertexLinkClosedSurfaceCertificate
     (K : Triangulation)
     (v : Nat) : Prop :=
