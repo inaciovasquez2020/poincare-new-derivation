@@ -871,6 +871,24 @@ theorem VertexLinkStarAdjacent.right_mem
   h.2.1
 
 
+instance instFiniteVertexLinkStarCarrier
+    (K : Triangulation)
+    (v x : Nat) :
+    Finite
+      {σ : LinkTriangle //
+        σ ∈ vertexLinkStarTriangles K v x} := by
+  letI :
+      Fintype
+        {σ : LinkTriangle //
+          σ ∈ vertexLinkStarTriangles K v x} :=
+    Fintype.ofFinset
+      (vertexLinkStarTriangles K v x).toFinset
+      (by
+        intro σ
+        exact List.mem_toFinset)
+  infer_instance
+
+
 def vertexLinkStarGraph
     (K : Triangulation)
     (v x : Nat) :
