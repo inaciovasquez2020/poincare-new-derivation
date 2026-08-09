@@ -59,4 +59,93 @@ theorem vertexLinkComplementaryFace_matches_tetrahedronFacet
   exact
     tetrahedronFaceOpposite_vertexSet_eq_image_erase i
 
+
+/--
+Realize a represented abstract vertex-link vertex as the corresponding
+geometric tetrahedron vertex.
+
+The certified equivalence first assigns the abstract vertex its `Fin 4`
+coordinate, and `tetrahedronSimplex.points` then realizes that coordinate
+as an actual point of the geometric tetrahedron.
+-/
+noncomputable def vertexLinkGeometricVertex
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert :
+      VertexLinkTetrahedralBoundaryCertificate
+        K hcore v)
+    (x :
+      ↥((vertexLinkVertices K v).toFinset)) :
+    TetrahedronAmbient :=
+  tetrahedronSimplex.points
+    (vertexLinkVertexEquivFin4
+      K hcore v hcert x)
+
+/--
+The geometric realization of represented link vertices is injective.
+-/
+theorem vertexLinkGeometricVertex_injective
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert :
+      VertexLinkTetrahedralBoundaryCertificate
+        K hcore v) :
+    Function.Injective
+      (vertexLinkGeometricVertex
+        K hcore v hcert) := by
+
+  intro x y hxy
+
+  apply
+    (vertexLinkVertexEquivFin4
+      K hcore v hcert).injective
+
+  apply
+    tetrahedronSimplex.independent.injective
+
+  exact
+    hxy
+
+/--
+The geometric realization of the abstract represented vertices has exactly
+the four vertices of `tetrahedronSimplex` as its image.
+-/
+theorem vertexLinkGeometricVertex_range
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert :
+      VertexLinkTetrahedralBoundaryCertificate
+        K hcore v) :
+    Set.range
+        (vertexLinkGeometricVertex
+          K hcore v hcert) =
+      Set.range tetrahedronSimplex.points := by
+
+  ext p
+
+  constructor
+
+  · rintro
+      ⟨x, rfl⟩
+
+    exact
+      ⟨vertexLinkVertexEquivFin4
+          K hcore v hcert x,
+        rfl⟩
+
+  · rintro
+      ⟨i, rfl⟩
+
+    refine
+      ⟨(vertexLinkVertexEquivFin4
+          K hcore v hcert).symm i,
+        ?_⟩
+
+    simp [
+      vertexLinkGeometricVertex
+    ]
+
 end Poincare
