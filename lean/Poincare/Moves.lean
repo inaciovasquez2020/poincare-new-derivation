@@ -33,6 +33,14 @@ def Move23Site.newTet₁ (s : Move23Site) : Tet :=
 def Move23Site.newTet₂ (s : Move23Site) : Tet :=
   ⟨s.b, s.c, s.d, s.e⟩
 
+
+def SameTetVertices (τ σ : Tet) : Prop :=
+  ∀ v : Nat, v ∈ τ.verts ↔ v ∈ σ.verts
+
+def Move23Site.RealizedIn (s : Move23Site) (K : Triangulation) : Prop :=
+  (∃ τ ∈ K.tets, SameTetVertices τ s.leftTet) ∧
+  (∃ τ ∈ K.tets, SameTetVertices τ s.rightTet)
+
 def applyMove (T : Triangulation) (_ : PachnerMove) : Triangulation := T
 def selectMove (_T : Triangulation) : PachnerMove := PachnerMove.move23
 
