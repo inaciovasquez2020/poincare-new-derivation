@@ -16,3 +16,5 @@ import Poincare.VertexLinkConnectednessCounterexample
 import Poincare.VertexLinkLocalConnectednessCounterexample
 
 import Poincare.TetrahedronSphere
+
+import Poincare.VertexLinkTetrahedronBridge
