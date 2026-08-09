@@ -1949,4 +1949,14 @@ theorem edgePinchCandidate_connectedLinkClosedCore :
   rw [hsupport] at hv
   simp [h0, h1, h2, h3, h4, h5, h6, h7] at hv
 
+theorem exists_connectedLinkClosedCore_without_localLinkConnectivity :
+    ∃ K : Triangulation,
+      ConnectedLinkClosedCore K ∧
+      ¬ VertexLinksLocallyConnected K := by
+  exact ⟨
+    edgePinchCandidate,
+    edgePinchCandidate_connectedLinkClosedCore,
+    edgePinchCandidate_not_VertexLinksLocallyConnected
+  ⟩
+
 end Poincare
