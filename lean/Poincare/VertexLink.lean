@@ -307,6 +307,80 @@ theorem LinkTriangle.mem_edges_inTriangle
       · simp at he
 
 
+theorem LinkTriangle.inTriangle_mem_edges
+    (σ : LinkTriangle)
+    (hσ : σ.verts.Nodup)
+    (e : LinkEdge)
+    (he : e.InTriangle σ) :
+    e ∈ σ.edges hσ := by
+
+  rcases σ with ⟨a, b, c⟩
+  rcases e with ⟨lo, hi, hlt⟩
+
+  simp [
+    LinkEdge.InTriangle,
+    LinkTriangle.verts
+  ] at he
+
+  rcases he with ⟨hlo, hhi⟩
+
+  rcases hlo with rfl | rfl | rfl
+
+  · rcases hhi with rfl | rfl | rfl
+
+    · exact (lt_irrefl _ hlt).elim
+
+    · simp [
+        LinkTriangle.edges,
+        LinkEdge.ofDistinct,
+        hlt,
+        lt_asymm hlt
+      ]
+
+    · simp [
+        LinkTriangle.edges,
+        LinkEdge.ofDistinct,
+        hlt,
+        lt_asymm hlt
+      ]
+
+  · rcases hhi with rfl | rfl | rfl
+
+    · simp [
+        LinkTriangle.edges,
+        LinkEdge.ofDistinct,
+        hlt,
+        lt_asymm hlt
+      ]
+
+    · exact (lt_irrefl _ hlt).elim
+
+    · simp [
+        LinkTriangle.edges,
+        LinkEdge.ofDistinct,
+        hlt,
+        lt_asymm hlt
+      ]
+
+  · rcases hhi with rfl | rfl | rfl
+
+    · simp [
+        LinkTriangle.edges,
+        LinkEdge.ofDistinct,
+        hlt,
+        lt_asymm hlt
+      ]
+
+    · simp [
+        LinkTriangle.edges,
+        LinkEdge.ofDistinct,
+        hlt,
+        lt_asymm hlt
+      ]
+
+    · exact (lt_irrefl _ hlt).elim
+
+
 def LinkEdge.RepresentedAt
     (e : LinkEdge)
     (K : Triangulation)
@@ -681,6 +755,94 @@ theorem LinkEdge.RepresentedAt_center_ne
     apply hvNot
     rw [h]
     exact hEdge.2
+
+
+def vertexLinkEdges
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat) :
+    List LinkEdge :=
+  ((vertexLinkTriangles K v).attach.flatMap
+    (fun σ =>
+      σ.1.edges
+        (vertexLinkTriangles_triangle_nodup
+          K hcore v σ.1 σ.2))).eraseDups
+
+
+theorem mem_vertexLinkEdges_represented
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (e : LinkEdge)
+    (he : e ∈ vertexLinkEdges K hcore v) :
+    e.RepresentedAt K v := by
+
+  rw [
+    vertexLinkEdges,
+    List.mem_eraseDups,
+    List.mem_flatMap
+  ] at he
+
+  rcases he with ⟨σ, _, heσ⟩
+
+  refine ⟨σ.1, σ.2, ?_⟩
+
+  exact
+    LinkTriangle.mem_edges_inTriangle
+      σ.1
+      (vertexLinkTriangles_triangle_nodup
+        K hcore v σ.1 σ.2)
+      e
+      heσ
+
+
+theorem represented_mem_vertexLinkEdges
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (e : LinkEdge)
+    (hrep : e.RepresentedAt K v) :
+    e ∈ vertexLinkEdges K hcore v := by
+
+  rcases hrep with ⟨σ, hσ, heσ⟩
+
+  rw [
+    vertexLinkEdges,
+    List.mem_eraseDups,
+    List.mem_flatMap
+  ]
+
+  refine
+    ⟨⟨σ, hσ⟩, ?_, ?_⟩
+
+  · simp
+
+  · exact
+      LinkTriangle.inTriangle_mem_edges
+        σ
+        (vertexLinkTriangles_triangle_nodup
+          K hcore v σ hσ)
+        e
+        heσ
+
+
+theorem mem_vertexLinkEdges_iff
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (e : LinkEdge) :
+    e ∈ vertexLinkEdges K hcore v ↔
+      e.RepresentedAt K v := by
+
+  constructor
+
+  · exact
+      mem_vertexLinkEdges_represented
+        K hcore v e
+
+  · exact
+      represented_mem_vertexLinkEdges
+        K hcore v e
 
 
 theorem linkEdge_filterMap_incidence_count_eq
