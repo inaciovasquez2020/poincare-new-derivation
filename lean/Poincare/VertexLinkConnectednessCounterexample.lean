@@ -264,4 +264,51 @@ theorem exists_closedCore_with_disconnected_vertexLink :
 
   native_decide
 
+
+theorem twoBoundaryVertexWedge_not_ConnectedLinkClosedCore :
+    ¬ ConnectedLinkClosedCore
+        twoBoundaryVertexWedge := by
+
+  intro h
+
+  have hzero :
+      0 ∈ vertexSupport
+        twoBoundaryVertexWedge := by
+    native_decide
+
+  have hconnected :
+      VertexLinkConnected
+        twoBoundaryVertexWedge 0 :=
+    h.vertexLinkConnected
+      twoBoundaryVertexWedge
+      0 hzero
+
+  exact
+    twoBoundaryVertexWedge_link_zero_not_connected
+      hconnected
+
+
+theorem ConnectedLinkClosedCore_strictly_strengthens_closedCore :
+    (
+      ∀ K : Triangulation,
+        ConnectedLinkClosedCore K →
+          ClosedTriangulationCore K
+    ) ∧
+    (
+      ∃ K : Triangulation,
+        ClosedTriangulationCore K ∧
+        ¬ ConnectedLinkClosedCore K
+    ) := by
+
+  constructor
+
+  · intro K h
+    exact h.closedCore K
+
+  · exact
+      ⟨twoBoundaryVertexWedge,
+       twoBoundaryVertexWedge_closedCore,
+       twoBoundaryVertexWedge_not_ConnectedLinkClosedCore⟩
+
+
 end Poincare

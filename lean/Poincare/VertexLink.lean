@@ -739,4 +739,28 @@ def VertexLinkConnected
         (VertexLinkAdjacent K v)
         σ ρ
 
+
+def ConnectedLinkClosedCore
+    (K : Triangulation) : Prop :=
+  ClosedTriangulationCore K ∧
+  ∀ v ∈ vertexSupport K,
+    VertexLinkConnected K v
+
+
+theorem ConnectedLinkClosedCore.closedCore
+    (K : Triangulation)
+    (h : ConnectedLinkClosedCore K) :
+    ClosedTriangulationCore K :=
+  h.1
+
+
+theorem ConnectedLinkClosedCore.vertexLinkConnected
+    (K : Triangulation)
+    (h : ConnectedLinkClosedCore K)
+    (v : Nat)
+    (hv : v ∈ vertexSupport K) :
+    VertexLinkConnected K v :=
+  h.2 v hv
+
+
 end Poincare
