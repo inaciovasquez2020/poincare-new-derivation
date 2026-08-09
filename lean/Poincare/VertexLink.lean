@@ -4205,6 +4205,68 @@ theorem vertexLinkEveryDistinctRepresentedVertexPair_is_edge
       hrep
 
 
+theorem vertexLinkRepresentedEdge_has_canonical_endpoints
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (e : LinkEdge)
+    (he :
+      e ∈ vertexLinkEdges K hcore v) :
+    e.lo ∈ vertexLinkVertices K v ∧
+      e.hi ∈ vertexLinkVertices K v ∧
+        e =
+          LinkEdge.ofDistinct
+            e.lo e.hi
+            e.sorted.ne := by
+
+  have hrep :
+      e.RepresentedAt K v :=
+    (mem_vertexLinkEdges_iff
+      K hcore v e).1 he
+
+  rcases hrep with
+    ⟨σ, hσ, heσ⟩
+
+  have hloσ :
+      e.lo ∈ σ.verts :=
+    heσ.1
+
+  have hhiσ :
+      e.hi ∈ σ.verts :=
+    heσ.2
+
+  have hloV :
+      e.lo ∈ vertexLinkVertices K v :=
+    (mem_vertexLinkVertices_iff
+      K v e.lo).2
+      ⟨σ, hσ, hloσ⟩
+
+  have hhiV :
+      e.hi ∈ vertexLinkVertices K v :=
+    (mem_vertexLinkVertices_iff
+      K v e.hi).2
+      ⟨σ, hσ, hhiσ⟩
+
+  have hcanonical :
+      e =
+        LinkEdge.ofDistinct
+          e.lo e.hi
+          e.sorted.ne := by
+
+    rcases e with
+      ⟨lo, hi, hlt⟩
+
+    simp [
+      LinkEdge.ofDistinct,
+      hlt
+    ]
+
+  exact
+    ⟨hloV,
+      hhiV,
+      hcanonical⟩
+
+
 def VertexLinkClosedSurfaceCertificate
     (K : Triangulation)
     (v : Nat) : Prop :=
