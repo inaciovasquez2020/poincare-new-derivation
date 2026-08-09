@@ -252,6 +252,63 @@ theorem Move23Site.leftTet_not_same_rightTet
   · exact hcd hdc.symm
   · exact hde hdeq
 
+
+theorem Move23Site.rightMatch_survives_eraseLeft
+    (s : Move23Site) (tets : List Tet)
+    (hex : ∃ τ ∈ tets, SameTetVertices τ s.rightTet) :
+    ∃ τ ∈ eraseFirstSameTet s.leftTet tets,
+      SameTetVertices τ s.rightTet := by
+  induction tets with
+  | nil =>
+      simp at hex
+  | cons τ rest ih =>
+      by_cases hb : sameTetVerticesBool τ s.leftTet = true
+      · have hleft : SameTetVertices τ s.leftTet :=
+          (sameTetVerticesBool_eq_true_iff τ s.leftTet).1 hb
+
+        have hnotRight : ¬ SameTetVertices τ s.rightTet := by
+          intro hright
+          apply s.leftTet_not_same_rightTet
+          intro v
+          constructor
+          · intro hvLeft
+            exact (hright v).1 ((hleft v).2 hvLeft)
+          · intro hvRight
+            exact (hleft v).1 ((hright v).2 hvRight)
+
+        rcases hex with ⟨σ, hmem, hright⟩
+        have hs : σ = τ ∨ σ ∈ rest := by
+          simpa using hmem
+        cases hs with
+        | inl heq =>
+            subst σ
+            exact (hnotRight hright).elim
+        | inr hrest =>
+            refine ⟨σ, ?_, hright⟩
+            simpa [eraseFirstSameTet, hb] using hrest
+
+      · have hbfalse : sameTetVerticesBool τ s.leftTet = false := by
+          cases hbool : sameTetVerticesBool τ s.leftTet with
+          | false =>
+              rfl
+          | true =>
+              exact (hb hbool).elim
+
+        rcases hex with ⟨σ, hmem, hright⟩
+        have hs : σ = τ ∨ σ ∈ rest := by
+          simpa using hmem
+        cases hs with
+        | inl heq =>
+            subst σ
+            refine ⟨τ, ?_, hright⟩
+            simp [eraseFirstSameTet, hbfalse]
+        | inr hrest =>
+            have hsurvive :=
+              ih ⟨σ, hrest, hright⟩
+            rcases hsurvive with ⟨ρ, hρmem, hρright⟩
+            refine ⟨ρ, ?_, hρright⟩
+            simp [eraseFirstSameTet, hbfalse, hρmem]
+
 def Move23Site.replace (s : Move23Site) (K : Triangulation) : Triangulation :=
   let afterLeft := eraseFirstSameTet s.leftTet K.tets
   let afterRight := eraseFirstSameTet s.rightTet afterLeft
