@@ -1959,4 +1959,13 @@ theorem exists_connectedLinkClosedCore_without_localLinkConnectivity :
     edgePinchCandidate_not_VertexLinksLocallyConnected
   ⟩
 
+theorem ConnectedLinkClosedCore_not_implies_VertexLinksLocallyConnected :
+    ¬ ∀ K : Triangulation,
+        ConnectedLinkClosedCore K →
+        VertexLinksLocallyConnected K := by
+  intro himplies
+  rcases exists_connectedLinkClosedCore_without_localLinkConnectivity with
+    ⟨K, hconnected, hnotLocal⟩
+  exact hnotLocal (himplies K hconnected)
+
 end Poincare
