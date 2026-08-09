@@ -1,4 +1,6 @@
 import Poincare.Triangulation
+import Mathlib.Data.Finset.Card
+import Mathlib.Data.Multiset.Count
 
 namespace Poincare
 
@@ -144,6 +146,66 @@ theorem eraseFirstSameTet_count_flatMap
 
         have hi := ih hexrest hcountrest
         simp [eraseFirstSameTet, hbfalse, hi, Nat.add_assoc]
+
+
+theorem Move23Site.sourceMatch_count_eq
+    (s : Move23Site) (target τ : Tet)
+    (htarget : target = s.leftTet ∨ target = s.rightTet)
+    (hmatch : SameTetVertices τ target)
+    (v : Nat) :
+    τ.verts.count v = target.verts.count v := by
+  have htargetNodup : target.verts.Nodup := by
+    rcases htarget with hleft | hright
+    · subst target
+      have hs := s.distinct
+      simp_all [Move23Site.leftTet, Tet.verts]
+    · subst target
+      have hs := s.distinct
+      simp_all [Move23Site.rightTet, Tet.verts]
+
+  have hfin :
+      τ.verts.toFinset = target.verts.toFinset := by
+    ext x
+    simpa using hmatch x
+
+  have hcardτ :
+      τ.verts.toFinset.card = τ.verts.length := by
+    rw [hfin]
+    rw [List.toFinset_card_of_nodup htargetNodup]
+    simp [Tet.verts]
+
+  have hτmulti :
+      (↑τ.verts : Multiset Nat).Nodup := by
+    apply (Multiset.toFinset_card_eq_card_iff_nodup).1
+    simpa using hcardτ
+
+  have hτNodup : τ.verts.Nodup := by
+    simpa using hτmulti
+
+  by_cases hv : v ∈ target.verts
+  · have hvτ : v ∈ τ.verts := (hmatch v).2 hv
+    calc
+      τ.verts.count v = 1 :=
+        List.count_eq_one_of_mem hτNodup hvτ
+      _ = target.verts.count v :=
+        (List.count_eq_one_of_mem htargetNodup hv).symm
+  · have hvτ : v ∉ τ.verts := by
+      intro hmem
+      exact hv ((hmatch v).1 hmem)
+
+    have hτzero : τ.verts.count v = 0 := by
+      have hm :
+          Multiset.count v (↑τ.verts : Multiset Nat) = 0 :=
+        Multiset.count_eq_zero_of_notMem (by simpa using hvτ)
+      simpa using hm
+
+    have htargetzero : target.verts.count v = 0 := by
+      have hm :
+          Multiset.count v (↑target.verts : Multiset Nat) = 0 :=
+        Multiset.count_eq_zero_of_notMem (by simpa using hv)
+      simpa using hm
+
+    rw [hτzero, htargetzero]
 
 def Move23Site.replace (s : Move23Site) (K : Triangulation) : Triangulation :=
   let afterLeft := eraseFirstSameTet s.leftTet K.tets
