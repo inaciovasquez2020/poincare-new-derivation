@@ -13,3 +13,4 @@ import Poincare.MoveSemanticsBuild
 import Poincare.ZeroDefect
 import Poincare.VertexLink
 import Poincare.VertexLinkConnectednessCounterexample
+import Poincare.VertexLinkLocalConnectednessCounterexample
