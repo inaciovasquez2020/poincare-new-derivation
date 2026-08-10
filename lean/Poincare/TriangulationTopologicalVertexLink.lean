@@ -29,6 +29,25 @@ theorem mem_triangulationTopologicalVertexLink_iff
             (↑σ.verts.toFinset : Set Nat)) := by
   simp [triangulationTopologicalVertexLink]
 
+/-- The represented vertex star is the union of the filled represented
+tetrahedra incident to `v`. -/
+noncomputable def triangulationTopologicalVertexStar
+    (K : Triangulation) (v : Nat) : Set (Nat → ℝ) :=
+  ⋃ (τ : Tet) (_ : τ ∈ K.tets) (_ : v ∈ τ.verts),
+    convexHull ℝ
+      (triangulationTopologicalGeometricVertex ''
+        (↑τ.verts.toFinset : Set Nat))
+
+/-- Exact tetrahedronwise membership in the represented vertex star. -/
+theorem mem_triangulationTopologicalVertexStar_iff
+    (K : Triangulation) (v : Nat) (p : Nat → ℝ) :
+    p ∈ triangulationTopologicalVertexStar K v ↔
+      ∃ τ : Tet, τ ∈ K.tets ∧ v ∈ τ.verts ∧
+        p ∈ convexHull ℝ
+          (triangulationTopologicalGeometricVertex ''
+            (↑τ.verts.toFinset : Set Nat)) := by
+  simp [triangulationTopologicalVertexStar, and_left_comm]
+
 /--
 The Pi-space realization of every represented vertex link is genuinely a
 subspace of the global geometric realization.
@@ -96,6 +115,37 @@ theorem vertexLinkTopologicalGeometricRealization_eq
       ⟨y, List.mem_toFinset.mpr hyV⟩
     exact ⟨x, hyList, rfl⟩
 
+/-- Extracting the opposite link triangle splits the represented tetrahedron's
+vertex image into the apex and the opposite face. -/
+theorem triangulationTopologicalGeometricVertex_image_tet_eq_insert_linkTriangle
+    (τ : Tet) (v : Nat) (σ : LinkTriangle)
+    (hσ : τ.linkTriangleAt? v = some σ) :
+    triangulationTopologicalGeometricVertex ''
+        (↑τ.verts.toFinset : Set Nat) =
+      insert (triangulationTopologicalGeometricVertex v)
+        (triangulationTopologicalGeometricVertex ''
+          (↑σ.verts.toFinset : Set Nat)) := by
+  ext x
+  constructor
+  · rintro ⟨y, hy, rfl⟩
+    by_cases hyv : y = v
+    · left
+      simpa [hyv]
+    · right
+      refine ⟨y, ?_, rfl⟩
+      exact List.mem_toFinset.mpr
+        ((τ.mem_linkTriangleAt?_iff v y σ hσ hyv).2
+          (List.mem_toFinset.mp hy))
+  · rintro (hx | hx)
+    · subst x
+      refine ⟨v, List.mem_toFinset.mpr ?_, rfl⟩
+      apply (τ.linkTriangleAt?_isSome_iff v).1
+      simp [hσ]
+    · obtain ⟨y, hy, rfl⟩ := hx
+      exact ⟨y, List.mem_toFinset.mpr
+        (τ.linkTriangleAt?_verts_subset v σ hσ y
+          (List.mem_toFinset.mp hy)), rfl⟩
+
 /-- Every non-apex point of a represented tetrahedron incident to `v`
 decomposes along the ray from the represented vertex through the opposite
 filled vertex-link face. -/
@@ -126,24 +176,8 @@ theorem triangulationTopologicalTetrahedron_exists_vertexLink_cone_decomposition
   have hvertices :
       triangulationTopologicalGeometricVertex ''
           (↑τ.verts.toFinset : Set Nat) = insert e S := by
-    ext x
-    constructor
-    · rintro ⟨y, hy, rfl⟩
-      by_cases hyv : y = v
-      · left
-        simpa [e, hyv]
-      · right
-        refine ⟨y, ?_, rfl⟩
-        exact List.mem_toFinset.mpr
-          ((τ.mem_linkTriangleAt?_iff v y σ hσextract hyv).2
-            (List.mem_toFinset.mp hy))
-    · rintro (hx | hx)
-      · subst x
-        exact ⟨v, List.mem_toFinset.mpr hv, rfl⟩
-      · obtain ⟨y, hy, rfl⟩ := hx
-        exact ⟨y, List.mem_toFinset.mpr
-          (τ.linkTriangleAt?_verts_subset v σ hσextract y
-            (List.mem_toFinset.mp hy)), rfl⟩
+    exact triangulationTopologicalGeometricVertex_image_tet_eq_insert_linkTriangle
+      τ v σ hσextract
   have hSnonempty : S.Nonempty := by
     refine ⟨triangulationTopologicalGeometricVertex σ.v0, ?_⟩
     exact ⟨σ.v0, by simp [LinkTriangle.verts], rfl⟩
@@ -173,5 +207,82 @@ theorem triangulationTopologicalTetrahedron_exists_vertexLink_cone_decomposition
     have hba : b = 1 - a := by linarith
     rw [← hba]
     simpa [e] using hpab.symm
+
+/-- Every non-apex point of the represented vertex star decomposes along a ray
+from the represented apex through the global represented vertex link. -/
+theorem triangulationTopologicalVertexStar_exists_vertexLink_cone_decomposition
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    (v : Nat) (p : Nat → ℝ)
+    (hpstar : p ∈ triangulationTopologicalVertexStar K v)
+    (hpv : p v < 1) :
+    0 ≤ p v ∧ 0 < 1 - p v ∧
+      ∃ q : Nat → ℝ,
+        q ∈ triangulationTopologicalVertexLink K v ∧
+        q v = 0 ∧
+        p = p v • triangulationTopologicalGeometricVertex v +
+          (1 - p v) • q := by
+  obtain ⟨τ, hτ, hv, hpτ⟩ :=
+    (mem_triangulationTopologicalVertexStar_iff K v p).1 hpstar
+  obtain ⟨hpnonneg, _, hpositive, q, hqlink, hqv, hp⟩ :=
+    triangulationTopologicalTetrahedron_exists_vertexLink_cone_decomposition
+      K hcore v τ hτ hv p hpτ hpv
+  exact ⟨hpnonneg, hpositive, q, hqlink, hqv, hp⟩
+
+/-- Every convex radial combination with a represented link point lies in an
+incident represented tetrahedron, hence in the represented vertex star. -/
+theorem triangulationTopologicalVertexStar_radial_mem
+    (K : Triangulation) (v : Nat) (q : Nat → ℝ)
+    (hq : q ∈ triangulationTopologicalVertexLink K v)
+    (t : ℝ) (ht : 0 ≤ t) (ht1 : t < 1) :
+    t • triangulationTopologicalGeometricVertex v + (1 - t) • q ∈
+      triangulationTopologicalVertexStar K v := by
+  obtain ⟨σ, hσlink, hqσ⟩ :=
+    (mem_triangulationTopologicalVertexLink_iff K v q).1 hq
+  obtain ⟨τ, hτK, hτσ⟩ :=
+    (mem_vertexLinkTriangles_iff K v σ).1 hσlink
+  have hv : v ∈ τ.verts := by
+    apply (τ.linkTriangleAt?_isSome_iff v).1
+    simp [hτσ]
+  apply (mem_triangulationTopologicalVertexStar_iff K v _).2
+  refine ⟨τ, hτK, hv, ?_⟩
+  let S : Set (Nat → ℝ) :=
+    triangulationTopologicalGeometricVertex ''
+      (↑σ.verts.toFinset : Set Nat)
+  have hSnonempty : S.Nonempty := by
+    refine ⟨triangulationTopologicalGeometricVertex σ.v0, ?_⟩
+    exact ⟨σ.v0, by simp [LinkTriangle.verts], rfl⟩
+  rw [triangulationTopologicalGeometricVertex_image_tet_eq_insert_linkTriangle
+    τ v σ hτσ, convexHull_insert hSnonempty]
+  apply mem_convexJoin.mpr
+  refine ⟨triangulationTopologicalGeometricVertex v, by simp, q, hqσ, ?_⟩
+  exact ⟨t, 1 - t, ht, sub_nonneg.mpr (le_of_lt ht1), by ring, rfl⟩
+
+/-- Away from its apex, the represented vertex star is exactly the radial open
+cone over the represented Pi-space vertex link. -/
+theorem triangulationTopologicalVertexStar_mem_and_coordinate_lt_one_iff
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    (v : Nat) (p : Nat → ℝ) :
+    p ∈ triangulationTopologicalVertexStar K v ∧ p v < 1 ↔
+      ∃ t : ℝ, ∃ q : Nat → ℝ,
+        0 ≤ t ∧ t < 1 ∧
+        q ∈ triangulationTopologicalVertexLink K v ∧
+        q v = 0 ∧
+        p = t • triangulationTopologicalGeometricVertex v +
+          (1 - t) • q := by
+  constructor
+  · rintro ⟨hpstar, hpv⟩
+    obtain ⟨hpnonneg, _, q, hqlink, hqv, hp⟩ :=
+      triangulationTopologicalVertexStar_exists_vertexLink_cone_decomposition
+        K hcore v p hpstar hpv
+    exact ⟨p v, q, hpnonneg, hpv, hqlink, hqv, hp⟩
+  · rintro ⟨t, q, ht, ht1, hqlink, hqv, hp⟩
+    have hpstar : p ∈ triangulationTopologicalVertexStar K v := by
+      rw [hp]
+      exact triangulationTopologicalVertexStar_radial_mem
+        K v q hqlink t ht ht1
+    have hpv : p v = t := by
+      rw [hp]
+      simp [triangulationTopologicalGeometricVertex, hqv]
+    exact ⟨hpstar, hpv.symm ▸ ht1⟩
 
 end Poincare
