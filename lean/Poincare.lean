@@ -56,6 +56,7 @@ import Poincare.CrossPolytopeBoundarySphere
 import Poincare.Move2332CrossPolytopeEscape
 import Poincare.Move2332CrossPolytopeEscapeTopology
 import Poincare.Move2332LocalEscapeCriterion
+import Poincare.Move2332InitialEscapeSeed
 import Poincare.Descent
 import Poincare.Recognition
 import Poincare.LocalDelta
