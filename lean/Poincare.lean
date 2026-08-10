@@ -9,6 +9,7 @@ import Poincare.OppositeFaceCommonComplement
 import Poincare.FiveTetClusterStarSaturation
 import Poincare.FiveTetClusterVertexClosed
 import Poincare.FiveTetGlobalClassification
+import Poincare.FourSimplexBoundaryCombinatorialCertificate
 import Poincare.TriangulationPreAbstractComplex
 import Poincare.TriangulationGeometricComplex
 import Poincare.TriangulationTopologicalGeometricComplex
