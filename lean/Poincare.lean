@@ -1,5 +1,6 @@
 import Regge.Regge
 import Poincare.Triangulation
+import Poincare.SupportDegreeFour
 import Poincare.TriangulationPreAbstractComplex
 import Poincare.TriangulationGeometricComplex
 import Poincare.TriangulationTopologicalGeometricComplex
