@@ -1,9 +1,13 @@
 import Poincare.CrossPolytopeBoundary
 import Poincare.FourSimplexSphere
 import Poincare.TriangulationTopologicalGeometricCompactness
+import Poincare.TriangulationTopologicalGeometricHausdorff
+import Poincare.TriangulationTopologicalHonestManifold
 import Poincare.TriangulationTopologicalS3
+import Mathlib.Geometry.Manifold.Instances.Sphere
 
 open Set
+open scoped Manifold
 namespace Poincare
 noncomputable local instance : DecidableEq (Nat → ℝ) := Classical.decEq _
 
@@ -433,5 +437,56 @@ noncomputable def crossPolytopeL1SphereHomeomorphThreeSphere :
             |>.mp hx i (Finset.mem_univ i)
         simpa using hi
     · exact E.symm.continuous.comp continuous_subtype_val
+
+theorem crossPolytopeBoundary4_realizationHomeomorphicToThreeSphere :
+    TriangulationRealizationHomeomorphicToThreeSphere
+      crossPolytopeBoundary4 := by
+  exact ⟨crossPolytopeCarrierHomeomorphL1Sphere.trans
+    crossPolytopeL1SphereHomeomorphThreeSphere⟩
+
+theorem crossPolytopeBoundary4_honestThreeManifold :
+    TriangulationRealizationIsClosedConnectedTopologicalThreeManifold
+      crossPolytopeBoundary4 := by
+  let C := triangulationTopologicalGeometricCarrier crossPolytopeBoundary4
+  let S := ↥(Metric.sphere (0 : ThreeSphereAmbient) 1)
+  let h : C ≃ₜ S := crossPolytopeCarrierHomeomorphL1Sphere.trans
+    crossPolytopeL1SphereHomeomorphThreeSphere
+  letI : Nonempty S := ⟨⟨PiLp.single 2 (0 : Fin 4) (1 : ℝ), by
+    simp [Metric.mem_sphere, PiLp.norm_single]⟩⟩
+  letI : Nonempty C := ⟨h.symm (Classical.choice (inferInstance : Nonempty S))⟩
+  let sphereCharted : ChartedSpace ThreeManifoldModel S := inferInstance
+  let carrierSphereCharted : ChartedSpace S C :=
+    h.isOpenEmbedding.singletonChartedSpace
+  let carrierCharted : ChartedSpace ThreeManifoldModel C :=
+    @ChartedSpace.comp ThreeManifoldModel _ S _ C _
+      sphereCharted carrierSphereCharted
+  letI : ChartedSpace ThreeManifoldModel C := carrierCharted
+  have hmanifold : IsManifold (𝓡 3) 0 C := IsManifold.mk' _ _ _
+  have hsphere : IsConnected
+      (Metric.sphere (0 : ThreeSphereAmbient) 1) := by
+    apply isConnected_sphere
+    · rw [(WithLp.linearEquiv 2 ℝ (Fin 4 → ℝ)).rank_eq,
+        rank_fin_fun]
+      norm_num
+    · norm_num
+  letI : ConnectedSpace S := isConnected_iff_connectedSpace.mp hsphere
+  have hconnected : IsConnected (Set.univ : Set C) := by
+    simpa using (h.isConnected_preimage (s := Set.univ)).mpr isConnected_univ
+  exact ⟨inferInstance, carrierCharted, hmanifold,
+    triangulationTopologicalGeometricCarrier_univ_isCompact
+      crossPolytopeBoundary4, hconnected⟩
+
+theorem exists_honestThreeManifold_positive_PhiSupport_without_strict_move32 :
+    ∃ K : Triangulation,
+      ClosedTriangulationCore K ∧
+      TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K ∧
+      0 < PhiSupport K ∧
+      ¬ ∃ s : Move32Site, s.LegalIn K ∧
+        PhiSupport (s.replace K) < PhiSupport K := by
+  exact ⟨crossPolytopeBoundary4,
+    crossPolytopeBoundary4_closedCore,
+    crossPolytopeBoundary4_honestThreeManifold,
+    crossPolytopeBoundary4_PhiSupport_pos,
+    crossPolytopeBoundary4_no_strict_move32⟩
 
 end Poincare

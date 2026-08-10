@@ -16,9 +16,9 @@ theorem crossPolytopeBoundary4_closedCore :
   · intro τ hτ
     simp [crossPolytopeBoundary4] at hτ
     rcases hτ with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl |
-      rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl <;> native_decide
+      rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl <;> decide
   constructor
-  · native_decide
+  · decide
   · intro a b c habc hrepresented
     rcases hrepresented with ⟨τ, hτ, ha, hb, hc⟩
     simp [crossPolytopeBoundary4] at hτ
@@ -28,7 +28,7 @@ theorem crossPolytopeBoundary4_closedCore :
       rcases ha with rfl | rfl | rfl | rfl <;>
       rcases hb with rfl | rfl | rfl | rfl <;>
       rcases hc with rfl | rfl | rfl | rfl <;>
-      norm_num at habc <;> native_decide
+      norm_num at habc <;> decide
 
 theorem crossPolytopeBoundary4_vertexSupport :
     vertexSupport crossPolytopeBoundary4 = [0, 2, 4, 6, 7, 5, 3, 1] := by native_decide
@@ -41,14 +41,14 @@ theorem crossPolytopeBoundary4_PhiSupport : PhiSupport crossPolytopeBoundary4 = 
   native_decide
 
 theorem crossPolytopeBoundary4_PhiSupport_pos : 0 < PhiSupport crossPolytopeBoundary4 := by
-  native_decide
+  decide
 
 theorem crossPolytopeBoundary4_edgeIncidence_ne_three (d e : Nat) :
     (crossPolytopeBoundary4.tets.filter
       (fun τ => d ∈ τ.verts ∧ e ∈ τ.verts)).length ≠ 3 := by
   by_cases hd : d < 8
   · by_cases he : e < 8
-    · interval_cases d <;> interval_cases e <;> native_decide
+    · interval_cases d <;> interval_cases e <;> decide
     · have he' : 8 ≤ e := by omega
       have he0 : e ≠ 0 := by omega
       have he1 : e ≠ 1 := by omega
