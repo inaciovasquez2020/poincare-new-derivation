@@ -1,5 +1,6 @@
 import Poincare.TriangulationTopologicalGeometricCarrier
 import Poincare.VertexLinkTetrahedronBridge
+import Mathlib.Analysis.Convex.Join
 
 open Set
 
@@ -94,5 +95,83 @@ theorem vertexLinkTopologicalGeometricRealization_eq
     let x : ↥((vertexLinkVertices K v).toFinset) :=
       ⟨y, List.mem_toFinset.mpr hyV⟩
     exact ⟨x, hyList, rfl⟩
+
+/-- Every non-apex point of a represented tetrahedron incident to `v`
+decomposes along the ray from the represented vertex through the opposite
+filled vertex-link face. -/
+theorem triangulationTopologicalTetrahedron_exists_vertexLink_cone_decomposition
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    (v : Nat) (τ : Tet) (hτ : τ ∈ K.tets) (hv : v ∈ τ.verts)
+    (p : Nat → ℝ)
+    (hp : p ∈ convexHull ℝ
+      (triangulationTopologicalGeometricVertex ''
+        (↑τ.verts.toFinset : Set Nat)))
+    (hpv : p v < 1) :
+    0 ≤ p v ∧ p v < 1 ∧ 0 < 1 - p v ∧
+      ∃ q : Nat → ℝ,
+        q ∈ triangulationTopologicalVertexLink K v ∧
+        q v = 0 ∧
+        p = p v • triangulationTopologicalGeometricVertex v +
+          (1 - p v) • q := by
+  classical
+  obtain ⟨σ, hσlink, hσextract⟩ :=
+    exists_vertexLinkTriangle_of_tet_mem_of_vertex_mem K v τ hτ hv
+  have hτnodup : τ.verts.Nodup := hcore.1 τ hτ
+  have hvnotσ : v ∉ σ.verts :=
+    τ.linkTriangleAt?_vertex_not_mem v σ hτnodup hσextract
+  let e := triangulationTopologicalGeometricVertex v
+  let S : Set (Nat → ℝ) :=
+    triangulationTopologicalGeometricVertex ''
+      (↑σ.verts.toFinset : Set Nat)
+  have hvertices :
+      triangulationTopologicalGeometricVertex ''
+          (↑τ.verts.toFinset : Set Nat) = insert e S := by
+    ext x
+    constructor
+    · rintro ⟨y, hy, rfl⟩
+      by_cases hyv : y = v
+      · left
+        simpa [e, hyv]
+      · right
+        refine ⟨y, ?_, rfl⟩
+        exact List.mem_toFinset.mpr
+          ((τ.mem_linkTriangleAt?_iff v y σ hσextract hyv).2
+            (List.mem_toFinset.mp hy))
+    · rintro (hx | hx)
+      · subst x
+        exact ⟨v, List.mem_toFinset.mpr hv, rfl⟩
+      · obtain ⟨y, hy, rfl⟩ := hx
+        exact ⟨y, List.mem_toFinset.mpr
+          (τ.linkTriangleAt?_verts_subset v σ hσextract y
+            (List.mem_toFinset.mp hy)), rfl⟩
+  have hSnonempty : S.Nonempty := by
+    refine ⟨triangulationTopologicalGeometricVertex σ.v0, ?_⟩
+    exact ⟨σ.v0, by simp [LinkTriangle.verts], rfl⟩
+  rw [hvertices, convexHull_insert hSnonempty] at hp
+  obtain ⟨x, hx, q, hqS, hpseg⟩ := (mem_convexJoin.mp hp)
+  have hxe : x = e := by simpa using hx
+  subst x
+  obtain ⟨a, b, ha, hb, hab, hpab⟩ := hpseg
+  have hqv : q v = 0 := by
+    apply convexHull_min _ (convex_hyperplane
+      ⟨fun x y ↦ rfl, fun r x ↦ rfl⟩ (0 : ℝ)) hqS
+    rintro _ ⟨y, hy, rfl⟩
+    have hyv : y ≠ v := by
+      intro h
+      subst y
+      exact hvnotσ (List.mem_toFinset.mp hy)
+    simp [triangulationTopologicalGeometricVertex, hyv]
+  have hpva : p v = a := by
+    rw [← hpab]
+    simp [e, triangulationTopologicalGeometricVertex, hqv]
+  have hpvnonneg : 0 ≤ p v := hpva.symm ▸ ha
+  have hone : 0 < 1 - p v := sub_pos.mpr hpv
+  refine ⟨hpvnonneg, hpv, hone, q, ?_, hqv, ?_⟩
+  · exact (mem_triangulationTopologicalVertexLink_iff K v q).2
+      ⟨σ, hσlink, hqS⟩
+  · rw [hpva]
+    have hba : b = 1 - a := by linarith
+    rw [← hba]
+    simpa [e] using hpab.symm
 
 end Poincare

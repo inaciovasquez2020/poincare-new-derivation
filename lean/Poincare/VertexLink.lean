@@ -96,6 +96,23 @@ theorem Tet.linkTriangleAt?_isSome_iff
   rw [ne_eq, Tet.linkTriangleAt?_eq_none_iff]
   simp
 
+/-- An incident represented tetrahedron contributes its opposite triangle to
+the represented vertex link. -/
+theorem exists_vertexLinkTriangle_of_tet_mem_of_vertex_mem
+    (K : Triangulation) (v : Nat) (τ : Tet)
+    (hτ : τ ∈ K.tets) (hv : v ∈ τ.verts) :
+    ∃ σ : LinkTriangle,
+      σ ∈ vertexLinkTriangles K v ∧
+      τ.linkTriangleAt? v = some σ := by
+  have hsome : (τ.linkTriangleAt? v).isSome = true :=
+    (τ.linkTriangleAt?_isSome_iff v).2 hv
+  cases hlink : τ.linkTriangleAt? v with
+  | none => simp [hlink] at hsome
+  | some σ =>
+      exact ⟨σ,
+        (mem_vertexLinkTriangles_iff K v σ).2 ⟨τ, hτ, hlink⟩,
+        rfl⟩
+
 
 theorem Tet.linkTriangleAt?_nodup
     (τ : Tet)
