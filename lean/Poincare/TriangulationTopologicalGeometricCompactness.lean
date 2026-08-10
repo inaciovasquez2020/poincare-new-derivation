@@ -1,14 +1,10 @@
 import Mathlib.Analysis.Convex.Topology
 import Poincare.TriangulationTopologicalGeometricDecomposition
+import Poincare.TriangulationTopologicalSimplyConnected
 
 open Set
 
 namespace Poincare
-
-noncomputable local instance (K : Triangulation) :
-    TopologicalSpace (triangulationTopologicalGeometricCarrier K) := by
-  unfold triangulationTopologicalGeometricCarrier
-  infer_instance
 
 /--
 The canonical topology-bearing realization is compact.  This follows directly
@@ -36,5 +32,12 @@ theorem triangulationTopologicalGeometricCarrier_univ_isCompact
     isCompact_iff_compactSpace.mp
       (triangulationTopologicalGeometricComplex_space_isCompact K)
   exact isCompact_univ
+
+/-- The canonical topology-bearing realization is intrinsically compact. -/
+noncomputable instance triangulationTopologicalGeometricCarrier.instCompactSpace
+    (K : Triangulation) :
+    CompactSpace (triangulationTopologicalGeometricCarrier K) :=
+  isCompact_iff_compactSpace.mp
+    (triangulationTopologicalGeometricComplex_space_isCompact K)
 
 end Poincare
