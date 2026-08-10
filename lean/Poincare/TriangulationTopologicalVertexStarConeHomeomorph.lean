@@ -172,6 +172,16 @@ noncomputable def triangulationTopologicalPuncturedVertexStarHomeomorphRadialLin
   continuous_toFun := continuous_radialForward K hcore v
   continuous_invFun := continuous_radialInverse K hcore v
 
+@[simp] theorem
+triangulationTopologicalPuncturedVertexStarHomeomorphRadialLink_apply_val
+    (K : Triangulation) (hcore : ClosedTriangulationCore K) (v : Nat)
+    (tq : ↥(Set.Ico (0 : ℝ) 1) ×
+      ↥(triangulationTopologicalVertexLink K v)) :
+    ((triangulationTopologicalPuncturedVertexStarHomeomorphRadialLink
+      K hcore v) tq).1 =
+      tq.1.1 • triangulationTopologicalGeometricVertex v +
+        (1 - tq.1.1) • tq.2.1 := rfl
+
 /-- Every non-apex represented star point has a unique radial pair in the
 literal interval/link product. -/
 theorem triangulationTopologicalPuncturedVertexStar_existsUnique_radialPair
