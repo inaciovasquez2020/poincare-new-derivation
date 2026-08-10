@@ -231,4 +231,61 @@ theorem ClosedTriangulationCore.move32Site_replace_PhiSupport_balance
   rw [split (s.replace K), split K, hRest]
   ac_rfl
 
+theorem vertexDefect_sub_two_classification (n : Nat) (hn : 3 ≤ n) :
+    (n = 3 ∧ Int.natAbs ((n : Int) - 4) = 1 ∧
+      Int.natAbs (((n - 2 : Nat) : Int) - 4) = 3) ∨
+    (n = 4 ∧ Int.natAbs ((n : Int) - 4) = 0 ∧
+      Int.natAbs (((n - 2 : Nat) : Int) - 4) = 2) ∨
+    (n = 5 ∧ Int.natAbs ((n : Int) - 4) = 1 ∧
+      Int.natAbs (((n - 2 : Nat) : Int) - 4) = 1) ∨
+    (6 ≤ n ∧ Int.natAbs ((n : Int) - 4) = n - 4 ∧
+      Int.natAbs (((n - 2 : Nat) : Int) - 4) = n - 6) := by
+  by_cases h3 : n = 3
+  · subst n
+    norm_num
+  by_cases h4 : n = 4
+  · subst n
+    norm_num
+  by_cases h5 : n = 5
+  · subst n
+    norm_num
+  right; right; right
+  have hn6 : 6 ≤ n := by omega
+  refine ⟨hn6, ?_, ?_⟩
+  · have hnonneg : 0 ≤ (n : Int) - 4 := by omega
+    have h := Int.natAbs_of_nonneg hnonneg
+    omega
+  · have hnonneg : 0 ≤ ((n - 2 : Nat) : Int) - 4 := by omega
+    have h := Int.natAbs_of_nonneg hnonneg
+    omega
+
+theorem ClosedTriangulationCore.move32Site_replace_PhiSupport_lt_iff
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (s : Move32Site)
+    (hlegal : s.LegalIn K) :
+    PhiSupport (s.replace K) < PhiSupport K ↔
+      5 ≤ vertexDegree K s.d ∧
+      5 ≤ vertexDegree K s.e ∧
+      (6 ≤ vertexDegree K s.d ∨
+       6 ≤ vertexDegree K s.e) := by
+  rcases hcore.move32Site_sharedEdge_vertexDegree_lower_bound s hlegal with
+    ⟨hdLower, heLower⟩
+  rcases hcore.move32Site_replace_vertexDegree_site s hlegal with
+    ⟨_, _, _, hdDegree, heDegree⟩
+  have hdAfter :
+      vertexDegree (s.replace K) s.d = vertexDegree K s.d - 2 := by
+    omega
+  have heAfter :
+      vertexDegree (s.replace K) s.e = vertexDegree K s.e - 2 := by
+    omega
+  have hdCases := vertexDefect_sub_two_classification
+    (vertexDegree K s.d) hdLower
+  have heCases := vertexDefect_sub_two_classification
+    (vertexDegree K s.e) heLower
+  have hbalance := hcore.move32Site_replace_PhiSupport_balance s hlegal
+  simp only [vertexDefect, targetDegree, hdAfter, heAfter] at hbalance
+  rcases hdCases with hd3 | hd4 | hd5 | hd6 <;>
+    rcases heCases with he3 | he4 | he5 | he6 <;> omega
+
 end Poincare
