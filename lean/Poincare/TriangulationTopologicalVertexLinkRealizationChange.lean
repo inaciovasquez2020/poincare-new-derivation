@@ -149,4 +149,154 @@ theorem triangulationTopologicalVertexLink_isCompact
       rw [heq]
       exact hface.union ih
 
+/-- Coordinates of a point of the Pi-space link sum to one over the represented
+link vertices. -/
+theorem triangulationTopologicalVertexLink_sum_coordinates
+    (K : Triangulation) (v : Nat) (p : Nat → ℝ)
+    (hp : p ∈ triangulationTopologicalVertexLink K v) :
+    ∑ x : ↥((vertexLinkVertices K v).toFinset), p x.1 = 1 := by
+  classical
+  obtain ⟨sigma, hsigma, hp⟩ :=
+    (mem_triangulationTopologicalVertexLink_iff K v p).1 hp
+  apply convexHull_min _ (convex_hyperplane
+    ⟨fun a b ↦ by simp [Finset.sum_add_distrib],
+      fun a p ↦ by simp [Finset.mul_sum]⟩
+    (1 : ℝ)) hp
+  rintro _ ⟨y, hy, rfl⟩
+  have hyV : y ∈ vertexLinkVertices K v :=
+    (mem_vertexLinkVertices_iff K v y).2
+      ⟨sigma, hsigma, List.mem_toFinset.mp hy⟩
+  let x : ↥((vertexLinkVertices K v).toFinset) :=
+    ⟨y, List.mem_toFinset.mpr hyV⟩
+  change ∑ z : ↥((vertexLinkVertices K v).toFinset),
+    triangulationTopologicalGeometricVertex y z.1 = 1
+  rw [Fintype.sum_eq_single x]
+  · simp [triangulationTopologicalGeometricVertex, x]
+  · intro z hzx
+    have hzy : z.1 ≠ y := by
+      intro h
+      apply hzx
+      apply Subtype.ext
+      exact h
+    simp [triangulationTopologicalGeometricVertex, hzy]
+
+/-- A point of the Pi-space link has zero coordinates away from its represented
+link vertices. -/
+theorem triangulationTopologicalVertexLink_coordinate_eq_zero
+    (K : Triangulation) (v : Nat) (p : Nat → ℝ)
+    (hp : p ∈ triangulationTopologicalVertexLink K v)
+    (y : Nat) (hy : y ∉ vertexLinkVertices K v) :
+    p y = 0 := by
+  classical
+  obtain ⟨sigma, hsigma, hp⟩ :=
+    (mem_triangulationTopologicalVertexLink_iff K v p).1 hp
+  apply convexHull_min _ (convex_hyperplane
+    ⟨fun a b ↦ rfl, fun a p ↦ rfl⟩
+    (0 : ℝ)) hp
+  rintro _ ⟨z, hz, rfl⟩
+  have hzy : z ≠ y := by
+    intro h
+    subst z
+    exact hy ((mem_vertexLinkVertices_iff K v y).2
+      ⟨sigma, hsigma, List.mem_toFinset.mp hz⟩)
+  simp [triangulationTopologicalGeometricVertex, hzy]
+
+/-- The realization-change linear map is injective on the represented
+Pi-space vertex link. -/
+theorem vertexLinkPiToEuclideanLinearMap_injOn
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert : VertexLinkTetrahedralBoundaryCertificate K hcore v) :
+    Set.InjOn (vertexLinkPiToEuclideanLinearMap K hcore v hcert)
+      (triangulationTopologicalVertexLink K v) := by
+  classical
+  intro p hp q hq hpq
+  have hpsum := triangulationTopologicalVertexLink_sum_coordinates K v p hp
+  have hqsum := triangulationTopologicalVertexLink_sum_coordinates K v q hq
+  have hcomb :
+      Finset.univ.affineCombination ℝ
+          (vertexLinkGeometricVertex K hcore v hcert)
+          (fun x ↦ p x.1) =
+        Finset.univ.affineCombination ℝ
+          (vertexLinkGeometricVertex K hcore v hcert)
+          (fun x ↦ q x.1) := by
+    rw [Finset.affineCombination_eq_linear_combination
+        Finset.univ _ _ (by simpa using hpsum),
+      Finset.affineCombination_eq_linear_combination
+        Finset.univ _ _ (by simpa using hqsum)]
+    exact hpq
+  have hind : AffineIndependent ℝ
+      (vertexLinkGeometricVertex K hcore v hcert) := by
+    unfold vertexLinkGeometricVertex
+    exact tetrahedronSimplex.independent.comp_embedding
+      (vertexLinkVertexEquivFin4 K hcore v hcert).toEmbedding
+  have hweights : ∀ x : ↥((vertexLinkVertices K v).toFinset),
+      p x.1 = q x.1 := by
+    intro x
+    exact (hind.affineCombination_eq_iff_eq
+      (by simpa using hpsum) (by simpa using hqsum)).1 hcomb x (Finset.mem_univ x)
+  funext y
+  by_cases hy : y ∈ vertexLinkVertices K v
+  · exact hweights ⟨y, List.mem_toFinset.mpr hy⟩
+  · rw [triangulationTopologicalVertexLink_coordinate_eq_zero K v p hp y hy,
+      triangulationTopologicalVertexLink_coordinate_eq_zero K v q hq y hy]
+
+/-- The restriction of the realization-change map to the Pi-space link is
+continuous. -/
+theorem continuous_vertexLinkPiToEuclideanLinearMap
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert : VertexLinkTetrahedralBoundaryCertificate K hcore v) :
+    Continuous (vertexLinkPiToEuclideanLinearMap K hcore v hcert) := by
+  unfold vertexLinkPiToEuclideanLinearMap
+  change Continuous (fun p : Nat → ℝ ↦
+    ∑ x : ↥((vertexLinkVertices K v).toFinset),
+      p x.1 • vertexLinkGeometricVertex K hcore v hcert x)
+  apply continuous_finset_sum Finset.univ
+  intro x _
+  exact (continuous_apply x.1 :
+    Continuous (fun p : Nat → ℝ ↦ p x.1)).smul continuous_const
+
+/-- The represented Pi-space vertex link is genuinely homeomorphic to its
+already certified Euclidean realization. -/
+noncomputable def vertexLinkPiRealizationHomeomorphEuclidean
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert : VertexLinkTetrahedralBoundaryCertificate K hcore v) :
+    ↥(triangulationTopologicalVertexLink K v) ≃ₜ
+      ↥(vertexLinkGeometricRealization K hcore v hcert) := by
+  let f : ↥(triangulationTopologicalVertexLink K v) →
+      ↥(vertexLinkGeometricRealization K hcore v hcert) := fun p ↦
+    ⟨vertexLinkPiToEuclideanLinearMap K hcore v hcert p.1,
+      (vertexLinkPiToEuclideanLinearMap_image_realization
+        K hcore v hcert) ▸ Set.mem_image_of_mem _ p.2⟩
+  letI : CompactSpace ↥(triangulationTopologicalVertexLink K v) :=
+    isCompact_iff_compactSpace.mp
+      (triangulationTopologicalVertexLink_isCompact K v)
+  have hfcont : Continuous f :=
+    Continuous.subtype_mk
+      ((continuous_vertexLinkPiToEuclideanLinearMap K hcore v hcert).comp
+        continuous_subtype_val)
+      _
+  have hfinj : Function.Injective f := by
+    intro p q hpq
+    apply Subtype.ext
+    exact vertexLinkPiToEuclideanLinearMap_injOn K hcore v hcert
+      p.2 q.2 (Subtype.ext_iff.mp hpq)
+  have hfsurj : Function.Surjective f := by
+    intro q
+    have hq : q.1 ∈ vertexLinkPiToEuclideanLinearMap K hcore v hcert ''
+        triangulationTopologicalVertexLink K v := by
+      rw [vertexLinkPiToEuclideanLinearMap_image_realization K hcore v hcert]
+      exact q.2
+    obtain ⟨p, hp, hpq⟩ := hq
+    refine ⟨⟨p, hp⟩, Subtype.ext ?_⟩
+    exact hpq
+  exact (IsHomeomorph.homeomorph f
+    ((isHomeomorph_iff_continuous_bijective).2
+      ⟨hfcont, hfinj, hfsurj⟩))
+
 end Poincare
