@@ -8,6 +8,7 @@ import Poincare.TriangulationTopologicalSimplyConnected
 import Poincare.TriangulationTopologicalGeometricDecomposition
 import Poincare.TriangulationTopologicalGeometricIntersections
 import Poincare.TriangulationTopologicalVertexLink
+import Poincare.TriangulationTopologicalVertexLinkRealizationChange
 import Poincare.Moves
 import Poincare.Descent
 import Poincare.Recognition
