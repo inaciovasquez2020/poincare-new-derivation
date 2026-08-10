@@ -39,6 +39,7 @@ import Poincare.Moves
 import Poincare.Move23SimpleBistellarData
 import Poincare.TetrahedronFaceClassification
 import Poincare.Move23FaceIncidenceTable
+import Poincare.Move23ClosedCorePreservation
 import Poincare.Move23BipyramidCoefficients
 import Poincare.Move23BipyramidGeometry
 import Poincare.Move23PiRealizationChange
