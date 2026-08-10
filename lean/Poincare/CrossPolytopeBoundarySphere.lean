@@ -213,4 +213,100 @@ theorem crossPolytopeSignedCoordinates_inverse (u : Fin 4 → ℝ) :
     simp [crossPolytopeSignedCoordinates, crossPolytopeSignedCoordinatesInverse,
       max_zero_sub_max_neg_zero_eq_self]
 
+private theorem max_sub_zero_pair
+    {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (hz : a = 0 ∨ b = 0) :
+    max (a - b) 0 = a ∧ max (-(a - b)) 0 = b := by
+  rcases hz with rfl | rfl <;> simp [ha, hb]
+
+theorem crossPolytopeSignedCoordinatesInverse_signed
+    (p : triangulationTopologicalGeometricCarrier crossPolytopeBoundary4) :
+    crossPolytopeSignedCoordinatesInverse
+        (crossPolytopeSignedCoordinates p.1) = p.1 := by
+  have hn := crossPolytopeBoundary4_carrier_coordinate_nonneg p.1 p.2
+  rcases crossPolytopeBoundary4_carrier_pairwise_zero p.1 p.2 with
+    ⟨h01, h23, h45, h67⟩
+  have r01 := max_sub_zero_pair (hn 0) (hn 1) h01
+  have r23 := max_sub_zero_pair (hn 2) (hn 3) h23
+  have r45 := max_sub_zero_pair (hn 4) (hn 5) h45
+  have r67 := max_sub_zero_pair (hn 6) (hn 7) h67
+  funext j
+  by_cases hj : j < 8
+  · interval_cases j
+    · change max (p.1 0 - p.1 1) 0 = p.1 0
+      exact r01.1
+    · change max (-(p.1 0 - p.1 1)) 0 = p.1 1
+      exact r01.2
+    · change max (p.1 2 - p.1 3) 0 = p.1 2
+      exact r23.1
+    · change max (-(p.1 2 - p.1 3)) 0 = p.1 3
+      exact r23.2
+    · change max (p.1 4 - p.1 5) 0 = p.1 4
+      exact r45.1
+    · change max (-(p.1 4 - p.1 5)) 0 = p.1 5
+      exact r45.2
+    · change max (p.1 6 - p.1 7) 0 = p.1 6
+      exact r67.1
+    · change max (-(p.1 6 - p.1 7)) 0 = p.1 7
+      exact r67.2
+  · have hz :=
+      crossPolytopeBoundary4_carrier_coordinate_eq_zero p.1 p.2
+        (show 8 ≤ j by omega)
+    simp [crossPolytopeSignedCoordinatesInverse, hz,
+      show j ≠ 0 by omega, show j ≠ 1 by omega,
+      show j ≠ 2 by omega, show j ≠ 3 by omega,
+      show j ≠ 4 by omega, show j ≠ 5 by omega,
+      show j ≠ 6 by omega, show j ≠ 7 by omega]
+
+theorem continuous_crossPolytopeSignedCoordinatesInverse :
+    Continuous crossPolytopeSignedCoordinatesInverse := by
+  apply continuous_pi
+  intro j
+  by_cases hj : j < 8
+  · interval_cases j <;>
+      norm_num [crossPolytopeSignedCoordinatesInverse] <;> fun_prop
+  · have hj0 : j ≠ 0 := by omega
+    have hj1 : j ≠ 1 := by omega
+    have hj2 : j ≠ 2 := by omega
+    have hj3 : j ≠ 3 := by omega
+    have hj4 : j ≠ 4 := by omega
+    have hj5 : j ≠ 5 := by omega
+    have hj6 : j ≠ 6 := by omega
+    have hj7 : j ≠ 7 := by omega
+    simpa [crossPolytopeSignedCoordinatesInverse, hj0, hj1, hj2, hj3,
+      hj4, hj5, hj6, hj7] using
+      (continuous_const : Continuous (fun _ : Fin 4 → ℝ ↦ (0 : ℝ)))
+
+def crossPolytopeCarrierToL1 :
+    triangulationTopologicalGeometricCarrier crossPolytopeBoundary4 →
+      ↥crossPolytopeL1Sphere :=
+  fun p ↦ ⟨crossPolytopeSignedCoordinates p.1,
+    crossPolytopeSignedCoordinates_mem_l1Sphere p⟩
+
+def crossPolytopeL1ToCarrier :
+    ↥crossPolytopeL1Sphere →
+      triangulationTopologicalGeometricCarrier crossPolytopeBoundary4 :=
+  fun u ↦ ⟨crossPolytopeSignedCoordinatesInverse u.1,
+    crossPolytopeSignedCoordinatesInverse_mem_carrier u⟩
+
+theorem continuous_crossPolytopeCarrierToL1 :
+    Continuous crossPolytopeCarrierToL1 := by
+  exact Continuous.subtype_mk
+    (continuous_crossPolytopeSignedCoordinates.comp continuous_subtype_val) _
+
+theorem continuous_crossPolytopeL1ToCarrier :
+    Continuous crossPolytopeL1ToCarrier := by
+  exact Continuous.subtype_mk
+    (continuous_crossPolytopeSignedCoordinatesInverse.comp continuous_subtype_val) _
+
+noncomputable def crossPolytopeCarrierHomeomorphL1Sphere :
+    triangulationTopologicalGeometricCarrier crossPolytopeBoundary4 ≃ₜ
+      ↥crossPolytopeL1Sphere where
+  toEquiv :=
+    { toFun := crossPolytopeCarrierToL1
+      invFun := crossPolytopeL1ToCarrier
+      left_inv := fun p ↦ Subtype.ext (crossPolytopeSignedCoordinatesInverse_signed p)
+      right_inv := fun u ↦ Subtype.ext (crossPolytopeSignedCoordinates_inverse u.1) }
+  continuous_toFun := continuous_crossPolytopeCarrierToL1
+  continuous_invFun := continuous_crossPolytopeL1ToCarrier
+
 end Poincare
