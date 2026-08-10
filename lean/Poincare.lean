@@ -40,6 +40,7 @@ import Poincare.Move23UnchangedOverlap
 import Poincare.Move23GlobalRegionDecomposition
 import Poincare.Move23GeometricCarrierHomeomorph
 import Poincare.Move23CanonicalReverse
+import Poincare.Move32CombinatorialFoundation
 import Poincare.Descent
 import Poincare.Recognition
 import Poincare.LocalDelta

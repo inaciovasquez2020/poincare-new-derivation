@@ -21,7 +21,7 @@ theorem triangulationTopologicalTetBody_eq_of_sameTetVertices
     simpa using h v
   simp [triangulationTopologicalTetBody, hverts]
 
-private theorem tetBody_mk_eq_piBody (a b c d : Nat) :
+theorem triangulationTopologicalTetBody_mk_eq_piBody (a b c d : Nat) :
     triangulationTopologicalTetBody ⟨a, b, c, d⟩ =
       move23PiTetrahedronBody ![a, b, c, d] := by
   unfold triangulationTopologicalTetBody move23PiTetrahedronBody
@@ -46,31 +46,31 @@ private theorem tetBody_mk_eq_piBody (a b c d : Nat) :
     triangulationTopologicalTetBody s.leftTet =
       move23PiTetrahedronBody (move23PiABCD s.a s.b s.c s.d s.e) := by
   simpa [Move23Site.leftTet, move23PiABCD] using
-    tetBody_mk_eq_piBody s.a s.b s.c s.d
+    triangulationTopologicalTetBody_mk_eq_piBody s.a s.b s.c s.d
 
 @[simp] theorem Move23Site.rightTet_tetBody (s : Move23Site) :
     triangulationTopologicalTetBody s.rightTet =
       move23PiTetrahedronBody (move23PiABCE s.a s.b s.c s.d s.e) := by
   simpa [Move23Site.rightTet, move23PiABCE] using
-    tetBody_mk_eq_piBody s.a s.b s.c s.e
+    triangulationTopologicalTetBody_mk_eq_piBody s.a s.b s.c s.e
 
 @[simp] theorem Move23Site.newTet₀_tetBody (s : Move23Site) :
     triangulationTopologicalTetBody s.newTet₀ =
       move23PiTetrahedronBody (move23PiABDE s.a s.b s.c s.d s.e) := by
   simpa [Move23Site.newTet₀, move23PiABDE] using
-    tetBody_mk_eq_piBody s.a s.b s.d s.e
+    triangulationTopologicalTetBody_mk_eq_piBody s.a s.b s.d s.e
 
 @[simp] theorem Move23Site.newTet₁_tetBody (s : Move23Site) :
     triangulationTopologicalTetBody s.newTet₁ =
       move23PiTetrahedronBody (move23PiACDE s.a s.b s.c s.d s.e) := by
   simpa [Move23Site.newTet₁, move23PiACDE] using
-    tetBody_mk_eq_piBody s.a s.c s.d s.e
+    triangulationTopologicalTetBody_mk_eq_piBody s.a s.c s.d s.e
 
 @[simp] theorem Move23Site.newTet₂_tetBody (s : Move23Site) :
     triangulationTopologicalTetBody s.newTet₂ =
       move23PiTetrahedronBody (move23PiBCDE s.a s.b s.c s.d s.e) := by
   simpa [Move23Site.newTet₂, move23PiBCDE] using
-    tetBody_mk_eq_piBody s.b s.c s.d s.e
+    triangulationTopologicalTetBody_mk_eq_piBody s.b s.c s.d s.e
 
 theorem Move23Site.exists_actual_source_region
     {K : Triangulation} (s : Move23Site) (hrealized : s.RealizedIn K) :
