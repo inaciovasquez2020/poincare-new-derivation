@@ -47,5 +47,6 @@ import Poincare.VertexLinkLocalConnectednessCounterexample
 
 import Poincare.TetrahedronSphere
 import Poincare.FourSimplexSphere
+import Poincare.TriangulationTopologicalFourSimplexRealizationChange
 
 import Poincare.VertexLinkTetrahedronBridge
