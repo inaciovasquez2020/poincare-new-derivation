@@ -13,6 +13,28 @@ def move23BipyramidC : Move23BipyramidAmbient := move23Point (-1) (-1) 0
 def move23BipyramidD : Move23BipyramidAmbient := move23Point 0 0 1
 def move23BipyramidE : Move23BipyramidAmbient := move23Point 0 0 (-1)
 
+@[simp] theorem move23BipyramidA_apply (i : Fin 3) :
+    move23BipyramidA i = ![1, 0, 0] i := rfl
+@[simp] theorem move23BipyramidB_apply (i : Fin 3) :
+    move23BipyramidB i = ![0, 1, 0] i := rfl
+@[simp] theorem move23BipyramidC_apply (i : Fin 3) :
+    move23BipyramidC i = ![-1, -1, 0] i := rfl
+@[simp] theorem move23BipyramidD_apply (i : Fin 3) :
+    move23BipyramidD i = ![0, 0, 1] i := rfl
+@[simp] theorem move23BipyramidE_apply (i : Fin 3) :
+    move23BipyramidE i = ![0, 0, -1] i := rfl
+
+@[simp] theorem move23BipyramidA_ofLp_apply (i : Fin 3) :
+    WithLp.ofLp move23BipyramidA i = ![1, 0, 0] i := rfl
+@[simp] theorem move23BipyramidB_ofLp_apply (i : Fin 3) :
+    WithLp.ofLp move23BipyramidB i = ![0, 1, 0] i := rfl
+@[simp] theorem move23BipyramidC_ofLp_apply (i : Fin 3) :
+    WithLp.ofLp move23BipyramidC i = ![-1, -1, 0] i := rfl
+@[simp] theorem move23BipyramidD_ofLp_apply (i : Fin 3) :
+    WithLp.ofLp move23BipyramidD i = ![0, 0, 1] i := rfl
+@[simp] theorem move23BipyramidE_ofLp_apply (i : Fin 3) :
+    WithLp.ofLp move23BipyramidE i = ![0, 0, -1] i := rfl
+
 def move23BipyramidABCD : Fin 4 → Move23BipyramidAmbient :=
   ![move23BipyramidA, move23BipyramidB, move23BipyramidC, move23BipyramidD]
 def move23BipyramidABCE : Fin 4 → Move23BipyramidAmbient :=

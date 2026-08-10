@@ -78,6 +78,252 @@ noncomputable def move23PiTargetLocalCarrier (a b c d e : Nat) : Set (Nat → �
     move23PiTetrahedronBody (move23PiACDE a b c d e) ∪
       move23PiTetrahedronBody (move23PiBCDE a b c d e)
 
+private theorem move23PiTetrahedronBody_coordinate_nonneg
+    (v : Fin 4 → Nat) {p : Nat → ℝ} (hp : p ∈ move23PiTetrahedronBody v)
+    (z : Nat) : 0 ≤ p z := by
+  rw [move23PiTetrahedronBody] at hp
+  apply convexHull_min _ (convex_halfSpace_ge
+    ⟨fun x y ↦ rfl, fun r x ↦ rfl⟩ (0 : ℝ)) hp
+  rintro _ ⟨i, rfl⟩
+  simp [triangulationTopologicalGeometricVertex, Pi.single_apply]
+  split <;> positivity
+
+private theorem move23PiTetrahedronBody_sum_labels
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup)
+    (v : Fin 4 → Nat)
+    (hv : ∀ i, v i = a ∨ v i = b ∨ v i = c ∨ v i = d ∨ v i = e)
+    {p : Nat → ℝ} (hp : p ∈ move23PiTetrahedronBody v) :
+    p a + p b + p c + p d + p e = 1 := by
+  rw [move23PiTetrahedronBody] at hp
+  apply convexHull_min _ (convex_hyperplane
+    ⟨fun x y ↦ by simp only [Pi.add_apply]; ring,
+      fun r x ↦ by simp only [Pi.smul_apply, smul_eq_mul]; ring⟩ (1 : ℝ)) hp
+  rintro _ ⟨i, rfl⟩
+  change triangulationTopologicalGeometricVertex (v i) a +
+    triangulationTopologicalGeometricVertex (v i) b +
+    triangulationTopologicalGeometricVertex (v i) c +
+    triangulationTopologicalGeometricVertex (v i) d +
+    triangulationTopologicalGeometricVertex (v i) e = 1
+  rcases hv i with hj | hj | hj | hj | hj
+  all_goals rw [hj]
+  all_goals simp_all [triangulationTopologicalGeometricVertex, List.nodup_cons]
+
+private theorem move23PiTetrahedronBody_coordinate_eq_zero
+    (v : Fin 4 → Nat) {p : Nat → ℝ} (hp : p ∈ move23PiTetrahedronBody v)
+    (z : Nat) (hz : ∀ i, v i ≠ z) : p z = 0 := by
+  rw [move23PiTetrahedronBody] at hp
+  apply convexHull_min _ (convex_hyperplane
+    ⟨fun x y ↦ rfl, fun r x ↦ rfl⟩ (0 : ℝ)) hp
+  rintro _ ⟨i, rfl⟩
+  simp [triangulationTopologicalGeometricVertex, hz i]
+
+theorem move23PiSourceLocalCarrier_nonneg
+    {a b c d e : Nat} {p : Nat → ℝ}
+    (hp : p ∈ move23PiSourceLocalCarrier a b c d e) (z : Nat) : 0 ≤ p z := by
+  rcases hp with hp | hp
+  · exact move23PiTetrahedronBody_coordinate_nonneg _ hp z
+  · exact move23PiTetrahedronBody_coordinate_nonneg _ hp z
+
+theorem move23PiTargetLocalCarrier_nonneg
+    {a b c d e : Nat} {p : Nat → ℝ}
+    (hp : p ∈ move23PiTargetLocalCarrier a b c d e) (z : Nat) : 0 ≤ p z := by
+  rcases hp with (hp | hp) | hp
+  · exact move23PiTetrahedronBody_coordinate_nonneg _ hp z
+  · exact move23PiTetrahedronBody_coordinate_nonneg _ hp z
+  · exact move23PiTetrahedronBody_coordinate_nonneg _ hp z
+
+theorem move23PiSourceLocalCarrier_sum
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup)
+    {p : Nat → ℝ} (hp : p ∈ move23PiSourceLocalCarrier a b c d e) :
+    p a + p b + p c + p d + p e = 1 := by
+  rcases hp with hp | hp
+  · apply move23PiTetrahedronBody_sum_labels h _ _ hp
+    intro i; fin_cases i <;> simp [move23PiABCD]
+  · apply move23PiTetrahedronBody_sum_labels h _ _ hp
+    intro i; fin_cases i <;> simp [move23PiABCE]
+
+theorem move23PiTargetLocalCarrier_sum
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup)
+    {p : Nat → ℝ} (hp : p ∈ move23PiTargetLocalCarrier a b c d e) :
+    p a + p b + p c + p d + p e = 1 := by
+  rcases hp with (hp | hp) | hp
+  · apply move23PiTetrahedronBody_sum_labels h _ _ hp
+    intro i; fin_cases i <;> simp [move23PiABDE]
+  · apply move23PiTetrahedronBody_sum_labels h _ _ hp
+    intro i; fin_cases i <;> simp [move23PiACDE]
+  · apply move23PiTetrahedronBody_sum_labels h _ _ hp
+    intro i; fin_cases i <;> simp [move23PiBCDE]
+
+theorem move23PiSourceLocalCarrier_zero_apex
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup)
+    {p : Nat → ℝ} (hp : p ∈ move23PiSourceLocalCarrier a b c d e) :
+    p d = 0 ∨ p e = 0 := by
+  rcases hp with hp | hp
+  · right
+    apply move23PiTetrahedronBody_coordinate_eq_zero _ hp
+    intro i; fin_cases i <;> simp_all [move23PiABCD, List.nodup_cons] <;> omega
+  · left
+    apply move23PiTetrahedronBody_coordinate_eq_zero _ hp
+    intro i; fin_cases i <;> simp_all [move23PiABCE, List.nodup_cons] <;> omega
+
+theorem move23PiTargetLocalCarrier_zero_base
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup)
+    {p : Nat → ℝ} (hp : p ∈ move23PiTargetLocalCarrier a b c d e) :
+    p a = 0 ∨ p b = 0 ∨ p c = 0 := by
+  rcases hp with (hp | hp) | hp
+  · right; right
+    apply move23PiTetrahedronBody_coordinate_eq_zero _ hp
+    intro i; fin_cases i <;> simp_all [move23PiABDE, List.nodup_cons] <;> omega
+  · right; left
+    apply move23PiTetrahedronBody_coordinate_eq_zero _ hp
+    intro i; fin_cases i <;> simp_all [move23PiACDE, List.nodup_cons] <;> omega
+  · left
+    apply move23PiTetrahedronBody_coordinate_eq_zero _ hp
+    intro i; fin_cases i <;> simp_all [move23PiBCDE, List.nodup_cons] <;> omega
+
+theorem move23PiSourceLocalCarrier_eq_zero_of_not_label
+    {a b c d e z : Nat} {p : Nat → ℝ}
+    (hp : p ∈ move23PiSourceLocalCarrier a b c d e)
+    (ha : z ≠ a) (hb : z ≠ b) (hc : z ≠ c) (hd : z ≠ d) (he : z ≠ e) :
+    p z = 0 := by
+  rcases hp with hp | hp
+  all_goals apply move23PiTetrahedronBody_coordinate_eq_zero _ hp
+  all_goals intro i; fin_cases i <;>
+    simp_all [move23PiABCD, move23PiABCE] <;> omega
+
+theorem move23PiTargetLocalCarrier_eq_zero_of_not_label
+    {a b c d e z : Nat} {p : Nat → ℝ}
+    (hp : p ∈ move23PiTargetLocalCarrier a b c d e)
+    (ha : z ≠ a) (hb : z ≠ b) (hc : z ≠ c) (hd : z ≠ d) (he : z ≠ e) :
+    p z = 0 := by
+  rcases hp with (hp | hp) | hp
+  all_goals apply move23PiTetrahedronBody_coordinate_eq_zero _ hp
+  all_goals intro i; fin_cases i <;>
+    simp_all [move23PiABDE, move23PiACDE, move23PiBCDE] <;> omega
+
+theorem move23PiLinearMap_apply_zero (a b c d e : Nat) (p : Nat → ℝ) :
+    (move23PiLinearMap a b c d e p) 0 = p a - p c := by
+  simp [move23PiLinearMap, move23BipyramidVertex, Fin.sum_univ_succ]
+  ring
+
+theorem move23PiLinearMap_apply_one (a b c d e : Nat) (p : Nat → ℝ) :
+    (move23PiLinearMap a b c d e p) 1 = p b - p c := by
+  simp [move23PiLinearMap, move23BipyramidVertex, Fin.sum_univ_succ]
+  ring
+
+theorem move23PiLinearMap_apply_two (a b c d e : Nat) (p : Nat → ℝ) :
+    (move23PiLinearMap a b c d e p) 2 = p d - p e := by
+  simp [move23PiLinearMap, move23BipyramidVertex, Fin.sum_univ_succ]
+  ring
+
+private theorem move23Circuit_differences
+    {pa pb pc pd pe qa qb qc qd qe : ℝ}
+    (ha : pa - pc = qa - qc) (hb : pb - pc = qb - qc)
+    (hde : pd - pe = qd - qe)
+    (hp : pa + pb + pc + pd + pe = 1)
+    (hq : qa + qb + qc + qd + qe = 1) :
+    pa - qa = pb - qb ∧ pa - qa = pc - qc ∧
+      pd - qd = pe - qe ∧ 3 * (pa - qa) + 2 * (pd - qd) = 0 := by
+  constructor <;> try linarith
+  constructor <;> try linarith
+  constructor <;> linarith
+
+theorem move23PiLinearMap_injOn_sourceLocalCarrier
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup) :
+    Set.InjOn (move23PiLinearMap a b c d e)
+      (move23PiSourceLocalCarrier a b c d e) := by
+  intro p hp q hq hL
+  have ha := congrArg (fun x : Move23BipyramidAmbient => x 0) hL
+  have hb := congrArg (fun x : Move23BipyramidAmbient => x 1) hL
+  have hde := congrArg (fun x : Move23BipyramidAmbient => x 2) hL
+  change (move23PiLinearMap a b c d e p) 0 =
+    (move23PiLinearMap a b c d e q) 0 at ha
+  change (move23PiLinearMap a b c d e p) 1 =
+    (move23PiLinearMap a b c d e q) 1 at hb
+  change (move23PiLinearMap a b c d e p) 2 =
+    (move23PiLinearMap a b c d e q) 2 at hde
+  rw [move23PiLinearMap_apply_zero, move23PiLinearMap_apply_zero] at ha
+  rw [move23PiLinearMap_apply_one, move23PiLinearMap_apply_one] at hb
+  rw [move23PiLinearMap_apply_two, move23PiLinearMap_apply_two] at hde
+  have hsumP := move23PiSourceLocalCarrier_sum h hp
+  have hsumQ := move23PiSourceLocalCarrier_sum h hq
+  obtain ⟨hab, hac, hdep, hcircuit⟩ :=
+    move23Circuit_differences ha hb hde hsumP hsumQ
+  have hpd := move23PiSourceLocalCarrier_nonneg hp d
+  have hpe := move23PiSourceLocalCarrier_nonneg hp e
+  have hqd := move23PiSourceLocalCarrier_nonneg hq d
+  have hqe := move23PiSourceLocalCarrier_nonneg hq e
+  rcases move23PiSourceLocalCarrier_zero_apex h hp with hpd0 | hpe0 <;>
+    rcases move23PiSourceLocalCarrier_zero_apex h hq with hqd0 | hqe0
+  all_goals
+    have haa : p a = q a := by linarith
+    have hbb : p b = q b := by linarith
+    have hcc : p c = q c := by linarith
+    have hdd : p d = q d := by linarith
+    have hee : p e = q e := by linarith
+    funext z
+    by_cases hza : z = a
+    · subst z; exact haa
+    by_cases hzb : z = b
+    · subst z; exact hbb
+    by_cases hzc : z = c
+    · subst z; exact hcc
+    by_cases hzd : z = d
+    · subst z; exact hdd
+    by_cases hze : z = e
+    · subst z; exact hee
+    rw [move23PiSourceLocalCarrier_eq_zero_of_not_label hp hza hzb hzc hzd hze,
+      move23PiSourceLocalCarrier_eq_zero_of_not_label hq hza hzb hzc hzd hze]
+
+theorem move23PiLinearMap_injOn_targetLocalCarrier
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup) :
+    Set.InjOn (move23PiLinearMap a b c d e)
+      (move23PiTargetLocalCarrier a b c d e) := by
+  intro p hp q hq hL
+  have ha := congrArg (fun x : Move23BipyramidAmbient => x 0) hL
+  have hb := congrArg (fun x : Move23BipyramidAmbient => x 1) hL
+  have hde := congrArg (fun x : Move23BipyramidAmbient => x 2) hL
+  change (move23PiLinearMap a b c d e p) 0 =
+    (move23PiLinearMap a b c d e q) 0 at ha
+  change (move23PiLinearMap a b c d e p) 1 =
+    (move23PiLinearMap a b c d e q) 1 at hb
+  change (move23PiLinearMap a b c d e p) 2 =
+    (move23PiLinearMap a b c d e q) 2 at hde
+  rw [move23PiLinearMap_apply_zero, move23PiLinearMap_apply_zero] at ha
+  rw [move23PiLinearMap_apply_one, move23PiLinearMap_apply_one] at hb
+  rw [move23PiLinearMap_apply_two, move23PiLinearMap_apply_two] at hde
+  have hsumP := move23PiTargetLocalCarrier_sum h hp
+  have hsumQ := move23PiTargetLocalCarrier_sum h hq
+  obtain ⟨hab, hac, hdep, hcircuit⟩ :=
+    move23Circuit_differences ha hb hde hsumP hsumQ
+  have hpa := move23PiTargetLocalCarrier_nonneg hp a
+  have hpb := move23PiTargetLocalCarrier_nonneg hp b
+  have hpc := move23PiTargetLocalCarrier_nonneg hp c
+  have hqa := move23PiTargetLocalCarrier_nonneg hq a
+  have hqb := move23PiTargetLocalCarrier_nonneg hq b
+  have hqc := move23PiTargetLocalCarrier_nonneg hq c
+  rcases move23PiTargetLocalCarrier_zero_base h hp with hpa0 | hpb0 | hpc0 <;>
+    rcases move23PiTargetLocalCarrier_zero_base h hq with hqa0 | hqb0 | hqc0
+  all_goals
+    have haa : p a = q a := by linarith
+    have hbb : p b = q b := by linarith
+    have hcc : p c = q c := by linarith
+    have hdd : p d = q d := by linarith
+    have hee : p e = q e := by linarith
+    funext z
+    by_cases hza : z = a
+    · subst z; exact haa
+    by_cases hzb : z = b
+    · subst z; exact hbb
+    by_cases hzc : z = c
+    · subst z; exact hcc
+    by_cases hzd : z = d
+    · subst z; exact hdd
+    by_cases hze : z = e
+    · subst z; exact hee
+    rw [move23PiTargetLocalCarrier_eq_zero_of_not_label hp hza hzb hzc hzd hze,
+      move23PiTargetLocalCarrier_eq_zero_of_not_label hq hza hzb hzc hzd hze]
+
 private theorem move23PiLinearMap_image_face
     {a b c d e : Nat} (h : [a, b, c, d, e].Nodup)
     (v : Fin 4 → Nat) (w : Fin 4 → Move23BipyramidAmbient)
@@ -187,6 +433,22 @@ theorem ClosedTriangulationCore.move23PiLinearMap_site_common_image
       move23PiLinearMap s.a s.b s.c s.d s.e ''
         move23PiTargetLocalCarrier s.a s.b s.c s.d s.e := by
   apply move23PiLinearMap_source_target_common_image
+  exact hcore.move23Site_distinct_independent (s := s) hlegal.1 hlegal.2.2
+
+theorem ClosedTriangulationCore.move23PiLinearMap_injOn_site_sourceLocalCarrier
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (s : Move23Site) (hlegal : s.LegalIn K) :
+    Set.InjOn (move23PiLinearMap s.a s.b s.c s.d s.e)
+      (move23PiSourceLocalCarrier s.a s.b s.c s.d s.e) := by
+  apply move23PiLinearMap_injOn_sourceLocalCarrier
+  exact hcore.move23Site_distinct_independent (s := s) hlegal.1 hlegal.2.2
+
+theorem ClosedTriangulationCore.move23PiLinearMap_injOn_site_targetLocalCarrier
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (s : Move23Site) (hlegal : s.LegalIn K) :
+    Set.InjOn (move23PiLinearMap s.a s.b s.c s.d s.e)
+      (move23PiTargetLocalCarrier s.a s.b s.c s.d s.e) := by
+  apply move23PiLinearMap_injOn_targetLocalCarrier
   exact hcore.move23Site_distinct_independent (s := s) hlegal.1 hlegal.2.2
 
 end Poincare
