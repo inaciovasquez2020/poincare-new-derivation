@@ -241,4 +241,40 @@ theorem Move23Site.target_local_face_incidence_cases
     · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl
         (by simpa [Move23Site.newTet₂] using h)))))
 
+/-- Every nondegenerate face represented by a source tetrahedron is either a
+bipyramid boundary face or the old internal shared face. -/
+theorem Move23Site.source_local_face_incidence_cases
+    (s : Move23Site) (x y z : Nat)
+    (hxyz : [x, y, z].Nodup)
+    {tau : Tet}
+    (htau : tau ∈ [s.leftTet, s.rightTet])
+    (hcontains : tau.ContainsTriple x y z = true) :
+    SameTripleVertices x y z s.a s.b s.d ∨
+    SameTripleVertices x y z s.a s.b s.e ∨
+    SameTripleVertices x y z s.a s.c s.d ∨
+    SameTripleVertices x y z s.a s.c s.e ∨
+    SameTripleVertices x y z s.b s.c s.d ∨
+    SameTripleVertices x y z s.b s.c s.e ∨
+    SameTripleVertices x y z s.a s.b s.c := by
+  have hc := (Tet.containsTriple_eq_true tau x y z).1 hcontains
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at htau
+  rcases htau with rfl | rfl
+  · rcases Tet.distinct_triple_face_cases s.leftTet x y z hxyz hc.1 hc.2.1 hc.2.2 with
+      h | h | h | h
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl
+        (by simpa [Move23Site.leftTet] using h)))))
+    · exact Or.inr (Or.inr (Or.inl (by simpa [Move23Site.leftTet] using h)))
+    · exact Or.inl (by simpa [Move23Site.leftTet] using h)
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr
+        (by simpa [Move23Site.leftTet] using h))))))
+  · rcases Tet.distinct_triple_face_cases s.rightTet x y z hxyz hc.1 hc.2.1 hc.2.2 with
+      h | h | h | h
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl
+        (by simpa [Move23Site.rightTet] using h))))))
+    · exact Or.inr (Or.inr (Or.inr (Or.inl
+        (by simpa [Move23Site.rightTet] using h))))
+    · exact Or.inr (Or.inl (by simpa [Move23Site.rightTet] using h))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr
+        (by simpa [Move23Site.rightTet] using h))))))
+
 end Poincare
