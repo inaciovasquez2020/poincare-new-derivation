@@ -1,6 +1,7 @@
 import Poincare.CrossPolytopeBoundary
 import Poincare.FourSimplexSphere
 import Poincare.TriangulationTopologicalGeometricCompactness
+import Poincare.TriangulationTopologicalS3
 
 open Set
 namespace Poincare
@@ -308,5 +309,129 @@ noncomputable def crossPolytopeCarrierHomeomorphL1Sphere :
       right_inv := fun u ↦ Subtype.ext (crossPolytopeSignedCoordinates_inverse u.1) }
   continuous_toFun := continuous_crossPolytopeCarrierToL1
   continuous_invFun := continuous_crossPolytopeL1ToCarrier
+
+private noncomputable def crossPolytopeAmbientEquiv :
+    (Fin 4 → ℝ) ≃L[ℝ] ThreeSphereAmbient :=
+  (WithLp.linearEquiv 2 ℝ (Fin 4 → ℝ)).symm.toContinuousLinearEquiv
+
+private def crossPolytopeL1Norm (u : Fin 4 → ℝ) : ℝ :=
+  ∑ i, |u i|
+
+private theorem crossPolytopeL1Norm_smul (a : ℝ) (u : Fin 4 → ℝ) :
+    crossPolytopeL1Norm (a • u) = |a| * crossPolytopeL1Norm u := by
+  simp [crossPolytopeL1Norm, abs_mul, Finset.mul_sum]
+
+private theorem continuous_crossPolytopeL1Norm :
+    Continuous crossPolytopeL1Norm := by
+  unfold crossPolytopeL1Norm
+  fun_prop
+
+/-- Radial normalization identifies the four-dimensional L1 sphere with the
+genuine Euclidean unit three-sphere. -/
+noncomputable def crossPolytopeL1SphereHomeomorphThreeSphere :
+    ↥crossPolytopeL1Sphere ≃ₜ
+      ↥(Metric.sphere (0 : ThreeSphereAmbient) 1) := by
+  let E : (Fin 4 → ℝ) ≃L[ℝ] ThreeSphereAmbient := crossPolytopeAmbientEquiv
+  let toFun : ↥crossPolytopeL1Sphere →
+      ↥(Metric.sphere (0 : ThreeSphereAmbient) 1) := fun u =>
+    ⟨‖E u.1‖⁻¹ • E u.1, by
+      have hu0 : u.1 ≠ 0 := by
+        intro h
+        have := u.2
+        simp [crossPolytopeL1Sphere, h] at this
+      have hE0 : E u.1 ≠ 0 := E.injective.ne hu0
+      simp [Metric.mem_sphere, norm_smul, hE0]⟩
+  let invFun : ↥(Metric.sphere (0 : ThreeSphereAmbient) 1) →
+      ↥crossPolytopeL1Sphere := fun x =>
+    ⟨(crossPolytopeL1Norm (E.symm x.1))⁻¹ • E.symm x.1, by
+      have hx0 : x.1 ≠ 0 := by
+        intro h
+        have := x.2
+        simp [Metric.mem_sphere, h] at this
+      have hv0 : E.symm x.1 ≠ 0 := E.symm.injective.ne hx0
+      have hl1pos : 0 < crossPolytopeL1Norm (E.symm x.1) := by
+        rw [crossPolytopeL1Norm]
+        apply Finset.sum_pos'
+        · exact fun i _ => abs_nonneg _
+        · by_contra h
+          push_neg at h
+          apply hv0
+          funext i
+          exact abs_eq_zero.mp
+            (le_antisymm (h i (Finset.mem_univ i)) (abs_nonneg _))
+      change crossPolytopeL1Norm
+          ((crossPolytopeL1Norm (E.symm x.1))⁻¹ • E.symm x.1) = 1
+      rw [crossPolytopeL1Norm_smul, abs_of_pos (inv_pos.mpr hl1pos)]
+      exact inv_mul_cancel₀ hl1pos.ne'⟩
+  refine
+    { toEquiv :=
+        { toFun := toFun
+          invFun := invFun
+          left_inv := ?_
+          right_inv := ?_ }
+      continuous_toFun := ?_
+      continuous_invFun := ?_ }
+  · intro u
+    apply Subtype.ext
+    have hu0 : u.1 ≠ 0 := by
+      intro h
+      have := u.2
+      simp [crossPolytopeL1Sphere, h] at this
+    have hE0 : E u.1 ≠ 0 := E.injective.ne hu0
+    have hnpos : 0 < ‖E u.1‖ := norm_pos_iff.mpr hE0
+    have hu1 : crossPolytopeL1Norm u.1 = 1 := u.2
+    simp [toFun, invFun, E, crossPolytopeL1Norm_smul, hu1,
+      abs_of_pos hnpos, hnpos.ne', smul_smul]
+  · intro x
+    apply Subtype.ext
+    have hxnorm : ‖x.1‖ = 1 := by simpa [Metric.mem_sphere] using x.2
+    have hx0 : x.1 ≠ 0 := by
+      intro h
+      rw [h, norm_zero] at hxnorm
+      norm_num at hxnorm
+    have hv0 : E.symm x.1 ≠ 0 := E.symm.injective.ne hx0
+    have hl1pos : 0 < crossPolytopeL1Norm (E.symm x.1) := by
+      rw [crossPolytopeL1Norm]
+      apply Finset.sum_pos'
+      · exact fun i _ => abs_nonneg _
+      · by_contra h
+        push_neg at h
+        apply hv0
+        funext i
+        exact abs_eq_zero.mp
+          (le_antisymm (h i (Finset.mem_univ i)) (abs_nonneg _))
+    simp [toFun, invFun, E, crossPolytopeL1Norm_smul, abs_of_pos hl1pos,
+      hl1pos.ne', hxnorm, norm_smul, smul_smul]
+  · apply Continuous.subtype_mk
+    dsimp [toFun]
+    apply Continuous.smul
+    · apply Continuous.inv₀
+      · exact E.continuous.norm.comp continuous_subtype_val
+      · intro u hu
+        have hE0 : E u.1 ≠ 0 := E.injective.ne (by
+          intro h
+          have := u.2
+          simp [crossPolytopeL1Sphere, h] at this)
+        exact hE0 (norm_eq_zero.mp hu)
+    · exact E.continuous.comp continuous_subtype_val
+  · apply Continuous.subtype_mk
+    dsimp [invFun]
+    apply Continuous.smul
+    · apply Continuous.inv₀
+      · exact continuous_crossPolytopeL1Norm.comp
+          (E.symm.continuous.comp continuous_subtype_val)
+      · intro x hx
+        have hx0 : x.1 ≠ 0 := by
+          intro h
+          have := x.2
+          simp [h] at this
+        have hv0 : E.symm x.1 ≠ 0 := E.symm.injective.ne hx0
+        apply hv0
+        funext i
+        have hi : |E.symm x.1 i| = 0 := by
+          exact Finset.sum_eq_zero_iff_of_nonneg (fun j _ => abs_nonneg _)
+            |>.mp hx i (Finset.mem_univ i)
+        simpa using hi
+    · exact E.symm.continuous.comp continuous_subtype_val
 
 end Poincare
