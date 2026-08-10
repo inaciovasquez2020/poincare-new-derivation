@@ -60,6 +60,32 @@ theorem eraseFirstSameTet_sublist (target : Tet) (tets : List Tet) :
           cases he : sameTetVerticesBool x target <;> simp_all
         simpa [eraseFirstSameTet, hb'] using ih.cons_cons x
 
+/-- Erasing the first representative of a tetrahedron vertex set does not
+change the number of entries satisfying a vertex-set invariant predicate
+which is false on that vertex set.  No uniqueness hypothesis is needed. -/
+theorem eraseFirstSameTet_filter_length_eq_of_not
+    (p : Tet → Prop) [DecidablePred p]
+    (target : Tet) (tets : List Tet)
+    (hinvariant : ∀ τ σ, SameTetVertices τ σ → (p τ ↔ p σ))
+    (hnot : ¬ p target) :
+    ((eraseFirstSameTet target tets).filter p).length =
+      (tets.filter p).length := by
+  induction tets with
+  | nil => simp [eraseFirstSameTet]
+  | cons τ rest ih =>
+      by_cases hb : sameTetVerticesBool τ target = true
+      · have hsame : SameTetVertices τ target :=
+          (sameTetVerticesBool_eq_true_iff τ target).1 hb
+        have hτ : ¬ p τ := by
+          intro hp
+          exact hnot ((hinvariant τ target hsame).1 hp)
+        simp [eraseFirstSameTet, hb, hτ]
+      · have hbfalse : sameTetVerticesBool τ target = false := by
+          cases h : sameTetVerticesBool τ target <;> simp_all
+        rw [eraseFirstSameTet]
+        simp only [hbfalse]
+        by_cases hp : p τ <;> simp [hp, ih]
+
 theorem not_same_of_mem_eraseFirstSameTet_of_unique
     {tau target : Tet} {tets : List Tet}
     (hn : tets.Nodup)
