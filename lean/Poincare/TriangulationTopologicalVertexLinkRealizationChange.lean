@@ -299,4 +299,20 @@ noncomputable def vertexLinkPiRealizationHomeomorphEuclidean
     ((isHomeomorph_iff_continuous_bijective).2
       ⟨hfcont, hfinj, hfsurj⟩))
 
+/--
+The represented vertex link inside the global topology-bearing Pi-space is
+homeomorphic to the unit two-sphere whenever the existing tetrahedral-boundary
+certificate is supplied.  This composition keeps the Pi-space realization and
+the independently certified Euclidean realization distinct.
+-/
+noncomputable def vertexLinkPiRealizationHomeomorphUnitSphere
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hcert : VertexLinkTetrahedralBoundaryCertificate K hcore v) :
+    ↥(triangulationTopologicalVertexLink K v) ≃ₜ
+      ↥(Metric.sphere (0 : TetrahedronAmbient) 1) :=
+  (vertexLinkPiRealizationHomeomorphEuclidean K hcore v hcert).trans
+    (vertexLinkGeometricRealizationHomeomorphUnitSphere K hcore v hcert)
+
 end Poincare
