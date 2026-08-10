@@ -4,6 +4,7 @@ import Poincare.SupportDegreeFour
 import Poincare.VertexIncidenceCounting
 import Poincare.ComplementVertex
 import Poincare.VertexStarSaturation
+import Poincare.CommonNeighborComplement
 import Poincare.TriangulationPreAbstractComplex
 import Poincare.TriangulationGeometricComplex
 import Poincare.TriangulationTopologicalGeometricComplex
