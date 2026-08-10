@@ -5,7 +5,8 @@ import Poincare.TriangulationTopologicalGeometricCarrier
 namespace Poincare
 
 /-- The realization subtype carries the topology induced from the Pi-space. -/
-noncomputable instance triangulationTopologicalGeometricCarrier.instTopologicalSpace
+@[reducible] noncomputable instance
+    triangulationTopologicalGeometricCarrier.instTopologicalSpace
     (K : Triangulation) :
     TopologicalSpace (triangulationTopologicalGeometricCarrier K) := by
   unfold triangulationTopologicalGeometricCarrier
