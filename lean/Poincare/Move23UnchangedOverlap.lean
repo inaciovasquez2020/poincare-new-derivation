@@ -86,6 +86,38 @@ theorem eraseFirstSameTet_filter_length_eq_of_not
         simp only [hbfalse]
         by_cases hp : p τ <;> simp [hp, ih]
 
+/-- Erasing the first representative of a tetrahedron vertex set removes
+exactly one entry from a vertex-set invariant filtered count, provided that
+the vertex set is represented and satisfies the predicate.  As with the
+negative-erasure lemma, uniqueness is unnecessary. -/
+theorem eraseFirstSameTet_filter_length_add_one_eq
+    (p : Tet → Prop) [DecidablePred p]
+    (target : Tet) (tets : List Tet)
+    (hinvariant : ∀ τ σ, SameTetVertices τ σ → (p τ ↔ p σ))
+    (hrepresented : ∃ τ ∈ tets, SameTetVertices τ target)
+    (hpos : p target) :
+    ((eraseFirstSameTet target tets).filter p).length + 1 =
+      (tets.filter p).length := by
+  induction tets with
+  | nil => simp at hrepresented
+  | cons τ rest ih =>
+      by_cases hb : sameTetVerticesBool τ target = true
+      · have hsame : SameTetVertices τ target :=
+          (sameTetVerticesBool_eq_true_iff τ target).1 hb
+        have hτ : p τ := (hinvariant τ target hsame).2 hpos
+        simp [eraseFirstSameTet, hb, hτ]
+      · have hbfalse : sameTetVerticesBool τ target = false := by
+          cases h : sameTetVerticesBool τ target <;> simp_all
+        have hrest : ∃ σ ∈ rest, SameTetVertices σ target := by
+          rcases hrepresented with ⟨σ, hσ, hs⟩
+          rcases (by simpa using hσ : σ = τ ∨ σ ∈ rest) with heq | hσrest
+          · have hsame : SameTetVertices τ target := by simpa [heq] using hs
+            exact (hb ((sameTetVerticesBool_eq_true_iff τ target).2 hsame)).elim
+          · exact ⟨σ, hσrest, hs⟩
+        rw [eraseFirstSameTet]
+        simp only [hbfalse]
+        by_cases hτ : p τ <;> simp [hτ, ih hrest]
+
 theorem not_same_of_mem_eraseFirstSameTet_of_unique
     {tau target : Tet} {tets : List Tet}
     (hn : tets.Nodup)
