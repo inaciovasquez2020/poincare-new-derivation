@@ -37,6 +37,7 @@ import Poincare.Move23BipyramidGeometry
 import Poincare.Move23PiRealizationChange
 import Poincare.Move23ActualRegions
 import Poincare.Move23UnchangedOverlap
+import Poincare.Move23GlobalRegionDecomposition
 import Poincare.Descent
 import Poincare.Recognition
 import Poincare.LocalDelta
