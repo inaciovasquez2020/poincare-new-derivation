@@ -30,6 +30,73 @@ theorem ClosedTriangulationCore.eq_of_mem_of_sameTetVertices
         · exact ih ht hαt hβt hab
   exact aux hcore.2.1 hτK hρK hsame
 
+/-- A tetrahedron with the same finite vertex support as a nondegenerate
+tetrahedron is itself nondegenerate. -/
+theorem Tet.verts_nodup_of_sameTetVertices
+    {tau rho : Tet}
+    (htau : tau.verts.Nodup)
+    (hsame : SameTetVertices tau rho) :
+    rho.verts.Nodup := by
+  have hfin : tau.verts.toFinset = rho.verts.toFinset := by
+    ext v
+    simpa using hsame v
+  have hcard : rho.verts.toFinset.card = rho.verts.length := by
+    rw [← hfin, List.toFinset_card_of_nodup htau]
+    simp [Tet.verts]
+  have hmulti : (↑rho.verts : Multiset Nat).Nodup := by
+    apply (Multiset.toFinset_card_eq_card_iff_nodup).1
+    simpa using hcard
+  simpa using hmulti
+
+/-- In a closed triangulation, represented `2-3` source tetrahedra and absence
+of the proposed new edge force all five raw vertices to be distinct. -/
+theorem ClosedTriangulationCore.fiveVertexNodup_of_move23_rawData
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (a b c d e : Nat)
+    (hleft :
+      ∃ tauL : Tet,
+        tauL ∈ K.tets ∧
+        SameTetVertices tauL ⟨a, b, c, d⟩)
+    (hright :
+      ∃ tauR : Tet,
+        tauR ∈ K.tets ∧
+        SameTetVertices tauR ⟨a, b, c, e⟩)
+    (hnewEdge :
+      ∀ tau ∈ K.tets,
+        ¬ (d ∈ tau.verts ∧ e ∈ tau.verts)) :
+    [a, b, c, d, e].Nodup := by
+  rcases hleft with ⟨tauL, htauLK, hsameL⟩
+  rcases hright with ⟨tauR, htauRK, hsameR⟩
+  have hleftNodup : (⟨a, b, c, d⟩ : Tet).verts.Nodup :=
+    Tet.verts_nodup_of_sameTetVertices (hcore.1 tauL htauLK) hsameL
+  have hrightNodup : (⟨a, b, c, e⟩ : Tet).verts.Nodup :=
+    Tet.verts_nodup_of_sameTetVertices (hcore.1 tauR htauRK) hsameR
+  have hde : d ≠ e := by
+    intro h
+    subst e
+    have hdRaw : d ∈ (⟨a, b, c, d⟩ : Tet).verts := by
+      simp [Tet.verts]
+    have hdTau : d ∈ tauL.verts := (hsameL d).2 hdRaw
+    exact hnewEdge tauL htauLK ⟨hdTau, hdTau⟩
+  simp [Tet.verts] at hleftNodup hrightNodup ⊢
+  aesop
+
+/-- At a realized closed-core `2-3` site with absent new edge, the site's
+five-way distinctness follows without using its stored distinctness field. -/
+theorem ClosedTriangulationCore.move23Site_distinct_independent
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (s : Move23Site)
+    (hrealized : s.RealizedIn K)
+    (hnewEdge : s.NewEdgeAbsent K) :
+    [s.a, s.b, s.c, s.d, s.e].Nodup := by
+  exact hcore.fiveVertexNodup_of_move23_rawData
+    s.a s.b s.c s.d s.e
+    (by simpa [Move23Site.leftTet] using hrealized.1)
+    (by simpa [Move23Site.rightTet] using hrealized.2)
+    hnewEdge
+
 /-- The two source tetrahedra at a legal `2-3` site have different represented
 occurrences. -/
 theorem ClosedTriangulationCore.move23Site_source_tets_ne
@@ -65,7 +132,8 @@ theorem ClosedTriangulationCore.move23Site_simpleBistellarData
     s.newTet₀.verts.Nodup ∧
     s.newTet₁.verts.Nodup ∧
     s.newTet₂.verts.Nodup := by
-  have hfive := s.distinct
+  have hfive :=
+    hcore.move23Site_distinct_independent (s := s) hlegal.1 hlegal.2.2
   rcases hlegal.1 with ⟨⟨τL, hτLK, hτL⟩, ⟨τR, hτRK, hτR⟩⟩
   have hleftUnique :
       ∃! σ : Tet, σ ∈ K.tets ∧ SameTetVertices σ s.leftTet := by
