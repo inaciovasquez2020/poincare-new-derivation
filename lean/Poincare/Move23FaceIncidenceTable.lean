@@ -188,4 +188,57 @@ theorem Move23Site.boundaryFace_local_incidence_balance
   · simpa [filter_containsTriple_length_eq_of_sameTripleVertices _ h] using
       s.local_boundary_bce
 
+/-- Every nondegenerate face represented by one of the three target
+tetrahedra of a `2-3` move is either a bipyramid boundary face or one of the
+three new internal faces through the new edge. -/
+theorem Move23Site.target_local_face_incidence_cases
+    (s : Move23Site) (x y z : Nat)
+    (hxyz : [x, y, z].Nodup)
+    {tau : Tet}
+    (htau : tau ∈ [s.newTet₀, s.newTet₁, s.newTet₂])
+    (hcontains : tau.ContainsTriple x y z = true) :
+    SameTripleVertices x y z s.a s.b s.d ∨
+    SameTripleVertices x y z s.a s.b s.e ∨
+    SameTripleVertices x y z s.a s.c s.d ∨
+    SameTripleVertices x y z s.a s.c s.e ∨
+    SameTripleVertices x y z s.b s.c s.d ∨
+    SameTripleVertices x y z s.b s.c s.e ∨
+    SameTripleVertices x y z s.a s.d s.e ∨
+    SameTripleVertices x y z s.b s.d s.e ∨
+    SameTripleVertices x y z s.c s.d s.e := by
+  have hc := (Tet.containsTriple_eq_true tau x y z).1 hcontains
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at htau
+  rcases htau with htau | htau | htau
+  · subst tau
+    rcases Tet.distinct_triple_face_cases s.newTet₀ x y z hxyz hc.1 hc.2.1 hc.2.2 with
+      h | h | h | h
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr
+        (Or.inl (by simpa [Move23Site.newTet₀] using h))))))))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl
+        (by simpa [Move23Site.newTet₀] using h)))))))
+    · exact Or.inr (Or.inl (by simpa [Move23Site.newTet₀] using h))
+    · exact Or.inl (by simpa [Move23Site.newTet₀] using h)
+  · subst tau
+    rcases Tet.distinct_triple_face_cases s.newTet₁ x y z hxyz hc.1 hc.2.1 hc.2.2 with
+      h | h | h | h
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr
+        (Or.inr (by simpa [Move23Site.newTet₁] using h))))))))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl
+        (by simpa [Move23Site.newTet₁] using h)))))))
+    · exact Or.inr (Or.inr (Or.inr (Or.inl
+        (by simpa [Move23Site.newTet₁] using h))))
+    · exact Or.inr (Or.inr (Or.inl
+        (by simpa [Move23Site.newTet₁] using h)))
+  · subst tau
+    rcases Tet.distinct_triple_face_cases s.newTet₂ x y z hxyz hc.1 hc.2.1 hc.2.2 with
+      h | h | h | h
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr
+        (Or.inr (by simpa [Move23Site.newTet₂] using h))))))))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr
+        (Or.inl (by simpa [Move23Site.newTet₂] using h))))))))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl
+        (by simpa [Move23Site.newTet₂] using h))))))
+    · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl
+        (by simpa [Move23Site.newTet₂] using h)))))
+
 end Poincare
