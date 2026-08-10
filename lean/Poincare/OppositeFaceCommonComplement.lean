@@ -14,6 +14,9 @@ theorem ClosedTriangulationCore.exists_opposite_face_common_complement
     ∃ ρ012 ρ013 ρ023 ρ123 e,
       ρ012 ∈ K.tets ∧ ρ013 ∈ K.tets ∧ ρ023 ∈ K.tets ∧ ρ123 ∈ K.tets ∧
       e ∉ τ.verts ∧
+      τ.v0 ∈ ρ012.verts ∧ τ.v1 ∈ ρ012.verts ∧ τ.v2 ∈ ρ012.verts ∧
+      τ.v0 ∈ ρ013.verts ∧ τ.v1 ∈ ρ013.verts ∧ τ.v3 ∈ ρ013.verts ∧
+      τ.v0 ∈ ρ023.verts ∧ τ.v2 ∈ ρ023.verts ∧ τ.v3 ∈ ρ023.verts ∧
       e ∈ ρ012.verts ∧ e ∈ ρ013.verts ∧ e ∈ ρ023.verts ∧ e ∈ ρ123.verts ∧
       τ.v1 ∈ ρ123.verts ∧ τ.v2 ∈ ρ123.verts ∧ τ.v3 ∈ ρ123.verts ∧
       (∀ v ∈ ρ012.verts,
@@ -161,6 +164,8 @@ theorem ClosedTriangulationCore.exists_opposite_face_common_complement
       exact (hfunique v ⟨hv, hv1, hv2, hv3⟩).trans hfe
   exact ⟨ρ012, ρ013, ρ023, ρ123, e,
     hρ012K, hρ013K, hρ023K, hρ123K, heτ,
+    h0_012, h1_012, h2_012, h0_013, h1_013, h3_013,
+    h0_023, h2_023, h3_023,
     he012, he013, he023, he123, h1_123, h2_123, h3_123,
     h012Cover, h013Cover, h023Cover, h123Cover⟩
 
