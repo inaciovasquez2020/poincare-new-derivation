@@ -34,6 +34,7 @@ import Poincare.Moves
 import Poincare.Move23SimpleBistellarData
 import Poincare.Move23BipyramidCoefficients
 import Poincare.Move23BipyramidGeometry
+import Poincare.Move23PiRealizationChange
 import Poincare.Descent
 import Poincare.Recognition
 import Poincare.LocalDelta
