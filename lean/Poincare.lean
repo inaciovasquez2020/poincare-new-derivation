@@ -31,6 +31,7 @@ import Poincare.TriangulationTopologicalVertexLink
 import Poincare.TriangulationTopologicalVertexLinkRealizationChange
 import Poincare.TriangulationTopologicalVertexLinkSphere
 import Poincare.Moves
+import Poincare.Move23SimpleBistellarData
 import Poincare.Descent
 import Poincare.Recognition
 import Poincare.LocalDelta
