@@ -116,4 +116,37 @@ theorem vertexLinkPiToEuclideanLinearMap_image_realization
     exact (mem_triangulationTopologicalVertexLink_iff K v q).2
       ⟨sigma, hsigma, hq⟩
 
+/--
+The Pi-space realization of a represented vertex link is compact.  This is
+the weakest topological input needed to upgrade the already constructed
+realization-change bijection to a homeomorphism: the link is a finite union
+of convex hulls of finite vertex sets.
+-/
+theorem triangulationTopologicalVertexLink_isCompact
+    (K : Triangulation) (v : Nat) :
+    IsCompact (triangulationTopologicalVertexLink K v) := by
+  rw [triangulationTopologicalVertexLink]
+  let f : LinkTriangle → Set (Nat → ℝ) := fun sigma ↦
+    convexHull ℝ
+      (triangulationTopologicalGeometricVertex ''
+        (↑sigma.verts.toFinset : Set Nat))
+  change IsCompact (⋃ (sigma : LinkTriangle)
+    (_ : sigma ∈ vertexLinkTriangles K v), f sigma)
+  generalize vertexLinkTriangles K v = triangles
+  induction triangles with
+  | nil => simp
+  | cons sigma triangles ih =>
+      have hface : IsCompact (f sigma) :=
+        (Set.toFinite
+          (triangulationTopologicalGeometricVertex ''
+            (↑sigma.verts.toFinset : Set Nat))).isCompact_convexHull ℝ
+      have heq :
+          (⋃ (tau : LinkTriangle) (_ : tau ∈ sigma :: triangles), f tau) =
+            f sigma ∪
+              (⋃ (tau : LinkTriangle) (_ : tau ∈ triangles), f tau) := by
+        ext x
+        simp
+      rw [heq]
+      exact hface.union ih
+
 end Poincare
