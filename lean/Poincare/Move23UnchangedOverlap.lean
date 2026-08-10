@@ -186,7 +186,7 @@ theorem ClosedTriangulationCore.move23Site_unchangedTet_not_contains_newEdge
     ¬ (s.d ∈ tau.verts ∧ s.e ∈ tau.verts) :=
   hlegal.2.2 tau (hcore.move23Site_mem_unchangedTets s hlegal htau).1
 
-private theorem tetBody_inter_subset_of_common_support
+theorem tetBody_inter_subset_of_common_support
     (K : Triangulation) (tau rho sigma : Tet)
     (htau : tau ∈ K.tets) (hrho : rho ∈ K.tets)
     (hsub : tau.verts.toFinset ∩ rho.verts.toFinset ⊆ sigma.verts.toFinset) :
@@ -198,7 +198,7 @@ private theorem tetBody_inter_subset_of_common_support
     intro v hv
     exact hsub hv))
 
-private theorem common_support_subset_of_missing
+theorem common_support_subset_of_missing
     (tau rho sigma : Tet) (z : Nat) (hz : z ∉ tau.verts)
     (hface : ∀ v ∈ rho.verts, v = z ∨ v ∈ sigma.verts) :
     tau.verts.toFinset ∩ rho.verts.toFinset ⊆ sigma.verts.toFinset := by
