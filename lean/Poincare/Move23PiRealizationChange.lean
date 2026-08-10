@@ -78,6 +78,23 @@ noncomputable def move23PiTargetLocalCarrier (a b c d e : Nat) : Set (Nat → �
     move23PiTetrahedronBody (move23PiACDE a b c d e) ∪
       move23PiTetrahedronBody (move23PiBCDE a b c d e)
 
+theorem move23PiTetrahedronBody_isCompact (v : Fin 4 → Nat) :
+    IsCompact (move23PiTetrahedronBody v) := by
+  exact (Set.toFinite
+    (Set.range (fun i =>
+      triangulationTopologicalGeometricVertex (v i)))).isCompact_convexHull ℝ
+
+theorem move23PiSourceLocalCarrier_isCompact (a b c d e : Nat) :
+    IsCompact (move23PiSourceLocalCarrier a b c d e) := by
+  exact (move23PiTetrahedronBody_isCompact _).union
+    (move23PiTetrahedronBody_isCompact _)
+
+theorem move23PiTargetLocalCarrier_isCompact (a b c d e : Nat) :
+    IsCompact (move23PiTargetLocalCarrier a b c d e) := by
+  exact ((move23PiTetrahedronBody_isCompact _).union
+    (move23PiTetrahedronBody_isCompact _)).union
+      (move23PiTetrahedronBody_isCompact _)
+
 private theorem move23PiTetrahedronBody_coordinate_nonneg
     (v : Fin 4 → Nat) {p : Nat → ℝ} (hp : p ∈ move23PiTetrahedronBody v)
     (z : Nat) : 0 ≤ p z := by
@@ -424,6 +441,111 @@ theorem move23PiLinearMap_source_target_common_image {a b c d e : Nat}
   rw [move23PiLinearMap_image_sourceLocalCarrier h,
     move23PiLinearMap_image_targetLocalCarrier h,
     move23BipyramidSourceBody_eq_targetBody]
+
+noncomputable def move23PiSourceHomeomorphBipyramid
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup) :
+    ↥(move23PiSourceLocalCarrier a b c d e) ≃ₜ
+      ↥move23BipyramidSourceBody := by
+  let f : ↥(move23PiSourceLocalCarrier a b c d e) →
+      ↥move23BipyramidSourceBody := fun p ↦
+    ⟨move23PiLinearMap a b c d e p.1,
+      (move23PiLinearMap_image_sourceLocalCarrier h) ▸
+        Set.mem_image_of_mem _ p.2⟩
+  letI : CompactSpace ↥(move23PiSourceLocalCarrier a b c d e) :=
+    isCompact_iff_compactSpace.mp
+      (move23PiSourceLocalCarrier_isCompact a b c d e)
+  have hfcont : Continuous f :=
+    Continuous.subtype_mk
+      ((continuous_move23PiLinearMap a b c d e).comp continuous_subtype_val) _
+  have hfinj : Function.Injective f := by
+    intro p q hpq
+    apply Subtype.ext
+    exact move23PiLinearMap_injOn_sourceLocalCarrier h
+      p.2 q.2 (Subtype.ext_iff.mp hpq)
+  have hfsurj : Function.Surjective f := by
+    intro q
+    have hq : q.1 ∈ move23PiLinearMap a b c d e ''
+        move23PiSourceLocalCarrier a b c d e := by
+      rw [move23PiLinearMap_image_sourceLocalCarrier h]
+      exact q.2
+    obtain ⟨p, hp, hpq⟩ := hq
+    exact ⟨⟨p, hp⟩, Subtype.ext hpq⟩
+  exact IsHomeomorph.homeomorph f
+    ((isHomeomorph_iff_continuous_bijective).2 ⟨hfcont, hfinj, hfsurj⟩)
+
+noncomputable def move23PiTargetHomeomorphBipyramid
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup) :
+    ↥(move23PiTargetLocalCarrier a b c d e) ≃ₜ
+      ↥move23BipyramidSourceBody := by
+  let f : ↥(move23PiTargetLocalCarrier a b c d e) →
+      ↥move23BipyramidSourceBody := fun p ↦
+    ⟨move23PiLinearMap a b c d e p.1, by
+      rw [move23BipyramidSourceBody_eq_targetBody]
+      exact (move23PiLinearMap_image_targetLocalCarrier h) ▸
+        Set.mem_image_of_mem _ p.2⟩
+  letI : CompactSpace ↥(move23PiTargetLocalCarrier a b c d e) :=
+    isCompact_iff_compactSpace.mp
+      (move23PiTargetLocalCarrier_isCompact a b c d e)
+  have hfcont : Continuous f :=
+    Continuous.subtype_mk
+      ((continuous_move23PiLinearMap a b c d e).comp continuous_subtype_val) _
+  have hfinj : Function.Injective f := by
+    intro p q hpq
+    apply Subtype.ext
+    exact move23PiLinearMap_injOn_targetLocalCarrier h
+      p.2 q.2 (Subtype.ext_iff.mp hpq)
+  have hfsurj : Function.Surjective f := by
+    intro q
+    have hq : q.1 ∈ move23PiLinearMap a b c d e ''
+        move23PiTargetLocalCarrier a b c d e := by
+      rw [move23PiLinearMap_image_targetLocalCarrier h,
+        ← move23BipyramidSourceBody_eq_targetBody]
+      exact q.2
+    obtain ⟨p, hp, hpq⟩ := hq
+    exact ⟨⟨p, hp⟩, Subtype.ext hpq⟩
+  exact IsHomeomorph.homeomorph f
+    ((isHomeomorph_iff_continuous_bijective).2 ⟨hfcont, hfinj, hfsurj⟩)
+
+noncomputable def move23PiLocalHomeomorph
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup) :
+    ↥(move23PiSourceLocalCarrier a b c d e) ≃ₜ
+      ↥(move23PiTargetLocalCarrier a b c d e) :=
+  (move23PiSourceHomeomorphBipyramid h).trans
+    (move23PiTargetHomeomorphBipyramid h).symm
+
+theorem move23PiLocalHomeomorph_apply_eq_of_mem_target
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup)
+    (p : ↥(move23PiSourceLocalCarrier a b c d e))
+    (hpTarget : p.1 ∈ move23PiTargetLocalCarrier a b c d e) :
+    (move23PiLocalHomeomorph h p).1 = p.1 := by
+  let q : ↥(move23PiTargetLocalCarrier a b c d e) := ⟨p.1, hpTarget⟩
+  have heq : move23PiSourceHomeomorphBipyramid h p =
+      move23PiTargetHomeomorphBipyramid h q := by
+    apply Subtype.ext
+    rfl
+  have := congrArg (move23PiTargetHomeomorphBipyramid h).symm heq
+  simpa [move23PiLocalHomeomorph, q] using Subtype.ext_iff.mp this
+
+theorem move23PiLocalHomeomorph_symm_apply_eq_of_mem_source
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup)
+    (q : ↥(move23PiTargetLocalCarrier a b c d e))
+    (hqSource : q.1 ∈ move23PiSourceLocalCarrier a b c d e) :
+    ((move23PiLocalHomeomorph h).symm q).1 = q.1 := by
+  let p : ↥(move23PiSourceLocalCarrier a b c d e) := ⟨q.1, hqSource⟩
+  have heq : move23PiSourceHomeomorphBipyramid h p =
+      move23PiTargetHomeomorphBipyramid h q := by
+    apply Subtype.ext
+    rfl
+  have := congrArg (move23PiSourceHomeomorphBipyramid h).symm heq
+  simpa [move23PiLocalHomeomorph, p] using (Subtype.ext_iff.mp this).symm
+
+noncomputable def ClosedTriangulationCore.move23PiLocalHomeomorph_site
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (s : Move23Site) (hlegal : s.LegalIn K) :
+    ↥(move23PiSourceLocalCarrier s.a s.b s.c s.d s.e) ≃ₜ
+      ↥(move23PiTargetLocalCarrier s.a s.b s.c s.d s.e) :=
+  move23PiLocalHomeomorph
+    (hcore.move23Site_distinct_independent (s := s) hlegal.1 hlegal.2.2)
 
 theorem ClosedTriangulationCore.move23PiLinearMap_site_common_image
     {K : Triangulation} (hcore : ClosedTriangulationCore K)
