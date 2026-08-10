@@ -50,6 +50,7 @@ import Poincare.Move23GeometricCarrierHomeomorph
 import Poincare.Move23CanonicalReverse
 import Poincare.Move32CombinatorialFoundation
 import Poincare.Move32SurvivorClassification
+import Poincare.Move32ClosedCorePreservation
 import Poincare.Move32UnchangedOverlap
 import Poincare.Move32GeometricCarrierHomeomorph
 import Poincare.Move32DegreeSupportBalance
