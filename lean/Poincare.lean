@@ -53,6 +53,7 @@ import Poincare.Move32DegreeSupportBalance
 import Poincare.Move32DescentCounterexample
 import Poincare.CrossPolytopeBoundary
 import Poincare.CrossPolytopeBoundarySphere
+import Poincare.Move2332CrossPolytopeEscape
 import Poincare.Descent
 import Poincare.Recognition
 import Poincare.LocalDelta
