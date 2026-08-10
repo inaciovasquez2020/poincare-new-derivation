@@ -2,6 +2,7 @@ import Regge.Regge
 import Poincare.Triangulation
 import Poincare.TriangulationPreAbstractComplex
 import Poincare.TriangulationGeometricComplex
+import Poincare.TriangulationTopologicalGeometricComplex
 import Poincare.Moves
 import Poincare.Descent
 import Poincare.Recognition
