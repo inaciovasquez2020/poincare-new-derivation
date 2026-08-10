@@ -118,6 +118,57 @@ theorem eraseFirstSameTet_filter_length_add_one_eq
         simp only [hbfalse]
         by_cases hτ : p τ <;> simp [hτ, ih hrest]
 
+/-- At a legal `2-3` site, removing the two uniquely represented source
+tetrahedra splits any vertex-set invariant filtered count into the unchanged
+count and the explicit two-tetrahedron local count. -/
+theorem ClosedTriangulationCore.move23Site_unchanged_filter_length_add_local_eq
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (s : Move23Site) (hlegal : s.LegalIn K)
+    (p : Tet → Prop) [DecidablePred p]
+    (hinvariant : ∀ τ σ, SameTetVertices τ σ → (p τ ↔ p σ)) :
+    ((s.unchangedTets K).filter p).length +
+        ([s.leftTet, s.rightTet].filter p).length =
+      (K.tets.filter p).length := by
+  have hdata := hcore.move23Site_simpleBistellarData s hlegal
+  have hrightAfter :
+      ∃ τ ∈ eraseFirstSameTet s.leftTet K.tets,
+        SameTetVertices τ s.rightTet :=
+    s.rightMatch_survives_eraseLeft K.tets ⟨hdata.2.2.1.choose,
+      hdata.2.2.1.choose_spec.1.1, hdata.2.2.1.choose_spec.1.2⟩
+  by_cases hleft : p s.leftTet
+  · have eleft := eraseFirstSameTet_filter_length_add_one_eq
+      p s.leftTet K.tets hinvariant
+      ⟨hdata.2.1.choose, hdata.2.1.choose_spec.1.1,
+        hdata.2.1.choose_spec.1.2⟩ hleft
+    by_cases hright : p s.rightTet
+    · have eright := eraseFirstSameTet_filter_length_add_one_eq
+        p s.rightTet (eraseFirstSameTet s.leftTet K.tets)
+        hinvariant hrightAfter hright
+      simp only [Move23Site.unchangedTets]
+      simp [hleft, hright] at ⊢
+      omega
+    · have eright := eraseFirstSameTet_filter_length_eq_of_not
+        p s.rightTet (eraseFirstSameTet s.leftTet K.tets)
+        hinvariant hright
+      simp only [Move23Site.unchangedTets]
+      simp [hleft, hright] at ⊢
+      omega
+  · have eleft := eraseFirstSameTet_filter_length_eq_of_not
+      p s.leftTet K.tets hinvariant hleft
+    by_cases hright : p s.rightTet
+    · have eright := eraseFirstSameTet_filter_length_add_one_eq
+        p s.rightTet (eraseFirstSameTet s.leftTet K.tets)
+        hinvariant hrightAfter hright
+      simp only [Move23Site.unchangedTets]
+      simp [hleft, hright] at ⊢
+      omega
+    · have eright := eraseFirstSameTet_filter_length_eq_of_not
+        p s.rightTet (eraseFirstSameTet s.leftTet K.tets)
+        hinvariant hright
+      simp only [Move23Site.unchangedTets]
+      simp [hleft, hright] at ⊢
+      omega
+
 theorem not_same_of_mem_eraseFirstSameTet_of_unique
     {tau target : Tet} {tets : List Tet}
     (hn : tets.Nodup)
