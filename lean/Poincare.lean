@@ -44,6 +44,7 @@ import Poincare.Move32CombinatorialFoundation
 import Poincare.Move32SurvivorClassification
 import Poincare.Move32UnchangedOverlap
 import Poincare.Move32GeometricCarrierHomeomorph
+import Poincare.Move32DegreeSupportBalance
 import Poincare.Descent
 import Poincare.Recognition
 import Poincare.LocalDelta
