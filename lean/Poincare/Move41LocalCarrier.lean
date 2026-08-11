@@ -46,4 +46,16 @@ theorem move41PiSourceLocalCarrier_nonneg
   · exact move23PiTargetLocalCarrier_nonneg (Or.inl (Or.inr hp)) z
   · exact move23PiTargetLocalCarrier_nonneg (Or.inr hp) z
 
+/-- The barycentric coordinates of every point in the genuine `4 → 1`
+source region sum to one over its five labels. -/
+theorem move41PiSourceLocalCarrier_sum
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup)
+    {p : Nat → ℝ} (hp : p ∈ move41PiSourceLocalCarrier a b c d e) :
+    p a + p b + p c + p d + p e = 1 := by
+  rcases hp with ((hp | hp) | hp) | hp
+  · exact move23PiSourceLocalCarrier_sum h (Or.inr hp)
+  · exact move23PiTargetLocalCarrier_sum h (Or.inl (Or.inl hp))
+  · exact move23PiTargetLocalCarrier_sum h (Or.inl (Or.inr hp))
+  · exact move23PiTargetLocalCarrier_sum h (Or.inr hp)
+
 end Poincare
