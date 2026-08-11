@@ -2,6 +2,8 @@ import Poincare.SphereNormalizedChord
 import Poincare.SphereFiniteEscape
 import Mathlib.Topology.Subpath
 import Mathlib.Topology.UniformSpace.Path
+import Mathlib.Geometry.Manifold.Instances.Sphere
+import Mathlib.Analysis.Convex.Contractible
 
 namespace Poincare
 
@@ -372,5 +374,22 @@ theorem exists_sphere_point_not_mem_normalizedChordPolygon
       (p (v i.succ) : EuclideanSpace ℝ (Fin 3))} :
       Set (EuclideanSpace ℝ (Fin 3)))).neg_mem hneg
   exact havoid i (Finset.mem_univ i) (by simpa using ha_mem)
+
+/-- Removing one point from a unit sphere in a real inner product space leaves a
+contractible space.  Stereographic projection identifies the complement of the
+point with the full orthogonal-complement vector space. -/
+theorem unitSphere_punctured_contractible
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (a : Metric.sphere (0 : E) 1) :
+    ContractibleSpace {z : Metric.sphere (0 : E) 1 // z ≠ a} := by
+  let ha : ‖(a : E)‖ = 1 := by
+    simpa [Metric.mem_sphere] using a.property
+  haveI : ContractibleSpace (stereographic ha).target := by
+    rw [stereographic_target]
+    exact convex_univ.contractibleSpace Set.univ_nonempty
+  haveI : ContractibleSpace (stereographic ha).source :=
+    (stereographic ha).toHomeomorphSourceTarget.contractibleSpace
+  simpa [stereographic_source] using
+    (inferInstance : ContractibleSpace (stereographic ha).source)
 
 end Poincare
