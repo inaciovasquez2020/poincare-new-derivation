@@ -1,4 +1,4 @@
-import Poincare.Move23UnchangedOverlap
+import Poincare.Move32SurvivorClassification
 
 namespace Poincare
 
@@ -85,5 +85,71 @@ theorem Move41Site.same_target_iff_eq_of_mem_replace
       exact (h.targetAbsent τ horiginal hsame).elim
   · rintro rfl
     exact fun _ => Iff.rfl
+
+/-- A genuine `4 → 1` replacement removes its center from the vertex
+support. -/
+theorem Move41Site.center_not_mem_vertexSupport_replace
+    {s : Move41Site} {K : Triangulation} (h : s.LegalIn K) :
+    s.e ∉ vertexSupport (s.replace K) := by
+  rw [mem_vertexSupport_iff]
+  intro he
+  simp only [allVerts, List.mem_flatMap] at he
+  rcases he with ⟨τ, hτ, heτ⟩
+  simp only [Move41Site.replace, List.mem_cons] at hτ
+  rcases hτ with rfl | hunchanged
+  · simp [Move41Site.targetTet, Tet.verts] at heτ
+    have hd := s.distinct
+    simp at hd
+    aesop
+  · have hsource :=
+      (Move41Site.mem_source_iff_of_center_mem h
+        (mem_of_mem_eraseFirstSameTet
+          (mem_of_mem_eraseFirstSameTet
+            (mem_of_mem_eraseFirstSameTet
+              (mem_of_mem_eraseFirstSameTet hunchanged))))).1 heτ
+    rcases hsource with ⟨source, hsource, hsame⟩
+    have sourceExists : ∃ ρ ∈ K.tets, SameTetVertices ρ source := by
+      have hlength := h.sourceOccursExactlyOnce source hsource
+      have hne : K.tets.filter (fun σ => sameTetVerticesBool σ source) ≠ [] := by
+        intro hempty
+        simp [hempty] at hlength
+      rcases List.exists_mem_of_ne_nil _ hne with ⟨ρ, hρ⟩
+      exact ⟨ρ, by simpa [sameTetVerticesBool_eq_true_iff] using hρ⟩
+    have sourceUnique := h.closedCore.existsUnique_sameTetVertices sourceExists
+    have hnK : K.tets.Nodup := by
+      exact h.closedCore.2.1.imp (fun hnot heq =>
+        hnot (by subst heq; exact sameTetVertices_refl _))
+    have hp := h.sourcePairwiseDistinct
+    simp [Move41Site.sourceTets] at hp
+    simp [Move41Site.sourceTets] at hsource
+    rcases hsource with rfl | rfl | rfl | rfl
+    · exact (not_same_of_mem_eraseFirstSameTet_of_unique hnK sourceUnique
+        (mem_of_mem_eraseFirstSameTet
+          (mem_of_mem_eraseFirstSameTet
+            (mem_of_mem_eraseFirstSameTet hunchanged)))) hsame
+    · have hu := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same
+          sourceUnique (fun hsame => hp.1.1 (sameTetVertices_symm hsame))
+      have hafter := mem_of_mem_eraseFirstSameTet
+        (mem_of_mem_eraseFirstSameTet hunchanged)
+      exact (not_same_of_mem_eraseFirstSameTet_of_unique
+        (hnK.sublist (eraseFirstSameTet_sublist _ _)) hu hafter) hsame
+    · have hu := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same
+          sourceUnique (fun hsame => hp.1.2.1 (sameTetVertices_symm hsame))
+      have hu' := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same
+          hu (fun hsame => hp.2.1.1 (sameTetVertices_symm hsame))
+      have hafter := mem_of_mem_eraseFirstSameTet hunchanged
+      exact (not_same_of_mem_eraseFirstSameTet_of_unique
+        ((hnK.sublist (eraseFirstSameTet_sublist _ _)).sublist
+          (eraseFirstSameTet_sublist _ _)) hu' hafter) hsame
+    · have hu := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same
+          sourceUnique (fun hsame => hp.1.2.2 (sameTetVertices_symm hsame))
+      have hu' := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same
+          hu (fun hsame => hp.2.1.2 (sameTetVertices_symm hsame))
+      have hu'' := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same
+          hu' (fun hsame => hp.2.2 (sameTetVertices_symm hsame))
+      exact (not_same_of_mem_eraseFirstSameTet_of_unique
+        (((hnK.sublist (eraseFirstSameTet_sublist _ _)).sublist
+          (eraseFirstSameTet_sublist _ _)).sublist
+            (eraseFirstSameTet_sublist _ _)) hu'' hunchanged) hsame
 
 end Poincare
