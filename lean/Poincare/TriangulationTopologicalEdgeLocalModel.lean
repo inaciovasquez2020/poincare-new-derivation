@@ -255,4 +255,37 @@ theorem triangulationTopologicalRadialLink_openEdge_coordinates_iff
   simp only [mul_one, mul_zero, add_zero, zero_add]
   rw [mul_pos_iff_of_pos_left hfactor]
 
+/-- Set-level form of the open-edge radial-coordinate calculation.  The
+preimage of the isolated geometric open-edge neighborhood under the radial
+product homeomorphism is exactly the product locus where both the radial
+parameter and the transverse `x` coordinate are positive. -/
+theorem triangulationTopologicalPuncturedVertexStarHomeomorphRadialLink_preimage_openEdge
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    {v x : Nat} (hrep : VertexLinkVertexRepresented K v x) :
+    (triangulationTopologicalPuncturedVertexStarHomeomorphRadialLink
+        K hcore v) ⁻¹'
+      {p | 0 < p.1 v ∧ 0 < p.1 x} =
+      {tq | 0 < tq.1.1 ∧ 0 < tq.2.1 x} := by
+  ext tq
+  exact triangulationTopologicalRadialLink_openEdge_coordinates_iff
+    K hcore hrep tq
+
+/-- The exact finite radial local model carried by the isolated open-edge
+neighborhood.  This packages the preceding set equality as a homeomorphism of
+subspaces, so subsequent component or homology arguments can work entirely in
+the product/transverse coordinates. -/
+noncomputable def triangulationTopologicalOpenEdgeNeighborhoodHomeomorphRadialLink
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    {v x : Nat} (hrep : VertexLinkVertexRepresented K v x) :
+    {tq : ↑(Set.Ico (0 : ℝ) 1) ×
+        ↑(triangulationTopologicalVertexLink K v) |
+      0 < tq.1.1 ∧ 0 < tq.2.1 x} ≃ₜ
+    {p : ↑{q : Nat → ℝ |
+        q ∈ triangulationTopologicalVertexStar K v ∧ q v < 1} |
+      0 < p.1 v ∧ 0 < p.1 x} :=
+  (triangulationTopologicalPuncturedVertexStarHomeomorphRadialLink
+      K hcore v).subtype fun tq ↦
+    triangulationTopologicalRadialLink_openEdge_coordinates_iff
+      K hcore hrep tq |>.symm
+
 end Poincare
