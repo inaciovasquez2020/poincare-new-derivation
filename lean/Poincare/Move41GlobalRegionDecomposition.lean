@@ -219,4 +219,14 @@ theorem ClosedTriangulationCore.move41Site_radialMap_eq_self_of_mem_unchanged
   exact triangulationTopologicalTetBody_coordinate_eq_zero_of_not_mem tau s.e
     (hcore.move41Site_unchangedTet_center_not_mem s hlegal htau) hpTau
 
+/-- The unchanged carrier embeds in the source realization of a legal
+`4 → 1` move. -/
+theorem ClosedTriangulationCore.move41Site_unchangedCarrier_subset_source_space
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (s : Move41Site) (hlegal : s.LegalIn K) :
+    s.unchangedGeometricCarrier K ⊆
+      (triangulationTopologicalGeometricComplex K).space := by
+  rw [(hcore.move41Site_global_region_decomposition s hlegal).1]
+  exact subset_union_right
+
 end Poincare
