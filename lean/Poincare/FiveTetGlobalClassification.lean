@@ -3,6 +3,39 @@ import Poincare.TriangulationTopologicalGeometricConnectedness
 
 namespace Poincare
 
+/-- In a connected represented tetrahedron-overlap graph, a nonempty family
+of represented tetrahedra that is closed under shared-vertex adjacency
+contains every represented tetrahedron. -/
+theorem TetrahedronVertexOverlapConnected.all_of_overlap_closed
+    {K : Triangulation}
+    (hconn : TetrahedronVertexOverlapConnected K)
+    (C : Tet → Prop)
+    {tau₀ : Tet}
+    (htau₀K : tau₀ ∈ K.tets)
+    (hC₀ : C tau₀)
+    (hclosed : ∀ tau rho,
+      tau ∈ K.tets →
+      rho ∈ K.tets →
+      (tau.verts.toFinset ∩ rho.verts.toFinset).Nonempty →
+      C tau → C rho) :
+    ∀ rho ∈ K.tets, C rho := by
+  intro rho hrhoK
+  have hpath := hconn.2 tau₀ htau₀K rho hrhoK
+  apply Relation.ReflTransGen.head_induction_on
+    (motive := fun tau _ ↦ tau ∈ K.tets → C tau → C rho)
+    hpath
+  · intro _ hC
+    exact hC
+  · intro tau sigma hstep hrest ih htauK hCtau
+    have hsigmaK : sigma ∈ K.tets := by
+      rcases hrest.cases_head with h | ⟨upsilon, hsigmaUpsilon, _⟩
+      · simpa [h] using hrhoK
+      · exact hsigmaUpsilon.2
+    exact ih hsigmaK
+      (hclosed tau sigma htauK hsigmaK hstep.1 hCtau)
+  · exact htau₀K
+  · exact hC₀
+
 /-- Under connectedness of the represented tetrahedron overlap graph, the
 five-tetrahedron cluster forced by zero defect contains every represented
 tetrahedron. -/
