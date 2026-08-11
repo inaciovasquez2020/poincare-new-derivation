@@ -538,4 +538,336 @@ theorem exists_edgeRadial_circleScale
   · exact (half_lt_self hm).trans_le
       ((min_le_right _ _).trans (min_le_right _ _))
 
+private theorem edgeRadial_lineMap_mem
+    (K : Triangulation) (v x : Nat)
+    (q : ↑(triangulationTopologicalPuncturedVertexLinkStar K v x))
+    {c : ℝ} (hc0 : 0 ≤ c) (hc1 : c ≤ 1) :
+    (AffineMap.lineMap (triangulationTopologicalGeometricVertex x) q.1) c ∈
+      triangulationTopologicalVertexLinkStar K v x := by
+  obtain ⟨sigma, hsigma, hqsigma⟩ :=
+    (mem_triangulationTopologicalVertexLinkStar_iff K v x q.1).1 q.2.1
+  have hxverts : x ∈ sigma.verts :=
+    (mem_vertexLinkStarTriangles_iff K v x sigma).1 hsigma |>.2
+  have hxbody : triangulationTopologicalGeometricVertex x ∈
+      convexHull ℝ
+        (triangulationTopologicalGeometricVertex ''
+          (↑sigma.verts.toFinset : Set Nat)) := by
+    apply subset_convexHull
+    exact ⟨x, List.mem_toFinset.mpr hxverts, rfl⟩
+  apply (mem_triangulationTopologicalVertexLinkStar_iff K v x _).2
+  exact ⟨sigma, hsigma,
+    (convex_convexHull ℝ _).lineMap_mem hxbody hqsigma ⟨hc0, hc1⟩⟩
+
+/-- The transverse point of the explicit small circle.  On each closed
+semicircle it follows the radial segment from the apex into the corresponding
+clopen side. -/
+noncomputable def edgeRadialCircleTransversePoint
+    (K : Triangulation) (v x : Nat)
+    (qA qB : ↑(triangulationTopologicalPuncturedVertexLinkStar K v x))
+    (δ : ℝ) (hδ0 : 0 < δ)
+    (hδA : δ < 1 - qA.1 x) (hδB : δ < 1 - qB.1 x)
+    (z : Circle) : ↑(triangulationTopologicalVertexLinkStar K v x) := by
+  let rA := 1 - qA.1 x
+  let rB := 1 - qB.1 x
+  let c : ℝ := if 0 ≤ z.1.im then δ * z.1.im / rA else δ * (-z.1.im) / rB
+  let q := if 0 ≤ z.1.im then qA else qB
+  refine ⟨(AffineMap.lineMap
+    (triangulationTopologicalGeometricVertex x) q.1) c, ?_⟩
+  apply edgeRadial_lineMap_mem K v x q
+  · dsimp [c, q, rA, rB]
+    split_ifs with hz
+    · exact div_nonneg (mul_nonneg hδ0.le hz) (sub_nonneg.mpr
+        (triangulationTopologicalVertexLinkStar_apex_coordinate K v x qA.2.1).2.1)
+    · exact div_nonneg (mul_nonneg hδ0.le (neg_nonneg.mpr (le_of_not_ge hz)))
+        (sub_nonneg.mpr
+          (triangulationTopologicalVertexLinkStar_apex_coordinate K v x qB.2.1).2.1)
+  · have him : |z.1.im| ≤ 1 := by
+      calc |z.1.im| ≤ ‖(z.1 : ℂ)‖ := Complex.abs_im_le_norm _
+        _ = 1 := Circle.norm_coe z
+    dsimp [c, q, rA, rB]
+    split_ifs with hz
+    · have hrA : 0 < 1 - qA.1 x := lt_trans hδ0 hδA
+      apply (div_le_one hrA).2
+      nlinarith [le_trans (le_abs_self z.1.im) him]
+    · have hrB : 0 < 1 - qB.1 x := lt_trans hδ0 hδB
+      apply (div_le_one hrB).2
+      nlinarith [le_trans (neg_le_abs z.1.im) him]
+
+/-- The explicit inclusion of the unit circle in the deleted open-edge radial
+model, at a scale smaller than both chosen transverse radial lengths. -/
+noncomputable def edgeRadialCircleInclusion
+    (K : Triangulation) {v x : Nat}
+    (hrep : VertexLinkVertexRepresented K v x)
+    (qA qB : ↑(triangulationTopologicalPuncturedVertexLinkStar K v x))
+    (δ : ℝ) (hδ0 : 0 < δ) (hδquarter : δ < (4 : ℝ)⁻¹)
+    (hδA : δ < 1 - qA.1 x) (hδB : δ < 1 - qB.1 x) :
+    Circle → ↑({triangulationTopologicalOpenEdgeRadialMidpoint K hrep}ᶜ : Set
+      {tq : ↑(Set.Ico (0 : ℝ) 1) ×
+          ↑(triangulationTopologicalVertexLink K v) |
+        0 < tq.1.1 ∧ 0 < tq.2.1 x}) := fun z ↦ by
+  let t : ℝ := (2 : ℝ)⁻¹ + δ * z.1.re
+  let q := edgeRadialCircleTransversePoint K v x qA qB δ hδ0 hδA hδB z
+  have hre : |z.1.re| ≤ 1 := by
+    calc |z.1.re| ≤ ‖(z.1 : ℂ)‖ := Complex.abs_re_le_norm _
+      _ = 1 := Circle.norm_coe z
+  have him : |z.1.im| ≤ 1 := by
+    calc |z.1.im| ≤ ‖(z.1 : ℂ)‖ := Complex.abs_im_le_norm _
+      _ = 1 := Circle.norm_coe z
+  have ht0 : 0 < t := by dsimp [t]; nlinarith [neg_abs_le z.1.re, hδquarter]
+  have ht1 : t < 1 := by dsimp [t]; nlinarith [le_abs_self z.1.re, hδquarter]
+  have hqx : 0 < q.1 x := by
+    dsimp [q, edgeRadialCircleTransversePoint]
+    simp only [AffineMap.lineMap_apply]
+    split_ifs with hz
+    · have hqAx :=
+        (triangulationTopologicalVertexLinkStar_apex_coordinate K v x qA.2.1).1
+      have hrA : 0 < 1 - qA.1 x := lt_trans hδ0 hδA
+      have hc : δ * z.1.im / (1 - qA.1 x) < 1 :=
+        (div_lt_one hrA).2 (by nlinarith [le_trans (le_abs_self z.1.im) him])
+      simp [triangulationTopologicalGeometricVertex]
+      rw [show δ * z.1.im / (1 - qA.1 x) * (qA.1 x - 1) + 1 =
+        (1 - δ * z.1.im / (1 - qA.1 x)) * (1 - qA.1 x) + qA.1 x by ring]
+      have hp : 0 < (1 - δ * z.1.im / (1 - qA.1 x)) * (1 - qA.1 x) :=
+        mul_pos (sub_pos.mpr hc) hrA
+      linarith
+    · have hqBx :=
+        (triangulationTopologicalVertexLinkStar_apex_coordinate K v x qB.2.1).1
+      have hrB : 0 < 1 - qB.1 x := lt_trans hδ0 hδB
+      have hc : δ * (-z.1.im) / (1 - qB.1 x) < 1 :=
+        (div_lt_one hrB).2 (by nlinarith [le_trans (neg_le_abs z.1.im) him])
+      simp [triangulationTopologicalGeometricVertex]
+      rw [show -(δ * z.1.im) / (1 - qB.1 x) * (qB.1 x - 1) + 1 =
+        (1 - δ * (-z.1.im) / (1 - qB.1 x)) * (1 - qB.1 x) + qB.1 x by ring]
+      have hp : 0 < (1 - δ * (-z.1.im) / (1 - qB.1 x)) * (1 - qB.1 x) :=
+        mul_pos (sub_pos.mpr hc) hrB
+      linarith
+  refine ⟨⟨⟨⟨t, ht0.le, ht1⟩, ⟨q.1, ?_⟩⟩, ht0, hqx⟩, ?_⟩
+  · exact triangulationTopologicalVertexLinkStar_subset_vertexLink K v x q.2
+  · intro heq
+    simp only [Set.mem_singleton_iff] at heq
+    have ht := congrArg (fun p ↦ p.1.1.1) heq
+    dsimp [t, triangulationTopologicalOpenEdgeRadialMidpoint] at ht
+    have hzre : z.1.re = 0 := by nlinarith
+    have hq := congrArg (fun p ↦ p.1.2.1 x) heq
+    dsimp [q, edgeRadialCircleTransversePoint] at hq
+    have hzim : z.1.im = 0 := by
+      split_ifs at hq with hz
+      · have hrA : 0 < 1 - qA.1 x := lt_trans hδ0 hδA
+        simp [AffineMap.lineMap_apply, triangulationTopologicalGeometricVertex,
+          triangulationTopologicalOpenEdgeRadialMidpoint] at hq
+        field_simp at hq
+        rcases hq with ((h | h) | h) | h
+        · exact False.elim ((ne_of_gt hδ0) h)
+        · exact h
+        · exact False.elim ((ne_of_gt hrA) h)
+        · nlinarith
+      · have hrB : 0 < 1 - qB.1 x := lt_trans hδ0 hδB
+        simp [AffineMap.lineMap_apply, triangulationTopologicalGeometricVertex,
+          triangulationTopologicalOpenEdgeRadialMidpoint] at hq
+        field_simp at hq
+        rcases hq with ((h | h) | h) | h
+        · exact False.elim ((ne_of_gt hδ0) h)
+        · exact h
+        · exact False.elim ((ne_of_gt hrB) h)
+        · nlinarith
+    have hnorm := Circle.normSq_coe z
+    simp [Complex.normSq_apply, hzre, hzim] at hnorm
+
+theorem continuous_edgeRadialCircleTransversePoint
+    (K : Triangulation) (v x : Nat)
+    (qA qB : ↑(triangulationTopologicalPuncturedVertexLinkStar K v x))
+    (δ : ℝ) (hδ0 : 0 < δ)
+    (hδA : δ < 1 - qA.1 x) (hδB : δ < 1 - qB.1 x) :
+    Continuous (edgeRadialCircleTransversePoint K v x qA qB δ hδ0 hδA hδB) := by
+  apply Continuous.subtype_mk
+  dsimp only [edgeRadialCircleTransversePoint]
+  have hc : Continuous (fun z : Circle ↦ if 0 ≤ z.1.im then
+    (AffineMap.lineMap (triangulationTopologicalGeometricVertex x) qA.1)
+      (δ * z.1.im / (1 - qA.1 x)) else
+    (AffineMap.lineMap (triangulationTopologicalGeometricVertex x) qB.1)
+      (δ * (-z.1.im) / (1 - qB.1 x))) := by
+    apply continuous_if_le continuous_const
+      (Complex.continuous_im.comp continuous_subtype_val)
+    · fun_prop
+    · fun_prop
+    · intro z hz
+      change 0 = z.1.im at hz
+      rw [← hz]
+      simp [AffineMap.lineMap_apply]
+  exact hc.congr fun z ↦ by split_ifs <;> rfl
+
+theorem continuous_edgeRadialCircleInclusion
+    (K : Triangulation) {v x : Nat}
+    (hrep : VertexLinkVertexRepresented K v x)
+    (qA qB : ↑(triangulationTopologicalPuncturedVertexLinkStar K v x))
+    (δ : ℝ) (hδ0 : 0 < δ) (hδquarter : δ < (4 : ℝ)⁻¹)
+    (hδA : δ < 1 - qA.1 x) (hδB : δ < 1 - qB.1 x) :
+    Continuous (edgeRadialCircleInclusion K hrep qA qB δ hδ0 hδquarter hδA hδB) := by
+  apply Continuous.subtype_mk
+  apply Continuous.subtype_mk
+  apply Continuous.prodMk
+  · apply Continuous.subtype_mk
+    fun_prop
+  · apply Continuous.subtype_mk
+    exact continuous_subtype_val.comp
+      (continuous_edgeRadialCircleTransversePoint K v x qA qB δ hδ0 hδA hδB)
+
+theorem edgeRadialCircleTransversePoint_signedCoordinate
+    (K : Triangulation) (v x : Nat)
+    (A B : Set ↑(triangulationTopologicalPuncturedVertexLinkStar K v x))
+    (hAcl : IsClopen A) (hBcl : IsClopen B)
+    (qA qB : ↑(triangulationTopologicalPuncturedVertexLinkStar K v x))
+    (hqA : qA ∈ A) (hqB : qB ∈ B)
+    (g : ↑(triangulationTopologicalVertexLinkStar K v x) → ℝ)
+    (habs : ∀ q, |g q| = 1 - q.1 x)
+    (hgA : ∀ q (hq : q.1 ≠ triangulationTopologicalGeometricVertex x),
+      (⟨q.1, q.2, hq⟩ :
+        ↑(triangulationTopologicalPuncturedVertexLinkStar K v x)) ∈ A →
+        g q = 1 - q.1 x)
+    (hgB : ∀ q (hq : q.1 ≠ triangulationTopologicalGeometricVertex x),
+      (⟨q.1, q.2, hq⟩ :
+        ↑(triangulationTopologicalPuncturedVertexLinkStar K v x)) ∈ B →
+        g q = -(1 - q.1 x))
+    (δ : ℝ) (hδ0 : 0 < δ)
+    (hδA : δ < 1 - qA.1 x) (hδB : δ < 1 - qB.1 x)
+    (z : Circle) :
+    g (edgeRadialCircleTransversePoint K v x qA qB δ hδ0 hδA hδB z) =
+      δ * z.1.im := by
+  by_cases hz0 : z.1.im = 0
+  · have hcoord :
+        (edgeRadialCircleTransversePoint K v x qA qB δ hδ0 hδA hδB z).1 x = 1 := by
+      dsimp [edgeRadialCircleTransversePoint]
+      simp [hz0, AffineMap.lineMap_apply,
+        triangulationTopologicalGeometricVertex]
+    have hgabs := habs
+      (edgeRadialCircleTransversePoint K v x qA qB δ hδ0 hδA hδB z)
+    rw [hcoord] at hgabs
+    simp only [sub_self, abs_eq_zero] at hgabs
+    simp [hz0, hgabs]
+  · by_cases hz : 0 < z.1.im
+    · have hrA : 0 < 1 - qA.1 x := lt_trans hδ0 hδA
+      let c := δ * z.1.im / (1 - qA.1 x)
+      have hc0 : 0 < c := div_pos (mul_pos hδ0 hz) hrA
+      have him : z.1.im ≤ 1 := by
+        calc z.1.im ≤ |z.1.im| := le_abs_self _
+          _ ≤ ‖(z.1 : ℂ)‖ := Complex.abs_im_le_norm _
+          _ = 1 := Circle.norm_coe z
+      have hc1 : c ≤ 1 := by
+        apply (div_le_one hrA).2
+        nlinarith
+      obtain ⟨hp, hpA⟩ :=
+        IsClopen.vertexLinkStar_radial_mem K v x hAcl qA hqA hc0 hc1
+      let p := (AffineMap.lineMap
+        (triangulationTopologicalGeometricVertex x) qA.1) c
+      have hpne : p ≠ triangulationTopologicalGeometricVertex x := by
+        intro heq
+        have heqx := congrFun heq x
+        have hrad := triangulationTopologicalVertexLinkStar_one_sub_coordinate_pos
+          K v x qA.2.1 qA.2.2
+        dsimp [p, c] at heqx
+        simp [AffineMap.lineMap_apply,
+          triangulationTopologicalGeometricVertex] at heqx
+        field_simp at heqx
+        rcases heqx with ((h | h) | h) | h
+        · exact (ne_of_gt hδ0) h
+        · exact hz0 h
+        · exact (ne_of_gt hrA) h
+        · nlinarith
+      have htrans :
+          edgeRadialCircleTransversePoint K v x qA qB δ hδ0 hδA hδB z =
+            ⟨p, hp⟩ := by
+        apply Subtype.ext
+        dsimp [edgeRadialCircleTransversePoint, p, c]
+        simp [hz.le]
+      rw [htrans]
+      rw [hgA ⟨p, hp⟩ hpne hpA]
+      dsimp [p, c]
+      simp [AffineMap.lineMap_apply, triangulationTopologicalGeometricVertex]
+      field_simp
+      ring
+
+    · have hzneg : z.1.im < 0 := lt_of_le_of_ne (le_of_not_gt hz) hz0
+      have hrB : 0 < 1 - qB.1 x := lt_trans hδ0 hδB
+      let c := δ * (-z.1.im) / (1 - qB.1 x)
+      have hc0 : 0 < c := div_pos (mul_pos hδ0 (neg_pos.mpr hzneg)) hrB
+      have him : -z.1.im ≤ 1 := by
+        calc -z.1.im ≤ |z.1.im| := neg_le_abs _
+          _ ≤ ‖(z.1 : ℂ)‖ := Complex.abs_im_le_norm _
+          _ = 1 := Circle.norm_coe z
+      have hc1 : c ≤ 1 := by
+        apply (div_le_one hrB).2
+        nlinarith
+      obtain ⟨hp, hpB⟩ :=
+        IsClopen.vertexLinkStar_radial_mem K v x hBcl qB hqB hc0 hc1
+      let p := (AffineMap.lineMap
+        (triangulationTopologicalGeometricVertex x) qB.1) c
+      have hpne : p ≠ triangulationTopologicalGeometricVertex x := by
+        intro heq
+        have heqx := congrFun heq x
+        have hrad := triangulationTopologicalVertexLinkStar_one_sub_coordinate_pos
+          K v x qB.2.1 qB.2.2
+        dsimp [p, c] at heqx
+        simp [AffineMap.lineMap_apply,
+          triangulationTopologicalGeometricVertex] at heqx
+        field_simp at heqx
+        rcases heqx with ((h | h) | h) | h
+        · exact (ne_of_gt hδ0) h
+        · exact hz0 h
+        · exact (ne_of_gt hrB) h
+        · nlinarith
+      have htrans :
+          edgeRadialCircleTransversePoint K v x qA qB δ hδ0 hδA hδB z =
+            ⟨p, hp⟩ := by
+        apply Subtype.ext
+        dsimp [edgeRadialCircleTransversePoint, p, c]
+        simp [not_le.mpr hzneg]
+      rw [htrans]
+      rw [hgB ⟨p, hp⟩ hpne hpB]
+      dsimp [p, c]
+      simp [AffineMap.lineMap_apply, triangulationTopologicalGeometricVertex]
+      field_simp
+      ring
+
+/-- The explicit small-circle inclusion is a genuine right inverse of the
+normalized radial circle map. -/
+theorem edgeRadialCircleMap_comp_edgeRadialCircleInclusion
+    (K : Triangulation) {v x : Nat}
+    (hrep : VertexLinkVertexRepresented K v x)
+    (A B : Set ↑(triangulationTopologicalPuncturedVertexLinkStar K v x))
+    (hAcl : IsClopen A) (hBcl : IsClopen B)
+    (qA qB : ↑(triangulationTopologicalPuncturedVertexLinkStar K v x))
+    (hqA : qA ∈ A) (hqB : qB ∈ B)
+    (g : ↑(triangulationTopologicalVertexLinkStar K v x) → ℝ)
+    (habs : ∀ q, |g q| = 1 - q.1 x)
+    (hgA : ∀ q (hq : q.1 ≠ triangulationTopologicalGeometricVertex x),
+      (⟨q.1, q.2, hq⟩ :
+        ↑(triangulationTopologicalPuncturedVertexLinkStar K v x)) ∈ A →
+        g q = 1 - q.1 x)
+    (hgB : ∀ q (hq : q.1 ≠ triangulationTopologicalGeometricVertex x),
+      (⟨q.1, q.2, hq⟩ :
+        ↑(triangulationTopologicalPuncturedVertexLinkStar K v x)) ∈ B →
+        g q = -(1 - q.1 x))
+    (δ : ℝ) (hδ0 : 0 < δ) (hδquarter : δ < (4 : ℝ)⁻¹)
+    (hδA : δ < 1 - qA.1 x) (hδB : δ < 1 - qB.1 x)
+    (z : Circle) :
+    edgeRadialCircleMap K hrep g habs
+        (edgeRadialCircleInclusion K hrep qA qB δ hδ0 hδquarter hδA hδB z) = z := by
+  apply Subtype.ext
+  have hg := edgeRadialCircleTransversePoint_signedCoordinate
+    K v x A B hAcl hBcl qA qB hqA hqB g habs hgA hgB
+      δ hδ0 hδA hδB z
+  dsimp [edgeRadialCircleMap, edgeRadialCircleInclusion,
+    triangulationTopologicalOpenEdgeTransverseStarPoint]
+  rw [hg]
+  have hcomplex :
+      ((δ * z.1.re : ℝ) : ℂ) + ((δ * z.1.im : ℝ) : ℂ) * Complex.I =
+        (δ : ℂ) * z.1 := by
+    apply Complex.ext <;> simp
+  rw [show ((2 : ℝ)⁻¹ + δ * z.1.re) - (2 : ℝ)⁻¹ =
+      δ * z.1.re by ring, hcomplex, norm_mul, Circle.norm_coe, mul_one,
+    Complex.norm_of_nonneg hδ0.le]
+  exact (div_eq_iff (Complex.ofReal_ne_zero.mpr (ne_of_gt hδ0))).2
+    (mul_comm _ _)
+
+
 end Poincare
