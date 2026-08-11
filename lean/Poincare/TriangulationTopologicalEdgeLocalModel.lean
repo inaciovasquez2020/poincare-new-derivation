@@ -988,5 +988,30 @@ in the circle variable. -/
       ((2 : ℝ)⁻¹, triangulationTopologicalGeometricVertex x) := by
   simp [edgeRadialCircleAmbientFamily, AffineMap.lineMap_apply]
 
+/-- Every neighborhood of the radial midpoint contains all members of the
+small-circle family at every sufficiently small scale.  Compactness of the
+circle makes the scale bound uniform in the circle variable. -/
+theorem eventually_edgeRadialCircleAmbientFamily_mem_of_mem_nhds
+    (x : Nat) (qA qB : Nat → ℝ)
+    (U : Set (ℝ × (Nat → ℝ)))
+    (hU : U ∈ nhds (((2 : ℝ)⁻¹,
+      triangulationTopologicalGeometricVertex x))) :
+    ∀ᶠ δ in nhds (0 : ℝ), ∀ z : Circle,
+      edgeRadialCircleAmbientFamily x qA qB (δ, z) ∈ U := by
+  have hpoint : ∀ z : Circle,
+      ∀ᶠ δz : ℝ × Circle in nhds ((0 : ℝ), z),
+        edgeRadialCircleAmbientFamily x qA qB δz ∈ U := by
+    intro z
+    have hU' : U ∈ nhds
+        (edgeRadialCircleAmbientFamily x qA qB ((0 : ℝ), z)) := by
+      rw [edgeRadialCircleAmbientFamily_zero]
+      exact hU
+    exact (continuous_edgeRadialCircleAmbientFamily x qA qB).continuousAt.eventually hU'
+  simpa only [Set.mem_univ, forall_const] using
+    (isCompact_univ.eventually_forall_of_forall_eventually
+      (K := (Set.univ : Set Circle)) (x₀ := (0 : ℝ)) (P := fun δ z ↦
+        edgeRadialCircleAmbientFamily x qA qB (δ, z) ∈ U)
+      (fun z _ ↦ hpoint z))
+
 
 end Poincare
