@@ -1,6 +1,35 @@
 import Poincare.FourSimplexBoundaryCombinatorialCertificate
+import Poincare.Move23ClosedCorePreservation
+import Poincare.Move32DegreeSupportBalance
 
 namespace Poincare
+
+/-- A finite sequence consisting only of legal `2-3` and `3-2` bistellar
+moves.  Closed-core evidence is recorded at each source because it is exactly
+the hypothesis needed by the established `3-2` support theorem. -/
+inductive LegalMove23Move32Sequence : Triangulation → Triangulation → Prop
+  | refl (K : Triangulation) : LegalMove23Move32Sequence K K
+  | move23 {K L : Triangulation}
+      (hKL : LegalMove23Move32Sequence K L)
+      (hcore : ClosedTriangulationCore L)
+      (s : Move23Site) (hlegal : s.LegalIn L) :
+      LegalMove23Move32Sequence K (s.replace L)
+  | move32 {K L : Triangulation}
+      (hKL : LegalMove23Move32Sequence K L)
+      (hcore : ClosedTriangulationCore L)
+      (s : Move32Site) (hlegal : s.LegalIn L) :
+      LegalMove23Move32Sequence K (s.replace L)
+
+/-- Finite legal `2-3`/`3-2` sequences preserve the represented vertex set. -/
+theorem LegalMove23Move32Sequence.vertexSupport_mem_iff
+    {K L : Triangulation} (hKL : LegalMove23Move32Sequence K L) (v : Nat) :
+    v ∈ vertexSupport L ↔ v ∈ vertexSupport K := by
+  induction hKL with
+  | refl => rfl
+  | move23 hKL _ s hlegal ih =>
+      exact (s.replace_vertexSupport_mem_iff _ hlegal v).trans ih
+  | move32 hKL hcore s hlegal ih =>
+      exact (hcore.move32Site_replace_vertexSupport_mem_iff s hlegal v).trans ih
 
 /-- A connected closed triangulation with zero supported defect has exactly
 five represented vertices. -/
