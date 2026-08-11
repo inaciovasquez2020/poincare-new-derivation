@@ -84,6 +84,45 @@ theorem exists_normalizedChord_path
   intro s
   simp [normalizedChord]
 
+/-- Every point of a normalized short chord stays within twice the endpoint distance
+of its source.  This quantitative estimate is the input used to compare a uniformly
+short sphere subpath with its polygonal replacement. -/
+theorem dist_normalizedChord_source_le_two_mul
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {u v : E} (hu : ‖u‖ = 1) (hv : ‖v‖ = 1) (huv : dist u v < 2)
+    (s : unitInterval) :
+    dist ((normalizedChord u v hu hv huv) s : E) u ≤ 2 * dist u v := by
+  let c : E := (1 - (s : ℝ)) • u + (s : ℝ) • v
+  have hc0 : c ≠ 0 := unit_convexCombo_ne_zero_of_dist_lt_two hu hv huv s
+  have huc : dist c u ≤ dist u v := by
+    rw [dist_comm, dist_eq_norm]
+    have hcsub : u - c = (s : ℝ) • (u - v) := by
+      dsimp [c]
+      module
+    rw [hcsub, norm_smul, Real.norm_eq_abs, abs_of_nonneg s.property.1,
+      ← dist_eq_norm]
+    exact mul_le_of_le_one_left (dist_nonneg) s.property.2
+  have hnorm : |‖c‖ - 1| ≤ dist c u := by
+    rw [← hu]
+    simpa [dist_eq_norm] using abs_norm_sub_norm_le c u
+  have hqc : dist (‖c‖⁻¹ • c) c = |‖c‖ - 1| := by
+    rw [dist_eq_norm]
+    have hrewrite : ‖c‖⁻¹ • c - c = (‖c‖⁻¹ - 1) • c := by module
+    rw [hrewrite, norm_smul, Real.norm_eq_abs]
+    have hcnorm : ‖c‖ ≠ 0 := norm_ne_zero_iff.mpr hc0
+    have halg : (‖c‖⁻¹ - 1) * ‖c‖ = 1 - ‖c‖ := by
+      field_simp
+    calc
+      |‖c‖⁻¹ - 1| * ‖c‖ = |‖c‖⁻¹ - 1| * |‖c‖| := by
+        rw [abs_of_nonneg (norm_nonneg c)]
+      _ = |(‖c‖⁻¹ - 1) * ‖c‖| := (abs_mul _ _).symm
+      _ = |‖c‖ - 1| := by rw [halg, abs_sub_comm]
+  change dist (‖c‖⁻¹ • c) u ≤ 2 * dist u v
+  calc
+    dist (‖c‖⁻¹ • c) u ≤ dist (‖c‖⁻¹ • c) c + dist c u := dist_triangle _ _ _
+    _ ≤ 2 * dist c u := by rw [hqc]; linarith
+    _ ≤ 2 * dist u v := by gcongr
+
 /-- Sphere-valued paths which are pointwise less than two apart are homotopic through
 pointwise normalized straight chords. -/
 theorem normalizedStraight_pathHomotopic
