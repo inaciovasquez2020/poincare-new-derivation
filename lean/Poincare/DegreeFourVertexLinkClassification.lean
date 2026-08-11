@@ -387,4 +387,27 @@ theorem ClosedTriangulationCore.exists_move41Site_sourcesExactlyOnce_of_vertexDe
   rw [← List.toFinset_card_of_nodup hnodupL, hfinset]
   simp
 
+/-- Once the four exact degree-four star certificates have been assembled on
+one site, the only obstruction to a genuine `4 → 1` move is the presence of
+the opposite tetrahedron. -/
+theorem Move41Site.legalIn_or_exists_target
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (s : Move41Site)
+    (hsources : ∀ source ∈ s.sourceTets,
+      (K.tets.filter (fun tau => sameTetVerticesBool tau source)).length = 1)
+    (hpairwise :
+      s.sourceTets.Pairwise (fun tau sigma => ¬ SameTetVertices tau sigma))
+    (hsaturated : ∀ tau ∈ K.tets, s.e ∈ tau.verts →
+      ∃ source ∈ s.sourceTets, SameTetVertices tau source) :
+    s.LegalIn K ∨
+      ∃ tau ∈ K.tets, SameTetVertices tau s.targetTet := by
+  classical
+  by_cases htarget : ∃ tau ∈ K.tets, SameTetVertices tau s.targetTet
+  · exact Or.inr htarget
+  · left
+    refine ⟨hcore, hsources, hpairwise, hsaturated, ?_⟩
+    intro tau htau hsame
+    exact htarget ⟨tau, htau, hsame⟩
+
 end Poincare
