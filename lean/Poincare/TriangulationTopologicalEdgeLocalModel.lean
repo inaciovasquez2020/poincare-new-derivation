@@ -201,4 +201,58 @@ theorem triangulationTopologicalOpenEdgeNeighborhood_mem_nhds
     (triangulationTopologicalCarrierEdgeMidpoint_mem_openEdgeNeighborhood
       K hcore hrep)
 
+/-- In the radial product based at `v`, positivity of the second edge
+coordinate is exactly positivity of the corresponding transverse-link
+coordinate.  Thus the isolated open-edge neighborhood has no hidden radial
+condition in the `x` direction. -/
+theorem triangulationTopologicalOpenEdgeNeighborhood_radialProjection_coordinate_pos_iff
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    {v x : Nat} (hrep : VertexLinkVertexRepresented K v x)
+    (p : ↑(triangulationTopologicalOpenEdgeNeighborhood K v x)) :
+    0 < triangulationTopologicalRadialLinkProjection K v
+        (triangulationTopologicalOpenEdgeNeighborhoodRadialPoint
+          K hcore hrep p) x ↔
+      0 < p.1.1 x := by
+  have hvx : v ≠ x := ne_of_vertexLinkVertexRepresented K hcore hrep
+  have hdenom : 0 < 1 - p.1.1 v := sub_pos.mpr
+    (triangulationTopologicalOpenEdgeNeighborhood_coordinate_lt_one
+      K hcore hrep p.1 p.2)
+  simp only [triangulationTopologicalRadialLinkProjection, Pi.smul_apply,
+    Pi.sub_apply, smul_eq_mul]
+  rw [show triangulationTopologicalGeometricVertex v x = 0 by
+    simp [triangulationTopologicalGeometricVertex, hvx]]
+  simp only [mul_zero, sub_zero, one_div]
+  exact mul_pos_iff_of_pos_left (inv_pos.mpr hdenom)
+
+/-- Exact radial-coordinate description of the two positive coordinates that
+cut out the open geometric edge neighborhood. -/
+theorem triangulationTopologicalRadialLink_openEdge_coordinates_iff
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    {v x : Nat} (hrep : VertexLinkVertexRepresented K v x)
+    (tq : ↑(Set.Ico (0 : ℝ) 1) ×
+      ↑(triangulationTopologicalVertexLink K v)) :
+    let p :=
+      (triangulationTopologicalPuncturedVertexStarHomeomorphRadialLink
+        K hcore v) tq
+    (0 < p.1 v ∧ 0 < p.1 x) ↔
+      (0 < tq.1.1 ∧ 0 < tq.2.1 x) := by
+  dsimp
+  change
+    (0 < (tq.1.1 • triangulationTopologicalGeometricVertex v +
+          (1 - tq.1.1) • tq.2.1) v ∧
+      0 < (tq.1.1 • triangulationTopologicalGeometricVertex v +
+          (1 - tq.1.1) • tq.2.1) x) ↔ _
+  have hvx : v ≠ x := ne_of_vertexLinkVertexRepresented K hcore hrep
+  have hfactor : 0 < 1 - tq.1.1 := sub_pos.mpr tq.1.2.2
+  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+  rw [show triangulationTopologicalGeometricVertex v v = 1 by
+      simp [triangulationTopologicalGeometricVertex],
+    show tq.2.1 v = 0 by
+      exact triangulationTopologicalVertexLink_apex_coordinate_eq_zero
+        K hcore v tq.2.1 tq.2.2,
+    show triangulationTopologicalGeometricVertex v x = 0 by
+      simp [triangulationTopologicalGeometricVertex, hvx]]
+  simp only [mul_one, mul_zero, add_zero, zero_add]
+  rw [mul_pos_iff_of_pos_left hfactor]
+
 end Poincare
