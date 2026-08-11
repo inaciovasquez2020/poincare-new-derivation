@@ -288,4 +288,40 @@ noncomputable def triangulationTopologicalOpenEdgeNeighborhoodHomeomorphRadialLi
     triangulationTopologicalRadialLink_openEdge_coordinates_iff
       K hcore hrep tq |>.symm
 
+/-- The radial edge model with the geometric carrier, rather than the
+auxiliary non-apex vertex-star subtype, as its target. -/
+noncomputable def
+    triangulationTopologicalOpenEdgeNeighborhoodHomeomorphRadialLinkCarrier
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    {v x : Nat} (hrep : VertexLinkVertexRepresented K v x) :
+    {tq : ↑(Set.Ico (0 : ℝ) 1) ×
+        ↑(triangulationTopologicalVertexLink K v) |
+      0 < tq.1.1 ∧ 0 < tq.2.1 x} ≃ₜ
+    ↑(triangulationTopologicalOpenEdgeNeighborhood K v x) :=
+  (triangulationTopologicalOpenEdgeNeighborhoodHomeomorphRadialLink
+      K hcore hrep).trans
+    { toFun := fun p ↦
+        ⟨⟨p.1.1,
+          triangulationTopologicalVertexStar_subset_space K v p.1.2.1⟩,
+          p.2⟩
+      invFun := fun p ↦
+        ⟨⟨p.1.1,
+          triangulationTopologicalOpenEdgeNeighborhood_subset_vertexStar
+            K v x p.1 p.2,
+          triangulationTopologicalOpenEdgeNeighborhood_coordinate_lt_one
+            K hcore hrep p.1 p.2⟩,
+          p.2⟩
+      left_inv := fun _ ↦ rfl
+      right_inv := fun _ ↦ rfl
+      continuous_toFun :=
+        Continuous.subtype_mk
+          (Continuous.subtype_mk
+            (continuous_subtype_val.comp continuous_subtype_val) _)
+          _
+      continuous_invFun :=
+        Continuous.subtype_mk
+          (Continuous.subtype_mk
+            (continuous_subtype_val.comp continuous_subtype_val) _)
+          _ }
+
 end Poincare
