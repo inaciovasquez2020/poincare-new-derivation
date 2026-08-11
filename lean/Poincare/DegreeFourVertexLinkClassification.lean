@@ -387,6 +387,127 @@ theorem ClosedTriangulationCore.exists_move41Site_sourcesExactlyOnce_of_vertexDe
   rw [← List.toFinset_card_of_nodup hnodupL, hfinset]
   simp
 
+/-- Exact source occurrence is a property of any degree-four site whose outer
+labels cover the vertex link, not merely of the particular existential witness
+used to extract those labels.  This is the same-site bridge needed when the
+source, saturation, and target-obstruction certificates are assembled. -/
+theorem ClosedTriangulationCore.move41Site_sourcesExactlyOnce_of_vertexDegree_eq_four
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hdegree : vertexDegree K v = 4)
+    (s : Move41Site)
+    (hse : s.e = v)
+    (hlabels : ∀ x : Nat,
+      x ∈ vertexLinkVertices K v ↔
+        x = s.a ∨ x = s.b ∨ x = s.c ∨ x = s.d) :
+    ∀ source ∈ s.sourceTets,
+      (K.tets.filter (fun tau => sameTetVerticesBool tau source)).length = 1 := by
+  classical
+  have hcert :=
+    hcore.vertexLinkTetrahedralBoundaryCertificate_of_vertexDegree_eq_four
+      v hdegree
+  have hsources : ∀ source ∈ s.sourceTets,
+      ∃ tau ∈ K.tets, SameTetVertices tau source := by
+    intro source hsource
+    simp [Move41Site.sourceTets] at hsource
+    rcases hsource with rfl | rfl | rfl | rfl
+    · have hdlink : s.d ∈ vertexLinkVertices K v :=
+        (hlabels s.d).2 (by aesop)
+      obtain ⟨sigma, hsigma, hverts⟩ := (hcert.2.2.2.2.2 s.d hdlink).exists
+      obtain ⟨tau, htau, hlink⟩ :=
+        (mem_vertexLinkTriangles_iff K v sigma).1 hsigma
+      refine ⟨tau, htau, ?_⟩
+      intro x
+      have he : v ∈ tau.verts :=
+        (tau.linkTriangleAt?_isSome_iff v).1 (by rw [hlink]; rfl)
+      by_cases hxv : x = v
+      · subst x
+        simpa [Move41Site.sourceTet₀, Tet.verts, hse] using he
+      · have hxiff := tau.mem_linkTriangleAt?_iff v x sigma hlink hxv
+        rw [← hxiff, hverts x, hlabels x]
+        have hd := s.distinct
+        simp [Move41Site.sourceTet₀, Tet.verts] at hd ⊢
+        omega
+    · have hclink : s.c ∈ vertexLinkVertices K v :=
+        (hlabels s.c).2 (by aesop)
+      obtain ⟨sigma, hsigma, hverts⟩ := (hcert.2.2.2.2.2 s.c hclink).exists
+      obtain ⟨tau, htau, hlink⟩ :=
+        (mem_vertexLinkTriangles_iff K v sigma).1 hsigma
+      refine ⟨tau, htau, ?_⟩
+      intro x
+      have he : v ∈ tau.verts :=
+        (tau.linkTriangleAt?_isSome_iff v).1 (by rw [hlink]; rfl)
+      by_cases hxv : x = v
+      · subst x
+        simpa [Move41Site.sourceTet₁, Tet.verts, hse] using he
+      · have hxiff := tau.mem_linkTriangleAt?_iff v x sigma hlink hxv
+        rw [← hxiff, hverts x, hlabels x]
+        have hd := s.distinct
+        simp [Move41Site.sourceTet₁, Tet.verts] at hd ⊢
+        omega
+    · have hblink : s.b ∈ vertexLinkVertices K v :=
+        (hlabels s.b).2 (by aesop)
+      obtain ⟨sigma, hsigma, hverts⟩ := (hcert.2.2.2.2.2 s.b hblink).exists
+      obtain ⟨tau, htau, hlink⟩ :=
+        (mem_vertexLinkTriangles_iff K v sigma).1 hsigma
+      refine ⟨tau, htau, ?_⟩
+      intro x
+      have he : v ∈ tau.verts :=
+        (tau.linkTriangleAt?_isSome_iff v).1 (by rw [hlink]; rfl)
+      by_cases hxv : x = v
+      · subst x
+        simpa [Move41Site.sourceTet₂, Tet.verts, hse] using he
+      · have hxiff := tau.mem_linkTriangleAt?_iff v x sigma hlink hxv
+        rw [← hxiff, hverts x, hlabels x]
+        have hd := s.distinct
+        simp [Move41Site.sourceTet₂, Tet.verts] at hd ⊢
+        omega
+    · have halink : s.a ∈ vertexLinkVertices K v :=
+        (hlabels s.a).2 (by aesop)
+      obtain ⟨sigma, hsigma, hverts⟩ := (hcert.2.2.2.2.2 s.a halink).exists
+      obtain ⟨tau, htau, hlink⟩ :=
+        (mem_vertexLinkTriangles_iff K v sigma).1 hsigma
+      refine ⟨tau, htau, ?_⟩
+      intro x
+      have he : v ∈ tau.verts :=
+        (tau.linkTriangleAt?_isSome_iff v).1 (by rw [hlink]; rfl)
+      by_cases hxv : x = v
+      · subst x
+        simpa [Move41Site.sourceTet₃, Tet.verts, hse] using he
+      · have hxiff := tau.mem_linkTriangleAt?_iff v x sigma hlink hxv
+        rw [← hxiff, hverts x, hlabels x]
+        have hd := s.distinct
+        simp [Move41Site.sourceTet₃, Tet.verts] at hd ⊢
+        omega
+  intro source hsource
+  obtain ⟨tau, htauK, hsame⟩ := hsources source hsource
+  have hunique := hcore.existsUnique_sameTetVertices ⟨tau, htauK, hsame⟩
+  let L := K.tets.filter (fun rho => sameTetVerticesBool rho source)
+  have htauL : tau ∈ L := by
+    simp [L, htauK, sameTetVerticesBool_eq_true_iff, hsame]
+  have hmem : ∀ rho, rho ∈ L ↔ rho = tau := by
+    intro rho
+    constructor
+    · intro hrho
+      have hrho' : rho ∈ K.tets ∧ SameTetVertices rho source := by
+        simpa [L, sameTetVerticesBool_eq_true_iff] using hrho
+      exact hunique.unique hrho' ⟨htauK, hsame⟩
+    · rintro rfl
+      exact htauL
+  have hfinset : L.toFinset = {tau} := by
+    ext rho
+    simp [hmem]
+  have hnodupK : K.tets.Nodup := by
+    rw [List.nodup_iff_pairwise_ne]
+    exact hcore.2.1.imp (fun {x y} hxy hEq => by
+      subst y
+      exact hxy (sameTetVertices_refl x))
+  have hnodupL : L.Nodup := hnodupK.filter _
+  change L.length = 1
+  rw [← List.toFinset_card_of_nodup hnodupL, hfinset]
+  simp
+
 /-- Once the four exact degree-four star certificates have been assembled on
 one site, the only obstruction to a genuine `4 → 1` move is the presence of
 the opposite tetrahedron. -/
