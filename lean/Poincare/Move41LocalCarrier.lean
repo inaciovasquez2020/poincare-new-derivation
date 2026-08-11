@@ -146,4 +146,18 @@ theorem move41PiSourceLocalCarrier_eq_zero_of_not_label
   · exact move23PiTargetLocalCarrier_eq_zero_of_not_label
       (Or.inr hp) hza hzb hzc hzd hze
 
+/-- Every coordinate outside the four outer labels vanishes on the solid
+target tetrahedron of a genuine `4 → 1` move. -/
+theorem move41PiTargetLocalCarrier_eq_zero_of_not_outer_label
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup) {p : Nat → ℝ}
+    (hp : p ∈ move41PiTargetLocalCarrier a b c d e)
+    {z : Nat} (hza : z ≠ a) (hzb : z ≠ b) (hzc : z ≠ c)
+    (hzd : z ≠ d) :
+    p z = 0 := by
+  by_cases hze : z = e
+  · subst z
+    exact move41PiTargetLocalCarrier_center_eq_zero h hp
+  · exact move23PiSourceLocalCarrier_eq_zero_of_not_label
+      (Or.inl hp) hza hzb hzc hzd hze
+
 end Poincare
