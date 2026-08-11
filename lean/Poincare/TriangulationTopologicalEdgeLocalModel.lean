@@ -1,5 +1,6 @@
 import Poincare.TriangulationTopologicalVertexLinkStarConnectedness
 import Poincare.TriangulationTopologicalGeometricDecomposition
+import Poincare.TriangulationTopologicalVertexStarNeighborhood
 
 open Set
 
@@ -64,5 +65,99 @@ noncomputable def triangulationTopologicalCarrierEdgeMidpoint
     triangulationTopologicalGeometricCarrier K :=
   ⟨triangulationTopologicalGeometricEdgeMidpoint v x,
     triangulationTopologicalGeometricEdgeMidpoint_mem_carrier K hrep⟩
+
+/-- The endpoints of a represented link edge are distinct. -/
+theorem ne_of_vertexLinkVertexRepresented
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    {v x : Nat} (hrep : VertexLinkVertexRepresented K v x) :
+    v ≠ x := by
+  obtain ⟨sigma, hsigma, hxsigma⟩ := hrep
+  obtain ⟨tau, htau, hextract⟩ :=
+    (mem_vertexLinkTriangles_iff K v sigma).1 hsigma
+  have hvnot : v ∉ sigma.verts :=
+    tau.linkTriangleAt?_vertex_not_mem v sigma (hcore.1 tau htau) hextract
+  exact fun hvx ↦ hvnot (hvx ▸ hxsigma)
+
+/-- The coordinate-positive neighborhood isolating the interior of the
+represented edge `v-x`. -/
+def triangulationTopologicalOpenEdgeNeighborhood
+    (K : Triangulation) (v x : Nat) :
+    Set (triangulationTopologicalGeometricCarrier K) :=
+  {p | 0 < p.1 v ∧ 0 < p.1 x}
+
+/-- The finite geometric edge star: the union of precisely those represented
+tetrahedra containing both endpoints. -/
+noncomputable def triangulationTopologicalGeometricEdgeStar
+    (K : Triangulation) (v x : Nat) : Set (Nat → ℝ) :=
+  ⋃ (tau : Tet) (_ : tau ∈ K.tets) (_ : v ∈ tau.verts)
+      (_ : x ∈ tau.verts),
+    triangulationTopologicalTetBody tau
+
+theorem triangulationTopologicalOpenEdgeNeighborhood_isOpen
+    (K : Triangulation) (v x : Nat) :
+    IsOpen (triangulationTopologicalOpenEdgeNeighborhood K v x) := by
+  exact (isOpen_Ioi.preimage
+    ((continuous_apply v).comp continuous_subtype_val)).inter
+      (isOpen_Ioi.preimage
+        ((continuous_apply x).comp continuous_subtype_val))
+
+theorem triangulationTopologicalCarrierEdgeMidpoint_mem_openEdgeNeighborhood
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    {v x : Nat} (hrep : VertexLinkVertexRepresented K v x) :
+    triangulationTopologicalCarrierEdgeMidpoint K v x hrep ∈
+      triangulationTopologicalOpenEdgeNeighborhood K v x := by
+  have hvx := ne_of_vertexLinkVertexRepresented K hcore hrep
+  constructor <;>
+    simp [triangulationTopologicalCarrierEdgeMidpoint,
+      triangulationTopologicalGeometricEdgeMidpoint_apply, hvx, hvx.symm]
+
+/-- Every tetrahedron containing a point of the open-edge neighborhood
+contains both represented edge endpoints.  Thus this neighborhood is entirely
+inside the finite tetrahedral edge star. -/
+theorem triangulationTopologicalOpenEdgeNeighborhood_tet_contains_endpoints
+    (K : Triangulation) (v x : Nat)
+    {p : triangulationTopologicalGeometricCarrier K}
+    (hp : p ∈ triangulationTopologicalOpenEdgeNeighborhood K v x)
+    {tau : Tet}
+    (hptau : p.1 ∈ triangulationTopologicalTetBody tau) :
+    v ∈ tau.verts ∧ x ∈ tau.verts := by
+  constructor
+  · by_contra hv
+    have hz := triangulationTopologicalTetBody_coordinate_eq_zero_of_not_mem
+      tau v hv hptau
+    exact (ne_of_gt hp.1) hz
+  · by_contra hx
+    have hz := triangulationTopologicalTetBody_coordinate_eq_zero_of_not_mem
+      tau x hx hptau
+    exact (ne_of_gt hp.2) hz
+
+theorem triangulationTopologicalOpenEdgeNeighborhood_subset_edgeStar
+    (K : Triangulation) (v x : Nat) :
+    ∀ p ∈ triangulationTopologicalOpenEdgeNeighborhood K v x,
+      p.1 ∈ triangulationTopologicalGeometricEdgeStar K v x := by
+  intro p hp
+  have hspace := p.property
+  have hspace' : p.1 ∈ ⋃ (tau : Tet) (_ : tau ∈ K.tets),
+      triangulationTopologicalTetBody tau := by
+    simpa only [triangulationTopologicalGeometricComplex_space_eq_tetrahedronUnion]
+      using hspace
+  simp only [mem_iUnion] at hspace'
+  obtain ⟨tau, htau, hptau⟩ := hspace'
+  obtain ⟨hv, hx⟩ :=
+    triangulationTopologicalOpenEdgeNeighborhood_tet_contains_endpoints
+      K v x hp hptau
+  exact Set.mem_iUnion_of_mem tau <|
+    Set.mem_iUnion_of_mem htau <|
+      Set.mem_iUnion_of_mem hv <|
+        Set.mem_iUnion_of_mem hx hptau
+
+theorem triangulationTopologicalOpenEdgeNeighborhood_mem_nhds
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    {v x : Nat} (hrep : VertexLinkVertexRepresented K v x) :
+    triangulationTopologicalOpenEdgeNeighborhood K v x ∈
+      nhds (triangulationTopologicalCarrierEdgeMidpoint K v x hrep) := by
+  exact (triangulationTopologicalOpenEdgeNeighborhood_isOpen K v x).mem_nhds
+    (triangulationTopologicalCarrierEdgeMidpoint_mem_openEdgeNeighborhood
+      K hcore hrep)
 
 end Poincare
