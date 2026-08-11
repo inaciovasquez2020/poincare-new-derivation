@@ -208,4 +208,48 @@ theorem ClosedTriangulationCore.exists_move41Site_centerSaturated_of_vertexDegre
     (mem_vertexLinkVertices_iff K v x).2 ⟨sigma, hsigma, hxsigma⟩
   exact (hlabels x).1 hxvertices
 
+/-- The saturated degree-four star has the four pairwise distinct source
+tetrahedron vertex sets required by genuine `Move41` legality. -/
+theorem ClosedTriangulationCore.exists_move41Site_centerSaturated_pairwise_of_vertexDegree_eq_four
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hdegree : vertexDegree K v = 4) :
+    ∃ s : Move41Site,
+      s.e = v ∧
+      s.sourceTets.Pairwise (fun tau sigma => ¬ SameTetVertices tau sigma) ∧
+      ∀ tau ∈ K.tets, s.e ∈ tau.verts →
+        ∃ source ∈ s.sourceTets, SameTetVertices tau source := by
+  obtain ⟨s, hse, hsaturated⟩ :=
+    hcore.exists_move41Site_centerSaturated_of_vertexDegree_eq_four v hdegree
+  refine ⟨s, hse, ?_, hsaturated⟩
+  have hd := s.distinct
+  simp [Move41Site.sourceTets, Move41Site.sourceTet₀, Move41Site.sourceTet₁,
+    Move41Site.sourceTet₂, Move41Site.sourceTet₃, Tet.verts] at hd ⊢
+  refine ⟨⟨?_, ?_, ?_⟩, ⟨?_, ?_⟩, ?_⟩
+  · intro h
+    have := (h s.c).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
+    simp [Move41Site.sourceTet₁, Tet.verts] at this
+    aesop
+  · intro h
+    have := (h s.b).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
+    simp [Move41Site.sourceTet₂, Tet.verts] at this
+    aesop
+  · intro h
+    have := (h s.a).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
+    simp [Move41Site.sourceTet₃, Tet.verts] at this
+    aesop
+  · intro h
+    have := (h s.b).1 (by simp [Move41Site.sourceTet₁, Tet.verts])
+    simp [Move41Site.sourceTet₂, Tet.verts] at this
+    aesop
+  · intro h
+    have := (h s.a).1 (by simp [Move41Site.sourceTet₁, Tet.verts])
+    simp [Move41Site.sourceTet₃, Tet.verts] at this
+    aesop
+  · intro h
+    have := (h s.a).1 (by simp [Move41Site.sourceTet₂, Tet.verts])
+    simp [Move41Site.sourceTet₃, Tet.verts] at this
+    aesop
+
 end Poincare
