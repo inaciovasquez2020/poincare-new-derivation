@@ -4,6 +4,7 @@ import Mathlib.Topology.Subpath
 import Mathlib.Topology.UniformSpace.Path
 import Mathlib.Geometry.Manifold.Instances.Sphere
 import Mathlib.Analysis.Convex.Contractible
+import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 
 namespace Poincare
 
@@ -391,5 +392,27 @@ theorem unitSphere_punctured_contractible
     (stereographic ha).toHomeomorphSourceTarget.contractibleSpace
   simpa [stereographic_source] using
     (inferInstance : ContractibleSpace (stereographic ha).source)
+
+/-- A loop on a unit sphere that avoids one point is null-homotopic relative to
+its basepoint.  The loop lifts to the punctured sphere, which is contractible,
+and its path homotopy maps back along the subtype inclusion. -/
+theorem Path.homotopic_refl_of_avoids_unitSphere_point
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    {x : Metric.sphere (0 : E) 1} (q : Path x x)
+    (a : Metric.sphere (0 : E) 1) (havoid : ∀ t, q t ≠ a) :
+    Path.Homotopic q (Path.refl x) := by
+  let X := {z : Metric.sphere (0 : E) 1 // z ≠ a}
+  let x' : X := ⟨x, by simpa using havoid 0⟩
+  let q' : Path x' x' :=
+    { toFun := fun t ↦ ⟨q t, havoid t⟩
+      continuous_toFun := q.continuous.subtype_mk _
+      source' := Subtype.ext q.source
+      target' := Subtype.ext q.target }
+  let inclusion : C(X, Metric.sphere (0 : E) 1) :=
+    ⟨Subtype.val, continuous_subtype_val⟩
+  letI : ContractibleSpace X := unitSphere_punctured_contractible a
+  have hq' : Path.Homotopic q' (Path.refl x') :=
+    SimplyConnectedSpace.paths_homotopic q' (Path.refl x')
+  simpa [q', x', inclusion] using hq'.map inclusion
 
 end Poincare
