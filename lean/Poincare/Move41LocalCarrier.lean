@@ -112,4 +112,12 @@ theorem move41PiTargetLocalCarrier_center_eq_zero
     simp_all [move23PiABCD, triangulationTopologicalGeometricVertex,
       List.nodup_cons]
 
+/-- Every barycentric coordinate is nonnegative on the solid target
+tetrahedron of a genuine `4 → 1` move. -/
+theorem move41PiTargetLocalCarrier_nonneg
+    {a b c d e : Nat} {p : Nat → ℝ}
+    (hp : p ∈ move41PiTargetLocalCarrier a b c d e) (z : Nat) :
+    0 ≤ p z := by
+  exact move23PiSourceLocalCarrier_nonneg (Or.inl hp) z
+
 end Poincare
