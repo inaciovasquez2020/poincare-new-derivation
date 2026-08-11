@@ -93,6 +93,34 @@ theorem Move41Site.sources_represented_of_exactlyOnce
   exact ⟨tau, htau'.1,
     (sameTetVerticesBool_eq_true_iff tau source).1 htau'.2⟩
 
+/-- Exact source occurrence together with a represented target supplies the
+five concrete represented tetrahedra of the target-present cluster. -/
+theorem Move41Site.exists_represented_fiveTetCluster_of_targetPresent
+    {K : Triangulation}
+    (s : Move41Site)
+    (hsources : ∀ source ∈ s.sourceTets,
+      (K.tets.filter (fun tau => sameTetVerticesBool tau source)).length = 1)
+    (htarget : ∃ tau ∈ K.tets, SameTetVertices tau s.targetTet) :
+    ∃ tau₀ tau₁ tau₂ tau₃ target,
+      tau₀ ∈ K.tets ∧ SameTetVertices tau₀ s.sourceTet₀ ∧
+      tau₁ ∈ K.tets ∧ SameTetVertices tau₁ s.sourceTet₁ ∧
+      tau₂ ∈ K.tets ∧ SameTetVertices tau₂ s.sourceTet₂ ∧
+      tau₃ ∈ K.tets ∧ SameTetVertices tau₃ s.sourceTet₃ ∧
+      target ∈ K.tets ∧ SameTetVertices target s.targetTet := by
+  have hrepresented := s.sources_represented_of_exactlyOnce hsources
+  obtain ⟨tau₀, htau₀K, htau₀⟩ :=
+    hrepresented s.sourceTet₀ (by simp [Move41Site.sourceTets])
+  obtain ⟨tau₁, htau₁K, htau₁⟩ :=
+    hrepresented s.sourceTet₁ (by simp [Move41Site.sourceTets])
+  obtain ⟨tau₂, htau₂K, htau₂⟩ :=
+    hrepresented s.sourceTet₂ (by simp [Move41Site.sourceTets])
+  obtain ⟨tau₃, htau₃K, htau₃⟩ :=
+    hrepresented s.sourceTet₃ (by simp [Move41Site.sourceTets])
+  obtain ⟨target, htargetK, htargetSame⟩ := htarget
+  exact ⟨tau₀, tau₁, tau₂, tau₃, target,
+    htau₀K, htau₀, htau₁K, htau₁, htau₂K, htau₂,
+    htau₃K, htau₃, htargetK, htargetSame⟩
+
 /-- In the target-present branch at a degree-four center, the four source
 tetrahedra fill the entire represented vertex link.  The target witness is
 kept explicit, so this is precisely the local five-tetrahedron cluster
