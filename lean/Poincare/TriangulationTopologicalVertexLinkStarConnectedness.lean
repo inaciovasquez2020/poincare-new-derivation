@@ -34,6 +34,30 @@ theorem triangulationTopologicalVertexLinkStar_subset_vertexLink
   exact (mem_triangulationTopologicalVertexLink_iff K v p).2
     ⟨sigma, (mem_vertexLinkStarTriangles_iff K v x sigma).1 hsigma |>.1, hp⟩
 
+/-- A point of the represented vertex link with positive `x` coordinate is
+carried by a link triangle containing `x`, hence belongs to the represented
+star of `x`. -/
+theorem triangulationTopologicalVertexLink_mem_vertexLinkStar_of_coordinate_pos
+    (K : Triangulation) (v x : Nat) {q : Nat → ℝ}
+    (hq : q ∈ triangulationTopologicalVertexLink K v) (hx : 0 < q x) :
+    q ∈ triangulationTopologicalVertexLinkStar K v x := by
+  classical
+  obtain ⟨sigma, hsigma, hqsigma⟩ :=
+    (mem_triangulationTopologicalVertexLink_iff K v q).1 hq
+  have hxsigma : x ∈ sigma.verts := by
+    by_contra hxverts
+    have hzero : q x = 0 := by
+      apply convexHull_min _ (convex_hyperplane
+        ⟨fun a b ↦ rfl, fun r a ↦ rfl⟩ (0 : ℝ)) hqsigma
+      rintro _ ⟨y, hy, rfl⟩
+      have hyx : y ≠ x := fun h ↦ hxverts (h ▸ List.mem_toFinset.mp hy)
+      simp [triangulationTopologicalGeometricVertex, hyx]
+    linarith
+  exact (mem_triangulationTopologicalVertexLinkStar_iff K v x q).2
+    ⟨sigma,
+      (mem_vertexLinkStarTriangles_iff K v x sigma).2 ⟨hsigma, hxsigma⟩,
+      hqsigma⟩
+
 /-- Barycentric characterization of the apex in a represented vertex-link
 star.  In particular, the apex coordinate lies in the unit interval and can
 equal one only at the represented apex itself. -/
