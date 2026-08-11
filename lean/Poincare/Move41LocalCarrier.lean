@@ -28,4 +28,10 @@ theorem move41PiSourceLocalCarrier_isCompact (a b c d e : Nat) :
       (move23PiTetrahedronBody_isCompact _)).union
         (move23PiTetrahedronBody_isCompact _)
 
+/-- The solid tetrahedron forming the target region of a genuine `4 → 1`
+move is compact. -/
+theorem move41PiTargetLocalCarrier_isCompact (a b c d e : Nat) :
+    IsCompact (move41PiTargetLocalCarrier a b c d e) := by
+  exact move23PiTetrahedronBody_isCompact _
+
 end Poincare
