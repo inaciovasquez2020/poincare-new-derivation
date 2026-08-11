@@ -110,7 +110,7 @@ theorem ClosedTriangulationCore.exists_move41Site_labels_of_vertexDegree_eq_four
   · rintro (rfl | rfl | rfl | rfl) <;>
       exact houter _
 
-private theorem exists_move41_source_of_center_mem_of_outer_cover
+theorem exists_move41_source_of_center_mem_of_outer_cover
     (s : Move41Site) (tau : Tet)
     (htau : tau.verts.Nodup)
     (he : s.e ∈ tau.verts)

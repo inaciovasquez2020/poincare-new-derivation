@@ -118,4 +118,80 @@ theorem Move41Site.targetPresent_fiveTetCluster_closes_vertexLink
     exact hC_of_mem ρ hadj.2.1
   exact hconnected.all_of_adjacent_closed C hσ₀ hC₀ hclosed
 
+/-- At a degree-four vertex with connected link, either the constructed
+`4 → 1` site is legal, or its represented opposite tetrahedron completes a
+five-tetrahedron cluster whose four source tetrahedra fill the whole vertex
+link. -/
+theorem ClosedTriangulationCore.exists_move41Site_legalIn_or_targetPresent_closes_vertexLink
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hdegree : vertexDegree K v = 4)
+    (hconnected : VertexLinkConnected K v) :
+    ∃ s : Move41Site,
+      s.e = v ∧
+      (s.LegalIn K ∨
+        ((∃ τ ∈ K.tets, SameTetVertices τ s.targetTet) ∧
+          ∀ σ ∈ vertexLinkTriangles K v,
+            ∃ τ ∈ K.tets,
+              τ.linkTriangleAt? v = some σ ∧
+              ∃ source ∈ s.sourceTets,
+                SameTetVertices τ source)) := by
+  classical
+  obtain ⟨s, hse, hlabels⟩ :=
+    hcore.exists_move41Site_labels_of_vertexDegree_eq_four v hdegree
+  have hsources :=
+    hcore.move41Site_sourcesExactlyOnce_of_vertexDegree_eq_four
+      v hdegree s hse hlabels
+  have hsaturated : ∀ τ ∈ K.tets, s.e ∈ τ.verts →
+      ∃ source ∈ s.sourceTets, SameTetVertices τ source := by
+    intro τ hτK he
+    apply exists_move41_source_of_center_mem_of_outer_cover s τ
+      (hcore.1 τ hτK) he
+    intro x hxτ hxe
+    obtain ⟨σ, hσ, hlink⟩ :=
+      exists_vertexLinkTriangle_of_tet_mem_of_vertex_mem K v τ hτK (hse ▸ he)
+    have hxσ : x ∈ σ.verts :=
+      (τ.mem_linkTriangleAt?_iff v x σ hlink
+        (by simpa [hse] using hxe)).2 hxτ
+    exact (hlabels x).1
+      ((mem_vertexLinkVertices_iff K v x).2 ⟨σ, hσ, hxσ⟩)
+  have hpairwise :
+      s.sourceTets.Pairwise (fun τ σ => ¬ SameTetVertices τ σ) := by
+    have hd := s.distinct
+    simp [Move41Site.sourceTets, Move41Site.sourceTet₀, Move41Site.sourceTet₁,
+      Move41Site.sourceTet₂, Move41Site.sourceTet₃, Tet.verts] at hd ⊢
+    refine ⟨⟨?_, ?_, ?_⟩, ⟨?_, ?_⟩, ?_⟩
+    · intro h
+      have := (h s.c).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
+      simp [Move41Site.sourceTet₁, Tet.verts] at this
+      aesop
+    · intro h
+      have := (h s.b).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
+      simp [Move41Site.sourceTet₂, Tet.verts] at this
+      aesop
+    · intro h
+      have := (h s.a).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
+      simp [Move41Site.sourceTet₃, Tet.verts] at this
+      aesop
+    · intro h
+      have := (h s.b).1 (by simp [Move41Site.sourceTet₁, Tet.verts])
+      simp [Move41Site.sourceTet₂, Tet.verts] at this
+      aesop
+    · intro h
+      have := (h s.a).1 (by simp [Move41Site.sourceTet₁, Tet.verts])
+      simp [Move41Site.sourceTet₃, Tet.verts] at this
+      aesop
+    · intro h
+      have := (h s.a).1 (by simp [Move41Site.sourceTet₂, Tet.verts])
+      simp [Move41Site.sourceTet₃, Tet.verts] at this
+      aesop
+  refine ⟨s, hse, ?_⟩
+  rcases s.legalIn_or_exists_target hcore hsources hpairwise hsaturated with
+    hlegal | htarget
+  · exact Or.inl hlegal
+  · exact Or.inr
+      (s.targetPresent_fiveTetCluster_closes_vertexLink
+        hcore hdegree hconnected hse hsaturated htarget)
+
 end Poincare
