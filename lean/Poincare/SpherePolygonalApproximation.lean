@@ -5,7 +5,9 @@ import Mathlib.Topology.UniformSpace.Path
 import Mathlib.Geometry.Manifold.Instances.Sphere
 import Mathlib.Analysis.Convex.Contractible
 import Mathlib.Analysis.Normed.Module.Connected
+import Mathlib.Analysis.Normed.Module.Ball.RadialEquiv
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+import Mathlib.Topology.Homotopy.Product
 
 namespace Poincare
 
@@ -450,5 +452,37 @@ theorem unitSphere3_simplyConnected :
       (isPathConnected_sphere hrank 0 zero_le_one)
   rw [simply_connected_iff_loops_nullhomotopic]
   exact ⟨inferInstance, fun _ p ↦ unitSphere3_loop_nullhomotopic p⟩
+
+private theorem simplyConnectedSpace_prod
+    {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    [SimplyConnectedSpace X] [SimplyConnectedSpace Y] :
+    SimplyConnectedSpace (X × Y) := by
+  rw [simply_connected_iff_unique_homotopic]
+  refine ⟨inferInstance, ?_⟩
+  rintro ⟨a₁, a₂⟩ ⟨b₁, b₂⟩
+  let q₀ := Path.Homotopic.prod
+    (⟦PathConnectedSpace.somePath a₁ b₁⟧ : Path.Homotopic.Quotient a₁ b₁)
+    (⟦PathConnectedSpace.somePath a₂ b₂⟧ : Path.Homotopic.Quotient a₂ b₂)
+  refine ⟨⟨⟨q₀⟩, fun q ↦ ?_⟩⟩
+  rw [← Path.Homotopic.prod_projLeft_projRight q]
+  change Path.Homotopic.prod _ _ = q₀
+  congr <;> apply Subsingleton.elim
+
+/-- Euclidean three-space with the origin removed is simply connected.  Polar
+coordinates identify it with the simply connected unit two-sphere times the
+contractible positive radial interval. -/
+theorem euclideanSpace3_punctured_isSimplyConnected :
+    IsSimplyConnected
+      ({0}ᶜ : Set (EuclideanSpace ℝ (Fin 3))) := by
+  letI : SimplyConnectedSpace
+      (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :=
+    unitSphere3_simplyConnected
+  letI : ContractibleSpace (Set.Ioi (0 : ℝ)) :=
+    (convex_Ioi 0).contractibleSpace ⟨1, by simp⟩
+  letI : SimplyConnectedSpace
+      (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 × Set.Ioi (0 : ℝ)) :=
+    simplyConnectedSpace_prod
+  exact (homeomorphUnitSphereProd (EuclideanSpace ℝ (Fin 3))).toHomotopyEquiv
+    |>.simplyConnectedSpace
 
 end Poincare
