@@ -46,33 +46,29 @@ theorem threeManifoldModel_isPathConnected_ball_diff_singleton
       exact hzne this]
   exact hpath.image' (e.continuousOn.mono (by simp [e]))
 
-/-- Every represented vertex in an honest topological three-manifold has an open
-carrier neighborhood, contained in its represented star, whose puncture is connected. -/
-theorem triangulationTopological_exists_open_punctured_connected_neighborhood
+/-- Around every point of an honest topological three-manifold carrier there
+is an arbitrarily small open neighborhood whose puncture is connected.  The
+neighborhood is chosen as the inverse image of a Euclidean chart ball, so this
+form is suitable for later carrier-local and radial-star arguments. -/
+theorem triangulationTopological_exists_open_punctured_connected_neighborhood_sub
     (K : Triangulation)
     (hM : TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K)
-    {v : Nat} (hv : v ∈ vertexSupport K) :
+    (x : triangulationTopologicalGeometricCarrier K)
+    {N : Set (triangulationTopologicalGeometricCarrier K)}
+    (hN : N ∈ nhds x) :
     ∃ U : Set (triangulationTopologicalGeometricCarrier K),
-      IsOpen U ∧
-      triangulationTopologicalCarrierVertex K v hv ∈ U ∧
-      (∀ p ∈ U, p.1 ∈ triangulationTopologicalVertexStar K v) ∧
-      IsConnected (U \ {triangulationTopologicalCarrierVertex K v hv}) := by
+      IsOpen U ∧ x ∈ U ∧ U ⊆ N ∧ IsConnected (U \ {x}) := by
   rcases hM with ⟨hT2, hcharted, hmanifold, _hcompact, _hconnected⟩
   letI := hT2
   letI := hcharted
   letI := hmanifold
-  let x := triangulationTopologicalCarrierVertex K v hv
   let e : OpenPartialHomeomorph
       (triangulationTopologicalGeometricCarrier K) ThreeManifoldModel :=
     chartAt ThreeManifoldModel x
-  let N := triangulationTopologicalTruncatedVertexStarNeighborhood K v
   have hxsource : x ∈ e.source := by
     simpa [e] using mem_chart_source ThreeManifoldModel x
-  have hNnhds : N ∈ nhds x := by
-    simpa [N, x] using
-      triangulationTopologicalTruncatedVertexStarNeighborhood_mem_nhds K hv
   have himage : e '' (e.source ∩ N) ∈ nhds (e x) :=
-    e.image_mem_nhds hxsource (inter_mem (e.open_source.mem_nhds hxsource) hNnhds)
+    e.image_mem_nhds hxsource (inter_mem (e.open_source.mem_nhds hxsource) hN)
   obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp himage
   let U : Set (triangulationTopologicalGeometricCarrier K) :=
     e.symm '' Metric.ball (e x) ε
@@ -80,22 +76,17 @@ theorem triangulationTopological_exists_open_punctured_connected_neighborhood
     intro z hz
     obtain ⟨p, hp, rfl⟩ := hball hz
     exact e.map_source hp.1
-  have hUopen : IsOpen U := by
-    exact e.isOpen_image_symm_of_subset_target Metric.isOpen_ball hballtarget
+  have hUopen : IsOpen U :=
+    e.isOpen_image_symm_of_subset_target Metric.isOpen_ball hballtarget
   have hxU : x ∈ U := by
-    refine ⟨e x, Metric.mem_ball_self hε, ?_⟩
-    exact e.left_inv hxsource
-  have hUstar : ∀ p ∈ U,
-      p.1 ∈ triangulationTopologicalVertexStar K v := by
-    intro p hp
-    obtain ⟨z, hzball, rfl⟩ := hp
+    exact ⟨e x, Metric.mem_ball_self hε, e.left_inv hxsource⟩
+  have hUsub : U ⊆ N := by
+    rintro p ⟨z, hzball, rfl⟩
     obtain ⟨q, hq, hqeq⟩ := hball hzball
-    have hztarget : z ∈ e.target := hballtarget hzball
     have hqeq' : q = e.symm z := by
       rw [← hqeq]
       exact (e.left_inv hq.1).symm
-    apply triangulationTopologicalTruncatedVertexStarNeighborhood_subset_vertexStar K v
-    simpa [N, hqeq'] using hq.2
+    simpa [hqeq'] using hq.2
   have hpuncturedPath : IsPathConnected (U \ {x}) := by
     have hmodel := threeManifoldModel_isPathConnected_ball_diff_singleton (e x) hε
     rw [← show e.symm '' (Metric.ball (e x) ε \ {e x}) = U \ {x} by
@@ -117,7 +108,30 @@ theorem triangulationTopological_exists_open_punctured_connected_neighborhood
         simpa [hzeq] using e.left_inv hxsource]
     exact hmodel.image' ((e.continuousOn_symm).mono
       (fun z hz ↦ hballtarget hz.1))
-  exact ⟨U, hUopen, by simpa [x] using hxU, by simpa [U] using hUstar,
-    by simpa [x] using hpuncturedPath.isConnected⟩
+  exact ⟨U, hUopen, hxU, hUsub, hpuncturedPath.isConnected⟩
+
+/-- Every represented vertex in an honest topological three-manifold has an open
+carrier neighborhood, contained in its represented star, whose puncture is connected. -/
+theorem triangulationTopological_exists_open_punctured_connected_neighborhood
+    (K : Triangulation)
+    (hM : TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K)
+    {v : Nat} (hv : v ∈ vertexSupport K) :
+    ∃ U : Set (triangulationTopologicalGeometricCarrier K),
+      IsOpen U ∧
+      triangulationTopologicalCarrierVertex K v hv ∈ U ∧
+      (∀ p ∈ U, p.1 ∈ triangulationTopologicalVertexStar K v) ∧
+      IsConnected (U \ {triangulationTopologicalCarrierVertex K v hv}) := by
+  let x := triangulationTopologicalCarrierVertex K v hv
+  let N := triangulationTopologicalTruncatedVertexStarNeighborhood K v
+  have hNnhds : N ∈ nhds x := by
+    simpa [N, x] using
+      triangulationTopologicalTruncatedVertexStarNeighborhood_mem_nhds K hv
+  obtain ⟨U, hUopen, hxU, hUN, hUconnected⟩ :=
+    triangulationTopological_exists_open_punctured_connected_neighborhood_sub
+      K hM x hNnhds
+  refine ⟨U, hUopen, by simpa [x] using hxU, ?_, by simpa [x] using hUconnected⟩
+  intro p hp
+  apply triangulationTopologicalTruncatedVertexStarNeighborhood_subset_vertexStar K v
+  exact hUN hp
 
 end Poincare
