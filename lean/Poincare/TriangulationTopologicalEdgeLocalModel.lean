@@ -368,4 +368,52 @@ triangulationTopologicalOpenEdgeNeighborhoodHomeomorphRadialLinkCarrier_midpoint
     triangulationTopologicalCarrierEdgeMidpoint,
     triangulationTopologicalGeometricEdgeMidpoint, Pi.add_apply, Pi.smul_apply]
 
+/-- Bundle the transverse coordinate of an open-edge radial point in the
+represented star of `x`. -/
+noncomputable def triangulationTopologicalOpenEdgeTransverseStarPoint
+    (K : Triangulation) (v x : Nat)
+    (tq : {tq : ↑(Set.Ico (0 : ℝ) 1) ×
+        ↑(triangulationTopologicalVertexLink K v) |
+      0 < tq.1.1 ∧ 0 < tq.2.1 x}) :
+    ↑(triangulationTopologicalVertexLinkStar K v x) :=
+  ⟨tq.1.2.1,
+    triangulationTopologicalVertexLink_mem_vertexLinkStar_of_coordinate_pos
+      K v x tq.1.2.2 tq.2.2⟩
+
+/-- The axial coordinate together with any signed radial coordinate can
+vanish only at the deleted edge midpoint.  This is the nonvanishing fact
+needed to normalize the pair to the unit circle. -/
+theorem edgeRadial_signedCoordinate_ne_zero
+    (K : Triangulation) {v x : Nat}
+    (hrep : VertexLinkVertexRepresented K v x)
+    (g : ↑(triangulationTopologicalVertexLinkStar K v x) → ℝ)
+    (habs : ∀ q, |g q| = 1 - q.1 x)
+    (tq : {tq : ↑(Set.Ico (0 : ℝ) 1) ×
+        ↑(triangulationTopologicalVertexLink K v) |
+      0 < tq.1.1 ∧ 0 < tq.2.1 x})
+    (hne : tq ≠ triangulationTopologicalOpenEdgeRadialMidpoint K hrep) :
+    (tq.1.1.1 - (2 : ℝ)⁻¹,
+        g (triangulationTopologicalOpenEdgeTransverseStarPoint K v x tq)) ≠
+      (0, 0) := by
+  intro hzero
+  have ht : tq.1.1.1 = (2 : ℝ)⁻¹ := by
+    linarith [congrArg Prod.fst hzero]
+  have hg : g (triangulationTopologicalOpenEdgeTransverseStarPoint K v x tq) = 0 :=
+    congrArg Prod.snd hzero
+  have hx : tq.1.2.1 x = 1 := by
+    have := habs (triangulationTopologicalOpenEdgeTransverseStarPoint K v x tq)
+    simp only [hg, abs_zero] at this
+    dsimp [triangulationTopologicalOpenEdgeTransverseStarPoint] at this
+    linarith
+  have hq : tq.1.2.1 = triangulationTopologicalGeometricVertex x :=
+    (triangulationTopologicalVertexLinkStar_apex_coordinate K v x
+      (triangulationTopologicalOpenEdgeTransverseStarPoint K v x tq).2).2.2.1 hx
+  apply hne
+  apply Subtype.ext
+  apply Prod.ext
+  · apply Subtype.ext
+    exact ht
+  · apply Subtype.ext
+    exact hq
+
 end Poincare
