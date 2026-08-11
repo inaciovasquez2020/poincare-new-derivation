@@ -58,4 +58,44 @@ theorem move41PiSourceLocalCarrier_sum
   · exact move23PiTargetLocalCarrier_sum h (Or.inl (Or.inr hp))
   · exact move23PiTargetLocalCarrier_sum h (Or.inr hp)
 
+/-- A point of the genuine `4 → 1` source cone lies over the boundary of
+the outer tetrahedron: at least one outer barycentric coordinate vanishes. -/
+theorem move41PiSourceLocalCarrier_zero_outer
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup)
+    {p : Nat → ℝ} (hp : p ∈ move41PiSourceLocalCarrier a b c d e) :
+    p a = 0 ∨ p b = 0 ∨ p c = 0 ∨ p d = 0 := by
+  rcases hp with ((hp | hp) | hp) | hp
+  · right; right; right
+    rw [move23PiTetrahedronBody] at hp
+    apply convexHull_min _ (convex_hyperplane
+      ⟨fun x y ↦ rfl, fun r x ↦ rfl⟩ (0 : ℝ)) hp
+    rintro _ ⟨i, rfl⟩
+    fin_cases i <;>
+      simp_all [move23PiABCE, triangulationTopologicalGeometricVertex,
+        List.nodup_cons]
+  · right; right; left
+    rw [move23PiTetrahedronBody] at hp
+    apply convexHull_min _ (convex_hyperplane
+      ⟨fun x y ↦ rfl, fun r x ↦ rfl⟩ (0 : ℝ)) hp
+    rintro _ ⟨i, rfl⟩
+    fin_cases i <;>
+      simp_all [move23PiABDE, triangulationTopologicalGeometricVertex,
+        List.nodup_cons]
+  · right; left
+    rw [move23PiTetrahedronBody] at hp
+    apply convexHull_min _ (convex_hyperplane
+      ⟨fun x y ↦ rfl, fun r x ↦ rfl⟩ (0 : ℝ)) hp
+    rintro _ ⟨i, rfl⟩
+    fin_cases i <;>
+      simp_all [move23PiACDE, triangulationTopologicalGeometricVertex,
+        List.nodup_cons]
+  · left
+    rw [move23PiTetrahedronBody] at hp
+    apply convexHull_min _ (convex_hyperplane
+      ⟨fun x y ↦ rfl, fun r x ↦ rfl⟩ (0 : ℝ)) hp
+    rintro _ ⟨i, rfl⟩
+    fin_cases i <;>
+      simp_all [move23PiBCDE, triangulationTopologicalGeometricVertex,
+        List.nodup_cons]
+
 end Poincare
