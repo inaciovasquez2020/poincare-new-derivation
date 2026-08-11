@@ -1,9 +1,44 @@
 import Poincare.SphereNormalizedChord
+import Mathlib.Topology.Subpath
 import Mathlib.Topology.UniformSpace.Path
 
 namespace Poincare
 
 open scoped unitInterval
+
+/-- A uniformly short sphere subpath is homotopic, relative to its endpoints, to the
+normalized chord joining those endpoints.  The deliberately separated bounds are
+the form produced by uniform subdivision and by the normalized-chord estimate. -/
+theorem Path.subpath_homotopic_normalizedChord_of_close
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {x y : Metric.sphere (0 : E) 1} (p : Path x y) (a b : unitInterval)
+    (hab : dist (p a : E) (p b : E) < (1 : ℝ) / 4)
+    (hsub : ∀ s : unitInterval,
+      dist ((p.subpath a b) s : E) (p a : E) < (1 : ℝ) / 2) :
+    Path.Homotopic (p.subpath a b)
+      (normalizedChord (p a : E) (p b : E)
+        (by simpa [Metric.mem_sphere] using (p a).property)
+        (by simpa [Metric.mem_sphere] using (p b).property)
+        (by linarith)) := by
+  let hu : ‖(p a : E)‖ = 1 := by
+    simpa [Metric.mem_sphere] using (p a).property
+  let hv : ‖(p b : E)‖ = 1 := by
+    simpa [Metric.mem_sphere] using (p b).property
+  let huv : dist (p a : E) (p b : E) < 2 := by linarith
+  apply normalizedStraight_pathHomotopic
+  intro s
+  calc
+    dist ((p.subpath a b) s : E)
+        ((normalizedChord (p a : E) (p b : E) hu hv huv) s : E) ≤
+        dist ((p.subpath a b) s : E) (p a : E) +
+          dist (p a : E)
+            ((normalizedChord (p a : E) (p b : E) hu hv huv) s : E) :=
+      dist_triangle _ _ _
+    _ < 2 := by
+      rw [dist_comm (p a : E)]
+      have hchord := dist_normalizedChord_source_le_two_mul hu hv huv s
+      have hs := hsub s
+      linarith
 
 /-- A path admits a positive uniform subdivision count on whose parameter scale its
 image has diameter less than `1 / 4`. -/
