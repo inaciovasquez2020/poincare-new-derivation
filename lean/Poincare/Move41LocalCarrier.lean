@@ -353,4 +353,89 @@ theorem move41PiRadialMap_mem_target
   · intro z hza hzb hzc hzd
     simp [move41PiRadialMap, hza, hzb, hzc, hzd]
 
+/-- The inverse radial barycentric formula on the solid outer tetrahedron.
+It subtracts the least outer coordinate and records four times that least
+coordinate at the cone point. -/
+noncomputable def move41PiRadialInv (a b c d e : Nat) (q : Nat → ℝ) :
+    Nat → ℝ :=
+  let m := min (min (q a) (q b)) (min (q c) (q d))
+  fun z ↦
+    if z = a then q a - m
+    else if z = b then q b - m
+    else if z = c then q c - m
+    else if z = d then q d - m
+    else if z = e then 4 * m
+    else 0
+
+/-- The inverse radial formula carries the solid target tetrahedron into the
+cone on its boundary. -/
+theorem move41PiRadialInv_mem_source
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup) {q : Nat → ℝ}
+    (hq : q ∈ move41PiTargetLocalCarrier a b c d e) :
+    move41PiRadialInv a b c d e q ∈
+      move41PiSourceLocalCarrier a b c d e := by
+  let m : ℝ := min (min (q a) (q b)) (min (q c) (q d))
+  have hnonneg := move41PiTargetLocalCarrier_nonneg hq
+  have hsum := move41PiTargetLocalCarrier_sum h hq
+  have he := move41PiTargetLocalCarrier_center_eq_zero h hq
+  have hma : m ≤ q a := le_trans (min_le_left _ _) (min_le_left _ _)
+  have hmb : m ≤ q b := le_trans (min_le_left _ _) (min_le_right _ _)
+  have hmc : m ≤ q c := le_trans (min_le_right _ _) (min_le_left _ _)
+  have hmd : m ≤ q d := le_trans (min_le_right _ _) (min_le_right _ _)
+  have hm0 : 0 ≤ m := le_min (le_min (hnonneg a) (hnonneg b))
+    (le_min (hnonneg c) (hnonneg d))
+  apply mem_move41PiSourceLocalCarrier_of_coordinates h
+  · intro z
+    simp only [move41PiRadialInv]
+    split_ifs <;> linarith
+  · simp only [move41PiRadialInv]
+    have hab : a ≠ b := by simp_all [List.nodup_cons]
+    have hac : a ≠ c := by simp_all [List.nodup_cons]
+    have had : a ≠ d := by simp_all [List.nodup_cons]
+    have hae : a ≠ e := by simp_all [List.nodup_cons]
+    have hbc : b ≠ c := by simp_all [List.nodup_cons]
+    have hbd : b ≠ d := by simp_all [List.nodup_cons]
+    have hbe : b ≠ e := by simp_all [List.nodup_cons]
+    have hcd : c ≠ d := by simp_all [List.nodup_cons]
+    have hce : c ≠ e := by simp_all [List.nodup_cons]
+    have hde : d ≠ e := by simp_all [List.nodup_cons]
+    simp [Ne.symm hab, Ne.symm hac, Ne.symm had, Ne.symm hae,
+      Ne.symm hbc, Ne.symm hbd, Ne.symm hbe, Ne.symm hcd,
+      Ne.symm hce, Ne.symm hde]
+    linarith
+  · simp only [move41PiRadialInv, m]
+    rcases min_choice (min (q a) (q b)) (min (q c) (q d)) with hm | hm
+    · rcases min_choice (q a) (q b) with hab | hab
+      · have hma' : m = q a := hm.trans hab
+        have hma'' : min (min (q a) (q b)) (min (q c) (q d)) = q a := hma'
+        left
+        simp [move41PiRadialInv, hma'']
+      · have hmb' : m = q b := hm.trans hab
+        have hmb'' : min (min (q a) (q b)) (min (q c) (q d)) = q b := hmb'
+        have hba : b ≠ a := by
+          exact Ne.symm (by simp_all [List.nodup_cons] : a ≠ b)
+        right; left
+        simp [move41PiRadialInv, hmb'', hba]
+    · rcases min_choice (q c) (q d) with hcd | hcd
+      · have hmc' : m = q c := hm.trans hcd
+        have hmc'' : min (min (q a) (q b)) (min (q c) (q d)) = q c := hmc'
+        have hca : c ≠ a := by
+          exact Ne.symm (by simp_all [List.nodup_cons] : a ≠ c)
+        have hcb : c ≠ b := by
+          exact Ne.symm (by simp_all [List.nodup_cons] : b ≠ c)
+        right; right; left
+        simp [move41PiRadialInv, hmc'', hca, hcb]
+      · have hmd' : m = q d := hm.trans hcd
+        have hmd'' : min (min (q a) (q b)) (min (q c) (q d)) = q d := hmd'
+        have hda : d ≠ a := by
+          exact Ne.symm (by simp_all [List.nodup_cons] : a ≠ d)
+        have hdb : d ≠ b := by
+          exact Ne.symm (by simp_all [List.nodup_cons] : b ≠ d)
+        have hdc : d ≠ c := by
+          exact Ne.symm (by simp_all [List.nodup_cons] : c ≠ d)
+        right; right; right
+        simp [move41PiRadialInv, hmd'', hda, hdb, hdc]
+  · intro z hza hzb hzc hzd hze
+    simp [move41PiRadialInv, hza, hzb, hzc, hzd, hze]
+
 end Poincare
