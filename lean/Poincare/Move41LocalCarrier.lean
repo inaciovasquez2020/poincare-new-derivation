@@ -524,4 +524,43 @@ theorem move41PiRadialInv_radialMap
   have hoff := move41PiSourceLocalCarrier_eq_zero_of_not_label hp hza hzb hzc hzd hze
   simp [move41PiRadialMap, hza, hzb, hzc, hzd, hze, hoff]
 
+/-- The radial map recovers every point of the solid target tetrahedron after
+applying the explicit inverse formula. -/
+theorem move41PiRadialMap_radialInv
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup) {q : Nat → ℝ}
+    (hq : q ∈ move41PiTargetLocalCarrier a b c d e) :
+    move41PiRadialMap a b c d e (move41PiRadialInv a b c d e q) = q := by
+  let m : ℝ := min (min (q a) (q b)) (min (q c) (q d))
+  have hab : a ≠ b := by simp_all [List.nodup_cons]
+  have hac : a ≠ c := by simp_all [List.nodup_cons]
+  have had : a ≠ d := by simp_all [List.nodup_cons]
+  have hae : a ≠ e := by simp_all [List.nodup_cons]
+  have hbc : b ≠ c := by simp_all [List.nodup_cons]
+  have hbd : b ≠ d := by simp_all [List.nodup_cons]
+  have hbe : b ≠ e := by simp_all [List.nodup_cons]
+  have hcd : c ≠ d := by simp_all [List.nodup_cons]
+  have hce : c ≠ e := by simp_all [List.nodup_cons]
+  have hde : d ≠ e := by simp_all [List.nodup_cons]
+  have he := move41PiTargetLocalCarrier_center_eq_zero h hq
+  funext z
+  by_cases hza : z = a
+  · subst z
+    simp [move41PiRadialMap, move41PiRadialInv, Ne.symm hae, Ne.symm hbe,
+      Ne.symm hce, Ne.symm hde]
+  by_cases hzb : z = b
+  · subst z
+    simp [move41PiRadialMap, move41PiRadialInv, hza, Ne.symm hae, Ne.symm hbe,
+      Ne.symm hce, Ne.symm hde]
+  by_cases hzc : z = c
+  · subst z
+    simp [move41PiRadialMap, move41PiRadialInv, hza, hzb, Ne.symm hae,
+      Ne.symm hbe, Ne.symm hce, Ne.symm hde]
+  by_cases hzd : z = d
+  · subst z
+    simp [move41PiRadialMap, move41PiRadialInv, hza, hzb, hzc, Ne.symm hae,
+      Ne.symm hbe, Ne.symm hce, Ne.symm hde]
+  have hoff := move41PiTargetLocalCarrier_eq_zero_of_not_outer_label
+    h hq hza hzb hzc hzd
+  simp [move41PiRadialMap, hza, hzb, hzc, hzd, hoff]
+
 end Poincare
