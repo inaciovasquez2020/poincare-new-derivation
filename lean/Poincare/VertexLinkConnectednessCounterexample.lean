@@ -61,11 +61,11 @@ theorem twoBoundaryVertexWedge_closedCore :
     rcases hτ with
       rfl | rfl | rfl | rfl | rfl |
       rfl | rfl | rfl | rfl | rfl <;>
-      native_decide
+      decide
 
   constructor
 
-  · native_decide
+  · decide
 
   · intro a b c habc hrepresented
 
@@ -94,7 +94,7 @@ theorem twoBoundaryVertexWedge_closedCore :
       rcases hb with rfl | rfl | rfl | rfl <;>
       rcases hc with rfl | rfl | rfl | rfl <;>
       norm_num at habc <;>
-      native_decide
+      decide
 
 
 theorem twoBoundaryVertexWedge_link_zero :

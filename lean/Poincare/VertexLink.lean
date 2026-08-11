@@ -462,15 +462,13 @@ theorem LinkTriangle.inTriangle_mem_edges
     · simp [
         LinkTriangle.edges,
         LinkEdge.ofDistinct,
-        hlt,
-        lt_asymm hlt
+        hlt
       ]
 
     · simp [
         LinkTriangle.edges,
         LinkEdge.ofDistinct,
-        hlt,
-        lt_asymm hlt
+        hlt
       ]
 
   · rcases hhi with rfl | rfl | rfl
@@ -478,7 +476,6 @@ theorem LinkTriangle.inTriangle_mem_edges
     · simp [
         LinkTriangle.edges,
         LinkEdge.ofDistinct,
-        hlt,
         lt_asymm hlt
       ]
 
@@ -487,8 +484,7 @@ theorem LinkTriangle.inTriangle_mem_edges
     · simp [
         LinkTriangle.edges,
         LinkEdge.ofDistinct,
-        hlt,
-        lt_asymm hlt
+        hlt
       ]
 
   · rcases hhi with rfl | rfl | rfl
@@ -496,14 +492,12 @@ theorem LinkTriangle.inTriangle_mem_edges
     · simp [
         LinkTriangle.edges,
         LinkEdge.ofDistinct,
-        hlt,
         lt_asymm hlt
       ]
 
     · simp [
         LinkTriangle.edges,
         LinkEdge.ofDistinct,
-        hlt,
         lt_asymm hlt
       ]
 
@@ -535,8 +529,7 @@ theorem Tet.linkTriangleAt?_verts_subset
     simp only [
       LinkTriangle.verts,
       Tet.verts,
-      List.mem_cons,
-      List.mem_singleton
+      List.mem_cons
     ] at hx ⊢
     aesop
 
@@ -550,8 +543,7 @@ theorem Tet.linkTriangleAt?_verts_subset
       simp only [
         LinkTriangle.verts,
         Tet.verts,
-        List.mem_cons,
-        List.mem_singleton
+        List.mem_cons
       ] at hx ⊢
       aesop
 
@@ -565,8 +557,7 @@ theorem Tet.linkTriangleAt?_verts_subset
         simp only [
           LinkTriangle.verts,
           Tet.verts,
-          List.mem_cons,
-          List.mem_singleton
+          List.mem_cons
         ] at hx ⊢
         aesop
 
@@ -580,8 +571,7 @@ theorem Tet.linkTriangleAt?_verts_subset
           simp only [
             LinkTriangle.verts,
             Tet.verts,
-            List.mem_cons,
-            List.mem_singleton
+            List.mem_cons
           ] at hx ⊢
           aesop
 
@@ -1268,10 +1258,7 @@ theorem vertexLinkTriangles_nodup
     (hcore.2.1.filterMap
       (fun τ => τ.linkTriangleAt? v))
 
-  intro τ ρ hnotSame
-  intro σ hστ
-  intro ψ hψρ
-  intro hσψ
+  intro τ ρ hnotSame σ hστ ψ hψρ hσψ
 
   have hτExtract :
       τ.linkTriangleAt? v = some σ := by
@@ -1344,10 +1331,7 @@ theorem vertexLinkTriangles_pairwise_vertexSet_ne
     hcore.2.1.filterMap
       (fun τ => τ.linkTriangleAt? v)
 
-  intro τ ρ hnotSame
-  intro σ hτExtract
-  intro ψ hρExtract
-  intro hsame
+  intro τ ρ hnotSame σ hτExtract ψ hρExtract hsame
 
   apply hnotSame
 
@@ -1760,6 +1744,187 @@ def VertexLinkStarDegreeTwo
         ρ ≠ σ →
         VertexLinkStarAdjacent K v x σ ρ →
         ρ = ρ₁ ∨ ρ = ρ₂
+
+
+private theorem List.exists_unique_other_of_filter_length_two
+    {alpha : Type} [DecidableEq alpha]
+    (l : List alpha) (p : alpha → Prop) [DecidablePred p]
+    (a : alpha) (hnodup : l.Nodup) (ha : a ∈ l) (hpa : p a)
+    (hlen : (l.filter fun z => decide (p z)).length = 2) :
+    ∃ b : alpha,
+      b ≠ a ∧ b ∈ l ∧ p b ∧
+      ∀ c : alpha, c ∈ l → p c → c = a ∨ c = b := by
+  obtain ⟨u, w, huw⟩ := List.length_eq_two.mp hlen
+  have haFilter : a ∈ l.filter fun z => decide (p z) := by
+    simp [ha, hpa]
+  rw [huw] at haFilter
+  simp only [List.mem_cons] at haFilter
+  rcases haFilter with hua | hwa
+  · subst u
+    refine ⟨w, ?_, ?_, ?_, ?_⟩
+    · have hf := hnodup.filter (fun z => decide (p z))
+      rw [huw] at hf
+      exact Ne.symm (by simpa using hf)
+    · have : w ∈ l.filter fun z => decide (p z) := by rw [huw]; simp
+      exact (List.mem_filter.mp this).1
+    · have : w ∈ l.filter fun z => decide (p z) := by rw [huw]; simp
+      simpa using (List.mem_filter.mp this).2
+    · intro c hc hpc
+      have : c ∈ l.filter fun z => decide (p z) := by simp [hc, hpc]
+      rw [huw] at this
+      simpa [eq_comm] using this
+  · rcases hwa with hwa | hwa
+    · subst w
+      refine ⟨u, ?_, ?_, ?_, ?_⟩
+      · have hf := hnodup.filter (fun z => decide (p z))
+        rw [huw] at hf
+        simpa using hf
+      · have : u ∈ l.filter fun z => decide (p z) := by rw [huw]; simp
+        exact (List.mem_filter.mp this).1
+      · have : u ∈ l.filter fun z => decide (p z) := by rw [huw]; simp
+        simpa using (List.mem_filter.mp this).2
+      · intro c hc hpc
+        have : c ∈ l.filter fun z => decide (p z) := by simp [hc, hpc]
+        rw [huw] at this
+        rcases (by simpa using this : c = u ∨ c = a) with h | h
+        · exact Or.inr h
+        · exact Or.inl h
+    · simp at hwa
+
+
+private theorem List.Pairwise.symmetric_of_mem
+    {alpha : Type} {r : alpha → alpha → Prop}
+    (hsymm : ∀ {a b}, r a b → r b a)
+    {l : List alpha} (hpair : l.Pairwise r)
+    {a b : alpha} (ha : a ∈ l) (hb : b ∈ l) (hne : a ≠ b) :
+    r a b := by
+  induction hpair with
+  | nil => simp at ha
+  | @cons c l hhead htail ih =>
+      rcases List.mem_cons.mp ha with rfl | haTail
+      · have hbTail : b ∈ l := by
+          rcases List.mem_cons.mp hb with h | h
+          · exact (hne h.symm).elim
+          · exact h
+        exact hhead b hbTail
+      · rcases List.mem_cons.mp hb with rfl | hbTail
+        · exact hsymm (hhead a haTail)
+        · exact ih haTail hbTail
+
+
+theorem ClosedTriangulationCore.vertexLinkStarDegreeTwo
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    {v x : Nat}
+    (hrep : VertexLinkVertexRepresented K v x) :
+    VertexLinkStarDegreeTwo K v x := by
+  intro sigma hsigmaStar
+  have hsigma := (mem_vertexLinkStarTriangles_iff K v x sigma).1 hsigmaStar
+  have hnodupSigma := vertexLinkTriangles_triangle_nodup K hcore v sigma hsigma.1
+  obtain ⟨y, z, hyx, hzx, hyz, hySigma, hzSigma, hallSigma⟩ :
+      ∃ y z : Nat, y ≠ x ∧ z ≠ x ∧ y ≠ z ∧
+        y ∈ sigma.verts ∧ z ∈ sigma.verts ∧
+        ∀ q, q ∈ sigma.verts ↔ q = x ∨ q = y ∨ q = z := by
+    rcases sigma with ⟨a, b, c⟩
+    simp only [LinkTriangle.verts] at hnodupSigma hsigma ⊢
+    simp at hnodupSigma hsigma
+    rcases hsigma.2 with rfl | rfl | rfl
+    · refine ⟨b, c, Ne.symm hnodupSigma.1.1, Ne.symm hnodupSigma.1.2,
+        hnodupSigma.2, by simp, by simp, ?_⟩
+      intro q; simp [eq_comm]
+    · refine ⟨a, c, hnodupSigma.1.1, Ne.symm hnodupSigma.2,
+        hnodupSigma.1.2, by simp, by simp, ?_⟩
+      intro q; simp [eq_comm, or_left_comm]
+    · refine ⟨a, b, hnodupSigma.1.2, hnodupSigma.2,
+        hnodupSigma.1.1, by simp, by simp, ?_⟩
+      intro q; simp [eq_comm, or_comm, or_left_comm]
+
+  let eY := LinkEdge.ofDistinct x y hyx.symm
+  let eZ := LinkEdge.ofDistinct x z hzx.symm
+  have heYsigma : eY.InTriangle sigma :=
+    LinkEdge.ofDistinct_inTriangle sigma x y hyx.symm hsigma.2 hySigma
+  have heZsigma : eZ.InTriangle sigma :=
+    LinkEdge.ofDistinct_inTriangle sigma x z hzx.symm hsigma.2 hzSigma
+  have hnodupLink := vertexLinkTriangles_nodup K hcore v
+
+  obtain ⟨rhoY, hrhoYne, hrhoY, heYrho, hallY⟩ :=
+    List.exists_unique_other_of_filter_length_two
+      (vertexLinkTriangles K v) (fun tau => eY.InTriangle tau) sigma
+      hnodupLink hsigma.1 heYsigma
+      (represented_linkEdge_link_incidence_two K hcore v eY
+        ⟨sigma, hsigma.1, heYsigma⟩)
+  obtain ⟨rhoZ, hrhoZne, hrhoZ, heZrho, hallZ⟩ :=
+    List.exists_unique_other_of_filter_length_two
+      (vertexLinkTriangles K v) (fun tau => eZ.InTriangle tau) sigma
+      hnodupLink hsigma.1 heZsigma
+      (represented_linkEdge_link_incidence_two K hcore v eZ
+        ⟨sigma, hsigma.1, heZsigma⟩)
+
+  have endpoints_mem : ∀ (a b : Nat) (hne : a ≠ b) (tau : LinkTriangle),
+      (LinkEdge.ofDistinct a b hne).InTriangle tau →
+        a ∈ tau.verts ∧ b ∈ tau.verts := by
+    intro a b hne tau he
+    unfold LinkEdge.ofDistinct at he
+    split at he
+    · exact he
+    · exact ⟨he.2, he.1⟩
+
+  have hxRhoY := (endpoints_mem x y hyx.symm rhoY heYrho).1
+  have hyRhoY := (endpoints_mem x y hyx.symm rhoY heYrho).2
+  have hxRhoZ := (endpoints_mem x z hzx.symm rhoZ heZrho).1
+  have hzRhoZ := (endpoints_mem x z hzx.symm rhoZ heZrho).2
+
+  have hrhoYZ : rhoY ≠ rhoZ := by
+    intro heq
+    subst rhoZ
+    have hvertices : ∀ q, q ∈ sigma.verts ↔ q ∈ rhoY.verts := by
+      intro q
+      have hn := vertexLinkTriangles_triangle_nodup K hcore v rhoY hrhoY
+      let S := sigma.verts.toFinset
+      let R := rhoY.verts.toFinset
+      have hSR : S ⊆ R := by
+        intro t ht
+        have ht' : t ∈ sigma.verts := List.mem_toFinset.mp ht
+        rcases (hallSigma t).1 ht' with rfl | rfl | rfl
+        · exact List.mem_toFinset.mpr hxRhoY
+        · exact List.mem_toFinset.mpr hyRhoY
+        · exact List.mem_toFinset.mpr hzRhoZ
+      have hScard : S.card = 3 := by
+        change sigma.verts.toFinset.card = 3
+        rw [← List.toFinset_eq hnodupSigma]
+        simp [LinkTriangle.verts]
+      have hRcard : R.card = 3 := by
+        change rhoY.verts.toFinset.card = 3
+        rw [← List.toFinset_eq hn]
+        simp [LinkTriangle.verts]
+      have hEq : S = R := Finset.eq_of_subset_of_card_le hSR (by omega)
+      simpa [S, R] using congrArg (fun T : Finset Nat => q ∈ T) hEq
+    have hpair := vertexLinkTriangles_pairwise_vertexSet_ne K hcore v
+    exact (List.Pairwise.symmetric_of_mem
+      (fun h hs => h (fun q => (hs q).symm))
+      hpair hsigma.1 hrhoY hrhoYne.symm) hvertices
+
+  have hAdjY : VertexLinkStarAdjacent K v x sigma rhoY := by
+    refine ⟨hsigmaStar, (mem_vertexLinkStarTriangles_iff K v x rhoY).2
+      ⟨hrhoY, hxRhoY⟩, y, hyx, hySigma, hyRhoY⟩
+  have hAdjZ : VertexLinkStarAdjacent K v x sigma rhoZ := by
+    refine ⟨hsigmaStar, (mem_vertexLinkStarTriangles_iff K v x rhoZ).2
+      ⟨hrhoZ, hxRhoZ⟩, z, hzx, hzSigma, hzRhoZ⟩
+
+  refine ⟨rhoY, rhoZ, hrhoYne, hrhoZne, hrhoYZ, hAdjY, hAdjZ, ?_⟩
+  intro rho hrhoNe hAdj
+  obtain ⟨q, hqx, hqSigma, hqRho⟩ := hAdj.2.2
+  have hrhoStar := (mem_vertexLinkStarTriangles_iff K v x rho).1 hAdj.2.1
+  rcases (hallSigma q).1 hqSigma with hqx' | hqy | hqz
+  · exact (hqx hqx').elim
+  · left
+    have he : eY.InTriangle rho :=
+      LinkEdge.ofDistinct_inTriangle rho x y hyx.symm hrhoStar.2 (by simpa [hqy] using hqRho)
+    exact (hallY rho hrhoStar.1 he).resolve_left hrhoNe
+  · right
+    have he : eZ.InTriangle rho :=
+      LinkEdge.ofDistinct_inTriangle rho x z hzx.symm hrhoStar.2 (by simpa [hqz] using hqRho)
+    exact (hallZ rho hrhoStar.1 he).resolve_left hrhoNe
 
 
 
@@ -2348,7 +2513,7 @@ theorem vertexLinkEdgeIncidences_length_eq_two_mul_edges_length
 
           simpa using he)
 
-    simpa using h
+    simp
 
 
   have hcountTwo :
@@ -2579,12 +2744,9 @@ theorem represented_star_length_ge_three
 
     simp [
       T,
-      hρ₁σ,
-      hρ₂σ,
       hρ₁ρ₂,
       Ne.symm hρ₁σ,
-      Ne.symm hρ₂σ,
-      Ne.symm hρ₁ρ₂
+      Ne.symm hρ₂σ
     ]
 
   have hScard :
@@ -2796,7 +2958,7 @@ theorem vertexLink_sum_star_lengths_eq_three_mul_faces
           intro x hx
           simpa using hx)
 
-    simpa using h
+    simp
 
   have hsumStar :
       ∑ x ∈ I.toFinset,

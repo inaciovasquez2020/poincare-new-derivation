@@ -3,6 +3,61 @@ import Poincare.TriangulationTopologicalGeometricConnectedness
 
 namespace Poincare
 
+/-- In a connected represented tetrahedron-overlap graph, a nonempty family
+of represented tetrahedra that is closed under shared-vertex adjacency
+contains every represented tetrahedron. -/
+theorem TetrahedronVertexOverlapConnected.all_of_overlap_closed
+    {K : Triangulation}
+    (hconn : TetrahedronVertexOverlapConnected K)
+    (C : Tet → Prop)
+    {tau₀ : Tet}
+    (htau₀K : tau₀ ∈ K.tets)
+    (hC₀ : C tau₀)
+    (hclosed : ∀ tau rho,
+      tau ∈ K.tets →
+      rho ∈ K.tets →
+      (tau.verts.toFinset ∩ rho.verts.toFinset).Nonempty →
+      C tau → C rho) :
+    ∀ rho ∈ K.tets, C rho := by
+  intro rho hrhoK
+  have hpath := hconn.2 tau₀ htau₀K rho hrhoK
+  apply Relation.ReflTransGen.head_induction_on
+    (motive := fun tau _ ↦ tau ∈ K.tets → C tau → C rho)
+    hpath
+  · intro _ hC
+    exact hC
+  · intro tau sigma hstep hrest ih htauK hCtau
+    have hsigmaK : sigma ∈ K.tets := by
+      rcases hrest.cases_head with h | ⟨upsilon, hsigmaUpsilon, _⟩
+      · simpa [h] using hrhoK
+      · exact hsigmaUpsilon.2
+    exact ih hsigmaK
+      (hclosed tau sigma htauK hsigmaK hstep.1 hCtau)
+  · exact htau₀K
+  · exact hC₀
+
+/-- A family of represented tetrahedra is closed under shared-vertex
+adjacency as soon as the whole represented star of every vertex of every
+tetrahedron in the family remains in the family.  This is the exact local-to-
+overlap bridge used for the target-present five-tetrahedron cluster. -/
+theorem tetrahedronCluster_overlap_closed_of_vertexStar_closed
+    {K : Triangulation}
+    (C : Tet → Prop)
+    (hstar : ∀ tau ∈ K.tets, C tau →
+      ∀ v ∈ tau.verts, ∀ rho ∈ K.tets, v ∈ rho.verts → C rho) :
+    ∀ tau rho,
+      tau ∈ K.tets →
+      rho ∈ K.tets →
+      (tau.verts.toFinset ∩ rho.verts.toFinset).Nonempty →
+      C tau → C rho := by
+  intro tau rho htauK hrhoK hoverlap hCtau
+  obtain ⟨v, hv⟩ := hoverlap
+  have hvtau : v ∈ tau.verts :=
+    List.mem_toFinset.mp (Finset.mem_inter.mp hv).1
+  have hvrho : v ∈ rho.verts :=
+    List.mem_toFinset.mp (Finset.mem_inter.mp hv).2
+  exact hstar tau htauK hCtau v hvtau rho hrhoK hvrho
+
 /-- Under connectedness of the represented tetrahedron overlap graph, the
 five-tetrahedron cluster forced by zero defect contains every represented
 tetrahedron. -/

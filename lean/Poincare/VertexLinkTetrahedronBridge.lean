@@ -430,7 +430,7 @@ theorem vertexLinkGeometricRealization_eq_tetrahedronFrontier
         _ = 3 := by simp [LinkTriangle.verts]
     have hmissing : ∃ i : Fin 4, i ∉ S := by
       by_contra h
-      push_neg at h
+      push Not at h
       have hSuniv : S = Finset.univ := Finset.eq_univ_of_forall h
       rw [hSuniv] at hScard
       simp at hScard

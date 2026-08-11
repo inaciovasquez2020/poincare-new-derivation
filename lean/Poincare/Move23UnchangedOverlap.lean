@@ -60,6 +60,115 @@ theorem eraseFirstSameTet_sublist (target : Tet) (tets : List Tet) :
           cases he : sameTetVerticesBool x target <;> simp_all
         simpa [eraseFirstSameTet, hb'] using ih.cons_cons x
 
+/-- Erasing the first representative of a tetrahedron vertex set does not
+change the number of entries satisfying a vertex-set invariant predicate
+which is false on that vertex set.  No uniqueness hypothesis is needed. -/
+theorem eraseFirstSameTet_filter_length_eq_of_not
+    (p : Tet → Prop) [DecidablePred p]
+    (target : Tet) (tets : List Tet)
+    (hinvariant : ∀ τ σ, SameTetVertices τ σ → (p τ ↔ p σ))
+    (hnot : ¬ p target) :
+    ((eraseFirstSameTet target tets).filter p).length =
+      (tets.filter p).length := by
+  induction tets with
+  | nil => simp [eraseFirstSameTet]
+  | cons τ rest ih =>
+      by_cases hb : sameTetVerticesBool τ target = true
+      · have hsame : SameTetVertices τ target :=
+          (sameTetVerticesBool_eq_true_iff τ target).1 hb
+        have hτ : ¬ p τ := by
+          intro hp
+          exact hnot ((hinvariant τ target hsame).1 hp)
+        simp [eraseFirstSameTet, hb, hτ]
+      · have hbfalse : sameTetVerticesBool τ target = false := by
+          cases h : sameTetVerticesBool τ target <;> simp_all
+        rw [eraseFirstSameTet]
+        simp only [hbfalse]
+        by_cases hp : p τ <;> simp [hp, ih]
+
+/-- Erasing the first representative of a tetrahedron vertex set removes
+exactly one entry from a vertex-set invariant filtered count, provided that
+the vertex set is represented and satisfies the predicate.  As with the
+negative-erasure lemma, uniqueness is unnecessary. -/
+theorem eraseFirstSameTet_filter_length_add_one_eq
+    (p : Tet → Prop) [DecidablePred p]
+    (target : Tet) (tets : List Tet)
+    (hinvariant : ∀ τ σ, SameTetVertices τ σ → (p τ ↔ p σ))
+    (hrepresented : ∃ τ ∈ tets, SameTetVertices τ target)
+    (hpos : p target) :
+    ((eraseFirstSameTet target tets).filter p).length + 1 =
+      (tets.filter p).length := by
+  induction tets with
+  | nil => simp at hrepresented
+  | cons τ rest ih =>
+      by_cases hb : sameTetVerticesBool τ target = true
+      · have hsame : SameTetVertices τ target :=
+          (sameTetVerticesBool_eq_true_iff τ target).1 hb
+        have hτ : p τ := (hinvariant τ target hsame).2 hpos
+        simp [eraseFirstSameTet, hb, hτ]
+      · have hbfalse : sameTetVerticesBool τ target = false := by
+          cases h : sameTetVerticesBool τ target <;> simp_all
+        have hrest : ∃ σ ∈ rest, SameTetVertices σ target := by
+          rcases hrepresented with ⟨σ, hσ, hs⟩
+          rcases (by simpa using hσ : σ = τ ∨ σ ∈ rest) with heq | hσrest
+          · have hsame : SameTetVertices τ target := by simpa [heq] using hs
+            exact (hb ((sameTetVerticesBool_eq_true_iff τ target).2 hsame)).elim
+          · exact ⟨σ, hσrest, hs⟩
+        rw [eraseFirstSameTet]
+        simp only [hbfalse]
+        by_cases hτ : p τ <;> simp [hτ, ih hrest]
+
+/-- At a legal `2-3` site, removing the two uniquely represented source
+tetrahedra splits any vertex-set invariant filtered count into the unchanged
+count and the explicit two-tetrahedron local count. -/
+theorem ClosedTriangulationCore.move23Site_unchanged_filter_length_add_local_eq
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (s : Move23Site) (hlegal : s.LegalIn K)
+    (p : Tet → Prop) [DecidablePred p]
+    (hinvariant : ∀ τ σ, SameTetVertices τ σ → (p τ ↔ p σ)) :
+    ((s.unchangedTets K).filter p).length +
+        ([s.leftTet, s.rightTet].filter p).length =
+      (K.tets.filter p).length := by
+  have hdata := hcore.move23Site_simpleBistellarData s hlegal
+  have hrightAfter :
+      ∃ τ ∈ eraseFirstSameTet s.leftTet K.tets,
+        SameTetVertices τ s.rightTet :=
+    s.rightMatch_survives_eraseLeft K.tets ⟨hdata.2.2.1.choose,
+      hdata.2.2.1.choose_spec.1.1, hdata.2.2.1.choose_spec.1.2⟩
+  by_cases hleft : p s.leftTet
+  · have eleft := eraseFirstSameTet_filter_length_add_one_eq
+      p s.leftTet K.tets hinvariant
+      ⟨hdata.2.1.choose, hdata.2.1.choose_spec.1.1,
+        hdata.2.1.choose_spec.1.2⟩ hleft
+    by_cases hright : p s.rightTet
+    · have eright := eraseFirstSameTet_filter_length_add_one_eq
+        p s.rightTet (eraseFirstSameTet s.leftTet K.tets)
+        hinvariant hrightAfter hright
+      simp only [Move23Site.unchangedTets]
+      simp [hleft, hright] at ⊢
+      omega
+    · have eright := eraseFirstSameTet_filter_length_eq_of_not
+        p s.rightTet (eraseFirstSameTet s.leftTet K.tets)
+        hinvariant hright
+      simp only [Move23Site.unchangedTets]
+      simp [hleft, hright] at ⊢
+      omega
+  · have eleft := eraseFirstSameTet_filter_length_eq_of_not
+      p s.leftTet K.tets hinvariant hleft
+    by_cases hright : p s.rightTet
+    · have eright := eraseFirstSameTet_filter_length_add_one_eq
+        p s.rightTet (eraseFirstSameTet s.leftTet K.tets)
+        hinvariant hrightAfter hright
+      simp only [Move23Site.unchangedTets]
+      simp [hleft, hright] at ⊢
+      omega
+    · have eright := eraseFirstSameTet_filter_length_eq_of_not
+        p s.rightTet (eraseFirstSameTet s.leftTet K.tets)
+        hinvariant hright
+      simp only [Move23Site.unchangedTets]
+      simp [hleft, hright] at ⊢
+      omega
+
 theorem not_same_of_mem_eraseFirstSameTet_of_unique
     {tau target : Tet} {tets : List Tet}
     (hn : tets.Nodup)

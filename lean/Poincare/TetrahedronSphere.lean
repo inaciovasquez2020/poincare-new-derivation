@@ -201,7 +201,7 @@ theorem tetrahedronFrontier_eq_facetUnion :
       tetrahedronAffineBasis.sum_coord_apply_eq_one p
     have hsum_erase : ∑ j ∈ Finset.univ.erase i, w j = 1 := by
       rw [Finset.sum_erase]
-      · simpa [w, hizero] using hsum
+      · simp [w] at hsum ⊢
       · exact hizero
     have hface : ∀ j ∈ Finset.univ.erase i,
         tetrahedronSimplex.points j ∈

@@ -22,7 +22,7 @@ private theorem convexHull_geometricVertex_coordinate_nonneg
   split <;> norm_num
 
 private theorem convexHull_geometricVertex_sum
-    {F : Finset Nat} (hF : F.Nonempty) {p : Nat → ℝ}
+    {F : Finset Nat} (_hF : F.Nonempty) {p : Nat → ℝ}
     (hp : p ∈ convexHull ℝ (triangulationTopologicalGeometricVertex '' (↑F : Set Nat))) :
     ∑ j ∈ F, p j = 1 := by
   apply convexHull_min _ (convex_hyperplane
@@ -344,21 +344,21 @@ noncomputable def crossPolytopeL1SphereHomeomorphThreeSphere :
         have := u.2
         simp [crossPolytopeL1Sphere, h] at this
       have hE0 : E u.1 ≠ 0 := E.injective.ne hu0
-      simp [Metric.mem_sphere, norm_smul, hE0]⟩
+      simp [norm_smul, hE0]⟩
   let invFun : ↥(Metric.sphere (0 : ThreeSphereAmbient) 1) →
       ↥crossPolytopeL1Sphere := fun x =>
     ⟨(crossPolytopeL1Norm (E.symm x.1))⁻¹ • E.symm x.1, by
       have hx0 : x.1 ≠ 0 := by
         intro h
         have := x.2
-        simp [Metric.mem_sphere, h] at this
+        simp [h] at this
       have hv0 : E.symm x.1 ≠ 0 := E.symm.injective.ne hx0
       have hl1pos : 0 < crossPolytopeL1Norm (E.symm x.1) := by
         rw [crossPolytopeL1Norm]
         apply Finset.sum_pos'
         · exact fun i _ => abs_nonneg _
         · by_contra h
-          push_neg at h
+          push Not at h
           apply hv0
           funext i
           exact abs_eq_zero.mp
@@ -388,7 +388,7 @@ noncomputable def crossPolytopeL1SphereHomeomorphThreeSphere :
       abs_of_pos hnpos, hnpos.ne', smul_smul]
   · intro x
     apply Subtype.ext
-    have hxnorm : ‖x.1‖ = 1 := by simpa [Metric.mem_sphere] using x.2
+    have hxnorm : ‖x.1‖ = 1 := by simp
     have hx0 : x.1 ≠ 0 := by
       intro h
       rw [h, norm_zero] at hxnorm
@@ -399,12 +399,12 @@ noncomputable def crossPolytopeL1SphereHomeomorphThreeSphere :
       apply Finset.sum_pos'
       · exact fun i _ => abs_nonneg _
       · by_contra h
-        push_neg at h
+        push Not at h
         apply hv0
         funext i
         exact abs_eq_zero.mp
           (le_antisymm (h i (Finset.mem_univ i)) (abs_nonneg _))
-    simp [toFun, invFun, E, crossPolytopeL1Norm_smul, abs_of_pos hl1pos,
+    simp [toFun, invFun, E, abs_of_pos hl1pos,
       hl1pos.ne', hxnorm, norm_smul, smul_smul]
   · apply Continuous.subtype_mk
     dsimp [toFun]
@@ -452,7 +452,7 @@ theorem crossPolytopeBoundary4_honestThreeManifold :
   let h : C ≃ₜ S := crossPolytopeCarrierHomeomorphL1Sphere.trans
     crossPolytopeL1SphereHomeomorphThreeSphere
   letI : Nonempty S := ⟨⟨PiLp.single 2 (0 : Fin 4) (1 : ℝ), by
-    simp [Metric.mem_sphere, PiLp.norm_single]⟩⟩
+    simp [PiLp.norm_single]⟩⟩
   letI : Nonempty C := ⟨h.symm (Classical.choice (inferInstance : Nonempty S))⟩
   let sphereCharted : ChartedSpace ThreeManifoldModel S := inferInstance
   let carrierSphereCharted : ChartedSpace S C :=

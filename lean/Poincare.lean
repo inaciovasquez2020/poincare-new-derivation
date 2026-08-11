@@ -37,6 +37,9 @@ import Poincare.TriangulationTopologicalVertexLinkRealizationChange
 import Poincare.TriangulationTopologicalVertexLinkSphere
 import Poincare.Moves
 import Poincare.Move23SimpleBistellarData
+import Poincare.TetrahedronFaceClassification
+import Poincare.Move23FaceIncidenceTable
+import Poincare.Move23ClosedCorePreservation
 import Poincare.Move23BipyramidCoefficients
 import Poincare.Move23BipyramidGeometry
 import Poincare.Move23PiRealizationChange
@@ -47,9 +50,20 @@ import Poincare.Move23GeometricCarrierHomeomorph
 import Poincare.Move23CanonicalReverse
 import Poincare.Move32CombinatorialFoundation
 import Poincare.Move32SurvivorClassification
+import Poincare.Move32ClosedCorePreservation
 import Poincare.Move32UnchangedOverlap
 import Poincare.Move32GeometricCarrierHomeomorph
 import Poincare.Move32DegreeSupportBalance
+import Poincare.Move32TopologyPreservingDescent
+import Poincare.Move41CombinatorialFoundation
+import Poincare.Move41LocalCarrier
+import Poincare.Move41GlobalRegionDecomposition
+import Poincare.Move41GeometricCarrierHomeomorph
+import Poincare.Move41DegreeSupportBalance
+import Poincare.Move41TopologyPreservingDescent
+import Poincare.DegreeFourVertexLinkClassification
+import Poincare.DegreeFourOverlapObstruction
+import Poincare.DegreeFourConnectedLinkClassification
 import Poincare.Move32DescentCounterexample
 import Poincare.CrossPolytopeBoundary
 import Poincare.CrossPolytopeBoundarySphere
@@ -57,6 +71,7 @@ import Poincare.Move2332CrossPolytopeEscape
 import Poincare.Move2332CrossPolytopeEscapeTopology
 import Poincare.Move2332LocalEscapeCriterion
 import Poincare.Move2332InitialEscapeSeed
+import Poincare.MoveSupportObstruction
 import Poincare.Descent
 import Poincare.Recognition
 import Poincare.LocalDelta
@@ -71,6 +86,8 @@ import Poincare.VertexLink
 import Poincare.VertexLinkConnectednessCounterexample
 import Poincare.VertexLinkLocalConnectednessCounterexample
 import Poincare.TriangulationTopologicalVertexLinkStarConnectedness
+import Poincare.TriangulationTopologicalEdgeLocalModel
+import Poincare.TriangulationTopologicalManifoldVertexLinkStarConnectedness
 
 import Poincare.TetrahedronSphere
 import Poincare.FourSimplexSphere
@@ -78,3 +95,7 @@ import Poincare.TriangulationTopologicalFourSimplexRealizationChange
 import Poincare.TriangulationTopologicalNormalizedS3
 
 import Poincare.VertexLinkTetrahedronBridge
+import Poincare.SphereFiniteEscape
+import Poincare.SphereNormalizedChord
+import Poincare.SpherePolygonalApproximation
+import Poincare.CircleNotSimplyConnected

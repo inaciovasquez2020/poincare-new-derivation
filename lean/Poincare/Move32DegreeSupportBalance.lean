@@ -40,7 +40,7 @@ theorem ClosedTriangulationCore.move32Site_threeTargetErasure_count
     · rw [List.count_eq_one_of_mem hTarget hv,
         List.count_eq_one_of_mem hTau ((hm v).2 hv)]
     · have hvTau : v ∉ tau.verts := fun h => hv ((hm v).1 h)
-      simpa [List.Nodup.count hTarget, List.Nodup.count hTau, hv, hvTau]
+      simp [List.Nodup.count hTarget, List.Nodup.count hTau, hv, hvTau]
   have e0 := eraseFirstSameTet_count_flatMap s.targetTet₀ K.tets v h0
     (fun tau ht hm => guard s.targetTet₀ (Or.inl rfl) tau ht hm)
   have e1 := eraseFirstSameTet_count_flatMap s.targetTet₁
@@ -122,7 +122,7 @@ theorem ClosedTriangulationCore.move32Site_replace_vertexDegree_offSite
   have h := hcore.move32Site_replace_vertexDegree_balance s hlegal v
   simp [Move32Site.sourceTet₀, Move32Site.sourceTet₁, Move32Site.targetTet₀,
     Move32Site.targetTet₁, Move32Site.targetTet₂, Tet.verts,
-    hva, hvb, hvc, hvd, hve, hav, hbv, hcv, hdv, hev] at h
+    hav, hbv, hcv, hdv, hev] at h
   omega
 
 theorem ClosedTriangulationCore.move32Site_sharedEdge_vertexDegree_lower_bound
@@ -137,7 +137,8 @@ theorem ClosedTriangulationCore.move32Site_sharedEdge_vertexDegree_lower_bound
     induction xs with
     | nil => simp
     | cons tau xs ih =>
-      by_cases hp : p tau <;> by_cases hq : q tau <;> simp_all <;> omega
+      by_cases hp : p tau <;> by_cases hq : q tau <;> simp_all
+      all_goals omega
   constructor <;> rw [hcore.vertexDegree_eq_incidentTetCount]
   · rw [← hlegal.2.1]
     exact filter_le _ _ (fun _ h => h.1) K.tets
@@ -164,8 +165,7 @@ theorem ClosedTriangulationCore.move32Site_replace_vertexSupport_mem_iff
       x ∈ vertexSupport J ↔ 0 < vertexDegree J x := by
     rw [mem_vertexSupport_iff]
     change x ∈ allVerts J ↔ 0 < (allVerts J).count x
-    simpa using ((Multiset.count_pos (a := x)
-      (s := (↑(allVerts J) : Multiset Nat))).symm)
+    simp
   rw [memDegree, memDegree]
   rcases hcore.move32Site_replace_vertexDegree_site s hlegal with ⟨ha, hb, hc, hd, he⟩
   have hp := hcore.move32Site_replace_sharedEdge_vertexDegree_pos s hlegal
