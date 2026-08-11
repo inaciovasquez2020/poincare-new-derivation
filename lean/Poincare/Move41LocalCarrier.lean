@@ -120,4 +120,12 @@ theorem move41PiTargetLocalCarrier_nonneg
     0 ≤ p z := by
   exact move23PiSourceLocalCarrier_nonneg (Or.inl hp) z
 
+/-- The barycentric coordinates of every point in the solid target
+tetrahedron of a genuine `4 → 1` move sum to one over the five labels. -/
+theorem move41PiTargetLocalCarrier_sum
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup)
+    {p : Nat → ℝ} (hp : p ∈ move41PiTargetLocalCarrier a b c d e) :
+    p a + p b + p c + p d + p e = 1 := by
+  exact move23PiSourceLocalCarrier_sum h (Or.inl hp)
+
 end Poincare
