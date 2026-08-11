@@ -54,6 +54,7 @@ import Poincare.Move32ClosedCorePreservation
 import Poincare.Move32UnchangedOverlap
 import Poincare.Move32GeometricCarrierHomeomorph
 import Poincare.Move32DegreeSupportBalance
+import Poincare.Move32TopologyPreservingDescent
 import Poincare.Move32DescentCounterexample
 import Poincare.CrossPolytopeBoundary
 import Poincare.CrossPolytopeBoundarySphere
