@@ -311,6 +311,16 @@ noncomputable def move41PiRadialMap (a b c d e : Nat) (p : Nat → ℝ) :
   else if z = d then p d + p e / 4
   else 0
 
+/-- The explicit radial barycentric map is continuous in the ambient product
+topology.  This is the forward-continuity input for the genuine local
+`4 → 1` homeomorphism. -/
+theorem continuous_move41PiRadialMap (a b c d e : Nat) :
+    Continuous (move41PiRadialMap a b c d e) := by
+  rw [continuous_pi_iff]
+  intro z
+  simp only [move41PiRadialMap]
+  split_ifs <;> fun_prop
+
 /-- The explicit radial barycentric map carries every point of the genuine
 `4 → 1` source cone into the solid target tetrahedron. -/
 theorem move41PiRadialMap_mem_target
