@@ -342,4 +342,49 @@ theorem ClosedTriangulationCore.exists_move41Site_sources_of_vertexDegree_eq_fou
       simp [Move41Site.sourceTet₃, Tet.verts] at hd ⊢
       omega
 
+/-- The four source vertex sets extracted at a degree-four vertex each occur
+exactly once in the triangulation. -/
+theorem ClosedTriangulationCore.exists_move41Site_sourcesExactlyOnce_of_vertexDegree_eq_four
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hdegree : vertexDegree K v = 4) :
+    ∃ s : Move41Site,
+      s.e = v ∧
+      ∀ source ∈ s.sourceTets,
+        (K.tets.filter (fun tau => sameTetVerticesBool tau source)).length = 1 := by
+  classical
+  obtain ⟨s, hse, hsources⟩ :=
+    hcore.exists_move41Site_sources_of_vertexDegree_eq_four v hdegree
+  refine ⟨s, hse, ?_⟩
+  intro source hsource
+  obtain ⟨tau, htauK, hsame⟩ := hsources source hsource
+  have hunique := hcore.existsUnique_sameTetVertices
+    ⟨tau, htauK, hsame⟩
+  let L := K.tets.filter (fun rho => sameTetVerticesBool rho source)
+  have htauL : tau ∈ L := by
+    simp [L, htauK, sameTetVerticesBool_eq_true_iff, hsame]
+  have hmem : ∀ rho, rho ∈ L ↔ rho = tau := by
+    intro rho
+    constructor
+    · intro hrho
+      have hrho' : rho ∈ K.tets ∧ SameTetVertices rho source := by
+        simpa [L, sameTetVerticesBool_eq_true_iff] using hrho
+      exact hunique.unique hrho' ⟨htauK, hsame⟩
+    · rintro rfl
+      exact htauL
+  have hfinset : L.toFinset = {tau} := by
+    ext rho
+    simp [hmem]
+  have hnodupK : K.tets.Nodup := by
+    rw [List.nodup_iff_pairwise_ne]
+    exact hcore.2.1.imp (fun {x y} hxy hEq => by
+      subst y
+      exact hxy (sameTetVertices_refl x))
+  have hnodupL : L.Nodup := by
+    exact hnodupK.filter _
+  change L.length = 1
+  rw [← List.toFinset_card_of_nodup hnodupL, hfinset]
+  simp
+
 end Poincare
