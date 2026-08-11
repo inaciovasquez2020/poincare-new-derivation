@@ -98,4 +98,18 @@ theorem move41PiSourceLocalCarrier_zero_outer
       simp_all [move23PiBCDE, triangulationTopologicalGeometricVertex,
         List.nodup_cons]
 
+/-- The center barycentric coordinate vanishes throughout the target solid
+tetrahedron of a genuine `4 → 1` move. -/
+theorem move41PiTargetLocalCarrier_center_eq_zero
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup)
+    {p : Nat → ℝ} (hp : p ∈ move41PiTargetLocalCarrier a b c d e) :
+    p e = 0 := by
+  rw [move41PiTargetLocalCarrier, move23PiTetrahedronBody] at hp
+  apply convexHull_min _ (convex_hyperplane
+    ⟨fun x y ↦ rfl, fun r x ↦ rfl⟩ (0 : ℝ)) hp
+  rintro _ ⟨i, rfl⟩
+  fin_cases i <;>
+    simp_all [move23PiABCD, triangulationTopologicalGeometricVertex,
+      List.nodup_cons]
+
 end Poincare
