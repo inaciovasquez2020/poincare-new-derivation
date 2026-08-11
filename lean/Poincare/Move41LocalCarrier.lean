@@ -128,4 +128,22 @@ theorem move41PiTargetLocalCarrier_sum
     p a + p b + p c + p d + p e = 1 := by
   exact move23PiSourceLocalCarrier_sum h (Or.inl hp)
 
+/-- Every coordinate outside the five move labels vanishes on the genuine
+`4 → 1` source region. -/
+theorem move41PiSourceLocalCarrier_eq_zero_of_not_label
+    {a b c d e : Nat} {p : Nat → ℝ}
+    (hp : p ∈ move41PiSourceLocalCarrier a b c d e)
+    {z : Nat} (hza : z ≠ a) (hzb : z ≠ b) (hzc : z ≠ c)
+    (hzd : z ≠ d) (hze : z ≠ e) :
+    p z = 0 := by
+  rcases hp with ((hp | hp) | hp) | hp
+  · exact move23PiSourceLocalCarrier_eq_zero_of_not_label
+      (Or.inr hp) hza hzb hzc hzd hze
+  · exact move23PiTargetLocalCarrier_eq_zero_of_not_label
+      (Or.inl (Or.inl hp)) hza hzb hzc hzd hze
+  · exact move23PiTargetLocalCarrier_eq_zero_of_not_label
+      (Or.inl (Or.inr hp)) hza hzb hzc hzd hze
+  · exact move23PiTargetLocalCarrier_eq_zero_of_not_label
+      (Or.inr hp) hza hzb hzc hzd hze
+
 end Poincare
