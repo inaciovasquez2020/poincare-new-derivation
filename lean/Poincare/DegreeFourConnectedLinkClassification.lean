@@ -72,6 +72,27 @@ theorem VertexLinkConnected.all_of_adjacent_closed
     (fun _ _ ih₁ ih₂ hC => ih₂ (ih₁ hC))
     hC₀
 
+/-- Exact occurrence of every source vertex set supplies concrete represented
+source tetrahedra.  This is the witness bridge used to define the
+target-present five-tetrahedron cluster as a family of represented
+tetrahedra. -/
+theorem Move41Site.sources_represented_of_exactlyOnce
+    {K : Triangulation}
+    (s : Move41Site)
+    (hsources : ∀ source ∈ s.sourceTets,
+      (K.tets.filter (fun tau => sameTetVerticesBool tau source)).length = 1) :
+    ∀ source ∈ s.sourceTets,
+      ∃ tau ∈ K.tets, SameTetVertices tau source := by
+  intro source hsource
+  have hlength := hsources source hsource
+  obtain ⟨tau, htau⟩ := List.length_pos_iff_exists_mem.mp (by omega :
+    0 < (K.tets.filter
+      (fun rho => sameTetVerticesBool rho source)).length)
+  have htau' : tau ∈ K.tets ∧ sameTetVerticesBool tau source = true := by
+    simpa using htau
+  exact ⟨tau, htau'.1,
+    (sameTetVerticesBool_eq_true_iff tau source).1 htau'.2⟩
+
 /-- In the target-present branch at a degree-four center, the four source
 tetrahedra fill the entire represented vertex link.  The target witness is
 kept explicit, so this is precisely the local five-tetrahedron cluster
