@@ -4,6 +4,7 @@ import Mathlib.Topology.Subpath
 import Mathlib.Topology.UniformSpace.Path
 import Mathlib.Geometry.Manifold.Instances.Sphere
 import Mathlib.Analysis.Convex.Contractible
+import Mathlib.Analysis.Normed.Module.Connected
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 
 namespace Poincare
@@ -435,5 +436,19 @@ theorem unitSphere3_loop_nullhomotopic
     simpa [b] using ha t
   exact hpq.trans
     (Path.homotopic_refl_of_avoids_unitSphere_point q b hqavoid)
+
+/-- The unit two-sphere in Euclidean three-space is simply connected. -/
+theorem unitSphere3_simplyConnected :
+    SimplyConnectedSpace
+      (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) := by
+  have hrank : 1 < Module.rank ℝ (EuclideanSpace ℝ (Fin 3)) := by
+    rw [← Module.finrank_eq_rank']
+    norm_num
+  haveI : PathConnectedSpace
+      (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :=
+    isPathConnected_iff_pathConnectedSpace.mp
+      (isPathConnected_sphere hrank 0 zero_le_one)
+  rw [simply_connected_iff_loops_nullhomotopic]
+  exact ⟨inferInstance, fun _ p ↦ unitSphere3_loop_nullhomotopic p⟩
 
 end Poincare
