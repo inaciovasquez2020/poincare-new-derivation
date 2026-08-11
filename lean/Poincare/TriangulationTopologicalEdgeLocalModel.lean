@@ -1013,5 +1013,41 @@ theorem eventually_edgeRadialCircleAmbientFamily_mem_of_mem_nhds
         edgeRadialCircleAmbientFamily x qA qB (δ, z) ∈ U)
       (fun z _ ↦ hpoint z))
 
+/-- Every ambient neighborhood of the radial midpoint contains a genuine
+small circle satisfying all the bounds required by `edgeRadialCircleInclusion`.
+This is the quantitative packaging of uniform shrinking used to restrict the
+circle retract to arbitrarily small edge neighborhoods. -/
+theorem exists_edgeRadial_circleScale_image_subset
+    (K : Triangulation) (v x : Nat)
+    (qA qB : ↑(triangulationTopologicalPuncturedVertexLinkStar K v x))
+    (U : Set (ℝ × (Nat → ℝ)))
+    (hU : U ∈ nhds (((2 : ℝ)⁻¹,
+      triangulationTopologicalGeometricVertex x))) :
+    ∃ δ : ℝ, 0 < δ ∧ δ < (4 : ℝ)⁻¹ ∧
+      δ < 1 - qA.1 x ∧ δ < 1 - qB.1 x ∧
+      ∀ z : Circle, edgeRadialCircleAmbientFamily x qA.1 qB.1 (δ, z) ∈ U := by
+  have hrA : 0 < 1 - qA.1 x :=
+    triangulationTopologicalVertexLinkStar_one_sub_coordinate_pos
+      K v x qA.2.1 qA.2.2
+  have hrB : 0 < 1 - qB.1 x :=
+    triangulationTopologicalVertexLinkStar_one_sub_coordinate_pos
+      K v x qB.2.1 qB.2.2
+  obtain ⟨δ0, hδ0, hδquarter, hδA, hδB⟩ :=
+    exists_edgeRadial_circleScale hrA hrB
+  let S : Set ℝ := {δ | ∀ z : Circle,
+    edgeRadialCircleAmbientFamily x qA.1 qB.1 (δ, z) ∈ U}
+  have hS : S ∈ nhds (0 : ℝ) :=
+    eventually_edgeRadialCircleAmbientFamily_mem_of_mem_nhds
+      x qA.1 qB.1 U hU
+  obtain ⟨ε, hε0, hεS⟩ := Metric.mem_nhds_iff.mp hS
+  let δ := min δ0 (ε / 2)
+  have hδpos : 0 < δ := lt_min hδ0 (half_pos hε0)
+  have hδle : δ ≤ δ0 := min_le_left _ _
+  have hδε : δ < ε :=
+    (min_le_right δ0 (ε / 2)).trans_lt (half_lt_self hε0)
+  refine ⟨δ, hδpos, hδle.trans_lt hδquarter,
+    hδle.trans_lt hδA, hδle.trans_lt hδB, ?_⟩
+  exact hεS (by simpa [Real.dist_eq, abs_of_pos hδpos] using hδε)
+
 
 end Poincare
