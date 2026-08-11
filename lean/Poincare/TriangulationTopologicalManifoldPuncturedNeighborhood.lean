@@ -86,6 +86,69 @@ theorem threeManifoldModel_isPathConnected_ball_diff_singleton
   exact hpath.image' (e.continuousOn.mono (by simp [e]))
 
 /-- Around every point of an honest topological three-manifold carrier there
+is an arbitrarily small open neighborhood whose puncture is simply connected.
+The neighborhood is the inverse image of a Euclidean chart ball. -/
+theorem triangulationTopological_exists_open_punctured_simplyConnected_neighborhood_sub
+    (K : Triangulation)
+    (hM : TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K)
+    (x : triangulationTopologicalGeometricCarrier K)
+    {N : Set (triangulationTopologicalGeometricCarrier K)}
+    (hN : N ∈ nhds x) :
+    ∃ U : Set (triangulationTopologicalGeometricCarrier K),
+      IsOpen U ∧ x ∈ U ∧ U ⊆ N ∧ IsSimplyConnected (U \ {x}) := by
+  rcases hM with ⟨hT2, hcharted, hmanifold, _hcompact, _hconnected⟩
+  letI := hT2
+  letI := hcharted
+  letI := hmanifold
+  let e : OpenPartialHomeomorph
+      (triangulationTopologicalGeometricCarrier K) ThreeManifoldModel :=
+    chartAt ThreeManifoldModel x
+  have hxsource : x ∈ e.source := by
+    simp [e]
+  have himageN : e '' (e.source ∩ N) ∈ nhds (e x) :=
+    e.image_mem_nhds hxsource (inter_mem (e.open_source.mem_nhds hxsource) hN)
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp himageN
+  let U : Set (triangulationTopologicalGeometricCarrier K) :=
+    e.symm '' Metric.ball (e x) ε
+  have hballtarget : Metric.ball (e x) ε ⊆ e.target := by
+    intro z hz
+    obtain ⟨p, hp, rfl⟩ := hball hz
+    exact e.map_source hp.1
+  have hUopen : IsOpen U :=
+    e.isOpen_image_symm_of_subset_target Metric.isOpen_ball hballtarget
+  have hxU : x ∈ U := by
+    exact ⟨e x, Metric.mem_ball_self hε, e.left_inv hxsource⟩
+  have hUsub : U ⊆ N := by
+    rintro p ⟨z, hzball, rfl⟩
+    obtain ⟨q, hq, hqeq⟩ := hball hzball
+    have hqeq' : q = e.symm z := by
+      rw [← hqeq]
+      exact (e.left_inv hq.1).symm
+    simpa [hqeq'] using hq.2
+  have himage : e.symm '' (Metric.ball (e x) ε \ {e x}) = U \ {x} := by
+    ext p
+    constructor
+    · rintro ⟨z, ⟨hzball, hzne⟩, rfl⟩
+      have hztarget : z ∈ e.target := hballtarget hzball
+      refine ⟨⟨z, hzball, rfl⟩, ?_⟩
+      simp only [mem_singleton_iff]
+      intro heq
+      have : z = e x := by
+        rw [← e.right_inv hztarget, heq]
+      exact hzne this
+    · rintro ⟨⟨z, hzball, rfl⟩, hpne⟩
+      refine ⟨z, ⟨hzball, ?_⟩, rfl⟩
+      simp only [mem_singleton_iff]
+      intro hzeq
+      apply hpne
+      simpa [hzeq] using e.left_inv hxsource
+  let h := e.symm.homeomorphOfImageSubsetSource
+    (fun z hz ↦ hballtarget hz.1) himage
+  haveI : SimplyConnectedSpace ↑(Metric.ball (e x) ε \ {e x}) :=
+    threeManifoldModel_isSimplyConnected_ball_diff_singleton (e x) hε
+  exact ⟨U, hUopen, hxU, hUsub, h.symm.toHomotopyEquiv.simplyConnectedSpace⟩
+
+/-- Around every point of an honest topological three-manifold carrier there
 is an arbitrarily small open neighborhood whose puncture is connected.  The
 neighborhood is chosen as the inverse image of a Euclidean chart ball, so this
 form is suitable for later carrier-local and radial-star arguments. -/
