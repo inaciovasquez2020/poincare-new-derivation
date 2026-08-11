@@ -160,4 +160,112 @@ theorem move41PiTargetLocalCarrier_eq_zero_of_not_outer_label
   · exact move23PiSourceLocalCarrier_eq_zero_of_not_label
       (Or.inl hp) hza hzb hzc hzd hze
 
+/-- The barycentric coordinate conditions for the boundary cone are also
+sufficient for membership in the genuine `4 → 1` source region. -/
+theorem mem_move41PiSourceLocalCarrier_of_coordinates
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup) {p : Nat → ℝ}
+    (hnonneg : ∀ z, 0 ≤ p z)
+    (hsum : p a + p b + p c + p d + p e = 1)
+    (hzero : p a = 0 ∨ p b = 0 ∨ p c = 0 ∨ p d = 0)
+    (hoff : ∀ {z}, z ≠ a → z ≠ b → z ≠ c → z ≠ d → z ≠ e → p z = 0) :
+    p ∈ move41PiSourceLocalCarrier a b c d e := by
+  rcases hzero with ha | hb | hc | hd
+  · rw [move41PiSourceLocalCarrier]
+    refine Or.inr ?_
+    apply mem_convexHull_of_exists_fintype (R := ℝ)
+        (fun i : Fin 4 ↦ p (move23PiBCDE a b c d e i))
+        (fun i ↦ triangulationTopologicalGeometricVertex
+          (move23PiBCDE a b c d e i))
+    · exact fun i ↦ hnonneg _
+    · simp [Fin.sum_univ_four, move23PiBCDE]
+      linarith
+    · exact fun i ↦ ⟨i, rfl⟩
+    · funext z
+      simp only [Fin.sum_univ_four, move23PiBCDE, Matrix.cons_val_zero,
+        Matrix.cons_val_one]
+      simp [triangulationTopologicalGeometricVertex]
+      by_cases hzb : z = b
+      · subst z; simp_all [List.nodup_cons]
+      by_cases hzc : z = c
+      · subst z; simp_all [List.nodup_cons]
+      by_cases hzd : z = d
+      · subst z; simp_all [List.nodup_cons]
+      by_cases hze : z = e
+      · subst z; simp_all [List.nodup_cons]
+      by_cases hza : z = a
+      · subst z; simp_all
+      simp [hzb, hzc, hzd, hze, hoff hza hzb hzc hzd hze]
+  · rw [move41PiSourceLocalCarrier]
+    refine Or.inl (Or.inr ?_)
+    apply mem_convexHull_of_exists_fintype (R := ℝ)
+        (fun i : Fin 4 ↦ p (move23PiACDE a b c d e i))
+        (fun i ↦ triangulationTopologicalGeometricVertex
+          (move23PiACDE a b c d e i))
+    · exact fun i ↦ hnonneg _
+    · simp [Fin.sum_univ_four, move23PiACDE]; linarith
+    · exact fun i ↦ ⟨i, rfl⟩
+    · funext z
+      simp only [Fin.sum_univ_four, move23PiACDE, Matrix.cons_val_zero,
+        Matrix.cons_val_one]
+      simp [triangulationTopologicalGeometricVertex]
+      by_cases hza : z = a
+      · subst z; simp_all [List.nodup_cons]
+      by_cases hzc : z = c
+      · subst z; simp_all [List.nodup_cons]
+      by_cases hzd : z = d
+      · subst z; simp_all [List.nodup_cons]
+      by_cases hze : z = e
+      · subst z; simp_all [List.nodup_cons]
+      by_cases hzb : z = b
+      · subst z; simp_all
+      simp [hza, hzc, hzd, hze, hoff hza hzb hzc hzd hze]
+  · rw [move41PiSourceLocalCarrier]
+    refine Or.inl (Or.inl (Or.inr ?_))
+    apply mem_convexHull_of_exists_fintype (R := ℝ)
+        (fun i : Fin 4 ↦ p (move23PiABDE a b c d e i))
+        (fun i ↦ triangulationTopologicalGeometricVertex
+          (move23PiABDE a b c d e i))
+    · exact fun i ↦ hnonneg _
+    · simp [Fin.sum_univ_four, move23PiABDE]; linarith
+    · exact fun i ↦ ⟨i, rfl⟩
+    · funext z
+      simp only [Fin.sum_univ_four, move23PiABDE, Matrix.cons_val_zero,
+        Matrix.cons_val_one]
+      simp [triangulationTopologicalGeometricVertex]
+      by_cases hza : z = a
+      · subst z; simp_all [List.nodup_cons]
+      by_cases hzb : z = b
+      · subst z; simp_all [List.nodup_cons]
+      by_cases hzd : z = d
+      · subst z; simp_all [List.nodup_cons]
+      by_cases hze : z = e
+      · subst z; simp_all [List.nodup_cons]
+      by_cases hzc : z = c
+      · subst z; simp_all
+      simp [hza, hzb, hzd, hze, hoff hza hzb hzc hzd hze]
+  · rw [move41PiSourceLocalCarrier]
+    refine Or.inl (Or.inl (Or.inl ?_))
+    apply mem_convexHull_of_exists_fintype (R := ℝ)
+        (fun i : Fin 4 ↦ p (move23PiABCE a b c d e i))
+        (fun i ↦ triangulationTopologicalGeometricVertex
+          (move23PiABCE a b c d e i))
+    · exact fun i ↦ hnonneg _
+    · simp [Fin.sum_univ_four, move23PiABCE]; linarith
+    · exact fun i ↦ ⟨i, rfl⟩
+    · funext z
+      simp only [Fin.sum_univ_four, move23PiABCE, Matrix.cons_val_zero,
+        Matrix.cons_val_one]
+      simp [triangulationTopologicalGeometricVertex]
+      by_cases hza : z = a
+      · subst z; simp_all [List.nodup_cons]
+      by_cases hzb : z = b
+      · subst z; simp_all [List.nodup_cons]
+      by_cases hzc : z = c
+      · subst z; simp_all [List.nodup_cons]
+      by_cases hze : z = e
+      · subst z; simp_all [List.nodup_cons]
+      by_cases hzd : z = d
+      · subst z; simp_all
+      simp [hza, hzb, hzc, hze, hoff hza hzb hzc hzd hze]
+
 end Poincare
