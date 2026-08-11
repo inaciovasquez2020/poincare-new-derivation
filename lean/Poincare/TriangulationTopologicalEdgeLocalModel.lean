@@ -324,4 +324,48 @@ noncomputable def
             (continuous_subtype_val.comp continuous_subtype_val) _)
           _ }
 
+/-- The radial-product coordinates of the represented geometric edge
+midpoint.  This is the unique point that must be deleted in the transverse
+circle-retraction argument. -/
+noncomputable def triangulationTopologicalOpenEdgeRadialMidpoint
+    (K : Triangulation)
+    {v x : Nat} (hrep : VertexLinkVertexRepresented K v x) :
+    {tq : ↑(Set.Ico (0 : ℝ) 1) ×
+        ↑(triangulationTopologicalVertexLink K v) |
+      0 < tq.1.1 ∧ 0 < tq.2.1 x} := by
+  have hxlink : triangulationTopologicalGeometricVertex x ∈
+      triangulationTopologicalVertexLink K v := by
+    obtain ⟨sigma, hsigma, hxsigma⟩ := hrep
+    apply (mem_triangulationTopologicalVertexLink_iff K v _).2
+    refine ⟨sigma, hsigma, ?_⟩
+    apply subset_convexHull ℝ
+    exact ⟨x, List.mem_toFinset.mpr hxsigma, rfl⟩
+  exact ⟨⟨⟨(2 : ℝ)⁻¹, by norm_num, by norm_num⟩,
+      ⟨triangulationTopologicalGeometricVertex x, hxlink⟩⟩,
+    by simp [triangulationTopologicalGeometricVertex]⟩
+
+/-- Under the exact radial local model, `(1/2, apex x)` is literally the
+represented geometric edge midpoint. -/
+@[simp] theorem
+triangulationTopologicalOpenEdgeNeighborhoodHomeomorphRadialLinkCarrier_midpoint
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    {v x : Nat} (hrep : VertexLinkVertexRepresented K v x) :
+    triangulationTopologicalOpenEdgeNeighborhoodHomeomorphRadialLinkCarrier
+        K hcore hrep
+        (triangulationTopologicalOpenEdgeRadialMidpoint K hrep) =
+      ⟨triangulationTopologicalCarrierEdgeMidpoint K v x hrep,
+        triangulationTopologicalCarrierEdgeMidpoint_mem_openEdgeNeighborhood
+          K hcore hrep⟩ := by
+  apply Subtype.ext
+  apply Subtype.ext
+  change
+    ((triangulationTopologicalPuncturedVertexStarHomeomorphRadialLink
+      K hcore v)
+      (triangulationTopologicalOpenEdgeRadialMidpoint K hrep).1).1 = _
+  rw [triangulationTopologicalPuncturedVertexStarHomeomorphRadialLink_apply_val]
+  funext j
+  norm_num [triangulationTopologicalOpenEdgeRadialMidpoint,
+    triangulationTopologicalCarrierEdgeMidpoint,
+    triangulationTopologicalGeometricEdgeMidpoint, Pi.add_apply, Pi.smul_apply]
+
 end Poincare
