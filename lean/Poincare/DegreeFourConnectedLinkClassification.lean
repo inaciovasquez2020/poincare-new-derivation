@@ -121,6 +121,101 @@ theorem Move41Site.exists_represented_fiveTetCluster_of_targetPresent
     htau₀K, htau₀, htau₁K, htau₁, htau₂K, htau₂,
     htau₃K, htau₃, htargetK, htargetSame⟩
 
+/-- The concrete tetrahedra representing the four sources and the opposite
+target of a `4 → 1` site are pairwise distinct.  This is the exact finite
+cluster certificate needed before closed-core face incidence can be used at
+the four outer vertices. -/
+theorem Move41Site.exists_represented_fiveTetCluster_nodup_of_targetPresent
+    {K : Triangulation}
+    (s : Move41Site)
+    (hsources : ∀ source ∈ s.sourceTets,
+      (K.tets.filter (fun tau => sameTetVerticesBool tau source)).length = 1)
+    (htarget : ∃ tau ∈ K.tets, SameTetVertices tau s.targetTet) :
+    ∃ tau₀ tau₁ tau₂ tau₃ target,
+      tau₀ ∈ K.tets ∧ SameTetVertices tau₀ s.sourceTet₀ ∧
+      tau₁ ∈ K.tets ∧ SameTetVertices tau₁ s.sourceTet₁ ∧
+      tau₂ ∈ K.tets ∧ SameTetVertices tau₂ s.sourceTet₂ ∧
+      tau₃ ∈ K.tets ∧ SameTetVertices tau₃ s.sourceTet₃ ∧
+      target ∈ K.tets ∧ SameTetVertices target s.targetTet ∧
+      [tau₀, tau₁, tau₂, tau₃, target].Nodup := by
+  classical
+  obtain ⟨tau₀, tau₁, tau₂, tau₃, target,
+    htau₀K, htau₀, htau₁K, htau₁, htau₂K, htau₂,
+    htau₃K, htau₃, htargetK, htargetSame⟩ :=
+      s.exists_represented_fiveTetCluster_of_targetPresent hsources htarget
+  have concrete_ne {alpha beta A B : Tet}
+      (halpha : SameTetVertices alpha A)
+      (hbeta : SameTetVertices beta B)
+      (hne : ¬ SameTetVertices A B) : alpha ≠ beta := by
+    intro hab
+    apply hne
+    intro v
+    exact (halpha v).symm.trans (hab ▸ hbeta v)
+  have model_ne (A B : Tet) (v : Nat)
+      (hvA : v ∈ A.verts) (hvB : v ∉ B.verts) :
+      ¬ SameTetVertices A B := by
+    intro h
+    exact hvB ((h v).1 hvA)
+  have hd := s.distinct
+  simp at hd
+  rcases hd with
+    ⟨⟨hab, hac, had, hae⟩, ⟨hbc, hbd, hbe⟩, ⟨hcd, hce⟩, hde⟩
+  have hba := Ne.symm hab
+  have hca := Ne.symm hac
+  have hda := Ne.symm had
+  have hea := Ne.symm hae
+  have hcb := Ne.symm hbc
+  have hdb := Ne.symm hbd
+  have heb := Ne.symm hbe
+  have hdc := Ne.symm hcd
+  have hec := Ne.symm hce
+  have hed := Ne.symm hde
+  have h01 : ¬ SameTetVertices s.sourceTet₀ s.sourceTet₁ :=
+    model_ne _ _ s.c (by simp [Move41Site.sourceTet₀, Tet.verts])
+      (by simp [Move41Site.sourceTet₁, Tet.verts, hca, hcb, hcd, hce])
+  have h02 : ¬ SameTetVertices s.sourceTet₀ s.sourceTet₂ :=
+    model_ne _ _ s.b (by simp [Move41Site.sourceTet₀, Tet.verts])
+      (by simp [Move41Site.sourceTet₂, Tet.verts, hba, hbc, hbd, hbe])
+  have h03 : ¬ SameTetVertices s.sourceTet₀ s.sourceTet₃ :=
+    model_ne _ _ s.a (by simp [Move41Site.sourceTet₀, Tet.verts])
+      (by simp [Move41Site.sourceTet₃, Tet.verts, hab, hac, had, hae])
+  have h0t : ¬ SameTetVertices s.sourceTet₀ s.targetTet :=
+    model_ne _ _ s.e (by simp [Move41Site.sourceTet₀, Tet.verts])
+      (by simp [Move41Site.targetTet, Tet.verts, hea, heb, hec, hed])
+  have h12 : ¬ SameTetVertices s.sourceTet₁ s.sourceTet₂ :=
+    model_ne _ _ s.b (by simp [Move41Site.sourceTet₁, Tet.verts])
+      (by simp [Move41Site.sourceTet₂, Tet.verts, hba, hbc, hbd, hbe])
+  have h13 : ¬ SameTetVertices s.sourceTet₁ s.sourceTet₃ :=
+    model_ne _ _ s.a (by simp [Move41Site.sourceTet₁, Tet.verts])
+      (by simp [Move41Site.sourceTet₃, Tet.verts, hab, hac, had, hae])
+  have h1t : ¬ SameTetVertices s.sourceTet₁ s.targetTet :=
+    model_ne _ _ s.e (by simp [Move41Site.sourceTet₁, Tet.verts])
+      (by simp [Move41Site.targetTet, Tet.verts, hea, heb, hec, hed])
+  have h23 : ¬ SameTetVertices s.sourceTet₂ s.sourceTet₃ :=
+    model_ne _ _ s.a (by simp [Move41Site.sourceTet₂, Tet.verts])
+      (by simp [Move41Site.sourceTet₃, Tet.verts, hab, hac, had, hae])
+  have h2t : ¬ SameTetVertices s.sourceTet₂ s.targetTet :=
+    model_ne _ _ s.e (by simp [Move41Site.sourceTet₂, Tet.verts])
+      (by simp [Move41Site.targetTet, Tet.verts, hea, heb, hec, hed])
+  have h3t : ¬ SameTetVertices s.sourceTet₃ s.targetTet :=
+    model_ne _ _ s.e (by simp [Move41Site.sourceTet₃, Tet.verts])
+      (by simp [Move41Site.targetTet, Tet.verts, hea, heb, hec, hed])
+  have htau01 := concrete_ne htau₀ htau₁ h01
+  have htau02 := concrete_ne htau₀ htau₂ h02
+  have htau03 := concrete_ne htau₀ htau₃ h03
+  have htau0t := concrete_ne htau₀ htargetSame h0t
+  have htau12 := concrete_ne htau₁ htau₂ h12
+  have htau13 := concrete_ne htau₁ htau₃ h13
+  have htau1t := concrete_ne htau₁ htargetSame h1t
+  have htau23 := concrete_ne htau₂ htau₃ h23
+  have htau2t := concrete_ne htau₂ htargetSame h2t
+  have htau3t := concrete_ne htau₃ htargetSame h3t
+  exact ⟨tau₀, tau₁, tau₂, tau₃, target,
+    htau₀K, htau₀, htau₁K, htau₁, htau₂K, htau₂,
+    htau₃K, htau₃, htargetK, htargetSame,
+    by simp [htau01, htau02, htau03, htau0t, htau12, htau13,
+      htau1t, htau23, htau2t, htau3t]⟩
+
 /-- In the target-present branch at a degree-four center, the four source
 tetrahedra fill the entire represented vertex link.  The target witness is
 kept explicit, so this is precisely the local five-tetrahedron cluster
