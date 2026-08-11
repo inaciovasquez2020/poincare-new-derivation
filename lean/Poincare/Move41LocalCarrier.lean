@@ -34,4 +34,16 @@ theorem move41PiTargetLocalCarrier_isCompact (a b c d e : Nat) :
     IsCompact (move41PiTargetLocalCarrier a b c d e) := by
   exact move23PiTetrahedronBody_isCompact _
 
+/-- Every barycentric coordinate is nonnegative on the genuine `4 → 1`
+source region. -/
+theorem move41PiSourceLocalCarrier_nonneg
+    {a b c d e : Nat} {p : Nat → ℝ}
+    (hp : p ∈ move41PiSourceLocalCarrier a b c d e) (z : Nat) :
+    0 ≤ p z := by
+  rcases hp with ((hp | hp) | hp) | hp
+  · exact move23PiSourceLocalCarrier_nonneg (Or.inr hp) z
+  · exact move23PiTargetLocalCarrier_nonneg (Or.inl (Or.inl hp)) z
+  · exact move23PiTargetLocalCarrier_nonneg (Or.inl (Or.inr hp)) z
+  · exact move23PiTargetLocalCarrier_nonneg (Or.inr hp) z
+
 end Poincare
