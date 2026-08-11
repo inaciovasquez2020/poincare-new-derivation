@@ -1,6 +1,7 @@
 import Poincare.TriangulationTopologicalVertexLinkStarConnectedness
 import Poincare.TriangulationTopologicalGeometricDecomposition
 import Poincare.TriangulationTopologicalVertexStarNeighborhood
+import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 
 open Set
 
@@ -380,6 +381,13 @@ noncomputable def triangulationTopologicalOpenEdgeTransverseStarPoint
     triangulationTopologicalVertexLink_mem_vertexLinkStar_of_coordinate_pos
       K v x tq.1.2.2 tq.2.2⟩
 
+@[continuity, fun_prop] theorem
+continuous_triangulationTopologicalOpenEdgeTransverseStarPoint
+    (K : Triangulation) (v x : Nat) :
+    Continuous (triangulationTopologicalOpenEdgeTransverseStarPoint K v x) := by
+  apply Continuous.subtype_mk
+  fun_prop
+
 /-- The axial coordinate together with any signed radial coordinate can
 vanish only at the deleted edge midpoint.  This is the nonvanishing fact
 needed to normalize the pair to the unit circle. -/
@@ -415,5 +423,68 @@ theorem edgeRadial_signedCoordinate_ne_zero
     exact ht
   · apply Subtype.ext
     exact hq
+
+/-- Normalize the axial and signed transverse coordinates of the deleted
+radial edge model to the unit circle. -/
+noncomputable def edgeRadialCircleMap
+    (K : Triangulation) {v x : Nat}
+    (hrep : VertexLinkVertexRepresented K v x)
+    (g : ↑(triangulationTopologicalVertexLinkStar K v x) → ℝ)
+    (habs : ∀ q, |g q| = 1 - q.1 x) :
+    ↑({triangulationTopologicalOpenEdgeRadialMidpoint K hrep}ᶜ : Set
+      {tq : ↑(Set.Ico (0 : ℝ) 1) ×
+          ↑(triangulationTopologicalVertexLink K v) |
+        0 < tq.1.1 ∧ 0 < tq.2.1 x}) → Circle := fun tq ↦ by
+  let z : ℂ :=
+    (tq.1.1.1 - (2 : ℝ)⁻¹ : ℝ) +
+      (g (triangulationTopologicalOpenEdgeTransverseStarPoint K v x tq.1) : ℝ) *
+        Complex.I
+  have hz : z ≠ 0 := by
+    intro hz0
+    have hre : tq.1.1.1 - (2 : ℝ)⁻¹ = 0 := by
+      simpa [z] using congrArg Complex.re hz0
+    have him :
+        g (triangulationTopologicalOpenEdgeTransverseStarPoint K v x tq.1) = 0 := by
+      simpa [z] using congrArg Complex.im hz0
+    exact edgeRadial_signedCoordinate_ne_zero K hrep g habs tq.1 tq.2
+      (Prod.ext hre him)
+  exact ⟨z / ‖z‖, by
+    change z / (‖z‖ : ℂ) ∈ Metric.sphere (0 : ℂ) 1
+    rw [mem_sphere_zero_iff_norm, norm_div]
+    simpa using div_self (norm_ne_zero_iff.mpr hz)⟩
+
+/-- The normalized signed radial coordinate is continuous on the open-edge
+radial model with its midpoint deleted. -/
+theorem continuous_edgeRadialCircleMap
+    (K : Triangulation) {v x : Nat}
+    (hrep : VertexLinkVertexRepresented K v x)
+    (g : ↑(triangulationTopologicalVertexLinkStar K v x) → ℝ)
+    (hg : Continuous g)
+    (habs : ∀ q, |g q| = 1 - q.1 x) :
+    Continuous (edgeRadialCircleMap K hrep g habs) := by
+  apply Continuous.subtype_mk
+  dsimp only [edgeRadialCircleMap]
+  let z : ↑({triangulationTopologicalOpenEdgeRadialMidpoint K hrep}ᶜ : Set
+      {tq : ↑(Set.Ico (0 : ℝ) 1) ×
+          ↑(triangulationTopologicalVertexLink K v) |
+        0 < tq.1.1 ∧ 0 < tq.2.1 x}) → ℂ := fun tq ↦
+    (tq.1.1.1 - (2 : ℝ)⁻¹ : ℝ) +
+      (g (triangulationTopologicalOpenEdgeTransverseStarPoint K v x tq.1) : ℝ) *
+        Complex.I
+  have hz : Continuous z := by
+    dsimp [z]
+    fun_prop
+  have hzne : ∀ tq, z tq ≠ 0 := by
+    intro tq hzero
+    have hre : tq.1.1.1 - (2 : ℝ)⁻¹ = 0 := by
+      simpa [z] using congrArg Complex.re hzero
+    have him :
+        g (triangulationTopologicalOpenEdgeTransverseStarPoint K v x tq.1) = 0 := by
+      simpa [z] using congrArg Complex.im hzero
+    exact edgeRadial_signedCoordinate_ne_zero K hrep g habs tq.1 tq.2
+      (Prod.ext hre him)
+  change Continuous (fun tq ↦ z tq / ‖z tq‖)
+  exact hz.div₀ (Complex.continuous_ofReal.comp hz.norm) fun tq ↦
+    Complex.ofReal_ne_zero.mpr (norm_ne_zero_iff.mpr (hzne tq))
 
 end Poincare
