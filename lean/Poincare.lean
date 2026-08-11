@@ -76,6 +76,7 @@ import Poincare.VertexLink
 import Poincare.VertexLinkConnectednessCounterexample
 import Poincare.VertexLinkLocalConnectednessCounterexample
 import Poincare.TriangulationTopologicalVertexLinkStarConnectedness
+import Poincare.TriangulationTopologicalEdgeLocalModel
 
 import Poincare.TetrahedronSphere
 import Poincare.FourSimplexSphere
