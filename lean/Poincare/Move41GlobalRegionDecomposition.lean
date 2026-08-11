@@ -239,4 +239,12 @@ theorem ClosedTriangulationCore.move41Site_unchangedCarrier_subset_target_space
   rw [(hcore.move41Site_global_region_decomposition s hlegal).2]
   exact subset_union_right
 
+theorem ClosedTriangulationCore.move41Site_sourceLocalCarrier_subset_source_space
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (s : Move41Site) (hlegal : s.LegalIn K) :
+    move41PiSourceLocalCarrier s.a s.b s.c s.d s.e ⊆
+      (triangulationTopologicalGeometricComplex K).space := by
+  rw [(hcore.move41Site_global_region_decomposition s hlegal).1]
+  exact subset_union_left
+
 end Poincare
