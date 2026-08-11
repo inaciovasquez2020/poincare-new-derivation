@@ -1,6 +1,7 @@
 import Poincare.TriangulationTopologicalVertexLinkStarConnectedness
 import Poincare.TriangulationTopologicalGeometricDecomposition
 import Poincare.TriangulationTopologicalVertexStarNeighborhood
+import Poincare.CircleNotSimplyConnected
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 
 open Set
@@ -868,6 +869,81 @@ theorem edgeRadialCircleMap_comp_edgeRadialCircleInclusion
     Complex.norm_of_nonneg hδ0.le]
   exact (div_eq_iff (Complex.ofReal_ne_zero.mpr (ne_of_gt hδ0))).2
     (mul_comm _ _)
+
+/-- If the transverse star of a represented edge is disconnected, deleting
+its midpoint from the genuine open-edge neighborhood leaves a space which is
+not simply connected. -/
+theorem openEdgeNeighborhood_delete_midpoint_not_simplyConnected
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    {v x : Nat} (hrep : VertexLinkVertexRepresented K v x)
+    (hnot : ¬ VertexLinkStarConnected K v x) :
+    ¬ SimplyConnectedSpace
+      ↑({⟨triangulationTopologicalCarrierEdgeMidpoint K v x hrep,
+          triangulationTopologicalCarrierEdgeMidpoint_mem_openEdgeNeighborhood
+            K hcore hrep⟩}ᶜ :
+        Set ↑(triangulationTopologicalOpenEdgeNeighborhood K v x)) := by
+  obtain ⟨A, B, hAcl, hBcl, hAne, hBne, -, -, g, hg, habs, hgA, hgB⟩ :=
+    exists_continuous_signedRadialCoordinate_of_not_starConnected
+      K hcore v x hrep hnot
+  obtain ⟨qA, hqA, qB, hqB, hrA, hrB, -, -⟩ :=
+    exists_edgeRadial_opposite_side_witnesses
+      K v x A B hAne hBne g hgA hgB
+  obtain ⟨δ, hδ0, hδquarter, hδA, hδB⟩ :=
+    exists_edgeRadial_circleScale hrA hrB
+  let i : C(Circle,
+      ↑({triangulationTopologicalOpenEdgeRadialMidpoint K hrep}ᶜ : Set
+        {tq : ↑(Set.Ico (0 : ℝ) 1) ×
+            ↑(triangulationTopologicalVertexLink K v) |
+          0 < tq.1.1 ∧ 0 < tq.2.1 x})) :=
+    ⟨edgeRadialCircleInclusion
+        K hrep qA qB δ hδ0 hδquarter hδA hδB,
+      continuous_edgeRadialCircleInclusion
+        K hrep qA qB δ hδ0 hδquarter hδA hδB⟩
+  let r : C(
+      ↑({triangulationTopologicalOpenEdgeRadialMidpoint K hrep}ᶜ : Set
+        {tq : ↑(Set.Ico (0 : ℝ) 1) ×
+            ↑(triangulationTopologicalVertexLink K v) |
+          0 < tq.1.1 ∧ 0 < tq.2.1 x}), Circle) :=
+    ⟨edgeRadialCircleMap K hrep g habs,
+      continuous_edgeRadialCircleMap K hrep g hg habs⟩
+  have hradial : ¬ SimplyConnectedSpace
+      ↑({triangulationTopologicalOpenEdgeRadialMidpoint K hrep}ᶜ : Set
+        {tq : ↑(Set.Ico (0 : ℝ) 1) ×
+            ↑(triangulationTopologicalVertexLink K v) |
+          0 < tq.1.1 ∧ 0 < tq.2.1 x}) :=
+    not_simplyConnectedSpace_of_circle_retract i r fun z ↦
+      edgeRadialCircleMap_comp_edgeRadialCircleInclusion
+        K hrep A B hAcl hBcl qA qB hqA hqB g habs hgA hgB
+          δ hδ0 hδquarter hδA hδB z
+  let e0 := triangulationTopologicalOpenEdgeNeighborhoodHomeomorphRadialLinkCarrier
+    K hcore hrep
+  let e :
+      ↑({triangulationTopologicalOpenEdgeRadialMidpoint K hrep}ᶜ : Set
+        {tq : ↑(Set.Ico (0 : ℝ) 1) ×
+            ↑(triangulationTopologicalVertexLink K v) |
+          0 < tq.1.1 ∧ 0 < tq.2.1 x}) ≃ₜ
+      ↑({⟨triangulationTopologicalCarrierEdgeMidpoint K v x hrep,
+          triangulationTopologicalCarrierEdgeMidpoint_mem_openEdgeNeighborhood
+            K hcore hrep⟩}ᶜ :
+        Set ↑(triangulationTopologicalOpenEdgeNeighborhood K v x)) :=
+    e0.subtype fun tq ↦ by
+      simp only [Set.mem_compl_iff, Set.mem_singleton_iff]
+      rw [← triangulationTopologicalOpenEdgeNeighborhoodHomeomorphRadialLinkCarrier_midpoint
+        K hcore hrep]
+      exact e0.injective.eq_iff.not.symm
+  intro hcarrier
+  letI : SimplyConnectedSpace
+      ↑({⟨triangulationTopologicalCarrierEdgeMidpoint K v x hrep,
+          triangulationTopologicalCarrierEdgeMidpoint_mem_openEdgeNeighborhood
+            K hcore hrep⟩}ᶜ :
+        Set ↑(triangulationTopologicalOpenEdgeNeighborhood K v x)) := hcarrier
+  haveI : SimplyConnectedSpace
+      ↑({triangulationTopologicalOpenEdgeRadialMidpoint K hrep}ᶜ : Set
+        {tq : ↑(Set.Ico (0 : ℝ) 1) ×
+            ↑(triangulationTopologicalVertexLink K v) |
+          0 < tq.1.1 ∧ 0 < tq.2.1 x}) :=
+    e.toHomotopyEquiv.simplyConnectedSpace
+  exact hradial inferInstance
 
 
 end Poincare
