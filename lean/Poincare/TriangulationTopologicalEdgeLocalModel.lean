@@ -1049,6 +1049,58 @@ theorem exists_edgeRadial_circleScale_image_subset
     hδle.trans_lt hδA, hδle.trans_lt hδB, ?_⟩
   exact hεS (by simpa [Real.dist_eq, abs_of_pos hδpos] using hδε)
 
+/-- Every carrier neighborhood of the represented edge midpoint contains the
+image of a sufficiently small genuine radial circle.  This is the carrier
+form of `exists_edgeRadial_circleScale_image_subset`, obtained by applying the
+radial reconstruction map before using the ambient shrinking theorem. -/
+theorem exists_edgeRadial_circleScale_carrier_image_subset
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    {v x : Nat} (hrep : VertexLinkVertexRepresented K v x)
+    (qA qB : ↑(triangulationTopologicalPuncturedVertexLinkStar K v x))
+    (U : Set (triangulationTopologicalGeometricCarrier K))
+    (hU : U ∈ nhds (triangulationTopologicalCarrierEdgeMidpoint K v x hrep)) :
+    ∃ δ : ℝ, 0 < δ ∧ δ < (4 : ℝ)⁻¹ ∧
+      δ < 1 - qA.1 x ∧ δ < 1 - qB.1 x ∧
+      ∀ (hδ0 : 0 < δ) (hδquarter : δ < (4 : ℝ)⁻¹)
+          (hδA : δ < 1 - qA.1 x) (hδB : δ < 1 - qB.1 x) (z : Circle),
+        ((triangulationTopologicalOpenEdgeNeighborhoodHomeomorphRadialLinkCarrier
+            K hcore hrep)
+          (edgeRadialCircleInclusion K hrep qA qB δ
+            hδ0 hδquarter hδA hδB z)).1 ∈ U := by
+  let R : ℝ × (Nat → ℝ) → (Nat → ℝ) := fun tq ↦
+    tq.1 • triangulationTopologicalGeometricVertex v + (1 - tq.1) • tq.2
+  have hR : Continuous R := by
+    dsimp [R]
+    fun_prop
+  obtain ⟨O, hO, hOU⟩ :=
+    (mem_nhds_subtype
+      (triangulationTopologicalGeometricComplex K).space
+      (triangulationTopologicalCarrierEdgeMidpoint K v x hrep) U).mp hU
+  have hRmid : R ((2 : ℝ)⁻¹,
+      triangulationTopologicalGeometricVertex x) =
+      triangulationTopologicalGeometricEdgeMidpoint v x := by
+    dsimp [R]
+    rw [show 1 - (2 : ℝ)⁻¹ = (2 : ℝ)⁻¹ by norm_num]
+    rfl
+  have hpre : R ⁻¹' O ∈ nhds (((2 : ℝ)⁻¹,
+      triangulationTopologicalGeometricVertex x)) := by
+    apply hR.continuousAt.eventually
+    rw [hRmid]
+    simpa [triangulationTopologicalCarrierEdgeMidpoint] using hO
+  obtain ⟨δ, hδ0, hδquarter, hδA, hδB, hδO⟩ :=
+    exists_edgeRadial_circleScale_image_subset K v x qA qB (R ⁻¹' O) hpre
+  refine ⟨δ, hδ0, hδquarter, hδA, hδB, ?_⟩
+  intro _ _ _ _ z
+  apply hOU
+  change (((triangulationTopologicalOpenEdgeNeighborhoodHomeomorphRadialLinkCarrier
+    K hcore hrep)
+      (edgeRadialCircleInclusion K hrep qA qB δ
+        hδ0 hδquarter hδA hδB z)).1.1) ∈ O
+  convert hδO z using 1
+  simp [R, edgeRadialCircleInclusion, edgeRadialCircleAmbientFamily,
+    edgeRadialCircleTransversePoint]
+  all_goals split_ifs <;> rfl
+
 /-- If a represented transverse star is disconnected, every ambient
 neighborhood of the radial midpoint contains a deleted radial subspace which
 retracts continuously onto a circle. -/
