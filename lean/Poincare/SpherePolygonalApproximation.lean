@@ -415,4 +415,25 @@ theorem Path.homotopic_refl_of_avoids_unitSphere_point
     SimplyConnectedSpace.paths_homotopic q' (Path.refl x')
   simpa [q', x', inclusion] using hq'.map inclusion
 
+/-- Every loop on the unit two-sphere is null-homotopic relative to its
+basepoint.  Replace the loop by a finite normalized-chord polygon, choose a
+sphere point missed by that polygon, and contract inside its complement. -/
+theorem unitSphere3_loop_nullhomotopic
+    {x : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1}
+    (p : Path x x) :
+    p.Homotopic (Path.refl x) := by
+  obtain ⟨n, hn, v, hv0, hv1, huv, h0, h1, q, hq, hpq⟩ :=
+    Path.exists_normalizedChordPolygon_homotopic p
+  obtain ⟨a, ha⟩ :=
+    exists_sphere_point_not_mem_normalizedChordPolygon p hn v huv
+  let b : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 :=
+    ⟨-(a : EuclideanSpace ℝ (Fin 3)), by
+      simpa [Metric.mem_sphere] using a.property⟩
+  have hqavoid : ∀ t, q t ≠ b := by
+    intro t
+    rw [hq]
+    simpa [b] using ha t
+  exact hpq.trans
+    (Path.homotopic_refl_of_avoids_unitSphere_point q b hqavoid)
+
 end Poincare
