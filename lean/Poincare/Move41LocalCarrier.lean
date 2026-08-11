@@ -618,4 +618,17 @@ theorem move41PiRadialMap_isHomeomorph
   exact (isHomeomorph_iff_continuous_bijective).2
     ⟨hfcont, hfinj, hfsurj⟩
 
+/-- The explicit radial equivalence, packaged as an actual topology-bearing
+homeomorphism between the Move41 local carriers. -/
+theorem move41PiLocalCarrier_homeomorphic
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup) :
+    Nonempty
+      (↥(move41PiSourceLocalCarrier a b c d e) ≃ₜ
+        ↥(move41PiTargetLocalCarrier a b c d e)) := by
+  let f : ↥(move41PiSourceLocalCarrier a b c d e) →
+      ↥(move41PiTargetLocalCarrier a b c d e) := fun p ↦
+    ⟨move41PiRadialMap a b c d e p.1,
+      move41PiRadialMap_mem_target h p.2⟩
+  exact ⟨IsHomeomorph.homeomorph f (move41PiRadialMap_isHomeomorph h)⟩
+
 end Poincare
