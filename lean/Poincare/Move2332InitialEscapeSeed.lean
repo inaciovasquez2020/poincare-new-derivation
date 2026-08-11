@@ -1,4 +1,6 @@
 import Poincare.Move2332LocalEscapeCriterion
+import Poincare.Move23ClosedCorePreservation
+import Poincare.Move32ClosedCorePreservation
 
 namespace Poincare
 
@@ -228,6 +230,8 @@ theorem exists_move2332Block_PhiSupport_lt_of_initial_escape_seed
     (hcore2 : ClosedTriangulationCore
       ((move2332FirstMove32 m hseed.x).replace (m.replace K))) :
     ∃ m32₁ m32₂ : Move32Site,
+      m32₁ = move2332FirstMove32 m hseed.x ∧
+      m32₂ = move2332SecondMove32 m hseed.y ∧
       m.LegalIn K ∧
       m32₁.LegalIn (m.replace K) ∧
       m32₁ ≠ Move32Site.ofMove23Site m ∧
@@ -295,7 +299,7 @@ theorem exists_move2332Block_PhiSupport_lt_of_initial_escape_seed
       simpa [move2332SecondMove32] using hs2e
     omega
   refine ⟨move2332FirstMove32 m hseed.x, move2332SecondMove32 m hseed.y,
-    h23, hlegal1, hnoninverse, hlegal2, ?_⟩
+    rfl, rfl, h23, hlegal1, hnoninverse, hlegal2, ?_⟩
   apply move2332Block_PhiSupport_lt_of_local_degree_conditions
     m h23 (move2332FirstMove32 m hseed.x) hlegal1 hcore1
       (move2332SecondMove32 m hseed.y) hlegal2 hcore2
@@ -304,6 +308,45 @@ theorem exists_move2332Block_PhiSupport_lt_of_initial_escape_seed
   simp only [move2332FirstMove32, move2332SecondMove32]
   rw [hd1, he1, hb2, hc2deg, hKa, ha3, hc3, hb, hc]
   simpa [degreeDefectValue, targetDegree, add_assoc] using hdegree
+
+/-- An initial `2-3-3-2-3-2` escape seed determines a genuine closed-core,
+strictly descending, topology-preserving block without requiring callers to
+supply closed-core proofs for either intermediate triangulation. -/
+theorem exists_closedCore_homeomorphic_PhiSupport_lt_of_initial_escape_seed
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (m : Move23Site) (hseed : Move2332InitialEscapeSeed K m) :
+    ∃ K',
+      ClosedTriangulationCore K' ∧
+      PhiSupport K' < PhiSupport K ∧
+      Nonempty
+        (triangulationTopologicalGeometricCarrier K ≃ₜ
+          triangulationTopologicalGeometricCarrier K') := by
+  let m32₁ := move2332FirstMove32 m hseed.x
+  let m32₂ := move2332SecondMove32 m hseed.y
+  have h23 : m.LegalIn K := hseed.move23_legal
+  have hlegal1 : m32₁.LegalIn (m.replace K) := by
+    simpa [m32₁] using hseed.firstMove32_legal
+  have hlegal2 : m32₂.LegalIn (m32₁.replace (m.replace K)) := by
+    simpa [m32₁, m32₂] using hseed.move32s_legal.2.2
+  have hcore1 : ClosedTriangulationCore (m.replace K) :=
+    hcore.move23Site_replace_closedCore m h23
+  have hcore2 : ClosedTriangulationCore (m32₁.replace (m.replace K)) :=
+    hcore1.move32Site_replace_closedCore m32₁ hlegal1
+  have hcore3 : ClosedTriangulationCore
+      (m32₂.replace (m32₁.replace (m.replace K))) :=
+    hcore2.move32Site_replace_closedCore m32₂ hlegal2
+  have hdescent : PhiSupport (m32₂.replace (m32₁.replace (m.replace K))) <
+      PhiSupport K := by
+    obtain ⟨s1, s2, hs1, hs2, _, _, _, _, hlt⟩ :=
+      exists_move2332Block_PhiSupport_lt_of_initial_escape_seed
+        hcore m hseed hcore1 hcore2
+    subst s1
+    subst s2
+    simpa [m32₁, m32₂] using hlt
+  refine ⟨m32₂.replace (m32₁.replace (m.replace K)), hcore3, hdescent, ?_⟩
+  exact ⟨(hcore.move23GeometricCarrierHomeomorph m h23).trans
+    ((hcore1.move32GeometricCarrierHomeomorph m32₁ hlegal1).trans
+      (hcore2.move32GeometricCarrierHomeomorph m32₂ hlegal2))⟩
 
 def crossPolytopeBoundary4_move2332InitialEscapeSeed :
     Move2332InitialEscapeSeed crossPolytopeBoundary4
@@ -366,12 +409,14 @@ theorem crossPolytopeBoundary4_exists_move2332Block_PhiSupport_lt_of_initial_esc
       m32₂.LegalIn (m32₁.replace crossPolytopeEscapeAfter23) ∧
       PhiSupport (m32₂.replace (m32₁.replace crossPolytopeEscapeAfter23)) <
         PhiSupport crossPolytopeBoundary4 := by
-  exact exists_move2332Block_PhiSupport_lt_of_initial_escape_seed
+  obtain ⟨m32₁, m32₂, _, _, hrest⟩ :=
+    exists_move2332Block_PhiSupport_lt_of_initial_escape_seed
     crossPolytopeBoundary4_closedCore crossPolytopeEscapeMove23
     crossPolytopeBoundary4_move2332InitialEscapeSeed
     crossPolytopeEscapeAfter23_closedCore
     (by simpa [crossPolytopeBoundary4_move2332InitialEscapeSeed,
       move2332FirstMove32, crossPolytopeEscapeAfter32₁] using
         crossPolytopeEscapeAfter32One_closedCore)
+  exact ⟨m32₁, m32₂, hrest⟩
 
 end Poincare
