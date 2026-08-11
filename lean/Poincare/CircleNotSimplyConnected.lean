@@ -9,6 +9,33 @@ namespace Poincare
 
 open Real
 
+/-- A continuous retract of a simply connected space is simply connected. -/
+theorem simplyConnectedSpace_of_retract
+    {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    [SimplyConnectedSpace X]
+    (i : C(Y, X)) (r : C(X, Y)) (hr : ∀ y, r (i y) = y) :
+    SimplyConnectedSpace Y := by
+  rw [simply_connected_iff_paths_homotopic']
+  constructor
+  · exact (show Function.Surjective r from fun y ↦ ⟨i y, hr y⟩).pathConnectedSpace
+      r.continuous
+  · intro x y p q
+    have hmap : Path.Homotopic
+        ((p.map i.continuous).map r.continuous)
+        ((q.map i.continuous).map r.continuous) :=
+      (SimplyConnectedSpace.paths_homotopic
+        (p.map i.continuous) (q.map i.continuous)).map r
+    have hcast := hmap.pathCast (hr x).symm (hr y).symm
+    have hp : ((p.map i.continuous).map r.continuous).cast
+        (hr x).symm (hr y).symm = p := by
+      ext t
+      exact hr (p t)
+    have hq : ((q.map i.continuous).map r.continuous).cast
+        (hr x).symm (hr y).symm = q := by
+      ext t
+      exact hr (q t)
+    rwa [hp, hq] at hcast
+
 /-- The unit circle is not simply connected. -/
 theorem circle_not_simplyConnected : ¬ SimplyConnectedSpace Circle := by
   intro hsc
