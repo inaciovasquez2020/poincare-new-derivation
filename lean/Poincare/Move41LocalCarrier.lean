@@ -438,4 +438,90 @@ theorem move41PiRadialInv_mem_source
   · intro z hza hzb hzc hzd hze
     simp [move41PiRadialInv, hza, hzb, hzc, hzd, hze]
 
+/-- The explicit inverse recovers every point of the source cone after the
+radial map. -/
+theorem move41PiRadialInv_radialMap
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup) {p : Nat → ℝ}
+    (hp : p ∈ move41PiSourceLocalCarrier a b c d e) :
+    move41PiRadialInv a b c d e (move41PiRadialMap a b c d e p) = p := by
+  have hnonneg := move41PiSourceLocalCarrier_nonneg hp
+  have hboundary := move41PiSourceLocalCarrier_zero_outer h hp
+  have hab : a ≠ b := by simp_all [List.nodup_cons]
+  have hac : a ≠ c := by simp_all [List.nodup_cons]
+  have had : a ≠ d := by simp_all [List.nodup_cons]
+  have hae : a ≠ e := by simp_all [List.nodup_cons]
+  have hbc : b ≠ c := by simp_all [List.nodup_cons]
+  have hbd : b ≠ d := by simp_all [List.nodup_cons]
+  have hbe : b ≠ e := by simp_all [List.nodup_cons]
+  have hcd : c ≠ d := by simp_all [List.nodup_cons]
+  have hce : c ≠ e := by simp_all [List.nodup_cons]
+  have hde : d ≠ e := by simp_all [List.nodup_cons]
+  have hmin :
+      min
+          (min ((move41PiRadialMap a b c d e p) a)
+            ((move41PiRadialMap a b c d e p) b))
+          (min ((move41PiRadialMap a b c d e p) c)
+            ((move41PiRadialMap a b c d e p) d)) = p e / 4 := by
+    have haMap : (move41PiRadialMap a b c d e p) a = p a + p e / 4 := by
+      simp [move41PiRadialMap]
+    have hbMap : (move41PiRadialMap a b c d e p) b = p b + p e / 4 := by
+      simp [move41PiRadialMap, Ne.symm hab]
+    have hcMap : (move41PiRadialMap a b c d e p) c = p c + p e / 4 := by
+      simp [move41PiRadialMap, Ne.symm hac, Ne.symm hbc]
+    have hdMap : (move41PiRadialMap a b c d e p) d = p d + p e / 4 := by
+      simp [move41PiRadialMap, Ne.symm had, Ne.symm hbd, Ne.symm hcd]
+    rw [haMap, hbMap, hcMap, hdMap]
+    have hlo : p e / 4 ≤
+        min (min (p a + p e / 4) (p b + p e / 4))
+          (min (p c + p e / 4) (p d + p e / 4)) := by
+      apply le_min <;> apply le_min <;> linarith [hnonneg a, hnonneg b,
+        hnonneg c, hnonneg d]
+    apply le_antisymm _ hlo
+    rcases hboundary with ha | hb | hc | hd
+    · calc
+        min (min (p a + p e / 4) (p b + p e / 4))
+            (min (p c + p e / 4) (p d + p e / 4))
+            ≤ min (p a + p e / 4) (p b + p e / 4) := min_le_left _ _
+        _ ≤ p a + p e / 4 := min_le_left _ _
+        _ = p e / 4 := by rw [ha]; ring
+    · calc
+        min (min (p a + p e / 4) (p b + p e / 4))
+            (min (p c + p e / 4) (p d + p e / 4))
+            ≤ min (p a + p e / 4) (p b + p e / 4) := min_le_left _ _
+        _ ≤ p b + p e / 4 := min_le_right _ _
+        _ = p e / 4 := by rw [hb]; ring
+    · calc
+        min (min (p a + p e / 4) (p b + p e / 4))
+            (min (p c + p e / 4) (p d + p e / 4))
+            ≤ min (p c + p e / 4) (p d + p e / 4) := min_le_right _ _
+        _ ≤ p c + p e / 4 := min_le_left _ _
+        _ = p e / 4 := by rw [hc]; ring
+    · calc
+        min (min (p a + p e / 4) (p b + p e / 4))
+            (min (p c + p e / 4) (p d + p e / 4))
+            ≤ min (p c + p e / 4) (p d + p e / 4) := min_le_right _ _
+        _ ≤ p d + p e / 4 := min_le_right _ _
+        _ = p e / 4 := by rw [hd]; ring
+  funext z
+  simp only [move41PiRadialInv, hmin]
+  by_cases hza : z = a
+  · subst z
+    simp [move41PiRadialMap, hab, hac, had, hae]
+  by_cases hzb : z = b
+  · subst z
+    simp [move41PiRadialMap, hza, Ne.symm hab, hbc, hbd, hbe]
+  by_cases hzc : z = c
+  · subst z
+    simp [move41PiRadialMap, hza, hzb, Ne.symm hac, Ne.symm hbc, hcd, hce]
+  by_cases hzd : z = d
+  · subst z
+    simp [move41PiRadialMap, hza, hzb, hzc, Ne.symm had, Ne.symm hbd,
+      Ne.symm hcd, hde]
+  by_cases hze : z = e
+  · subst z
+    simp [Ne.symm hae, Ne.symm hbe, Ne.symm hce, Ne.symm hde]
+    ring
+  have hoff := move41PiSourceLocalCarrier_eq_zero_of_not_label hp hza hzb hzc hzd hze
+  simp [move41PiRadialMap, hza, hzb, hzc, hzd, hze, hoff]
+
 end Poincare
