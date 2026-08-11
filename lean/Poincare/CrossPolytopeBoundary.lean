@@ -31,7 +31,8 @@ theorem crossPolytopeBoundary4_closedCore :
       norm_num at habc <;> decide
 
 theorem crossPolytopeBoundary4_vertexSupport :
-    vertexSupport crossPolytopeBoundary4 = [0, 2, 4, 6, 7, 5, 3, 1] := by native_decide
+    vertexSupport crossPolytopeBoundary4 = [0, 2, 4, 6, 7, 5, 3, 1] := by
+  rfl
 
 theorem crossPolytopeBoundary4_vertexDegree (v : Nat) (hv : v < 8) :
     vertexDegree crossPolytopeBoundary4 v = 8 := by

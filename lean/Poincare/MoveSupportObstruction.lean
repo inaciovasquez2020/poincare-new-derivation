@@ -1,6 +1,7 @@
 import Poincare.FourSimplexBoundaryCombinatorialCertificate
 import Poincare.Move23ClosedCorePreservation
 import Poincare.Move32DegreeSupportBalance
+import Poincare.CrossPolytopeBoundary
 
 namespace Poincare
 
@@ -49,5 +50,25 @@ theorem ClosedTriangulationCore.vertexSupport_toFinset_card_eq_five_of_PhiSuppor
         hPhi hconn hτK (hcore.1 τ hτK)
   rw [hsupportFinset]
   simpa using List.toFinset_card_of_nodup hdistinct
+
+/-- The cross-polytope boundary cannot be normalized to zero supported defect
+using only legal `2-3` and `3-2` moves.  Such moves preserve all eight of its
+represented vertices, whereas a connected closed zero-defect triangulation
+has exactly five represented vertices. -/
+theorem crossPolytopeBoundary4_no_legalMove23Move32Sequence_to_PhiSupport_eq_zero :
+    ¬ ∃ K : Triangulation,
+      LegalMove23Move32Sequence crossPolytopeBoundary4 K ∧
+      ClosedTriangulationCore K ∧
+      TetrahedronVertexOverlapConnected K ∧
+      PhiSupport K = 0 := by
+  rintro ⟨K, hseq, hcore, hconn, hPhi⟩
+  have hcardFive : (vertexSupport K).toFinset.card = 5 :=
+    hcore.vertexSupport_toFinset_card_eq_five_of_PhiSupport_eq_zero hconn hPhi
+  have hsupport :
+      (vertexSupport K).toFinset = (vertexSupport crossPolytopeBoundary4).toFinset := by
+    ext v
+    simpa using hseq.vertexSupport_mem_iff v
+  rw [hsupport, crossPolytopeBoundary4_vertexSupport] at hcardFive
+  norm_num at hcardFive
 
 end Poincare
