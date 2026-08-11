@@ -1,4 +1,4 @@
-import Poincare.Validity
+import Poincare.Move23UnchangedOverlap
 
 namespace Poincare
 
@@ -52,5 +52,38 @@ theorem Move41Site.mem_source_iff_of_center_mem
         simp [Move41Site.sourceTet₀, Move41Site.sourceTet₁,
           Move41Site.sourceTet₂, Move41Site.sourceTet₃, Tet.verts]
     exact (hsame s.e).2 heSource
+
+/-- The tetrahedra outside the `4 → 1` region, obtained by erasing exactly
+one representative of each of the four source vertex sets. -/
+def Move41Site.unchangedTets (s : Move41Site) (K : Triangulation) : List Tet :=
+  eraseFirstSameTet s.sourceTet₃
+    (eraseFirstSameTet s.sourceTet₂
+      (eraseFirstSameTet s.sourceTet₁
+        (eraseFirstSameTet s.sourceTet₀ K.tets)))
+
+/-- Exact `4 → 1` replacement: erase the four source tetrahedra and insert
+the opposite tetrahedron. -/
+def Move41Site.replace (s : Move41Site) (K : Triangulation) : Triangulation :=
+  { tets := s.targetTet :: s.unchangedTets K }
+
+/-- In the result of a legal `4 → 1` replacement, the explicitly inserted
+tetrahedron is the unique representative of its vertex set. -/
+theorem Move41Site.same_target_iff_eq_of_mem_replace
+    {s : Move41Site} {K : Triangulation} (h : s.LegalIn K) {τ : Tet}
+    (hτ : τ ∈ (s.replace K).tets) :
+    SameTetVertices τ s.targetTet ↔ τ = s.targetTet := by
+  constructor
+  · intro hsame
+    simp only [Move41Site.replace, List.mem_cons] at hτ
+    rcases hτ with rfl | hunchanged
+    · rfl
+    · have horiginal : τ ∈ K.tets := by
+        exact mem_of_mem_eraseFirstSameTet
+          (mem_of_mem_eraseFirstSameTet
+            (mem_of_mem_eraseFirstSameTet
+              (mem_of_mem_eraseFirstSameTet hunchanged)))
+      exact (h.targetAbsent τ horiginal hsame).elim
+  · rintro rfl
+    exact fun _ => Iff.rfl
 
 end Poincare
