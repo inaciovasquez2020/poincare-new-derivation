@@ -377,6 +377,16 @@ noncomputable def move41PiRadialInv (a b c d e : Nat) (q : Nat → ℝ) :
     else if z = e then 4 * m
     else 0
 
+/-- The explicit inverse radial barycentric formula is continuous in the
+ambient product topology.  This is the inverse-continuity input for the
+genuine local `4 → 1` homeomorphism. -/
+theorem continuous_move41PiRadialInv (a b c d e : Nat) :
+    Continuous (move41PiRadialInv a b c d e) := by
+  rw [continuous_pi_iff]
+  intro z
+  simp only [move41PiRadialInv]
+  split_ifs <;> fun_prop
+
 /-- The inverse radial formula carries the solid target tetrahedron into the
 cone on its boundary. -/
 theorem move41PiRadialInv_mem_source
