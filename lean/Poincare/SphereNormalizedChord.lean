@@ -1,4 +1,5 @@
 import Mathlib.Analysis.InnerProductSpace.PiL2
+import Mathlib.Topology.Homotopy.Path
 import Mathlib.Topology.UnitInterval
 
 namespace Poincare
@@ -82,5 +83,64 @@ theorem exists_normalizedChord_path
   refine ⟨normalizedChord u v hu hv huv, ?_⟩
   intro s
   simp [normalizedChord]
+
+/-- Sphere-valued paths which are pointwise less than two apart are homotopic through
+pointwise normalized straight chords. -/
+theorem normalizedStraight_pathHomotopic
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {x y : Metric.sphere (0 : E) 1} (p q : Path x y)
+    (hpq : ∀ t, dist (p t : E) (q t : E) < 2) :
+    Path.Homotopic p q := by
+  let c : unitInterval × unitInterval → E := fun z ↦
+    (1 - (z.1 : ℝ)) • (p z.2 : E) + (z.1 : ℝ) • (q z.2 : E)
+  have hc0 : ∀ z, c z ≠ 0 := fun z ↦
+    unit_convexCombo_ne_zero_of_dist_lt_two
+      (by simpa [Metric.mem_sphere] using (p z.2).property)
+      (by simpa [Metric.mem_sphere] using (q z.2).property) (hpq z.2) z.1
+  have hc : Continuous c :=
+    (continuous_const.sub (continuous_subtype_val.comp continuous_fst)).smul
+        (p.continuous.subtype_val.comp continuous_snd) |>.add
+      ((continuous_subtype_val.comp continuous_fst).smul
+        (q.continuous.subtype_val.comp continuous_snd))
+  let f : unitInterval × unitInterval → Metric.sphere (0 : E) 1 := fun z ↦
+    ⟨‖c z‖⁻¹ • c z, by
+      rw [Metric.mem_sphere, dist_zero_right, norm_smul, Real.norm_eq_abs,
+        abs_of_nonneg (inv_nonneg.mpr (norm_nonneg _)),
+        inv_mul_cancel₀ (norm_ne_zero_iff.mpr (hc0 z))]⟩
+  have hf : Continuous f := by
+    apply Continuous.subtype_mk
+    exact (hc.norm.inv₀ (fun z ↦ norm_ne_zero_iff.mpr (hc0 z))).smul hc
+  refine ⟨{
+    toFun := f
+    continuous_toFun := hf
+    map_zero_left := ?_
+    map_one_left := ?_
+    prop' := ?_ }⟩
+  · intro t
+    apply Subtype.ext
+    simp [f, c]
+  · intro t
+    apply Subtype.ext
+    simp [f, c]
+  · intro s t ht
+    rcases ht with rfl | rfl
+    · change f (s, 0) = p 0
+      rw [p.source]
+      apply Subtype.ext
+      simp only [f, c]
+      rw [p.source, q.source]
+      have hcombo : (1 - (s : ℝ)) • (x : E) + (s : ℝ) • (x : E) = x := by
+        module
+      rw [hcombo]
+      simp
+    · change f (s, 1) = p 1
+      rw [p.target]
+      apply Subtype.ext
+      simp only [f, c]
+      rw [p.target, q.target]
+      have hcombo : (1 - (s : ℝ)) • (y : E) + (s : ℝ) • (y : E) = y := by
+        module
+      rw [hcombo]
+      simp
 
 end Poincare
