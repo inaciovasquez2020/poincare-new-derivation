@@ -85,3 +85,4 @@ import Poincare.TriangulationTopologicalNormalizedS3
 
 import Poincare.VertexLinkTetrahedronBridge
 import Poincare.SphereFiniteEscape
+import Poincare.SphereNormalizedChord
