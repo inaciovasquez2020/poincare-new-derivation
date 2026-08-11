@@ -257,4 +257,80 @@ theorem Path.exists_normalizedChordPolygon_homotopic
   rw [heq] at hcast
   exact hcast
 
+private theorem Path.concat_mem_of_edges
+    {X : Type*} [TopologicalSpace X] {n : ℕ}
+    (z : Fin (n + 1) → X)
+    (F : (i : Fin n) → Path (z i.castSucc) (z i.succ))
+    (S : Fin n → Set X) (hn : 0 < n)
+    (hF : ∀ i t, F i t ∈ S i) :
+    ∀ t, ∃ i, Path.concat z F t ∈ S i := by
+  induction n with
+  | zero => omega
+  | succ n ih =>
+      intro t
+      rw [Path.concat_succ]
+      let G := (Path.concat (z ∘ Fin.castSucc) (fun k ↦ F k.castSucc)).trans
+        (F (Fin.last n))
+      change ∃ i, G t ∈ S i
+      have htmem :
+          G t ∈
+            Set.range (Path.concat (z ∘ Fin.castSucc) (fun k ↦ F k.castSucc)) ∪
+              Set.range (F (Fin.last n)) := by
+        have htG : G t ∈ Set.range G := Set.mem_range_self t
+        have hGrange : Set.range G =
+            Set.range (Path.concat (z ∘ Fin.castSucc) (fun k ↦ F k.castSucc)) ∪
+              Set.range (F (Fin.last n)) := by
+          exact Path.trans_range _ _
+        rwa [hGrange] at htG
+      rcases htmem with ⟨s, hs⟩ | ⟨s, hs⟩
+      · cases n with
+        | zero =>
+            refine ⟨Fin.last 0, ?_⟩
+            have heq : G t = F (Fin.last 0) 0 := by
+              calc
+                G t = Path.concat (z ∘ Fin.castSucc) (fun k ↦ F k.castSucc) s := hs.symm
+                _ = z 0 := by
+                  rw [Path.concat_zero]
+                  rfl
+                _ = F (Fin.last 0) 0 := (F (Fin.last 0)).source.symm
+            rw [heq]
+            exact hF (Fin.last 0) 0
+        | succ n =>
+            obtain ⟨i, hi⟩ := ih (z ∘ Fin.castSucc)
+              (fun k ↦ F k.castSucc) (fun k ↦ S k.castSucc) (by omega)
+              (fun i t ↦ hF i.castSucc t) s
+            exact ⟨i.castSucc, hs ▸ hi⟩
+      · exact ⟨Fin.last n, hs ▸ hF (Fin.last n) s⟩
+
+/-- Every point of a normalized-chord polygon lies in the span of the two sampled
+vertices of one of its consecutive edges. -/
+theorem normalizedChordPolygon_mem_pairSpan
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {x y : Metric.sphere (0 : E) 1} (p : Path x y) {n : ℕ} (hn : 0 < n)
+    (v : Fin (n + 1) → unitInterval)
+    (huv : ∀ i : Fin n,
+      dist (p (v i.castSucc) : E) (p (v i.succ) : E) < 2)
+    (t : unitInterval) :
+    ∃ i : Fin n, ((normalizedChordChain p v huv t :
+        Metric.sphere (0 : E) 1) : E) ∈
+      Submodule.span ℝ ({(p (v i.castSucc) : E), (p (v i.succ) : E)} : Set E) := by
+  refine Path.concat_mem_of_edges (p ∘ v)
+    (fun i ↦ normalizedChord (p (v i.castSucc) : E) (p (v i.succ) : E)
+      (by simpa [Metric.mem_sphere] using (p (v i.castSucc)).property)
+      (by simpa [Metric.mem_sphere] using (p (v i.succ)).property) (huv i))
+    (fun i ↦ {z : Metric.sphere (0 : E) 1 |
+      (z : E) ∈ Submodule.span ℝ
+        ({(p (v i.castSucc) : E), (p (v i.succ) : E)} : Set E)}) hn ?_ t
+  intro i s
+  change ‖(1 - (s : ℝ)) • (p (v i.castSucc) : E) +
+      (s : ℝ) • (p (v i.succ) : E)‖⁻¹ •
+        ((1 - (s : ℝ)) • (p (v i.castSucc) : E) +
+          (s : ℝ) • (p (v i.succ) : E)) ∈
+      Submodule.span ℝ
+        ({(p (v i.castSucc) : E), (p (v i.succ) : E)} : Set E)
+  apply Submodule.smul_mem
+  apply Submodule.add_mem
+  · exact Submodule.smul_mem _ _ (Submodule.subset_span (by simp))
+  · exact Submodule.smul_mem _ _ (Submodule.subset_span (by simp))
+
 end Poincare
