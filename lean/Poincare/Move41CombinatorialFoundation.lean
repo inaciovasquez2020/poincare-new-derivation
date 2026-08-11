@@ -227,4 +227,35 @@ theorem Move41Site.mem_vertexSupport_replace_iff_of_ne_center
         · exact hnotSource s.sourceTet₃ (by simp [Move41Site.sourceTets])
       exact ⟨τ, by simp [Move41Site.replace, hunchanged], hvτ⟩
 
+/-- A genuine `4 → 1` replacement decreases the number of supported
+vertices by exactly one. -/
+theorem Move41Site.vertexSupport_toFinset_card_replace_add_one_eq
+    {s : Move41Site} {K : Triangulation} (h : s.LegalIn K) :
+    (vertexSupport (s.replace K)).toFinset.card + 1 =
+      (vertexSupport K).toFinset.card := by
+  have heSupport : s.e ∈ vertexSupport K := by
+    rw [mem_vertexSupport_iff]
+    simp only [allVerts, List.mem_flatMap]
+    have hlength := h.sourceOccursExactlyOnce s.sourceTet₀ (by
+      simp [Move41Site.sourceTets])
+    have hne : K.tets.filter
+        (fun τ => sameTetVerticesBool τ s.sourceTet₀) ≠ [] := by
+      intro hempty
+      simp [hempty] at hlength
+    rcases List.exists_mem_of_ne_nil _ hne with ⟨τ, hτ⟩
+    have hτ' : τ ∈ K.tets ∧ SameTetVertices τ s.sourceTet₀ := by
+      simpa [sameTetVerticesBool_eq_true_iff] using hτ
+    exact ⟨τ, hτ'.1, (hτ'.2 s.e).2 (by
+      simp [Move41Site.sourceTet₀, Tet.verts])⟩
+  have hsupport : (vertexSupport (s.replace K)).toFinset =
+      (vertexSupport K).toFinset.erase s.e := by
+    ext v
+    by_cases hve : v = s.e
+    · subst v
+      simp [Move41Site.center_not_mem_vertexSupport_replace h]
+    · simp [hve, Move41Site.mem_vertexSupport_replace_iff_of_ne_center h hve]
+  have heSupport' : s.e ∈ (vertexSupport K).toFinset := by
+    simpa using heSupport
+  rw [hsupport, Finset.card_erase_add_one heSupport']
+
 end Poincare
