@@ -34,6 +34,79 @@ theorem triangulationTopologicalVertexLinkStar_subset_vertexLink
   exact (mem_triangulationTopologicalVertexLink_iff K v p).2
     ⟨sigma, (mem_vertexLinkStarTriangles_iff K v x sigma).1 hsigma |>.1, hp⟩
 
+/-- Barycentric characterization of the apex in a represented vertex-link
+star.  In particular, the apex coordinate lies in the unit interval and can
+equal one only at the represented apex itself. -/
+theorem triangulationTopologicalVertexLinkStar_apex_coordinate
+    (K : Triangulation) (v x : Nat) {q : Nat → ℝ}
+    (hq : q ∈ triangulationTopologicalVertexLinkStar K v x) :
+    0 ≤ q x ∧ q x ≤ 1 ∧
+      (q x = 1 ↔ q = triangulationTopologicalGeometricVertex x) := by
+  classical
+  obtain ⟨sigma, hsigma, hqsigma⟩ :=
+    (mem_triangulationTopologicalVertexLinkStar_iff K v x q).1 hq
+  let F := sigma.verts.toFinset
+  have hxF : x ∈ F := List.mem_toFinset.mpr
+    ((mem_vertexLinkStarTriangles_iff K v x sigma).1 hsigma).2
+  have hnonneg (j : Nat) : 0 ≤ q j := by
+    apply convexHull_min _ (convex_halfSpace_ge
+      ⟨fun a b ↦ rfl, fun r a ↦ rfl⟩ (0 : ℝ)) hqsigma
+    rintro _ ⟨i, _hi, rfl⟩
+    simp [triangulationTopologicalGeometricVertex, Pi.single_apply]
+    split <;> norm_num
+  have hsum : ∑ j ∈ F, q j = 1 := by
+    apply convexHull_min _ (convex_hyperplane
+      ⟨fun a b ↦ by simp [Finset.sum_add_distrib],
+        fun r a ↦ by simp [Finset.mul_sum]⟩ (1 : ℝ)) hqsigma
+    rintro _ ⟨i, hi, rfl⟩
+    change ∑ j ∈ F, triangulationTopologicalGeometricVertex i j = 1
+    rw [Finset.sum_eq_single i]
+    · simp [triangulationTopologicalGeometricVertex]
+    · intro j hj hji
+      simp [triangulationTopologicalGeometricVertex, hji]
+    · exact fun h ↦ (h hi).elim
+  have hle : q x ≤ 1 := by
+    rw [← hsum]
+    exact Finset.single_le_sum (fun j _ ↦ hnonneg j) hxF
+  refine ⟨hnonneg x, hle, ?_⟩
+  constructor
+  · intro hxone
+    funext j
+    by_cases hjx : j = x
+    · subst j
+      simp [hxone, triangulationTopologicalGeometricVertex]
+    · have hqj : q j = 0 := by
+        by_cases hjF : j ∈ F
+        · have hjle : q x + q j ≤ ∑ k ∈ F, q k := by
+            rw [← Finset.sum_erase_add _ _ hxF, add_comm]
+            apply add_le_add_left
+            apply Finset.single_le_sum (fun k _ ↦ hnonneg k)
+            simp [hjx, hjF]
+          rw [hsum, hxone] at hjle
+          exact le_antisymm (by linarith) (hnonneg j)
+        · apply convexHull_min _ (convex_hyperplane
+            ⟨fun a b ↦ rfl, fun r a ↦ rfl⟩ (0 : ℝ)) hqsigma
+          rintro _ ⟨i, hi, rfl⟩
+          have hij : i ≠ j := fun h ↦ hjF (h ▸ hi)
+          simp [triangulationTopologicalGeometricVertex, hij]
+      simp [triangulationTopologicalGeometricVertex, hjx, hqj]
+  · rintro rfl
+    simp [triangulationTopologicalGeometricVertex]
+
+/-- Away from the represented apex, the complementary apex coordinate is
+strictly positive. -/
+theorem triangulationTopologicalVertexLinkStar_one_sub_coordinate_pos
+    (K : Triangulation) (v x : Nat) {q : Nat → ℝ}
+    (hq : q ∈ triangulationTopologicalVertexLinkStar K v x)
+    (hne : q ≠ triangulationTopologicalGeometricVertex x) :
+    0 < 1 - q x := by
+  rw [sub_pos]
+  exact lt_of_le_of_ne
+    (triangulationTopologicalVertexLinkStar_apex_coordinate K v x hq).2.1
+    (fun h ↦ hne
+      ((triangulationTopologicalVertexLinkStar_apex_coordinate K v x hq).2.2.1
+        h))
+
 noncomputable def triangulationTopologicalPuncturedVertexLinkStar
     (K : Triangulation) (v x : Nat) : Set (Nat → ℝ) :=
   triangulationTopologicalVertexLinkStar K v x \
