@@ -2,6 +2,51 @@ import Poincare.DegreeFourVertexLinkClassification
 
 namespace Poincare
 
+/-- In a closed core, two distinct represented tetrahedra containing the same
+represented triangular face are the only represented tetrahedra containing
+that face.  This is the exact incidence-two forcing principle used to close
+the target-present five-tetrahedron cluster under face adjacency. -/
+theorem ClosedTriangulationCore.eq_left_or_eq_right_of_common_face
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    {a b c : Nat}
+    (hface : [a, b, c].Nodup)
+    {tau rho : Tet}
+    (htauK : tau ∈ K.tets)
+    (hrhoK : rho ∈ K.tets)
+    (htauFace : a ∈ tau.verts ∧ b ∈ tau.verts ∧ c ∈ tau.verts)
+    (hrhoFace : a ∈ rho.verts ∧ b ∈ rho.verts ∧ c ∈ rho.verts)
+    (hne : tau ≠ rho)
+    {sigma : Tet}
+    (hsigmaK : sigma ∈ K.tets)
+    (hsigmaFace : a ∈ sigma.verts ∧ b ∈ sigma.verts ∧ c ∈ sigma.verts) :
+    sigma = tau ∨ sigma = rho := by
+  classical
+  let p : Tet → Bool := fun xi ↦
+    decide (a ∈ xi.verts ∧ b ∈ xi.verts ∧ c ∈ xi.verts)
+  have hrepresented : ∃ xi ∈ K.tets,
+      a ∈ xi.verts ∧ b ∈ xi.verts ∧ c ∈ xi.verts :=
+    ⟨tau, htauK, htauFace⟩
+  have hlength : (K.tets.filter p).length = 2 := by
+    simpa [p] using hcore.2.2 a b c hface hrepresented
+  obtain ⟨u, w, huw⟩ := List.length_eq_two.mp hlength
+  have htau : tau = u ∨ tau = w := by
+    have : tau ∈ K.tets.filter p := by simp [p, htauK, htauFace]
+    rw [huw] at this
+    simpa using this
+  have hrho : rho = u ∨ rho = w := by
+    have : rho ∈ K.tets.filter p := by simp [p, hrhoK, hrhoFace]
+    rw [huw] at this
+    simpa using this
+  have hsigma : sigma = u ∨ sigma = w := by
+    have : sigma ∈ K.tets.filter p := by simp [p, hsigmaK, hsigmaFace]
+    rw [huw] at this
+    simpa using this
+  rcases htau with rfl | rfl <;>
+    rcases hrho with rfl | rfl <;>
+    rcases hsigma with rfl | rfl <;>
+    simp_all
+
 /-- In a connected vertex link, a nonempty family of represented link
 triangles that is closed under link adjacency contains every represented link
 triangle.  This is the propagation principle that excludes an additional
