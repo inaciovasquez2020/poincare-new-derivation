@@ -30,7 +30,7 @@ theorem ClosedTriangulationCore.triangulationPreAbstractComplex_mem_iff_fourSimp
   refine ⟨e, hdistinct, fun F => ?_⟩
   let V : Finset Nat := {τ.v0, τ.v1, τ.v2, τ.v3, e}
   have hdistinct' := hdistinct
-  simp only [List.nodup_cons, List.mem_cons, List.mem_singleton, not_or,
+  simp only [List.nodup_cons, List.mem_cons, not_or,
     List.nodup_nil] at hdistinct'
   constructor
   · intro hF
@@ -41,7 +41,7 @@ theorem ClosedTriangulationCore.triangulationPreAbstractComplex_mem_iff_fourSimp
       all_goals rw [hσ] at hFσ
       all_goals intro y hy
       all_goals have := hFσ hy
-      all_goals simp [V] at this ⊢
+      all_goals simp at this ⊢
       all_goals aesop
     · intro hFVeq
       have hVσ : V ⊆ σ.verts.toFinset := by

@@ -610,7 +610,6 @@ theorem Move23Site.replace_vertexDegree_offSite
     Move23Site.newTet₁,
     Move23Site.newTet₂,
     Tet.verts,
-    hva, hvb, hvc, hvd, hve,
     hav, hbv, hcv, hdv, hev
   ] at h
 
@@ -630,10 +629,7 @@ theorem Move23Site.replace_vertexSupport_mem_iff
     intro J x
     rw [mem_vertexSupport_iff]
     change x ∈ allVerts J ↔ 0 < (allVerts J).count x
-    simpa using
-      ((Multiset.count_pos
-        (a := x)
-        (s := (↑(allVerts J) : Multiset Nat))).symm)
+    simp
 
   have hrealized : s.RealizedIn K := hlegal.1
   rcases hrealized with ⟨hleft, hright⟩

@@ -134,8 +134,8 @@ theorem normalizedStraight_pathHomotopic
     (1 - (z.1 : ℝ)) • (p z.2 : E) + (z.1 : ℝ) • (q z.2 : E)
   have hc0 : ∀ z, c z ≠ 0 := fun z ↦
     unit_convexCombo_ne_zero_of_dist_lt_two
-      (by simpa [Metric.mem_sphere] using (p z.2).property)
-      (by simpa [Metric.mem_sphere] using (q z.2).property) (hpq z.2) z.1
+      (by simp)
+      (by simp) (hpq z.2) z.1
   have hc : Continuous c :=
     (continuous_const.sub (continuous_subtype_val.comp continuous_fst)).smul
         (p.continuous.subtype_val.comp continuous_snd) |>.add

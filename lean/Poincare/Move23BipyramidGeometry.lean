@@ -79,7 +79,8 @@ private theorem move23_shift_target (a b c d e m : ℝ) :
   ext i
   fin_cases i <;>
     norm_num [move23FiveCombination, move23BipyramidA, move23BipyramidB,
-      move23BipyramidC, move23BipyramidD, move23BipyramidE, move23Point] <;> ring
+      move23BipyramidC, move23BipyramidD, move23BipyramidE, move23Point]
+  all_goals ring
 
 private theorem nonneg_sub_min_left (a b : ℝ) : 0 ≤ a - min a b := by
   exact sub_nonneg.mpr (min_le_left _ _)
@@ -123,7 +124,7 @@ theorem move23BipyramidSourceBody_eq_targetBody :
       have hb : 0 ≤ b - m := sub_nonneg.mpr (le_trans (min_le_right a (min b c)) (min_le_left b c))
       have hc : 0 ≤ c - m := sub_nonneg.mpr (le_trans (min_le_right a (min b c)) (min_le_right b c))
       have hsum : (a-m)+(b-m)+(c-m)+(d+(3/2)*m)+(0+(3/2)*m)=1 := by
-        simp [Fin.sum_univ_succ, a,b,c,d] at hw1; linarith
+        simp [Fin.sum_univ_succ] at hw1; linarith
       have hcomb : move23FiveCombination (a-m) (b-m) (c-m)
           (d+(3/2)*m) (0+(3/2)*m) = x := by
         rw [move23_shift_source]
@@ -134,7 +135,7 @@ theorem move23BipyramidSourceBody_eq_targetBody :
         change a - m = 0 at h
         rw [move23TetrahedronBody, mem_convexHull_range_fin4_iff_exists_weights]
         refine ⟨![b-m,c-m,d+(3/2)*m,(3/2)*m], ?_, ?_, ?_⟩
-        · intro i; fin_cases i <;> simp [hb,hc,hm, hd] <;> positivity
+        · intro i; fin_cases i <;> simp [hb,hc,hm]; positivity
         · simpa [Fin.sum_univ_succ, h, add_assoc] using hsum
         · simpa [Fin.sum_univ_succ, move23BipyramidBCDE,
             move23FiveCombination, h, add_assoc] using hcomb
@@ -142,7 +143,7 @@ theorem move23BipyramidSourceBody_eq_targetBody :
         change b - m = 0 at h
         rw [move23TetrahedronBody, mem_convexHull_range_fin4_iff_exists_weights]
         refine ⟨![a-m,c-m,d+(3/2)*m,(3/2)*m], ?_, ?_, ?_⟩
-        · intro i; fin_cases i <;> simp [ha,hc,hm, hd] <;> positivity
+        · intro i; fin_cases i <;> simp [ha,hc,hm]; positivity
         · simpa [Fin.sum_univ_succ, h, add_assoc] using hsum
         · simpa [Fin.sum_univ_succ, move23BipyramidACDE,
             move23FiveCombination, h, add_assoc] using hcomb
@@ -150,7 +151,7 @@ theorem move23BipyramidSourceBody_eq_targetBody :
         change c - m = 0 at h
         rw [move23TetrahedronBody, mem_convexHull_range_fin4_iff_exists_weights]
         refine ⟨![a-m,b-m,d+(3/2)*m,(3/2)*m], ?_, ?_, ?_⟩
-        · intro i; fin_cases i <;> simp [ha,hb,hm, hd] <;> positivity
+        · intro i; fin_cases i <;> simp [ha,hb,hm]; positivity
         · simpa [Fin.sum_univ_succ, h, add_assoc] using hsum
         · simpa [Fin.sum_univ_succ, move23BipyramidABDE,
             move23FiveCombination, h, add_assoc] using hcomb
@@ -170,14 +171,14 @@ theorem move23BipyramidSourceBody_eq_targetBody :
         simpa [Fin.sum_univ_succ, move23FiveCombination, move23BipyramidABCE,
           a,b,c,e, add_assoc] using hwx
       have hsum : (a-m)+(b-m)+(c-m)+((3/2)*m)+(e+(3/2)*m)=1 := by
-        simp [Fin.sum_univ_succ, a,b,c,e] at hw1
+        simp [Fin.sum_univ_succ] at hw1
         linarith
       rcases min3_zero a b c with h | h | h
       · right
         change a - m = 0 at h
         rw [move23TetrahedronBody, mem_convexHull_range_fin4_iff_exists_weights]
         refine ⟨![b-m,c-m,(3/2)*m,e+(3/2)*m], ?_, ?_, ?_⟩
-        · intro i; fin_cases i <;> simp [hb,hc,hm, he] <;> positivity
+        · intro i; fin_cases i <;> simp [hb,hc,hm]; positivity
         · simpa [Fin.sum_univ_succ, h, add_assoc] using hsum
         · simpa [Fin.sum_univ_succ, move23BipyramidBCDE,
             move23FiveCombination, h, add_assoc] using hcomb
@@ -185,7 +186,7 @@ theorem move23BipyramidSourceBody_eq_targetBody :
         change b - m = 0 at h
         rw [move23TetrahedronBody, mem_convexHull_range_fin4_iff_exists_weights]
         refine ⟨![a-m,c-m,(3/2)*m,e+(3/2)*m], ?_, ?_, ?_⟩
-        · intro i; fin_cases i <;> simp [ha,hc,hm, he] <;> positivity
+        · intro i; fin_cases i <;> simp [ha,hc,hm]; positivity
         · simpa [Fin.sum_univ_succ, h, add_assoc] using hsum
         · simpa [Fin.sum_univ_succ, move23BipyramidACDE,
             move23FiveCombination, h, add_assoc] using hcomb
@@ -193,7 +194,7 @@ theorem move23BipyramidSourceBody_eq_targetBody :
         change c - m = 0 at h
         rw [move23TetrahedronBody, mem_convexHull_range_fin4_iff_exists_weights]
         refine ⟨![a-m,b-m,(3/2)*m,e+(3/2)*m], ?_, ?_, ?_⟩
-        · intro i; fin_cases i <;> simp [ha,hb,hm, he] <;> positivity
+        · intro i; fin_cases i <;> simp [ha,hb,hm]; positivity
         · simpa [Fin.sum_univ_succ, h, add_assoc] using hsum
         · simpa [Fin.sum_univ_succ, move23BipyramidABDE,
             move23FiveCombination, h, add_assoc] using hcomb
@@ -213,7 +214,7 @@ theorem move23BipyramidSourceBody_eq_targetBody :
       have hdm : 0 ≤ d-m := nonneg_sub_min_left _ _
       have hem : 0 ≤ e-m := nonneg_sub_min_right _ _
       have hsum : (a+(2/3)*m)+(b+(2/3)*m)+(c+(2/3)*m)+(d-m)+(e-m)=1 := by
-        simp [Fin.sum_univ_succ, a,b,c,d,e] at hw1
+        simp [Fin.sum_univ_succ] at hw1
         linarith
       have hcomb : move23FiveCombination (a+(2/3)*m) (b+(2/3)*m)
           (c+(2/3)*m) (d-m) (e-m) = x := by
@@ -247,7 +248,7 @@ theorem move23BipyramidSourceBody_eq_targetBody :
       have hdm : 0 ≤ d-m := nonneg_sub_min_left _ _
       have hem : 0 ≤ e-m := nonneg_sub_min_right _ _
       have hsum : (a+(2/3)*m)+(b+(2/3)*m)+(c+(2/3)*m)+(d-m)+(e-m)=1 := by
-        simp [Fin.sum_univ_succ, a,b,c,d,e] at hw1
+        simp [Fin.sum_univ_succ] at hw1
         linarith
       have hcomb : move23FiveCombination (a+(2/3)*m) (b+(2/3)*m)
           (c+(2/3)*m) (d-m) (e-m) = x := by
@@ -281,7 +282,7 @@ theorem move23BipyramidSourceBody_eq_targetBody :
       have hdm : 0 ≤ d-m := nonneg_sub_min_left _ _
       have hem : 0 ≤ e-m := nonneg_sub_min_right _ _
       have hsum : (a+(2/3)*m)+(b+(2/3)*m)+(c+(2/3)*m)+(d-m)+(e-m)=1 := by
-        simp [Fin.sum_univ_succ, a,b,c,d,e] at hw1
+        simp [Fin.sum_univ_succ] at hw1
         linarith
       have hcomb : move23FiveCombination (a+(2/3)*m) (b+(2/3)*m)
           (c+(2/3)*m) (d-m) (e-m) = x := by
@@ -309,12 +310,12 @@ theorem move23BipyramidSourceBody_eq_targetBody :
 theorem move23BipyramidABCD_injective : Function.Injective move23BipyramidABCD := by
   intro i j h; fin_cases i <;> fin_cases j <;>
     norm_num at h <;> simp_all [move23BipyramidABCD, move23BipyramidA, move23BipyramidB,
-      move23BipyramidC, move23BipyramidD, move23Point] <;> linarith
+      move23BipyramidC, move23BipyramidD, move23Point]
 
 theorem move23BipyramidABCE_injective : Function.Injective move23BipyramidABCE := by
   intro i j h; fin_cases i <;> fin_cases j <;>
     norm_num at h <;> simp_all [move23BipyramidABCE, move23BipyramidA, move23BipyramidB,
-      move23BipyramidC, move23BipyramidE, move23Point] <;> linarith
+      move23BipyramidC, move23BipyramidE, move23Point]
 
 theorem move23BipyramidABDE_injective : Function.Injective move23BipyramidABDE := by
   intro i j h; fin_cases i <;> fin_cases j <;>

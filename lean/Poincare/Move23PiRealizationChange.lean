@@ -60,11 +60,11 @@ theorem continuous_move23PiLinearMap (a b c d e : Nat) :
   exact (continuous_apply (move23Label a b c d e i) :
     Continuous (fun p : Nat → ℝ ↦ p (move23Label a b c d e i))).smul continuous_const
 
-def move23PiABCD (a b c d e : Nat) : Fin 4 → Nat := ![a, b, c, d]
-def move23PiABCE (a b c d e : Nat) : Fin 4 → Nat := ![a, b, c, e]
-def move23PiABDE (a b c d e : Nat) : Fin 4 → Nat := ![a, b, d, e]
-def move23PiACDE (a b c d e : Nat) : Fin 4 → Nat := ![a, c, d, e]
-def move23PiBCDE (a b c d e : Nat) : Fin 4 → Nat := ![b, c, d, e]
+def move23PiABCD (a b c d _e : Nat) : Fin 4 → Nat := ![a, b, c, d]
+def move23PiABCE (a b c _d e : Nat) : Fin 4 → Nat := ![a, b, c, e]
+def move23PiABDE (a b _c d e : Nat) : Fin 4 → Nat := ![a, b, d, e]
+def move23PiACDE (a _b c d e : Nat) : Fin 4 → Nat := ![a, c, d, e]
+def move23PiBCDE (_a b c d e : Nat) : Fin 4 → Nat := ![b, c, d, e]
 
 noncomputable def move23PiTetrahedronBody (v : Fin 4 → Nat) : Set (Nat → ℝ) :=
   convexHull ℝ (Set.range (fun i => triangulationTopologicalGeometricVertex (v i)))
@@ -178,10 +178,12 @@ theorem move23PiSourceLocalCarrier_zero_apex
   rcases hp with hp | hp
   · right
     apply move23PiTetrahedronBody_coordinate_eq_zero _ hp
-    intro i; fin_cases i <;> simp_all [move23PiABCD, List.nodup_cons] <;> omega
+    intro i; fin_cases i <;> simp_all [move23PiABCD, List.nodup_cons]
   · left
     apply move23PiTetrahedronBody_coordinate_eq_zero _ hp
-    intro i; fin_cases i <;> simp_all [move23PiABCE, List.nodup_cons] <;> omega
+    intro i
+    fin_cases i <;> simp_all [move23PiABCE, List.nodup_cons]
+    all_goals omega
 
 theorem move23PiTargetLocalCarrier_zero_base
     {a b c d e : Nat} (h : [a, b, c, d, e].Nodup)

@@ -62,10 +62,7 @@ theorem edgePinchCandidate_closedCore :
       rfl | rfl | rfl | rfl | rfl | rfl |
       rfl | rfl | rfl | rfl | rfl | rfl |
       rfl | rfl | rfl | rfl | rfl | rfl <;>
-      simp [
-        edgePinchCandidate,
-        Tet.verts
-      ] at ha hb hc <;>
+      simp [Tet.verts] at ha hb hc <;>
       rcases ha with rfl | rfl | rfl | rfl <;>
       rcases hb with rfl | rfl | rfl | rfl <;>
       rcases hc with rfl | rfl | rfl | rfl <;>
@@ -253,8 +250,7 @@ theorem edgePinchCandidate_not_VertexLinksLocallyConnected_of_zero :
       ¬ VertexLinksLocallyConnected
         edgePinchCandidate := by
 
-  intro hrep
-  intro hall
+  intro hrep hall
 
   have hzero :
       0 ∈ vertexSupport

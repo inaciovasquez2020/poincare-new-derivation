@@ -130,7 +130,7 @@ theorem triangulationTopologicalGeometricVertex_image_tet_eq_insert_linkTriangle
   · rintro ⟨y, hy, rfl⟩
     by_cases hyv : y = v
     · left
-      simpa [hyv]
+      simp [hyv]
     · right
       refine ⟨y, ?_, rfl⟩
       exact List.mem_toFinset.mpr

@@ -462,15 +462,13 @@ theorem LinkTriangle.inTriangle_mem_edges
     · simp [
         LinkTriangle.edges,
         LinkEdge.ofDistinct,
-        hlt,
-        lt_asymm hlt
+        hlt
       ]
 
     · simp [
         LinkTriangle.edges,
         LinkEdge.ofDistinct,
-        hlt,
-        lt_asymm hlt
+        hlt
       ]
 
   · rcases hhi with rfl | rfl | rfl
@@ -478,7 +476,6 @@ theorem LinkTriangle.inTriangle_mem_edges
     · simp [
         LinkTriangle.edges,
         LinkEdge.ofDistinct,
-        hlt,
         lt_asymm hlt
       ]
 
@@ -487,8 +484,7 @@ theorem LinkTriangle.inTriangle_mem_edges
     · simp [
         LinkTriangle.edges,
         LinkEdge.ofDistinct,
-        hlt,
-        lt_asymm hlt
+        hlt
       ]
 
   · rcases hhi with rfl | rfl | rfl
@@ -496,14 +492,12 @@ theorem LinkTriangle.inTriangle_mem_edges
     · simp [
         LinkTriangle.edges,
         LinkEdge.ofDistinct,
-        hlt,
         lt_asymm hlt
       ]
 
     · simp [
         LinkTriangle.edges,
         LinkEdge.ofDistinct,
-        hlt,
         lt_asymm hlt
       ]
 
@@ -535,8 +529,7 @@ theorem Tet.linkTriangleAt?_verts_subset
     simp only [
       LinkTriangle.verts,
       Tet.verts,
-      List.mem_cons,
-      List.mem_singleton
+      List.mem_cons
     ] at hx ⊢
     aesop
 
@@ -550,8 +543,7 @@ theorem Tet.linkTriangleAt?_verts_subset
       simp only [
         LinkTriangle.verts,
         Tet.verts,
-        List.mem_cons,
-        List.mem_singleton
+        List.mem_cons
       ] at hx ⊢
       aesop
 
@@ -565,8 +557,7 @@ theorem Tet.linkTriangleAt?_verts_subset
         simp only [
           LinkTriangle.verts,
           Tet.verts,
-          List.mem_cons,
-          List.mem_singleton
+          List.mem_cons
         ] at hx ⊢
         aesop
 
@@ -580,8 +571,7 @@ theorem Tet.linkTriangleAt?_verts_subset
           simp only [
             LinkTriangle.verts,
             Tet.verts,
-            List.mem_cons,
-            List.mem_singleton
+            List.mem_cons
           ] at hx ⊢
           aesop
 
@@ -1268,10 +1258,7 @@ theorem vertexLinkTriangles_nodup
     (hcore.2.1.filterMap
       (fun τ => τ.linkTriangleAt? v))
 
-  intro τ ρ hnotSame
-  intro σ hστ
-  intro ψ hψρ
-  intro hσψ
+  intro τ ρ hnotSame σ hστ ψ hψρ hσψ
 
   have hτExtract :
       τ.linkTriangleAt? v = some σ := by
@@ -1344,10 +1331,7 @@ theorem vertexLinkTriangles_pairwise_vertexSet_ne
     hcore.2.1.filterMap
       (fun τ => τ.linkTriangleAt? v)
 
-  intro τ ρ hnotSame
-  intro σ hτExtract
-  intro ψ hρExtract
-  intro hsame
+  intro τ ρ hnotSame σ hτExtract ψ hρExtract hsame
 
   apply hnotSame
 
@@ -1774,7 +1758,7 @@ private theorem List.exists_unique_other_of_filter_length_two
   have haFilter : a ∈ l.filter fun z => decide (p z) := by
     simp [ha, hpa]
   rw [huw] at haFilter
-  simp only [List.mem_cons, List.mem_singleton] at haFilter
+  simp only [List.mem_cons] at haFilter
   rcases haFilter with hua | hwa
   · subst u
     refine ⟨w, ?_, ?_, ?_, ?_⟩
@@ -2529,7 +2513,7 @@ theorem vertexLinkEdgeIncidences_length_eq_two_mul_edges_length
 
           simpa using he)
 
-    simpa using h
+    simp
 
 
   have hcountTwo :
@@ -2760,12 +2744,9 @@ theorem represented_star_length_ge_three
 
     simp [
       T,
-      hρ₁σ,
-      hρ₂σ,
       hρ₁ρ₂,
       Ne.symm hρ₁σ,
-      Ne.symm hρ₂σ,
-      Ne.symm hρ₁ρ₂
+      Ne.symm hρ₂σ
     ]
 
   have hScard :
@@ -2977,7 +2958,7 @@ theorem vertexLink_sum_star_lengths_eq_three_mul_faces
           intro x hx
           simpa using hx)
 
-    simpa using h
+    simp
 
   have hsumStar :
       ∑ x ∈ I.toFinset,

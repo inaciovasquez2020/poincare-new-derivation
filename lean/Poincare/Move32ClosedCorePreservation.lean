@@ -246,8 +246,7 @@ theorem ClosedTriangulationCore.move32Site_replace_closedCore
     · have hUzero : ((s.unchangedTets K).filter p).length = 0 := by
         apply List.length_eq_zero_iff.mpr
         apply List.filter_eq_nil_iff.mpr
-        intro rho hrho
-        intro hpDec
+        intro rho hrho hpDec
         have hpRho : p rho := of_decide_eq_true hpDec
         apply hlegal.2.2 rho (s.mem_original_of_mem_unchanged hrho)
         have habc := (by simpa [m] using hi : SameTripleVertices x y z s.a s.b s.c)
@@ -268,12 +267,11 @@ theorem ClosedTriangulationCore.move32Site_replace_closedCore
       have hpLocal : ([s.sourceTet₀, s.sourceTet₁].filter p).length = 2 :=
         hxlocal.trans hlocal
       omega
-  · push_neg at hsource
+  · push Not at hsource
     have hsourceZero : ([s.sourceTet₀, s.sourceTet₁].filter p).length = 0 := by
       apply List.length_eq_zero_iff.mpr
       apply List.filter_eq_nil_iff.mpr
-      intro rho hrho
-      intro hpDec
+      intro rho hrho hpDec
       exact hsource rho hrho (of_decide_eq_true hpDec)
     rcases hrepresented with ⟨tau, htau, hp⟩
     rw [s.replace_tets_eq] at htau

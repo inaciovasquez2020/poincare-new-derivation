@@ -24,13 +24,13 @@ theorem Path.subpath_homotopic_normalizedChord_of_close
       dist ((p.subpath a b) s : E) (p a : E) < (1 : ℝ) / 2) :
     Path.Homotopic (p.subpath a b)
       (normalizedChord (p a : E) (p b : E)
-        (by simpa [Metric.mem_sphere] using (p a).property)
-        (by simpa [Metric.mem_sphere] using (p b).property)
+        (by simp)
+        (by simp)
         (by linarith)) := by
   let hu : ‖(p a : E)‖ = 1 := by
-    simpa [Metric.mem_sphere] using (p a).property
+    simp
   let hv : ‖(p b : E)‖ = 1 := by
-    simpa [Metric.mem_sphere] using (p b).property
+    simp
   let huv : dist (p a : E) (p b : E) < 2 := by linarith
   apply normalizedStraight_pathHomotopic
   intro s
@@ -102,8 +102,8 @@ theorem Path.exists_sampled_sphere_vertices_normalizedChord_close
               dist
                   ((normalizedChord
                     (p (v i.castSucc) : E) (p (v i.succ) : E)
-                    (by simpa [Metric.mem_sphere] using (p (v i.castSucc)).property)
-                    (by simpa [Metric.mem_sphere] using (p (v i.succ)).property)
+                    (by simp)
+                    (by simp)
                     huv) s : E)
                   (p (v i.castSucc) : E) < (1 : ℝ) / 2 := by
   obtain ⟨n, hn, v, hv0, hv1, hv⟩ := Path.exists_sampled_vertices_dist_lt_quarter p
@@ -112,9 +112,9 @@ theorem Path.exists_sampled_sphere_vertices_normalizedChord_close
     simpa [Subtype.dist_eq] using hv i
   refine ⟨n, hn, v, hv0, hv1, fun i ↦ ⟨hedge i, ?_⟩⟩
   have hu : ‖(p (v i.castSucc) : E)‖ = 1 := by
-    simpa [Metric.mem_sphere] using (p (v i.castSucc)).property
+    simp
   have hw : ‖(p (v i.succ) : E)‖ = 1 := by
-    simpa [Metric.mem_sphere] using (p (v i.succ)).property
+    simp
   have huv : dist (p (v i.castSucc) : E) (p (v i.succ) : E) < 2 := by
     linarith [hedge i]
   refine ⟨huv, fun s ↦ ?_⟩
@@ -133,8 +133,8 @@ theorem Path.exists_sampled_subpath_homotopic_normalizedChord
           ∃ huv : dist (p (v i.castSucc) : E) (p (v i.succ) : E) < 2,
             Path.Homotopic (p.subpath (v i.castSucc) (v i.succ))
               (normalizedChord (p (v i.castSucc) : E) (p (v i.succ) : E)
-                (by simpa [Metric.mem_sphere] using (p (v i.castSucc)).property)
-                (by simpa [Metric.mem_sphere] using (p (v i.succ)).property) huv) := by
+                (by simp)
+                (by simp) huv) := by
   obtain ⟨n, hn, hp⟩ := Path.exists_subdivision_dist_lt_quarter p
   let v : Fin (n + 1) → unitInterval := fun i ↦
     ⟨(i : ℝ) / n, by
@@ -193,8 +193,8 @@ noncomputable def normalizedChordChain
     Path (p (v 0)) (p (v (Fin.last n))) :=
   Path.concat (p ∘ v) fun i ↦
     normalizedChord (p (v i.castSucc) : E) (p (v i.succ) : E)
-      (by simpa [Metric.mem_sphere] using (p (v i.castSucc)).property)
-      (by simpa [Metric.mem_sphere] using (p (v i.succ)).property) (huv i)
+      (by simp)
+      (by simp) (huv i)
 
 @[simp] theorem normalizedChordChain_start
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -225,16 +225,16 @@ theorem normalizedChordChain_homotopic_sampledPath
     (hedge : ∀ i : Fin n,
       Path.Homotopic (p.subpath (v i.castSucc) (v i.succ))
         (normalizedChord (p (v i.castSucc) : E) (p (v i.succ) : E)
-          (by simpa [Metric.mem_sphere] using (p (v i.castSucc)).property)
-          (by simpa [Metric.mem_sphere] using (p (v i.succ)).property) (huv i))) :
+          (by simp)
+          (by simp) (huv i))) :
     Path.Homotopic (p.subpath (v 0) (v (Fin.last n)))
       (normalizedChordChain p v huv) := by
   exact (Path.Homotopic.concat_subpath p v).symm.trans
     (Path.Homotopic.concat_hcomp (p ∘ v)
       (fun i ↦ p.subpath (v i.castSucc) (v i.succ))
       (fun i ↦ normalizedChord (p (v i.castSucc) : E) (p (v i.succ) : E)
-        (by simpa [Metric.mem_sphere] using (p (v i.castSucc)).property)
-        (by simpa [Metric.mem_sphere] using (p (v i.succ)).property) (huv i)) hedge)
+        (by simp)
+        (by simp) (huv i)) hedge)
 
 /-- Every sphere-valued path is homotopic relative to its endpoints to a finite
 polygon whose edges are normalized chords between explicitly sampled vertices. -/
@@ -323,8 +323,8 @@ theorem normalizedChordPolygon_mem_pairSpan
       Submodule.span ℝ ({(p (v i.castSucc) : E), (p (v i.succ) : E)} : Set E) := by
   refine Path.concat_mem_of_edges (p ∘ v)
     (fun i ↦ normalizedChord (p (v i.castSucc) : E) (p (v i.succ) : E)
-      (by simpa [Metric.mem_sphere] using (p (v i.castSucc)).property)
-      (by simpa [Metric.mem_sphere] using (p (v i.succ)).property) (huv i))
+      (by simp)
+      (by simp) (huv i))
     (fun i ↦ {z : Metric.sphere (0 : E) 1 |
       (z : E) ∈ Submodule.span ℝ
         ({(p (v i.castSucc) : E), (p (v i.succ) : E)} : Set E)}) hn ?_ t
@@ -352,7 +352,7 @@ theorem exists_sphere_point_not_mem_normalizedChordPolygon
     ∃ a : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
       ∀ t : unitInterval, normalizedChordChain p v huv t ≠
         (⟨-(a : EuclideanSpace ℝ (Fin 3)), by
-          simpa [Metric.mem_sphere] using a.property⟩ :
+          simp⟩ :
           Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) := by
   obtain ⟨a, ha, havoid⟩ := exists_unit_not_mem_finset_pairSpans Finset.univ
     (fun i : Fin n ↦ (p (v i.castSucc) : EuclideanSpace ℝ (Fin 3)))
@@ -387,7 +387,7 @@ theorem unitSphere_punctured_contractible
     (a : Metric.sphere (0 : E) 1) :
     ContractibleSpace {z : Metric.sphere (0 : E) 1 // z ≠ a} := by
   let ha : ‖(a : E)‖ = 1 := by
-    simpa [Metric.mem_sphere] using a.property
+    simp
   haveI : ContractibleSpace (stereographic ha).target := by
     rw [stereographic_target]
     exact convex_univ.contractibleSpace Set.univ_nonempty
@@ -431,11 +431,11 @@ theorem unitSphere3_loop_nullhomotopic
     exists_sphere_point_not_mem_normalizedChordPolygon p hn v huv
   let b : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 :=
     ⟨-(a : EuclideanSpace ℝ (Fin 3)), by
-      simpa [Metric.mem_sphere] using a.property⟩
+      simp⟩
   have hqavoid : ∀ t, q t ≠ b := by
     intro t
     rw [hq]
-    simpa [b] using ha t
+    simp [b, ha]
   exact hpq.trans
     (Path.homotopic_refl_of_avoids_unitSphere_point q b hqavoid)
 

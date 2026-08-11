@@ -101,7 +101,7 @@ private theorem linkTriangleFace_inter_eq_commonFace
     (Finset.image_inter _ _ hlin.injective).symm
 
 theorem vertexLinkStarAdjacent_of_punctured_face_inter_nonempty
-    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    (K : Triangulation) (_hcore : ClosedTriangulationCore K)
     (v x : Nat) {sigma rho : LinkTriangle}
     (hsigma : sigma ∈ vertexLinkStarTriangles K v x)
     (hrho : rho ∈ vertexLinkStarTriangles K v x)
@@ -161,7 +161,7 @@ theorem vertexLinkStarAdjacent_iff_punctured_face_inter_nonempty
 
 theorem vertexLinkStarConnected_of_puncturedRealization_isConnected
     (K : Triangulation) (hcore : ClosedTriangulationCore K)
-    (v x : Nat) (hrep : VertexLinkVertexRepresented K v x)
+    (v x : Nat) (_hrep : VertexLinkVertexRepresented K v x)
     (hconn : IsConnected
       (triangulationTopologicalPuncturedVertexLinkStar K v x)) :
     VertexLinkStarConnected K v x := by
@@ -237,6 +237,45 @@ theorem vertexLinkStarConnected_of_puncturedRealization_isConnected
       ⟨hysigma, hysigmaA, hPB hysigma⟩
     rw [hcross] at this
     exact this
+
+/-- If the represented transverse star is not connected, its punctured
+geometric realization has a nontrivial clopen separation. -/
+theorem vertexLinkStar_not_connected_gives_clopen_separation
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    (v x : Nat) (hrep : VertexLinkVertexRepresented K v x)
+    (hnot : ¬ VertexLinkStarConnected K v x) :
+    ∃ A B : Set
+        ↑(triangulationTopologicalPuncturedVertexLinkStar K v x),
+      IsClopen A ∧ IsClopen B ∧ A.Nonempty ∧ B.Nonempty ∧
+        Disjoint A B ∧ Set.univ = A ∪ B := by
+  have hnotConnected :
+      ¬ IsConnected
+        (triangulationTopologicalPuncturedVertexLinkStar K v x) := by
+    intro hconnected
+    exact hnot
+      (vertexLinkStarConnected_of_puncturedRealization_isConnected
+        K hcore v x hrep hconnected)
+  have hnonempty :
+      (triangulationTopologicalPuncturedVertexLinkStar K v x).Nonempty := by
+    obtain ⟨sigma, hsigma, hxsigma⟩ := hrep
+    obtain ⟨y, _, _, hy⟩ :=
+      exists_geometricVertex_mem_puncturedVertexLinkStar_of_mem
+        K hcore v x
+          ((mem_vertexLinkStarTriangles_iff K v x sigma).2
+            ⟨hsigma, hxsigma⟩)
+    exact ⟨triangulationTopologicalGeometricVertex y, hy⟩
+  have hnotPreconnected :
+      ¬ IsPreconnected
+        (Set.univ : Set
+          ↑(triangulationTopologicalPuncturedVertexLinkStar K v x)) := by
+    intro hpreconnected
+    apply hnotConnected
+    rw [isConnected_iff_connectedSpace]
+    exact
+      { toPreconnectedSpace := ⟨hpreconnected⟩
+        toNonempty := hnonempty.to_subtype }
+  simpa using
+    (isClopen_univ.not_isPreconnected_iff.mp hnotPreconnected)
 
 theorem vertexLinkLocallyConnected_of_puncturedStars_isConnected
     (K : Triangulation) (hcore : ClosedTriangulationCore K) (v : Nat)

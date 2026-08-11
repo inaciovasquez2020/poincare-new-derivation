@@ -105,7 +105,7 @@ theorem triangulationTopological_exists_open_punctured_connected_neighborhood_su
       (triangulationTopologicalGeometricCarrier K) ThreeManifoldModel :=
     chartAt ThreeManifoldModel x
   have hxsource : x ∈ e.source := by
-    simpa [e] using mem_chart_source ThreeManifoldModel x
+    simp [e]
   have himage : e '' (e.source ∩ N) ∈ nhds (e x) :=
     e.image_mem_nhds hxsource (inter_mem (e.open_source.mem_nhds hxsource) hN)
   obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp himage

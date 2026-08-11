@@ -171,7 +171,7 @@ theorem ClosedTriangulationCore.move23Site_replace_closedCore
             · exact hpRho.1
             · exact hpRho.2.1
             · exact hpRho.2.2
-        simpa [hempty]
+        simp [hempty]
       have hxlocal := filter_containsTriple_length_eq_of_sameTripleVertices
         [s.newTet₀, s.newTet₁, s.newTet₂] hi
       rw [← hfilter] at hxlocal
@@ -204,7 +204,7 @@ theorem ClosedTriangulationCore.move23Site_replace_closedCore
     · exact closeInternal s.a hi s.local_internal_ade.2
     · exact closeInternal s.b hi s.local_internal_bde.2
     · exact closeInternal s.c hi s.local_internal_cde.2
-  · push_neg at htarget
+  · push Not at htarget
     have htargetZero :
         ([s.newTet₀, s.newTet₁, s.newTet₂].filter p).length = 0 := by
       have hempty : [s.newTet₀, s.newTet₁, s.newTet₂].filter p = [] := by
@@ -254,7 +254,7 @@ theorem ClosedTriangulationCore.move23Site_replace_closedCore
         have hUpos : 0 < ((s.unchangedTets K).filter p).length :=
           List.length_pos_iff_exists_mem.mpr ⟨tau, htauFilter⟩
         omega
-      · push_neg at hsourceMem
+      · push Not at hsourceMem
         have hsourceZero :
             ([s.leftTet, s.rightTet].filter p).length = 0 := by
           have hempty : [s.leftTet, s.rightTet].filter p = [] := by

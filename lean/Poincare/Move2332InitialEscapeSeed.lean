@@ -70,29 +70,29 @@ private theorem move2332FirstMove32_unchangedTets
       m.newTet₀ :: m.newTet₁ :: move2332FirstResidual K m x := by
   let s := move2332FirstMove32 m x
   have h00 : sameTetVerticesBool m.newTet₀ s.targetTet₀ = false := by
-    simp [sameTetVerticesBool, s, move2332FirstMove32, Move32Site.targetTet₀,
-      Move23Site.newTet₀, Tet.verts] at hdistinct ⊢ <;> aesop
+    (simp [sameTetVerticesBool, s, move2332FirstMove32, Move32Site.targetTet₀,
+      Move23Site.newTet₀, Tet.verts] at hdistinct ⊢; aesop)
   have h01 : sameTetVerticesBool m.newTet₁ s.targetTet₀ = false := by
-    simp [sameTetVerticesBool, s, move2332FirstMove32, Move32Site.targetTet₀,
-      Move23Site.newTet₁, Tet.verts] at hdistinct ⊢ <;> aesop
+    (simp [sameTetVerticesBool, s, move2332FirstMove32, Move32Site.targetTet₀,
+      Move23Site.newTet₁, Tet.verts] at hdistinct ⊢; aesop)
   have h02 : sameTetVerticesBool m.newTet₂ s.targetTet₀ = false := by
-    simp [sameTetVerticesBool, s, move2332FirstMove32, Move32Site.targetTet₀,
-      Move23Site.newTet₂, Tet.verts] at hdistinct ⊢ <;> aesop
+    (simp [sameTetVerticesBool, s, move2332FirstMove32, Move32Site.targetTet₀,
+      Move23Site.newTet₂, Tet.verts] at hdistinct ⊢; aesop)
   have h10 : sameTetVerticesBool m.newTet₀ s.targetTet₁ = false := by
-    simp [sameTetVerticesBool, s, move2332FirstMove32, Move32Site.targetTet₁,
-      Move23Site.newTet₀, Tet.verts] at hdistinct ⊢ <;> aesop
+    (simp [sameTetVerticesBool, s, move2332FirstMove32, Move32Site.targetTet₁,
+      Move23Site.newTet₀, Tet.verts] at hdistinct ⊢; aesop)
   have h11 : sameTetVerticesBool m.newTet₁ s.targetTet₁ = false := by
-    simp [sameTetVerticesBool, s, move2332FirstMove32, Move32Site.targetTet₁,
-      Move23Site.newTet₁, Tet.verts] at hdistinct ⊢ <;> aesop
+    (simp [sameTetVerticesBool, s, move2332FirstMove32, Move32Site.targetTet₁,
+      Move23Site.newTet₁, Tet.verts] at hdistinct ⊢; aesop)
   have h12 : sameTetVerticesBool m.newTet₂ s.targetTet₁ = false := by
-    simp [sameTetVerticesBool, s, move2332FirstMove32, Move32Site.targetTet₁,
-      Move23Site.newTet₂, Tet.verts] at hdistinct ⊢ <;> aesop
+    (simp [sameTetVerticesBool, s, move2332FirstMove32, Move32Site.targetTet₁,
+      Move23Site.newTet₂, Tet.verts] at hdistinct ⊢; aesop)
   have h20 : sameTetVerticesBool m.newTet₀ s.targetTet₂ = false := by
-    simp [sameTetVerticesBool, s, move2332FirstMove32, Move32Site.targetTet₂,
-      Move23Site.newTet₀, Tet.verts] at hdistinct ⊢ <;> aesop
+    (simp [sameTetVerticesBool, s, move2332FirstMove32, Move32Site.targetTet₂,
+      Move23Site.newTet₀, Tet.verts] at hdistinct ⊢; aesop)
   have h21 : sameTetVerticesBool m.newTet₁ s.targetTet₂ = false := by
-    simp [sameTetVerticesBool, s, move2332FirstMove32, Move32Site.targetTet₂,
-      Move23Site.newTet₁, Tet.verts] at hdistinct ⊢ <;> aesop
+    (simp [sameTetVerticesBool, s, move2332FirstMove32, Move32Site.targetTet₂,
+      Move23Site.newTet₁, Tet.verts] at hdistinct ⊢; aesop)
   have h22 : sameTetVerticesBool m.newTet₂ s.targetTet₂ = true := by
     simp [sameTetVerticesBool, s, move2332FirstMove32, Move32Site.targetTet₂,
       Move23Site.newTet₂, Tet.verts]
@@ -194,7 +194,7 @@ theorem Move2332InitialEscapeSeed.move32s_legal
       · rw [s1.replace_tets_eq (m.replace K), hunchanged]
         simp
       · intro v
-        simp [s2, move2332SecondMove32, Move32Site.targetTet₂,
+        simp [move2332SecondMove32, Move32Site.targetTet₂,
           Move23Site.newTet₁, Tet.verts]
         aesop
     · change ((((s1.replace (m.replace K)).tets.filter (fun tau =>
@@ -209,22 +209,22 @@ theorem Move2332InitialEscapeSeed.move32s_legal
       rw [s1.replace_tets_eq (m.replace K), hunchanged] at htau
       simp only [List.mem_cons] at htau
       rcases htau with rfl | rfl | rfl | rfl | htau
-      · simp [s1, s2, move2332FirstMove32, move2332SecondMove32,
+      · simp [s1, move2332FirstMove32, move2332SecondMove32,
           Move32Site.sourceTet₀, Tet.verts] at hdistinct ⊢
         aesop
-      · simp [s1, s2, move2332FirstMove32, move2332SecondMove32,
+      · simp [s1, move2332FirstMove32, move2332SecondMove32,
           Move32Site.sourceTet₁, Tet.verts] at hdistinct ⊢
         aesop
-      · simp [s2, move2332SecondMove32, Move23Site.newTet₀,
+      · simp [move2332SecondMove32, Move23Site.newTet₀,
           Tet.verts] at hdistinct ⊢
         aesop
-      · simp [s2, move2332SecondMove32, Move23Site.newTet₁,
+      · simp [move2332SecondMove32, Move23Site.newTet₁,
           Tet.verts] at hdistinct ⊢
         aesop
       · simpa [s2, move2332SecondMove32] using hface2 tau htau
 
 theorem exists_move2332Block_PhiSupport_lt_of_initial_escape_seed
-    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    {K : Triangulation} (_hcore : ClosedTriangulationCore K)
     (m : Move23Site) (hseed : Move2332InitialEscapeSeed K m)
     (hcore1 : ClosedTriangulationCore (m.replace K))
     (hcore2 : ClosedTriangulationCore
