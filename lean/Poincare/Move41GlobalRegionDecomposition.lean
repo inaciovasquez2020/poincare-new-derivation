@@ -257,4 +257,78 @@ theorem ClosedTriangulationCore.move41Site_targetLocalCarrier_subset_target_spac
   rw [(hcore.move41Site_global_region_decomposition s hlegal).2]
   exact subset_union_left
 
+/-- An unchanged tetrahedron can meet the solid target tetrahedron only on
+its boundary, which is precisely the base of the source cone.  This is the
+missing inverse-side compatibility datum for gluing the local `4 → 1`
+homeomorphism to the identity. -/
+theorem ClosedTriangulationCore.move41Site_unchangedCarrier_inter_target_subset_source
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (s : Move41Site) (hlegal : s.LegalIn K) :
+    s.unchangedGeometricCarrier K ∩
+        move41PiTargetLocalCarrier s.a s.b s.c s.d s.e ⊆
+      move41PiSourceLocalCarrier s.a s.b s.c s.d s.e := by
+  rintro p ⟨hpU, hpT⟩
+  simp only [Move41Site.unchangedGeometricCarrier, mem_iUnion] at hpU
+  obtain ⟨tau, htau, hpTau⟩ := hpU
+  have htauK : tau ∈ K.tets :=
+    mem_of_mem_eraseFirstSameTet
+      (mem_of_mem_eraseFirstSameTet
+        (mem_of_mem_eraseFirstSameTet
+          (mem_of_mem_eraseFirstSameTet htau)))
+  have hnonneg := move41PiTargetLocalCarrier_nonneg hpT
+  have hsum := move41PiTargetLocalCarrier_sum s.distinct hpT
+  have he := move41PiTargetLocalCarrier_center_eq_zero s.distinct hpT
+  have hoff : ∀ {z}, z ≠ s.a → z ≠ s.b → z ≠ s.c → z ≠ s.d → p z = 0 := by
+    intro z hza hzb hzc hzd
+    exact move41PiTargetLocalCarrier_eq_zero_of_not_outer_label
+      s.distinct hpT hza hzb hzc hzd
+  apply mem_move41PiSourceLocalCarrier_of_coordinates s.distinct hnonneg
+    (by linarith) _
+    (fun {z} hza hzb hzc hzd _ ↦ hoff hza hzb hzc hzd)
+  by_contra hzero
+  simp only [not_or] at hzero
+  have haPos : 0 < p s.a := lt_of_le_of_ne (hnonneg s.a) (Ne.symm hzero.1)
+  have hbPos : 0 < p s.b := lt_of_le_of_ne (hnonneg s.b) (Ne.symm hzero.2.1)
+  have hcPos : 0 < p s.c := lt_of_le_of_ne (hnonneg s.c) (Ne.symm hzero.2.2.1)
+  have hdPos : 0 < p s.d := lt_of_le_of_ne (hnonneg s.d) (Ne.symm hzero.2.2.2)
+  have memOfPos (v : Nat) (hv : 0 < p v) : v ∈ tau.verts := by
+    by_contra hvmem
+    have hz := triangulationTopologicalTetBody_coordinate_eq_zero_of_not_mem
+      tau v hvmem hpTau
+    linarith
+  have ha := memOfPos s.a haPos
+  have hb := memOfPos s.b hbPos
+  have hc := memOfPos s.c hcPos
+  have hd := memOfPos s.d hdPos
+  apply hlegal.targetAbsent tau htauK
+  intro v
+  constructor
+  · intro hv
+    have htauNodup := hcore.1 tau htauK
+    have htargetNodup : s.targetTet.verts.Nodup := by
+      have hdistinct := s.distinct
+      simp [Move41Site.targetTet, Tet.verts, List.nodup_cons] at hdistinct ⊢
+      aesop
+    have hsub : s.targetTet.verts.toFinset ⊆ tau.verts.toFinset := by
+      intro w hw
+      simp [Move41Site.targetTet, Tet.verts] at hw
+      rcases hw with rfl | rfl | rfl | rfl
+      · exact List.mem_toFinset.mpr ha
+      · exact List.mem_toFinset.mpr hb
+      · exact List.mem_toFinset.mpr hc
+      · exact List.mem_toFinset.mpr hd
+    have heq : s.targetTet.verts.toFinset = tau.verts.toFinset := by
+      apply Finset.eq_of_subset_of_card_le hsub
+      rw [List.toFinset_card_of_nodup htargetNodup,
+        List.toFinset_card_of_nodup htauNodup]
+      simp [Move41Site.targetTet, Tet.verts]
+    exact List.mem_toFinset.mp (heq.symm.subset (List.mem_toFinset.mpr hv))
+  · intro hv
+    simp [Move41Site.targetTet, Tet.verts] at hv
+    rcases hv with rfl | rfl | rfl | rfl
+    · exact ha
+    · exact hb
+    · exact hc
+    · exact hd
+
 end Poincare
