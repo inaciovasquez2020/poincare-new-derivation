@@ -531,4 +531,67 @@ theorem Move41Site.legalIn_or_exists_target
     intro tau htau hsame
     exact htarget ⟨tau, htau, hsame⟩
 
+/-- A degree-four vertex in a closed core determines a genuine `4 → 1` site
+unless its opposite tetrahedron is already represented in the triangulation. -/
+theorem ClosedTriangulationCore.exists_move41Site_legalIn_or_exists_target_of_vertexDegree_eq_four
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hdegree : vertexDegree K v = 4) :
+    ∃ s : Move41Site,
+      s.e = v ∧
+      (s.LegalIn K ∨
+        ∃ tau ∈ K.tets, SameTetVertices tau s.targetTet) := by
+  classical
+  obtain ⟨s, hse, hlabels⟩ :=
+    hcore.exists_move41Site_labels_of_vertexDegree_eq_four v hdegree
+  have hsources :=
+    hcore.move41Site_sourcesExactlyOnce_of_vertexDegree_eq_four
+      v hdegree s hse hlabels
+  have hsaturated : ∀ tau ∈ K.tets, s.e ∈ tau.verts →
+      ∃ source ∈ s.sourceTets, SameTetVertices tau source := by
+    intro tau htauK he
+    apply exists_move41_source_of_center_mem_of_outer_cover s tau
+      (hcore.1 tau htauK) he
+    intro x hxtau hxe
+    obtain ⟨sigma, hsigma, hlink⟩ :=
+      exists_vertexLinkTriangle_of_tet_mem_of_vertex_mem K v tau htauK (hse ▸ he)
+    have hxsigma : x ∈ sigma.verts :=
+      (tau.mem_linkTriangleAt?_iff v x sigma hlink
+        (by simpa [hse] using hxe)).2 hxtau
+    exact (hlabels x).1
+      ((mem_vertexLinkVertices_iff K v x).2 ⟨sigma, hsigma, hxsigma⟩)
+  have hpairwise :
+      s.sourceTets.Pairwise (fun tau sigma => ¬ SameTetVertices tau sigma) := by
+    have hd := s.distinct
+    simp [Move41Site.sourceTets, Move41Site.sourceTet₀, Move41Site.sourceTet₁,
+      Move41Site.sourceTet₂, Move41Site.sourceTet₃, Tet.verts] at hd ⊢
+    refine ⟨⟨?_, ?_, ?_⟩, ⟨?_, ?_⟩, ?_⟩
+    · intro h
+      have := (h s.c).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
+      simp [Move41Site.sourceTet₁, Tet.verts] at this
+      aesop
+    · intro h
+      have := (h s.b).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
+      simp [Move41Site.sourceTet₂, Tet.verts] at this
+      aesop
+    · intro h
+      have := (h s.a).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
+      simp [Move41Site.sourceTet₃, Tet.verts] at this
+      aesop
+    · intro h
+      have := (h s.b).1 (by simp [Move41Site.sourceTet₁, Tet.verts])
+      simp [Move41Site.sourceTet₂, Tet.verts] at this
+      aesop
+    · intro h
+      have := (h s.a).1 (by simp [Move41Site.sourceTet₁, Tet.verts])
+      simp [Move41Site.sourceTet₃, Tet.verts] at this
+      aesop
+    · intro h
+      have := (h s.a).1 (by simp [Move41Site.sourceTet₂, Tet.verts])
+      simp [Move41Site.sourceTet₃, Tet.verts] at this
+      aesop
+  exact ⟨s, hse,
+    s.legalIn_or_exists_target hcore hsources hpairwise hsaturated⟩
+
 end Poincare
