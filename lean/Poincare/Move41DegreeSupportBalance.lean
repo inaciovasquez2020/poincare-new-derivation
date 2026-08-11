@@ -102,4 +102,122 @@ theorem ClosedTriangulationCore.move41Site_center_vertexDegree_eq_four
       hlegal.sourceOccursExactlyOnce s.sourceTet₃ (by simp [Move41Site.sourceTets])
   omega
 
+/-- Each outer vertex of a genuine legal `4 → 1` site loses exactly two
+incident tetrahedra: three source tetrahedra are removed and the target
+tetrahedron is inserted. -/
+theorem ClosedTriangulationCore.move41Site_replace_outer_vertexDegree
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (s : Move41Site) (hlegal : s.LegalIn K) :
+    vertexDegree K s.a = vertexDegree (s.replace K) s.a + 2 ∧
+    vertexDegree K s.b = vertexDegree (s.replace K) s.b + 2 ∧
+    vertexDegree K s.c = vertexDegree (s.replace K) s.c + 2 ∧
+    vertexDegree K s.d = vertexDegree (s.replace K) s.d + 2 := by
+  classical
+  have sourceExists (source : Tet) (hsource : source ∈ s.sourceTets) :
+      ∃ τ ∈ K.tets, SameTetVertices τ source := by
+    have hlength := hlegal.sourceOccursExactlyOnce source hsource
+    have hne : K.tets.filter
+        (fun τ => sameTetVerticesBool τ source) ≠ [] := by
+      intro hempty
+      simp [hempty] at hlength
+    rcases List.exists_mem_of_ne_nil _ hne with ⟨τ, hτ⟩
+    exact ⟨τ, by simpa [sameTetVerticesBool_eq_true_iff] using hτ⟩
+  have hp := hlegal.sourcePairwiseDistinct
+  simp [Move41Site.sourceTets] at hp
+  have hu0 := hcore.existsUnique_sameTetVertices
+    (sourceExists s.sourceTet₀ (by simp [Move41Site.sourceTets]))
+  have hu1 := hcore.existsUnique_sameTetVertices
+    (sourceExists s.sourceTet₁ (by simp [Move41Site.sourceTets]))
+  have hu2 := hcore.existsUnique_sameTetVertices
+    (sourceExists s.sourceTet₂ (by simp [Move41Site.sourceTets]))
+  have hu3 := hcore.existsUnique_sameTetVertices
+    (sourceExists s.sourceTet₃ (by simp [Move41Site.sourceTets]))
+  have hu1' := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same hu1
+    (fun h => hp.1.1 (sameTetVertices_symm h))
+  have hu2' := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same hu2
+    (fun h => hp.1.2.1 (sameTetVertices_symm h))
+  have hu2'' := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same hu2'
+    (fun h => hp.2.1.1 (sameTetVertices_symm h))
+  have hu3' := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same hu3
+    (fun h => hp.1.2.2 (sameTetVertices_symm h))
+  have hu3'' := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same hu3'
+    (fun h => hp.2.1.2 (sameTetVertices_symm h))
+  have hu3''' := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same hu3''
+    (fun h => hp.2.2 (sameTetVertices_symm h))
+  have balance (v : Nat) :
+      vertexDegree K v + s.targetTet.verts.count v =
+        vertexDegree (s.replace K) v + s.sourceTet₀.verts.count v +
+          s.sourceTet₁.verts.count v + s.sourceTet₂.verts.count v +
+          s.sourceTet₃.verts.count v := by
+    have guard (source : Tet) (hsource : source ∈ s.sourceTets) :
+        ∀ τ ∈ K.tets, SameTetVertices τ source →
+          τ.verts.count v = source.verts.count v := by
+      intro τ hτ hsame
+      have hτn := hcore.1 τ hτ
+      have hsn : source.verts.Nodup := by
+        simp [Move41Site.sourceTets] at hsource
+        have hd := s.distinct
+        simp at hd
+        rcases hsource with rfl | rfl | rfl | rfl <;>
+          simp [Move41Site.sourceTet₀, Move41Site.sourceTet₁,
+            Move41Site.sourceTet₂, Move41Site.sourceTet₃, Tet.verts] <;>
+          aesop
+      by_cases hv : v ∈ source.verts
+      · rw [List.count_eq_one_of_mem hτn ((hsame v).2 hv),
+            List.count_eq_one_of_mem hsn hv]
+      · have hvτ : v ∉ τ.verts := fun h => hv ((hsame v).1 h)
+        simp [List.Nodup.count hτn, List.Nodup.count hsn, hv, hvτ]
+    have e0 := eraseFirstSameTet_count_flatMap s.sourceTet₀ K.tets v
+      ⟨hu0.choose, hu0.choose_spec.1⟩
+      (guard s.sourceTet₀ (by simp [Move41Site.sourceTets]))
+    have e1 := eraseFirstSameTet_count_flatMap s.sourceTet₁
+      (eraseFirstSameTet s.sourceTet₀ K.tets) v
+      ⟨hu1'.choose, hu1'.choose_spec.1⟩
+      (fun τ hτ hs => guard s.sourceTet₁ (by simp [Move41Site.sourceTets]) τ
+        (mem_of_mem_eraseFirstSameTet hτ) hs)
+    have e2 := eraseFirstSameTet_count_flatMap s.sourceTet₂
+      (eraseFirstSameTet s.sourceTet₁
+        (eraseFirstSameTet s.sourceTet₀ K.tets)) v
+      ⟨hu2''.choose, hu2''.choose_spec.1⟩
+      (fun τ hτ hs => guard s.sourceTet₂ (by simp [Move41Site.sourceTets]) τ
+        (mem_of_mem_eraseFirstSameTet (mem_of_mem_eraseFirstSameTet hτ)) hs)
+    have e3 := eraseFirstSameTet_count_flatMap s.sourceTet₃
+      (eraseFirstSameTet s.sourceTet₂
+        (eraseFirstSameTet s.sourceTet₁
+          (eraseFirstSameTet s.sourceTet₀ K.tets))) v
+      ⟨hu3'''.choose, hu3'''.choose_spec.1⟩
+      (fun τ hτ hs => guard s.sourceTet₃ (by simp [Move41Site.sourceTets]) τ
+        (mem_of_mem_eraseFirstSameTet
+          (mem_of_mem_eraseFirstSameTet
+            (mem_of_mem_eraseFirstSameTet hτ))) hs)
+    change (K.tets.flatMap Tet.verts).count v + _ =
+      ((s.replace K).tets.flatMap Tet.verts).count v + _ + _ + _ + _
+    simp [Move41Site.replace, Move41Site.unchangedTets,
+      List.count_append] at ⊢
+    omega
+  have ha := balance s.a
+  have hb := balance s.b
+  have hc := balance s.c
+  have hd := balance s.d
+  have hdistinct := s.distinct
+  simp at hdistinct
+  rcases hdistinct with
+    ⟨⟨hab, hac, had, hae⟩, ⟨hbc, hbd, hbe⟩, ⟨hcd, hce⟩, hde⟩
+  have hba : s.b ≠ s.a := Ne.symm hab
+  have hca : s.c ≠ s.a := Ne.symm hac
+  have hda : s.d ≠ s.a := Ne.symm had
+  have hea : s.e ≠ s.a := Ne.symm hae
+  have hcb : s.c ≠ s.b := Ne.symm hbc
+  have hdb : s.d ≠ s.b := Ne.symm hbd
+  have heb : s.e ≠ s.b := Ne.symm hbe
+  have hdc : s.d ≠ s.c := Ne.symm hcd
+  have hec : s.e ≠ s.c := Ne.symm hce
+  have hed : s.e ≠ s.d := Ne.symm hde
+  simp [Move41Site.sourceTet₀, Move41Site.sourceTet₁,
+    Move41Site.sourceTet₂, Move41Site.sourceTet₃,
+    Move41Site.targetTet, Tet.verts,
+    hab, hac, had, hae, hbc, hbd, hbe, hcd, hce, hde,
+    hba, hca, hda, hea, hcb, hdb, heb, hdc, hec, hed] at ha hb hc hd
+  omega
+
 end Poincare
