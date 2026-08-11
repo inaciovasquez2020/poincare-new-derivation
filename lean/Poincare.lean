@@ -87,3 +87,4 @@ import Poincare.VertexLinkTetrahedronBridge
 import Poincare.SphereFiniteEscape
 import Poincare.SphereNormalizedChord
 import Poincare.SpherePolygonalApproximation
+import Poincare.CircleNotSimplyConnected
