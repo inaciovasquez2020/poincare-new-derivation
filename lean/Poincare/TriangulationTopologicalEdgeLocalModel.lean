@@ -1049,5 +1049,57 @@ theorem exists_edgeRadial_circleScale_image_subset
     hδle.trans_lt hδA, hδle.trans_lt hδB, ?_⟩
   exact hεS (by simpa [Real.dist_eq, abs_of_pos hδpos] using hδε)
 
+/-- If a represented transverse star is disconnected, every ambient
+neighborhood of the radial midpoint contains a deleted radial subspace which
+retracts continuously onto a circle. -/
+theorem exists_circleRetract_in_edgeRadial_neighborhood
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    {v x : Nat} (hrep : VertexLinkVertexRepresented K v x)
+    (hnot : ¬ VertexLinkStarConnected K v x)
+    (U : Set (ℝ × (Nat → ℝ)))
+    (hU : U ∈ nhds (((2 : ℝ)⁻¹,
+      triangulationTopologicalGeometricVertex x))) :
+    ∃ W : Set {tq : ↑(Set.Ico (0 : ℝ) 1) ×
+        ↑(triangulationTopologicalVertexLink K v) |
+          0 < tq.1.1 ∧ 0 < tq.2.1 x},
+      (∀ tq ∈ W, (tq.1.1.1, tq.1.2.1) ∈ U) ∧
+      ¬ SimplyConnectedSpace ↑W := by
+  obtain ⟨A, B, hAcl, hBcl, hAne, hBne, -, -, g, hg, habs, hgA, hgB⟩ :=
+    exists_continuous_signedRadialCoordinate_of_not_starConnected
+      K hcore v x hrep hnot
+  obtain ⟨qA, hqA, qB, hqB, -, -, -, -⟩ :=
+    exists_edgeRadial_opposite_side_witnesses
+      K v x A B hAne hBne g hgA hgB
+  obtain ⟨δ, hδ0, hδquarter, hδA, hδB, hδU⟩ :=
+    exists_edgeRadial_circleScale_image_subset K v x qA qB U hU
+  let m := triangulationTopologicalOpenEdgeRadialMidpoint K hrep
+  let W : Set {tq : ↑(Set.Ico (0 : ℝ) 1) ×
+      ↑(triangulationTopologicalVertexLink K v) |
+        0 < tq.1.1 ∧ 0 < tq.2.1 x} :=
+    {tq | (tq.1.1.1, tq.1.2.1) ∈ U ∧ tq ≠ m}
+  let inc := edgeRadialCircleInclusion
+    K hrep qA qB δ hδ0 hδquarter hδA hδB
+  let i : C(Circle, ↑W) := ⟨fun z ↦ ⟨(inc z).1, by
+      refine ⟨?_, (inc z).2⟩
+      convert hδU z using 1
+      simp [inc, edgeRadialCircleInclusion,
+        edgeRadialCircleAmbientFamily,
+        edgeRadialCircleTransversePoint]
+      all_goals split_ifs <;> rfl⟩, by
+      apply Continuous.subtype_mk
+      exact continuous_subtype_val.comp
+        (continuous_edgeRadialCircleInclusion
+          K hrep qA qB δ hδ0 hδquarter hδA hδB)⟩
+  let r : C(↑W, Circle) :=
+    ⟨fun tq ↦ edgeRadialCircleMap K hrep g habs ⟨tq.1, tq.2.2⟩, by
+      apply (continuous_edgeRadialCircleMap K hrep g hg habs).comp
+      apply Continuous.subtype_mk
+      exact continuous_subtype_val⟩
+  refine ⟨W, fun tq htq ↦ htq.1, ?_⟩
+  exact not_simplyConnectedSpace_of_circle_retract i r fun z ↦
+    edgeRadialCircleMap_comp_edgeRadialCircleInclusion
+      K hrep A B hAcl hBcl qA qB hqA hqB g habs hgA hgB
+        δ hδ0 hδquarter hδA hδB z
+
 
 end Poincare
