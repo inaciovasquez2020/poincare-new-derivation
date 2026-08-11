@@ -350,6 +350,108 @@ theorem vertexLinkStar_not_connected_gives_clopen_separation
   simpa using
     (isClopen_univ.not_isPreconnected_iff.mp hnotPreconnected)
 
+/-- A disconnected represented transverse star carries a continuous signed
+radial coordinate.  Its sign records the two clopen sides away from the apex,
+while its absolute value is the complementary apex coordinate. -/
+theorem exists_continuous_signedRadialCoordinate_of_not_starConnected
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    (v x : Nat) (hrep : VertexLinkVertexRepresented K v x)
+    (hnot : ¬ VertexLinkStarConnected K v x) :
+    ∃ A B : Set
+        ↑(triangulationTopologicalPuncturedVertexLinkStar K v x),
+      IsClopen A ∧ IsClopen B ∧ A.Nonempty ∧ B.Nonempty ∧
+        Disjoint A B ∧ Set.univ = A ∪ B ∧
+      ∃ g : ↑(triangulationTopologicalVertexLinkStar K v x) → ℝ,
+        Continuous g ∧
+        (∀ q, |g q| = 1 - q.1 x) ∧
+        (∀ q (hq : q.1 ≠ triangulationTopologicalGeometricVertex x),
+          (⟨q.1, q.2, hq⟩ :
+              ↑(triangulationTopologicalPuncturedVertexLinkStar K v x)) ∈ A →
+            g q = 1 - q.1 x) ∧
+        (∀ q (hq : q.1 ≠ triangulationTopologicalGeometricVertex x),
+          (⟨q.1, q.2, hq⟩ :
+              ↑(triangulationTopologicalPuncturedVertexLinkStar K v x)) ∈ B →
+            g q = -(1 - q.1 x)) := by
+  classical
+  obtain ⟨A, B, hAcl, hBcl, hAne, hBne, hdisj, hcover⟩ :=
+    vertexLinkStar_not_connected_gives_clopen_separation
+      K hcore v x hrep hnot
+  let P := ↑(triangulationTopologicalPuncturedVertexLinkStar K v x)
+  let S := ↑(triangulationTopologicalVertexLinkStar K v x)
+  let radial : P → ℝ := fun q ↦ 1 - q.1 x
+  have hradial : Continuous radial :=
+    continuous_const.sub ((continuous_apply x).comp continuous_subtype_val)
+  let signed : P → ℝ := fun q ↦ if q ∈ A then radial q else -radial q
+  have hsigned : Continuous signed := by
+    apply hradial.if
+    · intro q hq
+      exfalso
+      change q ∈ frontier A at hq
+      rw [hAcl.frontier_eq] at hq
+      exact hq
+    · exact hradial.neg
+  let g : S → ℝ := fun q ↦
+    if hq : q.1 = triangulationTopologicalGeometricVertex x then 0
+    else signed ⟨q.1, q.2, hq⟩
+  have habs : ∀ q : S, |g q| = 1 - q.1 x := by
+    intro q
+    simp only [g]
+    split_ifs with hq
+    · rw [hq]
+      simp [triangulationTopologicalGeometricVertex]
+    · simp only [signed]
+      split_ifs
+      · exact abs_of_nonneg
+          (sub_nonneg.mpr
+            (triangulationTopologicalVertexLinkStar_apex_coordinate K v x q.2).2.1)
+      · rw [abs_neg, abs_of_nonneg]
+        exact sub_nonneg.mpr
+          (triangulationTopologicalVertexLinkStar_apex_coordinate K v x q.2).2.1
+  have hg : Continuous g := by
+    rw [continuous_iff_continuousAt]
+    intro q
+    by_cases hq : q.1 = triangulationTopologicalGeometricVertex x
+    · have hgq : g q = 0 := by simp [g, hq]
+      rw [continuousAt_iff_punctured_nhds, hgq,
+          tendsto_zero_iff_abs_tendsto_zero]
+      have hcoord : Filter.Tendsto (fun y : S ↦ 1 - y.1 x)
+          (nhdsWithin q {q}ᶜ) (nhds 0) := by
+        have hc : Continuous (fun y : S ↦ 1 - y.1 x) :=
+          continuous_const.sub
+            ((continuous_apply x).comp continuous_subtype_val)
+        convert hc.continuousAt.mono_left inf_le_left using 1
+        simp [hq, triangulationTopologicalGeometricVertex]
+      exact hcoord.congr'
+        (Filter.Eventually.of_forall fun y ↦ by
+          simpa [Function.comp_apply] using (habs y).symm)
+    · let D : Set S := {y | y.1 ≠ triangulationTopologicalGeometricVertex x}
+      have hDopen : IsOpen D :=
+        (isClosed_eq continuous_subtype_val continuous_const).isOpen_compl
+      let toP : D → P := fun y ↦ ⟨y.1.1, y.1.2, y.2⟩
+      have htoP : Continuous toP :=
+        (continuous_subtype_val.comp continuous_subtype_val).subtype_mk _
+      have hrestrict : Continuous (g ∘ ((↑) : D → S)) := by
+        have heq : g ∘ ((↑) : D → S) = signed ∘ toP := by
+          funext y
+          have hy : y.1.1 ≠ triangulationTopologicalGeometricVertex x := y.2
+          simp [g, toP, hy]
+        rw [heq]
+        exact hsigned.comp htoP
+      let dq : D := ⟨q, hq⟩
+      simpa [dq] using
+        (hDopen.isOpenEmbedding_subtypeVal.continuousAt_iff.mp
+          (hrestrict.continuousAt (x := dq)))
+  refine ⟨A, B, hAcl, hBcl, hAne, hBne, hdisj, hcover, g, hg, habs, ?_, ?_⟩
+  · intro q hq hqA
+    simp [g, hq, signed, hqA, radial]
+  · intro q hq hqB
+    have hqA :
+        (⟨q.1, q.2, hq⟩ :
+            ↑(triangulationTopologicalPuncturedVertexLinkStar K v x)) ∉ A := by
+      intro hmem
+      exact Set.disjoint_left.1 hdisj hmem hqB
+    simp [g, hq, signed, hqA, radial]
+
 theorem vertexLinkLocallyConnected_of_puncturedStars_isConnected
     (K : Triangulation) (hcore : ClosedTriangulationCore K) (v : Nat)
     (hgeom : ∀ x : Nat, VertexLinkVertexRepresented K v x →
