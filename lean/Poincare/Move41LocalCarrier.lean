@@ -300,4 +300,57 @@ theorem mem_move41PiTargetLocalCarrier_of_coordinates
     · subst z; simp_all [List.nodup_cons]
     simp [hza, hzb, hzc, hzd, hoff hza hzb hzc hzd]
 
+/-- The radial barycentric map from the cone on the outer tetrahedral
+boundary to the solid outer tetrahedron.  It sends the cone point `e` to
+the barycenter and fixes the boundary pointwise. -/
+noncomputable def move41PiRadialMap (a b c d e : Nat) (p : Nat → ℝ) :
+    Nat → ℝ := fun z ↦
+  if z = a then p a + p e / 4
+  else if z = b then p b + p e / 4
+  else if z = c then p c + p e / 4
+  else if z = d then p d + p e / 4
+  else 0
+
+/-- The explicit radial barycentric map carries every point of the genuine
+`4 → 1` source cone into the solid target tetrahedron. -/
+theorem move41PiRadialMap_mem_target
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup) {p : Nat → ℝ}
+    (hp : p ∈ move41PiSourceLocalCarrier a b c d e) :
+    move41PiRadialMap a b c d e p ∈
+      move41PiTargetLocalCarrier a b c d e := by
+  have hnonneg := move41PiSourceLocalCarrier_nonneg hp
+  have hsum := move41PiSourceLocalCarrier_sum h hp
+  apply mem_move41PiTargetLocalCarrier_of_coordinates h
+  · intro z
+    have ha := hnonneg a
+    have hb := hnonneg b
+    have hc := hnonneg c
+    have hd := hnonneg d
+    have he := hnonneg e
+    simp only [move41PiRadialMap]
+    split_ifs <;> positivity
+  · simp only [move41PiRadialMap]
+    have hab : a ≠ b := by simp_all [List.nodup_cons]
+    have hac : a ≠ c := by simp_all [List.nodup_cons]
+    have had : a ≠ d := by simp_all [List.nodup_cons]
+    have hae : a ≠ e := by simp_all [List.nodup_cons]
+    have hbc : b ≠ c := by simp_all [List.nodup_cons]
+    have hbd : b ≠ d := by simp_all [List.nodup_cons]
+    have hbe : b ≠ e := by simp_all [List.nodup_cons]
+    have hcd : c ≠ d := by simp_all [List.nodup_cons]
+    have hce : c ≠ e := by simp_all [List.nodup_cons]
+    have hde : d ≠ e := by simp_all [List.nodup_cons]
+    simp [Ne.symm hab, Ne.symm hac, Ne.symm had, Ne.symm hae,
+      Ne.symm hbc, Ne.symm hbd, Ne.symm hbe, Ne.symm hcd,
+      Ne.symm hce, Ne.symm hde]
+    linarith
+  · simp only [move41PiRadialMap]
+    have hae : a ≠ e := by simp_all [List.nodup_cons]
+    have hbe : b ≠ e := by simp_all [List.nodup_cons]
+    have hce : c ≠ e := by simp_all [List.nodup_cons]
+    have hde : d ≠ e := by simp_all [List.nodup_cons]
+    simp [Ne.symm hae, Ne.symm hbe, Ne.symm hce, Ne.symm hde]
+  · intro z hza hzb hzc hzd
+    simp [move41PiRadialMap, hza, hzb, hzc, hzd]
+
 end Poincare
