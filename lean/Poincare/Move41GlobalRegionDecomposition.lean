@@ -10,6 +10,70 @@ noncomputable def Move41Site.unchangedGeometricCarrier
     (s : Move41Site) (K : Triangulation) : Set (Nat → ℝ) :=
   ⋃ τ ∈ s.unchangedTets K, triangulationTopologicalTetBody τ
 
+/-- No tetrahedron surviving a legal `4 → 1` erasure contains the removed
+center.  This is the combinatorial boundary fact needed to glue the radial
+local map to the identity on the unchanged carrier. -/
+theorem ClosedTriangulationCore.move41Site_unchangedTet_center_not_mem
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (s : Move41Site) (hlegal : s.LegalIn K) {tau : Tet}
+    (htau : tau ∈ s.unchangedTets K) :
+    s.e ∉ tau.verts := by
+  intro he
+  have htauK : tau ∈ K.tets :=
+    mem_of_mem_eraseFirstSameTet
+      (mem_of_mem_eraseFirstSameTet
+        (mem_of_mem_eraseFirstSameTet
+          (mem_of_mem_eraseFirstSameTet htau)))
+  rcases (Move41Site.mem_source_iff_of_center_mem hlegal htauK).1 he with
+    ⟨source, hsource, hsame⟩
+  have sourceUnique (rho : Tet) (hrho : rho ∈ s.sourceTets) :
+      ∃! sigma, sigma ∈ K.tets ∧ SameTetVertices sigma rho := by
+    have hlen := hlegal.sourceOccursExactlyOnce rho hrho
+    have hex : ∃ sigma ∈ K.tets, SameTetVertices sigma rho := by
+      have hne : K.tets.filter
+          (fun sigma => sameTetVerticesBool sigma rho) ≠ [] := by
+        intro hempty
+        simp [hempty] at hlen
+      rcases List.exists_mem_of_ne_nil _ hne with ⟨sigma, hsigma⟩
+      exact ⟨sigma, by simpa [sameTetVerticesBool_eq_true_iff] using hsigma⟩
+    exact hcore.existsUnique_sameTetVertices hex
+  have hnK : K.tets.Nodup := hcore.2.1.imp (fun hnot heq =>
+    hnot (by subst heq; exact sameTetVertices_refl _))
+  have hp := hlegal.sourcePairwiseDistinct
+  simp [Move41Site.sourceTets] at hp hsource
+  rcases hsource with rfl | rfl | rfl | rfl
+  · exact (not_same_of_mem_eraseFirstSameTet_of_unique hnK
+      (sourceUnique s.sourceTet₀ (by simp [Move41Site.sourceTets]))
+      (mem_of_mem_eraseFirstSameTet
+        (mem_of_mem_eraseFirstSameTet
+          (mem_of_mem_eraseFirstSameTet htau)))) hsame
+  · have hu := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same
+        (sourceUnique s.sourceTet₁ (by simp [Move41Site.sourceTets]))
+        (fun h => hp.1.1 (sameTetVertices_symm h))
+    exact (not_same_of_mem_eraseFirstSameTet_of_unique
+      (hnK.sublist (eraseFirstSameTet_sublist _ _)) hu
+      (mem_of_mem_eraseFirstSameTet (mem_of_mem_eraseFirstSameTet htau))) hsame
+  · have hu := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same
+        (sourceUnique s.sourceTet₂ (by simp [Move41Site.sourceTets]))
+        (fun h => hp.1.2.1 (sameTetVertices_symm h))
+    have hu' := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same hu
+      (fun h => hp.2.1.1 (sameTetVertices_symm h))
+    exact (not_same_of_mem_eraseFirstSameTet_of_unique
+      ((hnK.sublist (eraseFirstSameTet_sublist _ _)).sublist
+        (eraseFirstSameTet_sublist _ _)) hu'
+      (mem_of_mem_eraseFirstSameTet htau)) hsame
+  · have hu := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same
+        (sourceUnique s.sourceTet₃ (by simp [Move41Site.sourceTets]))
+        (fun h => hp.1.2.2 (sameTetVertices_symm h))
+    have hu' := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same hu
+      (fun h => hp.2.1.2 (sameTetVertices_symm h))
+    have hu'' := existsUnique_sameTetVertices_eraseFirstSameTet_of_not_same hu'
+      (fun h => hp.2.2 (sameTetVertices_symm h))
+    exact (not_same_of_mem_eraseFirstSameTet_of_unique
+      (((hnK.sublist (eraseFirstSameTet_sublist _ _)).sublist
+        (eraseFirstSameTet_sublist _ _)).sublist
+          (eraseFirstSameTet_sublist _ _)) hu'' htau) hsame
+
 /-- The unchanged tail of a `4 → 1` move is closed, being a finite union of
 compact tetrahedral bodies. -/
 theorem Move41Site.unchangedGeometricCarrier_isClosed
