@@ -307,4 +307,24 @@ theorem ClosedTriangulationCore.move41Site_replace_outer_vertexDegree
     hba, hca, hda, hea, hcb, hdb, heb, hdc, hec, hed] at ha hb hc hd
   omega
 
+/-- A genuine `4 → 1` replacement leaves the degree of every vertex outside
+the five move labels unchanged. -/
+theorem ClosedTriangulationCore.move41Site_replace_vertexDegree_offSite
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (s : Move41Site) (hlegal : s.LegalIn K) {v : Nat}
+    (hva : v ≠ s.a) (hvb : v ≠ s.b) (hvc : v ≠ s.c)
+    (hvd : v ≠ s.d) (hve : v ≠ s.e) :
+    vertexDegree (s.replace K) v = vertexDegree K v := by
+  have hav : s.a ≠ v := Ne.symm hva
+  have hbv : s.b ≠ v := Ne.symm hvb
+  have hcv : s.c ≠ v := Ne.symm hvc
+  have hdv : s.d ≠ v := Ne.symm hvd
+  have hev : s.e ≠ v := Ne.symm hve
+  have h := hcore.move41Site_replace_vertexDegree_balance s hlegal v
+  simp [Move41Site.sourceTet₀, Move41Site.sourceTet₁,
+    Move41Site.sourceTet₂, Move41Site.sourceTet₃,
+    Move41Site.targetTet, Tet.verts,
+    hav, hbv, hcv, hdv, hev] at h
+  omega
+
 end Poincare
