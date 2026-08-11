@@ -1,5 +1,6 @@
 import Poincare.Move41LocalCarrier
 import Poincare.Move23ActualRegions
+import Poincare.TriangulationTopologicalVertexStarNeighborhood
 
 open Set
 
@@ -202,5 +203,20 @@ theorem ClosedTriangulationCore.move41Site_global_region_decomposition
       ← triangulationTopologicalTetBody_mk_eq_piBody s.a s.b s.c s.d]
     simp [Move41Site.replace, Move41Site.unchangedGeometricCarrier,
       Move41Site.targetTet]
+
+/-- On the overlap with the unchanged carrier, the explicit `4 → 1` local
+map agrees with the identity.  This is the compatibility datum for the
+closed-cover gluing construction of the global carrier homeomorphism. -/
+theorem ClosedTriangulationCore.move41Site_radialMap_eq_self_of_mem_unchanged
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (s : Move41Site) (hlegal : s.LegalIn K) {p : Nat → ℝ}
+    (hpS : p ∈ move41PiSourceLocalCarrier s.a s.b s.c s.d s.e)
+    (hpU : p ∈ s.unchangedGeometricCarrier K) :
+    move41PiRadialMap s.a s.b s.c s.d s.e p = p := by
+  apply move41PiRadialMap_eq_self_of_center_eq_zero hpS
+  simp only [Move41Site.unchangedGeometricCarrier, mem_iUnion] at hpU
+  obtain ⟨tau, htau, hpTau⟩ := hpU
+  exact triangulationTopologicalTetBody_coordinate_eq_zero_of_not_mem tau s.e
+    (hcore.move41Site_unchangedTet_center_not_mem s hlegal htau) hpTau
 
 end Poincare
