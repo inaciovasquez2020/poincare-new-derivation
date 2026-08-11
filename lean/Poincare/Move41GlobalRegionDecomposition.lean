@@ -10,6 +10,16 @@ noncomputable def Move41Site.unchangedGeometricCarrier
     (s : Move41Site) (K : Triangulation) : Set (Nat → ℝ) :=
   ⋃ τ ∈ s.unchangedTets K, triangulationTopologicalTetBody τ
 
+/-- The unchanged tail of a `4 → 1` move is closed, being a finite union of
+compact tetrahedral bodies. -/
+theorem Move41Site.unchangedGeometricCarrier_isClosed
+    (s : Move41Site) (K : Triangulation) :
+    IsClosed (s.unchangedGeometricCarrier K) := by
+  apply IsCompact.isClosed
+  rw [Move41Site.unchangedGeometricCarrier]
+  exact s.unchangedTets K |>.finite_toSet.isCompact_biUnion fun tau _ =>
+    triangulationTopologicalTetBody_isCompact tau
+
 /-- A legal `4 → 1` replacement changes exactly its explicit local carrier;
 the source and target realizations have the same unchanged geometric tail. -/
 theorem ClosedTriangulationCore.move41Site_global_region_decomposition
