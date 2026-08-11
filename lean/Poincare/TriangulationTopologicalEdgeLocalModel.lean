@@ -151,6 +151,47 @@ theorem triangulationTopologicalOpenEdgeNeighborhood_subset_edgeStar
       Set.mem_iUnion_of_mem hv <|
         Set.mem_iUnion_of_mem hx hptau
 
+/-- The isolated open-edge neighborhood lies in the represented star at either
+endpoint.  This is the entry point for the existing radial product model. -/
+theorem triangulationTopologicalOpenEdgeNeighborhood_subset_vertexStar
+    (K : Triangulation) (v x : Nat) :
+    ∀ p ∈ triangulationTopologicalOpenEdgeNeighborhood K v x,
+      p.1 ∈ triangulationTopologicalVertexStar K v := by
+  intro p hp
+  exact triangulationTopologicalVertexStar_mem_of_mem_space_of_coordinate_pos
+    K v p.property hp.1
+
+/-- At a represented nondegenerate edge, every point of the isolated
+open-edge neighborhood is non-apical in the radial model based at `v`. -/
+theorem triangulationTopologicalOpenEdgeNeighborhood_coordinate_lt_one
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    {v x : Nat} (hrep : VertexLinkVertexRepresented K v x) :
+    ∀ p ∈ triangulationTopologicalOpenEdgeNeighborhood K v x, p.1 v < 1 := by
+  intro p hp
+  apply triangulationTopologicalVertexStar_coordinate_lt_one_of_ne_vertex
+    K hcore
+    (triangulationTopologicalOpenEdgeNeighborhood_subset_vertexStar K v x p hp)
+  intro heq
+  have hxzero : p.1 x = 0 := by
+    rw [heq]
+    simp [triangulationTopologicalGeometricVertex,
+      ne_of_vertexLinkVertexRepresented K hcore hrep]
+  exact (ne_of_gt hp.2) hxzero
+
+/-- A point of the isolated edge neighborhood, bundled in the exact
+non-apex-star subtype on which the radial link homeomorphism is defined. -/
+noncomputable def triangulationTopologicalOpenEdgeNeighborhoodRadialPoint
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    {v x : Nat} (hrep : VertexLinkVertexRepresented K v x)
+    (p : ↑(triangulationTopologicalOpenEdgeNeighborhood K v x)) :
+    ↑{q : Nat → ℝ |
+      q ∈ triangulationTopologicalVertexStar K v ∧ q v < 1} :=
+  ⟨p.1.1,
+    triangulationTopologicalOpenEdgeNeighborhood_subset_vertexStar
+      K v x p.1 p.2,
+    triangulationTopologicalOpenEdgeNeighborhood_coordinate_lt_one
+      K hcore hrep p.1 p.2⟩
+
 theorem triangulationTopologicalOpenEdgeNeighborhood_mem_nhds
     (K : Triangulation) (hcore : ClosedTriangulationCore K)
     {v x : Nat} (hrep : VertexLinkVertexRepresented K v x) :
