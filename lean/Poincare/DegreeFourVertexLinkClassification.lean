@@ -16,4 +16,98 @@ theorem ClosedTriangulationCore.vertexLinkTetrahedralBoundaryCertificate_of_vert
   · intro x hrepresented
     exact hcore.vertexLinkStarDegreeTwo hrepresented
 
+/-- A degree-four supported star has four concrete, pairwise distinct outer
+labels, all distinct from its center.  They are packaged in the label shape
+used by a genuine `Move41Site`; legality is deliberately not asserted here. -/
+theorem ClosedTriangulationCore.exists_move41Site_labels_of_vertexDegree_eq_four
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hdegree : vertexDegree K v = 4) :
+    ∃ s : Move41Site,
+      s.e = v ∧
+      ∀ x : Nat,
+        x ∈ vertexLinkVertices K v ↔
+          x = s.a ∨ x = s.b ∨ x = s.c ∨ x = s.d := by
+  classical
+  let hcert :=
+    hcore.vertexLinkTetrahedralBoundaryCertificate_of_vertexDegree_eq_four
+      v hdegree
+  let equiv := vertexLinkVertexEquivFin4 K hcore v hcert
+  let a := (equiv.symm 0).1
+  let b := (equiv.symm 1).1
+  let c := (equiv.symm 2).1
+  let d := (equiv.symm 3).1
+  have houter (i : Fin 4) : (equiv.symm i).1 ∈ vertexLinkVertices K v := by
+    exact List.mem_toFinset.mp (equiv.symm i).2
+  have hcenter (i : Fin 4) : (equiv.symm i).1 ≠ v := by
+    intro heq
+    obtain ⟨σ, hσ, hiσ⟩ :=
+      (mem_vertexLinkVertices_iff K v _).1 (houter i)
+    obtain ⟨τ, hτK, hlink⟩ :=
+      (mem_vertexLinkTriangles_iff K v σ).1 hσ
+    have hτnodup := hcore.1 τ hτK
+    unfold Tet.linkTriangleAt? at hlink
+    split at hlink <;> rename_i h0
+    · subst v
+      cases hlink
+      simp [LinkTriangle.verts, Tet.verts] at hτnodup hiσ heq
+      aesop
+    · split at hlink <;> rename_i h1
+      · subst v
+        cases hlink
+        simp [LinkTriangle.verts, Tet.verts] at hτnodup hiσ heq
+        aesop
+      · split at hlink <;> rename_i h2
+        · subst v
+          cases hlink
+          simp [LinkTriangle.verts, Tet.verts] at hτnodup hiσ heq
+          aesop
+        · split at hlink <;> rename_i h3
+          · subst v
+            cases hlink
+            simp [LinkTriangle.verts, Tet.verts] at hτnodup hiσ heq
+            aesop
+          · simp at hlink
+  have hdistinct (i j : Fin 4) (hij : i ≠ j) :
+      (equiv.symm i).1 ≠ (equiv.symm j).1 := by
+    intro heq
+    apply hij
+    apply equiv.symm.injective
+    exact Subtype.ext heq
+  have hnodup : [a, b, c, d, v].Nodup := by
+    simp [a, b, c, d,
+      hdistinct 0 1 (by decide), hdistinct 0 2 (by decide),
+      hdistinct 0 3 (by decide), hdistinct 1 2 (by decide),
+      hdistinct 1 3 (by decide), hdistinct 2 3 (by decide),
+      hcenter 0, hcenter 1, hcenter 2, hcenter 3]
+  let s : Move41Site := ⟨a, b, c, d, v, hnodup⟩
+  refine ⟨s, rfl, ?_⟩
+  intro x
+  constructor
+  · intro hx
+    let y : ↥((vertexLinkVertices K v).toFinset) :=
+      ⟨x, List.mem_toFinset.mpr hx⟩
+    have hy : equiv y = 0 ∨ equiv y = 1 ∨ equiv y = 2 ∨ equiv y = 3 := by
+      omega
+    rcases hy with hy | hy | hy | hy
+    · left
+      change x = a
+      have := congrArg equiv.symm hy
+      simpa [a, y] using congrArg Subtype.val this
+    · right; left
+      change x = b
+      have := congrArg equiv.symm hy
+      simpa [b, y] using congrArg Subtype.val this
+    · right; right; left
+      change x = c
+      have := congrArg equiv.symm hy
+      simpa [c, y] using congrArg Subtype.val this
+    · right; right; right
+      change x = d
+      have := congrArg equiv.symm hy
+      simpa [d, y] using congrArg Subtype.val this
+  · rintro (rfl | rfl | rfl | rfl) <;>
+      exact houter _
+
 end Poincare
