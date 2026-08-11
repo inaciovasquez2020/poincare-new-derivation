@@ -519,4 +519,23 @@ theorem exists_edgeRadial_opposite_side_witnesses
   · exact hgA ⟨qA.1, qA.2.1⟩ qA.2.2 hqA
   · exact hgB ⟨qB.1, qB.2.1⟩ qB.2.2 hqB
 
+/-- Two transverse witnesses of positive radial length admit a common
+positive circle scale which stays below both lengths and below `1/4`.  This
+is the quantitative input ensuring that the explicit circle inclusion stays
+inside the open axial interval and never reaches either transverse endpoint.
+-/
+theorem exists_edgeRadial_circleScale
+    {rA rB : ℝ} (hrA : 0 < rA) (hrB : 0 < rB) :
+    ∃ δ : ℝ, 0 < δ ∧ δ < (4 : ℝ)⁻¹ ∧ δ < rA ∧ δ < rB := by
+  let m := min ((4 : ℝ)⁻¹) (min rA rB)
+  have hm : 0 < m := by
+    dsimp [m]
+    exact lt_min (by norm_num) (lt_min hrA hrB)
+  refine ⟨m / 2, half_pos hm, ?_, ?_, ?_⟩
+  · exact (half_lt_self hm).trans_le (min_le_left _ _)
+  · exact (half_lt_self hm).trans_le
+      ((min_le_right _ _).trans (min_le_left _ _))
+  · exact (half_lt_self hm).trans_le
+      ((min_le_right _ _).trans (min_le_right _ _))
+
 end Poincare
