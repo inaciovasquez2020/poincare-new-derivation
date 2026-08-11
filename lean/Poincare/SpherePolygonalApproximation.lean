@@ -114,4 +114,65 @@ theorem Path.exists_sampled_sphere_vertices_normalizedChord_close
   exact lt_of_le_of_lt
     (dist_normalizedChord_source_le_two_mul hu hw huv s) (by linarith [hedge i])
 
+/-- A sphere-valued path admits an equally spaced finite subdivision on which every
+subpath is homotopic, relative to its endpoints, to the normalized chord between
+its sampled endpoints. -/
+theorem Path.exists_sampled_subpath_homotopic_normalizedChord
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {x y : Metric.sphere (0 : E) 1} (p : Path x y) :
+    ∃ n : ℕ, 0 < n ∧ ∃ v : Fin (n + 1) → unitInterval,
+      v 0 = 0 ∧ v (Fin.last n) = 1 ∧
+        ∀ i : Fin n,
+          ∃ huv : dist (p (v i.castSucc) : E) (p (v i.succ) : E) < 2,
+            Path.Homotopic (p.subpath (v i.castSucc) (v i.succ))
+              (normalizedChord (p (v i.castSucc) : E) (p (v i.succ) : E)
+                (by simpa [Metric.mem_sphere] using (p (v i.castSucc)).property)
+                (by simpa [Metric.mem_sphere] using (p (v i.succ)).property) huv) := by
+  obtain ⟨n, hn, hp⟩ := Path.exists_subdivision_dist_lt_quarter p
+  let v : Fin (n + 1) → unitInterval := fun i ↦
+    ⟨(i : ℝ) / n, by
+      constructor
+      · positivity
+      · rw [div_le_one (by exact_mod_cast hn)]
+        have hi : (i : ℕ) ≤ n := by omega
+        exact_mod_cast hi⟩
+  have hvstep (i : Fin n) :
+      dist (v i.castSucc : ℝ) (v i.succ : ℝ) = 1 / (n : ℝ) := by
+    rw [Real.dist_eq]
+    simp only [v]
+    rw [show ((i.succ : Fin (n + 1)) : ℝ) = (i : ℝ) + 1 by norm_num,
+      add_div, one_div]
+    simp
+  refine ⟨n, hn, v, ?_, ?_, fun i ↦ ?_⟩
+  · apply Subtype.ext
+    simp [v]
+  · apply Subtype.ext
+    simp [v, hn.ne']
+  · have hedge : dist (p (v i.castSucc) : E) (p (v i.succ) : E) < (1 : ℝ) / 4 := by
+      exact hp _ _ (le_of_eq (hvstep i))
+    have huv : dist (p (v i.castSucc) : E) (p (v i.succ) : E) < 2 := by
+      linarith
+    refine ⟨huv, Path.subpath_homotopic_normalizedChord_of_close p _ _ hedge ?_⟩
+    intro s
+    have hparam :
+        dist (Set.Icc.convexCombo (v i.castSucc) (v i.succ) s : ℝ)
+          (v i.castSucc : ℝ) ≤ 1 / (n : ℝ) := by
+      rw [Real.dist_eq]
+      change |((1 - (s : ℝ)) * (v i.castSucc : ℝ) +
+        (s : ℝ) * (v i.succ : ℝ)) - (v i.castSucc : ℝ)| ≤ _
+      rw [show (1 - (s : ℝ)) * (v i.castSucc : ℝ) +
+          (s : ℝ) * (v i.succ : ℝ) - (v i.castSucc : ℝ) =
+          (s : ℝ) * ((v i.succ : ℝ) - (v i.castSucc : ℝ)) by ring,
+        abs_mul, abs_of_nonneg s.property.1]
+      have hs : (s : ℝ) ≤ 1 := s.property.2
+      rw [← Real.dist_eq, dist_comm, hvstep i]
+      exact mul_le_of_le_one_left (by positivity) hs
+    have hclose := hp (Set.Icc.convexCombo (v i.castSucc) (v i.succ) s)
+      (v i.castSucc) hparam
+    have hclose' :
+        dist ((p.subpath (v i.castSucc) (v i.succ)) s : E)
+          (p (v i.castSucc) : E) < (1 : ℝ) / 4 := by
+      simpa [Path.subpath, Subtype.dist_eq] using hclose
+    linarith
+
 end Poincare
