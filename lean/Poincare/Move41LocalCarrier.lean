@@ -363,6 +363,46 @@ theorem move41PiRadialMap_mem_target
   · intro z hza hzb hzc hzd
     simp [move41PiRadialMap, hza, hzb, hzc, hzd]
 
+/-- The genuine `4 → 1` radial map is pointwise the identity on the
+outer tetrahedral boundary, characterized inside the source cone by a
+vanishing center coordinate.  This is the agreement datum used to glue the
+local homeomorphism to the unchanged carrier. -/
+theorem move41PiRadialMap_eq_self_of_center_eq_zero
+    {a b c d e : Nat} {p : Nat → ℝ}
+    (hp : p ∈ move41PiSourceLocalCarrier a b c d e) (he : p e = 0) :
+    move41PiRadialMap a b c d e p = p := by
+  have hoff {z : Nat} (hza : z ≠ a) (hzb : z ≠ b) (hzc : z ≠ c)
+      (hzd : z ≠ d) (hze : z ≠ e) : p z = 0 :=
+    move41PiSourceLocalCarrier_eq_zero_of_not_label hp hza hzb hzc hzd hze
+  funext z
+  by_cases hza : z = a
+  · subst z
+    simp [move41PiRadialMap, he]
+  by_cases hzb : z = b
+  · subst z
+    have hab : b ≠ a := by simp_all [List.nodup_cons]
+    simp [move41PiRadialMap, hab, he]
+  by_cases hzc : z = c
+  · subst z
+    have hca : c ≠ a := by simp_all [List.nodup_cons]
+    have hcb : c ≠ b := by simp_all [List.nodup_cons]
+    simp [move41PiRadialMap, hca, hcb, he]
+  by_cases hzd : z = d
+  · subst z
+    have hda : d ≠ a := by simp_all [List.nodup_cons]
+    have hdb : d ≠ b := by simp_all [List.nodup_cons]
+    have hdc : d ≠ c := by simp_all [List.nodup_cons]
+    simp [move41PiRadialMap, hda, hdb, hdc, he]
+  by_cases hze : z = e
+  · subst z
+    have hea : e ≠ a := by simp_all [List.nodup_cons]
+    have heb : e ≠ b := by simp_all [List.nodup_cons]
+    have hec : e ≠ c := by simp_all [List.nodup_cons]
+    have hed : e ≠ d := by simp_all [List.nodup_cons]
+    simp [move41PiRadialMap, hea, heb, hec, hed, he]
+  simp [move41PiRadialMap, hza, hzb, hzc, hzd,
+    hoff hza hzb hzc hzd hze]
+
 /-- The inverse radial barycentric formula on the solid outer tetrahedron.
 It subtracts the least outer coordinate and records four times that least
 coordinate at the cone point. -/
