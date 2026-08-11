@@ -229,4 +229,14 @@ theorem ClosedTriangulationCore.move41Site_unchangedCarrier_subset_source_space
   rw [(hcore.move41Site_global_region_decomposition s hlegal).1]
   exact subset_union_right
 
+/-- The unchanged carrier embeds in the target realization of a legal
+`4 → 1` move. -/
+theorem ClosedTriangulationCore.move41Site_unchangedCarrier_subset_target_space
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (s : Move41Site) (hlegal : s.LegalIn K) :
+    s.unchangedGeometricCarrier K ⊆
+      (triangulationTopologicalGeometricComplex (s.replace K)).space := by
+  rw [(hcore.move41Site_global_region_decomposition s hlegal).2]
+  exact subset_union_right
+
 end Poincare
