@@ -36,6 +36,28 @@ theorem TetrahedronVertexOverlapConnected.all_of_overlap_closed
   · exact htau₀K
   · exact hC₀
 
+/-- A family of represented tetrahedra is closed under shared-vertex
+adjacency as soon as the whole represented star of every vertex of every
+tetrahedron in the family remains in the family.  This is the exact local-to-
+overlap bridge used for the target-present five-tetrahedron cluster. -/
+theorem tetrahedronCluster_overlap_closed_of_vertexStar_closed
+    {K : Triangulation}
+    (C : Tet → Prop)
+    (hstar : ∀ tau ∈ K.tets, C tau →
+      ∀ v ∈ tau.verts, ∀ rho ∈ K.tets, v ∈ rho.verts → C rho) :
+    ∀ tau rho,
+      tau ∈ K.tets →
+      rho ∈ K.tets →
+      (tau.verts.toFinset ∩ rho.verts.toFinset).Nonempty →
+      C tau → C rho := by
+  intro tau rho htauK hrhoK hoverlap hCtau
+  obtain ⟨v, hv⟩ := hoverlap
+  have hvtau : v ∈ tau.verts :=
+    List.mem_toFinset.mp (Finset.mem_inter.mp hv).1
+  have hvrho : v ∈ rho.verts :=
+    List.mem_toFinset.mp (Finset.mem_inter.mp hv).2
+  exact hstar tau htauK hCtau v hvtau rho hrhoK hvrho
+
 /-- Under connectedness of the represented tetrahedron overlap graph, the
 five-tetrahedron cluster forced by zero defect contains every represented
 tetrahedron. -/
