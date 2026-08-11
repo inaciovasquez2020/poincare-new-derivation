@@ -258,4 +258,45 @@ theorem Move41Site.vertexSupport_toFinset_card_replace_add_one_eq
     simpa using heSupport
   rw [hsupport, Finset.card_erase_add_one heSupport']
 
+/-- A genuine `4 → 1` replacement preserves tetrahedron nondegeneracy and
+vertex-set uniqueness.  Exact triangular-face incidence is the remaining
+closed-core obligation. -/
+theorem ClosedTriangulationCore.move41Site_replace_simple
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (s : Move41Site) (hlegal : s.LegalIn K) :
+    (∀ τ ∈ (s.replace K).tets, τ.verts.Nodup) ∧
+      (s.replace K).tets.Pairwise
+        (fun τ σ => ¬ SameTetVertices τ σ) := by
+  have htargetNodup : s.targetTet.verts.Nodup := by
+    have hd := s.distinct
+    simp [Move41Site.targetTet, Tet.verts] at ⊢
+    simp at hd
+    aesop
+  have hsub : List.Sublist (s.unchangedTets K) K.tets := by
+    exact (eraseFirstSameTet_sublist s.sourceTet₃ _).trans
+      ((eraseFirstSameTet_sublist s.sourceTet₂ _).trans
+        ((eraseFirstSameTet_sublist s.sourceTet₁ _).trans
+          (eraseFirstSameTet_sublist s.sourceTet₀ _)))
+  have hunchangedNodup :
+      ∀ τ ∈ s.unchangedTets K, τ.verts.Nodup := by
+    intro τ hτ
+    exact hcore.1 τ (hsub.subset hτ)
+  have hunchangedPairwise :
+      (s.unchangedTets K).Pairwise
+        (fun τ σ => ¬ SameTetVertices τ σ) :=
+    hcore.2.1.sublist hsub
+  have htargetUnchanged : ∀ τ ∈ s.unchangedTets K,
+      ¬ SameTetVertices s.targetTet τ := by
+    intro τ hτ hsame
+    exact hlegal.targetAbsent τ (hsub.subset hτ)
+      (sameTetVertices_symm hsame)
+  constructor
+  · intro τ hτ
+    simp only [Move41Site.replace, List.mem_cons] at hτ
+    rcases hτ with rfl | hτ
+    · exact htargetNodup
+    · exact hunchangedNodup τ hτ
+  · simp only [Move41Site.replace, List.pairwise_cons]
+    exact ⟨htargetUnchanged, hunchangedPairwise⟩
+
 end Poincare
