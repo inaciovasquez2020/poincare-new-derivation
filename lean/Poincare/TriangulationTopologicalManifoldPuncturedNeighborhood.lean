@@ -1,5 +1,6 @@
 import Poincare.TriangulationTopologicalVertexStarRadialAccess
 import Poincare.TriangulationTopologicalHonestManifold
+import Poincare.SpherePolygonalApproximation
 import Mathlib.Analysis.Normed.Module.Ball.Homeomorph
 import Mathlib.Analysis.Normed.Module.Connected
 
@@ -7,6 +8,44 @@ open Set Filter Metric
 open scoped Manifold
 
 namespace Poincare
+
+/-- A punctured open ball in the three-dimensional Euclidean model is simply connected. -/
+theorem threeManifoldModel_isSimplyConnected_ball_diff_singleton
+    (y : ThreeManifoldModel) {ε : ℝ} (hε : 0 < ε) :
+    IsSimplyConnected (Metric.ball y ε \ {y}) := by
+  let e : OpenPartialHomeomorph ThreeManifoldModel ThreeManifoldModel :=
+    OpenPartialHomeomorph.univBall y ε
+  have hsource : ({0}ᶜ : Set ThreeManifoldModel) ⊆ e.source := by
+    simp [e]
+  have himage : e '' ({0}ᶜ : Set ThreeManifoldModel) = Metric.ball y ε \ {y} := by
+    ext z
+    constructor
+    · rintro ⟨w, hw, rfl⟩
+      have hwsource : w ∈ e.source := hsource hw
+      have hew : e w ∈ Metric.ball y ε := by
+        rw [← OpenPartialHomeomorph.univBall_target y hε]
+        exact e.map_source hwsource
+      refine ⟨hew, ?_⟩
+      simp only [mem_singleton_iff]
+      intro heq
+      have : w = 0 := by
+        apply e.injOn hwsource (by simp [e])
+        simpa [e] using heq
+      exact hw this
+    · rintro ⟨hzball, hzne⟩
+      have hztarget : z ∈ e.target := by
+        simpa [e, OpenPartialHomeomorph.univBall_target y hε] using hzball
+      refine ⟨e.symm z, ?_, e.right_inv hztarget⟩
+      simp only [mem_compl_iff, mem_singleton_iff]
+      intro heq
+      have : z = y := by
+        rw [← e.right_inv hztarget, heq]
+        simp [e]
+      exact hzne this
+  let h := e.homeomorphOfImageSubsetSource hsource himage
+  haveI : SimplyConnectedSpace ({0}ᶜ : Set ThreeManifoldModel) :=
+    euclideanSpace3_punctured_isSimplyConnected
+  exact h.symm.toHomotopyEquiv.simplyConnectedSpace
 
 /-- A punctured open ball in the three-dimensional Euclidean model is path-connected. -/
 theorem threeManifoldModel_isPathConnected_ball_diff_singleton
