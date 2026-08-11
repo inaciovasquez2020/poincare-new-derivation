@@ -247,4 +247,14 @@ theorem ClosedTriangulationCore.move41Site_sourceLocalCarrier_subset_source_spac
   rw [(hcore.move41Site_global_region_decomposition s hlegal).1]
   exact subset_union_left
 
+/-- The explicit target tetrahedron embeds in the target realization of a
+legal `4 → 1` move. -/
+theorem ClosedTriangulationCore.move41Site_targetLocalCarrier_subset_target_space
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (s : Move41Site) (hlegal : s.LegalIn K) :
+    move41PiTargetLocalCarrier s.a s.b s.c s.d s.e ⊆
+      (triangulationTopologicalGeometricComplex (s.replace K)).space := by
+  rw [(hcore.move41Site_global_region_decomposition s hlegal).2]
+  exact subset_union_left
+
 end Poincare
