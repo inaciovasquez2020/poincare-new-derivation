@@ -452,6 +452,86 @@ theorem exists_continuous_signedRadialCoordinate_of_not_starConnected
       exact Set.disjoint_left.1 hdisj hmem hqB
     simp [g, hq, signed, hqA, radial]
 
+/-- A clopen side of the punctured represented link star contains every
+positive radial contraction of each of its points toward the apex.  This is
+the component-control lemma used by the circle inclusion in the edge local
+model. -/
+theorem IsClopen.vertexLinkStar_radial_mem
+    (K : Triangulation) (v x : Nat)
+    {A : Set ↑(triangulationTopologicalPuncturedVertexLinkStar K v x)}
+    (hA : IsClopen A)
+    (q : ↑(triangulationTopologicalPuncturedVertexLinkStar K v x))
+    (hqA : q ∈ A) {c : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) :
+    let p := (AffineMap.lineMap
+      (triangulationTopologicalGeometricVertex x) q.1) c
+    ∃ hp : p ∈ triangulationTopologicalVertexLinkStar K v x,
+      (⟨p, hp, by
+        intro heq
+        have heq' : p = triangulationTopologicalGeometricVertex x := by
+          simpa only [Set.mem_singleton_iff] using heq
+        have hcoord := congrFun heq' x
+        have hradial :=
+          triangulationTopologicalVertexLinkStar_one_sub_coordinate_pos
+            K v x q.2.1 q.2.2
+        dsimp [p] at hcoord
+        simp [AffineMap.lineMap_apply,
+          triangulationTopologicalGeometricVertex] at hcoord
+        rcases hcoord with hc | hq
+        · exact (ne_of_gt hc0) hc
+        · linarith⟩ :
+        ↑(triangulationTopologicalPuncturedVertexLinkStar K v x)) ∈ A := by
+  classical
+  dsimp only
+  obtain ⟨sigma, hsigma, hqsigma⟩ :=
+    (mem_triangulationTopologicalVertexLinkStar_iff K v x q.1).1 q.2.1
+  have hxverts : x ∈ sigma.verts :=
+    (mem_vertexLinkStarTriangles_iff K v x sigma).1 hsigma |>.2
+  have hxbody : triangulationTopologicalGeometricVertex x ∈
+      convexHull ℝ
+        (triangulationTopologicalGeometricVertex ''
+          (↑sigma.verts.toFinset : Set Nat)) := by
+    apply subset_convexHull
+    exact ⟨x, List.mem_toFinset.mpr hxverts, rfl⟩
+  have radial_mem (s : ↑(Set.Ioc (0 : ℝ) 1)) :
+      (AffineMap.lineMap
+        (triangulationTopologicalGeometricVertex x) q.1) s.1 ∈
+          triangulationTopologicalVertexLinkStar K v x := by
+    apply (mem_triangulationTopologicalVertexLinkStar_iff K v x _).2
+    exact ⟨sigma, hsigma,
+      (convex_convexHull ℝ _).lineMap_mem hxbody hqsigma ⟨s.2.1.le, s.2.2⟩⟩
+  have radial_ne (s : ↑(Set.Ioc (0 : ℝ) 1)) :
+      (AffineMap.lineMap
+        (triangulationTopologicalGeometricVertex x) q.1) s.1 ≠
+          triangulationTopologicalGeometricVertex x := by
+    intro heq
+    have hcoord := congrFun heq x
+    have hradial :=
+      triangulationTopologicalVertexLinkStar_one_sub_coordinate_pos
+        K v x q.2.1 q.2.2
+    simp [AffineMap.lineMap_apply,
+      triangulationTopologicalGeometricVertex] at hcoord
+    rcases hcoord with hs | hq
+    · exact (ne_of_gt s.2.1) hs
+    · linarith
+  let f : ↑(Set.Ioc (0 : ℝ) 1) →
+      ↑(triangulationTopologicalPuncturedVertexLinkStar K v x) := fun s ↦
+    ⟨(AffineMap.lineMap
+      (triangulationTopologicalGeometricVertex x) q.1) s.1,
+      radial_mem s, radial_ne s⟩
+  have hf : Continuous f := by
+    apply Continuous.subtype_mk
+    exact AffineMap.lineMap_continuous.comp continuous_subtype_val
+  letI : PreconnectedSpace ↑(Set.Ioc (0 : ℝ) 1) :=
+    Subtype.preconnectedSpace isPreconnected_Ioc
+  have hpre : IsClopen (f ⁻¹' A) := hA.preimage hf
+  have hone : (1 : ↑(Set.Ioc (0 : ℝ) 1)) ∈ f ⁻¹' A := by
+    simpa [f, AffineMap.lineMap_apply] using hqA
+  have hall : f ⁻¹' A = Set.univ := hpre.eq_univ ⟨1, hone⟩
+  let sc : ↑(Set.Ioc (0 : ℝ) 1) := ⟨c, hc0, hc1⟩
+  refine ⟨radial_mem sc, ?_⟩
+  have : sc ∈ f ⁻¹' A := by rw [hall]; trivial
+  exact this
+
 theorem vertexLinkLocallyConnected_of_puncturedStars_isConnected
     (K : Triangulation) (hcore : ClosedTriangulationCore K) (v : Nat)
     (hgeom : ∀ x : Nat, VertexLinkVertexRepresented K v x →
