@@ -1,4 +1,5 @@
 import Poincare.SphereNormalizedChord
+import Poincare.SphereFiniteEscape
 import Mathlib.Topology.Subpath
 import Mathlib.Topology.UniformSpace.Path
 
@@ -332,5 +333,44 @@ theorem normalizedChordPolygon_mem_pairSpan
   apply Submodule.add_mem
   · exact Submodule.smul_mem _ _ (Submodule.subset_span (by simp))
   · exact Submodule.smul_mem _ _ (Submodule.subset_span (by simp))
+
+/-- A normalized-chord polygon in the unit two-sphere avoids the antipode of
+some unit vector.  The avoiding vector is chosen outside all of the finitely
+many planes spanned by consecutive sampled vertices. -/
+theorem exists_sphere_point_not_mem_normalizedChordPolygon
+    {x y : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1} (p : Path x y)
+    {n : ℕ} (hn : 0 < n) (v : Fin (n + 1) → unitInterval)
+    (huv : ∀ i : Fin n,
+      dist (p (v i.castSucc) : EuclideanSpace ℝ (Fin 3))
+        (p (v i.succ) : EuclideanSpace ℝ (Fin 3)) < 2) :
+    ∃ a : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1,
+      ∀ t : unitInterval, normalizedChordChain p v huv t ≠
+        (⟨-(a : EuclideanSpace ℝ (Fin 3)), by
+          simpa [Metric.mem_sphere] using a.property⟩ :
+          Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) := by
+  obtain ⟨a, ha, havoid⟩ := exists_unit_not_mem_finset_pairSpans Finset.univ
+    (fun i : Fin n ↦ (p (v i.castSucc) : EuclideanSpace ℝ (Fin 3)))
+    (fun i : Fin n ↦ (p (v i.succ) : EuclideanSpace ℝ (Fin 3)))
+  let a' : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 :=
+    ⟨a, by simpa [Metric.mem_sphere] using ha⟩
+  refine ⟨a', fun t heq ↦ ?_⟩
+  obtain ⟨i, hi⟩ := normalizedChordPolygon_mem_pairSpan p hn v huv t
+  have hneg : -a ∈ Submodule.span ℝ
+      ({(p (v i.castSucc) : EuclideanSpace ℝ (Fin 3)),
+        (p (v i.succ) : EuclideanSpace ℝ (Fin 3))} :
+        Set (EuclideanSpace ℝ (Fin 3))) := by
+    have heq' : ((normalizedChordChain p v huv t :
+        Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
+        EuclideanSpace ℝ (Fin 3)) = -a := by
+      simpa [a'] using congrArg
+        (fun z : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 ↦
+          (z : EuclideanSpace ℝ (Fin 3))) heq
+    rw [heq'] at hi
+    exact hi
+  have ha_mem := (Submodule.span ℝ
+    ({(p (v i.castSucc) : EuclideanSpace ℝ (Fin 3)),
+      (p (v i.succ) : EuclideanSpace ℝ (Fin 3))} :
+      Set (EuclideanSpace ℝ (Fin 3)))).neg_mem hneg
+  exact havoid i (Finset.mem_univ i) (by simpa using ha_mem)
 
 end Poincare
