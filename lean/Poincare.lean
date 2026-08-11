@@ -59,6 +59,7 @@ import Poincare.Move41CombinatorialFoundation
 import Poincare.Move41LocalCarrier
 import Poincare.Move41GlobalRegionDecomposition
 import Poincare.Move41GeometricCarrierHomeomorph
+import Poincare.Move41DegreeSupportBalance
 import Poincare.Move32DescentCounterexample
 import Poincare.CrossPolytopeBoundary
 import Poincare.CrossPolytopeBoundarySphere
