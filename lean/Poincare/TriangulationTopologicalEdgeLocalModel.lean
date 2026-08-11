@@ -487,4 +487,36 @@ theorem continuous_edgeRadialCircleMap
   exact hz.div₀ (Complex.continuous_ofReal.comp hz.norm) fun tq ↦
     Complex.ofReal_ne_zero.mpr (norm_ne_zero_iff.mpr (hzne tq))
 
+/-- The two nonempty clopen sides supply transverse points with strictly
+positive radial lengths and opposite signed-coordinate values.  These are
+the two endpoints used by the explicit circle inclusion. -/
+theorem exists_edgeRadial_opposite_side_witnesses
+    (K : Triangulation) (v x : Nat)
+    (A B : Set
+      ↑(triangulationTopologicalPuncturedVertexLinkStar K v x))
+    (hAne : A.Nonempty) (hBne : B.Nonempty)
+    (g : ↑(triangulationTopologicalVertexLinkStar K v x) → ℝ)
+    (hgA : ∀ q (hq : q.1 ≠ triangulationTopologicalGeometricVertex x),
+      (⟨q.1, q.2, hq⟩ :
+        ↑(triangulationTopologicalPuncturedVertexLinkStar K v x)) ∈ A →
+        g q = 1 - q.1 x)
+    (hgB : ∀ q (hq : q.1 ≠ triangulationTopologicalGeometricVertex x),
+      (⟨q.1, q.2, hq⟩ :
+        ↑(triangulationTopologicalPuncturedVertexLinkStar K v x)) ∈ B →
+        g q = -(1 - q.1 x)) :
+    ∃ qA ∈ A, ∃ qB ∈ B,
+      0 < 1 - qA.1 x ∧
+      0 < 1 - qB.1 x ∧
+      g ⟨qA.1, qA.2.1⟩ = 1 - qA.1 x ∧
+      g ⟨qB.1, qB.2.1⟩ = -(1 - qB.1 x) := by
+  obtain ⟨qA, hqA⟩ := hAne
+  obtain ⟨qB, hqB⟩ := hBne
+  refine ⟨qA, hqA, qB, hqB, ?_, ?_, ?_, ?_⟩
+  · exact triangulationTopologicalVertexLinkStar_one_sub_coordinate_pos
+      K v x qA.2.1 qA.2.2
+  · exact triangulationTopologicalVertexLinkStar_one_sub_coordinate_pos
+      K v x qB.2.1 qB.2.2
+  · exact hgA ⟨qA.1, qA.2.1⟩ qA.2.2 hqA
+  · exact hgB ⟨qB.1, qB.2.1⟩ qB.2.2 hqB
+
 end Poincare
