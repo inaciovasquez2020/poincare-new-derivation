@@ -88,4 +88,13 @@ theorem vertexLinkStarConnected_of_topologicalThreeManifold
           δ hδ0 hδquarter hδA hδB z
   exact hnotSimply hUsimply
 
+/-- Every supported vertex of an honest topological three-manifold has
+connected represented vertex-link stars. -/
+theorem vertexLinksLocallyConnected_of_topologicalThreeManifold
+    (K : Triangulation) (hcore : ClosedTriangulationCore K)
+    (hM : TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K) :
+    VertexLinksLocallyConnected K := by
+  intro v _ x hrep
+  exact vertexLinkStarConnected_of_topologicalThreeManifold K hcore hM hrep
+
 end Poincare
