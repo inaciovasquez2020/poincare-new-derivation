@@ -70,4 +70,14 @@ theorem circle_not_simplyConnected : ¬ SimplyConnectedSpace Circle := by
     simpa [expMap] using ContinuousMap.congr_fun hcomp 0
   linarith [Real.pi_pos]
 
+/-- A space admitting the unit circle as a continuous retract is not simply connected. -/
+theorem not_simplyConnectedSpace_of_circle_retract
+    {X : Type*} [TopologicalSpace X]
+    (i : C(Circle, X)) (r : C(X, Circle)) (hr : ∀ z, r (i z) = z) :
+    ¬ SimplyConnectedSpace X := by
+  intro hX
+  letI : SimplyConnectedSpace X := hX
+  exact circle_not_simplyConnected
+    (simplyConnectedSpace_of_retract i r hr)
+
 end Poincare
