@@ -327,4 +327,112 @@ theorem ClosedTriangulationCore.move41Site_replace_vertexDegree_offSite
     hav, hbv, hcv, hdv, hev] at h
   omega
 
+/-- Exact `PhiSupport` bookkeeping for a genuine `4 → 1` replacement.
+The center contributes only before the move, while the four outer vertices
+remain supported on both sides. -/
+theorem ClosedTriangulationCore.move41Site_replace_PhiSupport_balance
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (s : Move41Site) (hlegal : s.LegalIn K) :
+    PhiSupport (s.replace K) +
+        vertexDefect K s.a + vertexDefect K s.b +
+        vertexDefect K s.c + vertexDefect K s.d + vertexDefect K s.e =
+      PhiSupport K +
+        vertexDefect (s.replace K) s.a +
+        vertexDefect (s.replace K) s.b +
+        vertexDefect (s.replace K) s.c +
+        vertexDefect (s.replace K) s.d := by
+  classical
+  let S : Finset Nat := (vertexSupport K).toFinset
+  have hdistinct := s.distinct
+  simp at hdistinct
+  rcases hdistinct with
+    ⟨⟨hab, hac, had, hae⟩, ⟨hbc, hbd, hbe⟩, ⟨hcd, hce⟩, hde⟩
+  have heSupport : s.e ∈ vertexSupport K := by
+    have hdegree := hcore.move41Site_center_vertexDegree_eq_four s hlegal
+    rw [mem_vertexSupport_iff]
+    exact List.count_pos_iff.mp (show 0 < (allVerts K).count s.e by
+      simpa [vertexDegree] using (show 0 < vertexDegree K s.e by omega))
+  have hsupport : (vertexSupport (s.replace K)).toFinset = S.erase s.e := by
+    ext v
+    by_cases hve : v = s.e
+    · subst v
+      simp [S, Move41Site.center_not_mem_vertexSupport_replace hlegal]
+    · simp [S, hve,
+        Move41Site.mem_vertexSupport_replace_iff_of_ne_center hlegal hve]
+  have outerSupport (v : Nat) (hv : v ∈ s.targetTet.verts) : v ∈ S := by
+    have hvReplace : v ∈ vertexSupport (s.replace K) := by
+      rw [mem_vertexSupport_iff]
+      simp only [allVerts, List.mem_flatMap]
+      exact ⟨s.targetTet, by simp [Move41Site.replace], hv⟩
+    have hve : v ≠ s.e := by
+      intro h
+      subst v
+      simp [Move41Site.targetTet, Tet.verts, Ne.symm hae, Ne.symm hbe,
+        Ne.symm hce, Ne.symm hde] at hv
+    have := (Move41Site.mem_vertexSupport_replace_iff_of_ne_center
+      hlegal hve).mp hvReplace
+    simpa [S] using this
+  have haS : s.a ∈ S := outerSupport s.a (by simp [Move41Site.targetTet, Tet.verts])
+  have hbS : s.b ∈ S := outerSupport s.b (by simp [Move41Site.targetTet, Tet.verts])
+  have hcS : s.c ∈ S := outerSupport s.c (by simp [Move41Site.targetTet, Tet.verts])
+  have hdS : s.d ∈ S := outerSupport s.d (by simp [Move41Site.targetTet, Tet.verts])
+  have heS : s.e ∈ S := by simpa [S] using heSupport
+  let R := ((((S.erase s.e).erase s.a).erase s.b).erase s.c).erase s.d
+  have hRest :
+      (∑ v ∈ R, vertexDefect (s.replace K) v) =
+        ∑ v ∈ R, vertexDefect K v := by
+    apply Finset.sum_congr rfl
+    intro v hv
+    have hvd := (Finset.mem_erase.mp hv).1
+    have hvc := (Finset.mem_erase.mp (Finset.mem_erase.mp hv).2).1
+    have hvb := (Finset.mem_erase.mp
+      (Finset.mem_erase.mp (Finset.mem_erase.mp hv).2).2).1
+    have hva := (Finset.mem_erase.mp
+      (Finset.mem_erase.mp
+        (Finset.mem_erase.mp (Finset.mem_erase.mp hv).2).2).2).1
+    have hve := (Finset.mem_erase.mp
+      (Finset.mem_erase.mp
+        (Finset.mem_erase.mp
+          (Finset.mem_erase.mp (Finset.mem_erase.mp hv).2).2).2).2).1
+    unfold vertexDefect
+    rw [hcore.move41Site_replace_vertexDegree_offSite s hlegal hva hvb hvc hvd hve]
+  have splitBefore :
+      (∑ v ∈ S, vertexDefect K v) =
+        (∑ v ∈ R, vertexDefect K v) + vertexDefect K s.d +
+          vertexDefect K s.c + vertexDefect K s.b +
+          vertexDefect K s.a + vertexDefect K s.e := by
+    simp only [R]
+    have ha : s.a ∈ S.erase s.e := by simp [haS, hae]
+    have hb : s.b ∈ (S.erase s.e).erase s.a := by simp [hbS, hbe, Ne.symm hab]
+    have hc : s.c ∈ ((S.erase s.e).erase s.a).erase s.b := by
+      simp [hcS, hce, Ne.symm hac, Ne.symm hbc]
+    have hd : s.d ∈ (((S.erase s.e).erase s.a).erase s.b).erase s.c := by
+      simp [hdS, hde, Ne.symm had, Ne.symm hbd, Ne.symm hcd]
+    rw [(Finset.sum_erase_add S _ heS).symm,
+      (Finset.sum_erase_add (S.erase s.e) _ ha).symm,
+      (Finset.sum_erase_add ((S.erase s.e).erase s.a) _ hb).symm,
+      (Finset.sum_erase_add (((S.erase s.e).erase s.a).erase s.b) _ hc).symm,
+      (Finset.sum_erase_add ((((S.erase s.e).erase s.a).erase s.b).erase s.c) _ hd).symm]
+  have splitAfter :
+      (∑ v ∈ S.erase s.e, vertexDefect (s.replace K) v) =
+        (∑ v ∈ R, vertexDefect (s.replace K) v) +
+          vertexDefect (s.replace K) s.d +
+          vertexDefect (s.replace K) s.c +
+          vertexDefect (s.replace K) s.b +
+          vertexDefect (s.replace K) s.a := by
+    simp only [R]
+    have ha : s.a ∈ S.erase s.e := by simp [haS, hae]
+    have hb : s.b ∈ (S.erase s.e).erase s.a := by simp [hbS, hbe, Ne.symm hab]
+    have hc : s.c ∈ ((S.erase s.e).erase s.a).erase s.b := by
+      simp [hcS, hce, Ne.symm hac, Ne.symm hbc]
+    have hd : s.d ∈ (((S.erase s.e).erase s.a).erase s.b).erase s.c := by
+      simp [hdS, hde, Ne.symm had, Ne.symm hbd, Ne.symm hcd]
+    rw [(Finset.sum_erase_add (S.erase s.e) _ ha).symm,
+      (Finset.sum_erase_add ((S.erase s.e).erase s.a) _ hb).symm,
+      (Finset.sum_erase_add (((S.erase s.e).erase s.a).erase s.b) _ hc).symm,
+      (Finset.sum_erase_add ((((S.erase s.e).erase s.a).erase s.b).erase s.c) _ hd).symm]
+  rw [phiSupport_eq_finset_sum K, phiSupport_eq_finset_sum (s.replace K),
+    hsupport, splitBefore, splitAfter, hRest]
+  omega
+
 end Poincare
