@@ -63,6 +63,7 @@ import Poincare.Move41DegreeSupportBalance
 import Poincare.Move41TopologyPreservingDescent
 import Poincare.DegreeFourVertexLinkClassification
 import Poincare.DegreeFourOverlapObstruction
+import Poincare.DegreeFourConnectedLinkClassification
 import Poincare.Move32DescentCounterexample
 import Poincare.CrossPolytopeBoundary
 import Poincare.CrossPolytopeBoundarySphere
