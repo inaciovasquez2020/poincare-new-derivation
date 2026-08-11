@@ -583,4 +583,39 @@ theorem move41PiRadialMap_radialInv
     h hq hza hzb hzc hzd
   simp [move41PiRadialMap, hza, hzb, hzc, hzd, hoff]
 
+/-- The explicit radial map is a genuine homeomorphism from the four-tetrahedron
+source cone to the solid target tetrahedron. -/
+theorem move41PiRadialMap_isHomeomorph
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup) :
+    IsHomeomorph (fun p : ↥(move41PiSourceLocalCarrier a b c d e) ↦
+      (⟨move41PiRadialMap a b c d e p.1,
+        move41PiRadialMap_mem_target h p.2⟩ :
+          ↥(move41PiTargetLocalCarrier a b c d e))) := by
+  let f : ↥(move41PiSourceLocalCarrier a b c d e) →
+      ↥(move41PiTargetLocalCarrier a b c d e) := fun p ↦
+    ⟨move41PiRadialMap a b c d e p.1,
+      move41PiRadialMap_mem_target h p.2⟩
+  letI : CompactSpace ↥(move41PiSourceLocalCarrier a b c d e) :=
+    isCompact_iff_compactSpace.mp
+      (move41PiSourceLocalCarrier_isCompact a b c d e)
+  have hfcont : Continuous f :=
+    Continuous.subtype_mk
+      ((continuous_move41PiRadialMap a b c d e).comp continuous_subtype_val) _
+  have hfinj : Function.Injective f := by
+    intro p q hpq
+    apply Subtype.ext
+    apply_fun move41PiRadialInv a b c d e at hpq
+    simpa [f, move41PiRadialInv_radialMap h p.2,
+      move41PiRadialInv_radialMap h q.2] using hpq
+  have hfsurj : Function.Surjective f := by
+    intro q
+    let p : ↥(move41PiSourceLocalCarrier a b c d e) :=
+      ⟨move41PiRadialInv a b c d e q.1,
+        move41PiRadialInv_mem_source h q.2⟩
+    refine ⟨p, ?_⟩
+    apply Subtype.ext
+    exact move41PiRadialMap_radialInv h q.2
+  exact (isHomeomorph_iff_continuous_bijective).2
+    ⟨hfcont, hfinj, hfsurj⟩
+
 end Poincare
