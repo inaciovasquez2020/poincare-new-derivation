@@ -252,4 +252,94 @@ theorem ClosedTriangulationCore.exists_move41Site_centerSaturated_pairwise_of_ve
     simp [Move41Site.sourceTet₃, Tet.verts] at this
     aesop
 
+/-- Every one of the four source vertex sets extracted from a degree-four
+vertex is represented by a tetrahedron of the triangulation. -/
+theorem ClosedTriangulationCore.exists_move41Site_sources_of_vertexDegree_eq_four
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (hdegree : vertexDegree K v = 4) :
+    ∃ s : Move41Site,
+      s.e = v ∧
+      ∀ source ∈ s.sourceTets,
+        ∃ tau ∈ K.tets, SameTetVertices tau source := by
+  classical
+  obtain ⟨s, hse, hlabels⟩ :=
+    hcore.exists_move41Site_labels_of_vertexDegree_eq_four v hdegree
+  have hcert :=
+    hcore.vertexLinkTetrahedralBoundaryCertificate_of_vertexDegree_eq_four
+      v hdegree
+  refine ⟨s, hse, ?_⟩
+  intro source hsource
+  simp [Move41Site.sourceTets] at hsource
+  rcases hsource with rfl | rfl | rfl | rfl
+  · have hdlink : s.d ∈ vertexLinkVertices K v :=
+      (hlabels s.d).2 (by aesop)
+    obtain ⟨sigma, hsigma, hverts⟩ := (hcert.2.2.2.2.2 s.d hdlink).exists
+    obtain ⟨tau, htau, hlink⟩ :=
+      (mem_vertexLinkTriangles_iff K v sigma).1 hsigma
+    refine ⟨tau, htau, ?_⟩
+    intro x
+    have he : v ∈ tau.verts :=
+      (tau.linkTriangleAt?_isSome_iff v).1 (by rw [hlink]; rfl)
+    by_cases hxv : x = v
+    · subst x
+      simpa [Move41Site.sourceTet₀, Tet.verts, hse] using he
+    · have hxiff := tau.mem_linkTriangleAt?_iff v x sigma hlink hxv
+      rw [← hxiff, hverts x, hlabels x]
+      have hd := s.distinct
+      simp [Move41Site.sourceTet₀, Tet.verts] at hd ⊢
+      omega
+  · have hclink : s.c ∈ vertexLinkVertices K v :=
+      (hlabels s.c).2 (by aesop)
+    obtain ⟨sigma, hsigma, hverts⟩ := (hcert.2.2.2.2.2 s.c hclink).exists
+    obtain ⟨tau, htau, hlink⟩ :=
+      (mem_vertexLinkTriangles_iff K v sigma).1 hsigma
+    refine ⟨tau, htau, ?_⟩
+    intro x
+    have he : v ∈ tau.verts :=
+      (tau.linkTriangleAt?_isSome_iff v).1 (by rw [hlink]; rfl)
+    by_cases hxv : x = v
+    · subst x
+      simpa [Move41Site.sourceTet₁, Tet.verts, hse] using he
+    · have hxiff := tau.mem_linkTriangleAt?_iff v x sigma hlink hxv
+      rw [← hxiff, hverts x, hlabels x]
+      have hd := s.distinct
+      simp [Move41Site.sourceTet₁, Tet.verts] at hd ⊢
+      omega
+  · have hblink : s.b ∈ vertexLinkVertices K v :=
+      (hlabels s.b).2 (by aesop)
+    obtain ⟨sigma, hsigma, hverts⟩ := (hcert.2.2.2.2.2 s.b hblink).exists
+    obtain ⟨tau, htau, hlink⟩ :=
+      (mem_vertexLinkTriangles_iff K v sigma).1 hsigma
+    refine ⟨tau, htau, ?_⟩
+    intro x
+    have he : v ∈ tau.verts :=
+      (tau.linkTriangleAt?_isSome_iff v).1 (by rw [hlink]; rfl)
+    by_cases hxv : x = v
+    · subst x
+      simpa [Move41Site.sourceTet₂, Tet.verts, hse] using he
+    · have hxiff := tau.mem_linkTriangleAt?_iff v x sigma hlink hxv
+      rw [← hxiff, hverts x, hlabels x]
+      have hd := s.distinct
+      simp [Move41Site.sourceTet₂, Tet.verts] at hd ⊢
+      omega
+  · have halink : s.a ∈ vertexLinkVertices K v :=
+      (hlabels s.a).2 (by aesop)
+    obtain ⟨sigma, hsigma, hverts⟩ := (hcert.2.2.2.2.2 s.a halink).exists
+    obtain ⟨tau, htau, hlink⟩ :=
+      (mem_vertexLinkTriangles_iff K v sigma).1 hsigma
+    refine ⟨tau, htau, ?_⟩
+    intro x
+    have he : v ∈ tau.verts :=
+      (tau.linkTriangleAt?_isSome_iff v).1 (by rw [hlink]; rfl)
+    by_cases hxv : x = v
+    · subst x
+      simpa [Move41Site.sourceTet₃, Tet.verts, hse] using he
+    · have hxiff := tau.mem_linkTriangleAt?_iff v x sigma hlink hxv
+      rw [← hxiff, hverts x, hlabels x]
+      have hd := s.distinct
+      simp [Move41Site.sourceTet₃, Tet.verts] at hd ⊢
+      omega
+
 end Poincare
