@@ -175,4 +175,86 @@ theorem Path.exists_sampled_subpath_homotopic_normalizedChord
       simpa [Path.subpath, Subtype.dist_eq] using hclose
     linarith
 
+/-- The polygonal path obtained by concatenating the normalized chords between
+consecutive sampled vertices of a sphere-valued path. -/
+noncomputable def normalizedChordChain
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {x y : Metric.sphere (0 : E) 1} (p : Path x y) {n : ℕ}
+    (v : Fin (n + 1) → unitInterval)
+    (huv : ∀ i : Fin n,
+      dist (p (v i.castSucc) : E) (p (v i.succ) : E) < 2) :
+    Path (p (v 0)) (p (v (Fin.last n))) :=
+  Path.concat (p ∘ v) fun i ↦
+    normalizedChord (p (v i.castSucc) : E) (p (v i.succ) : E)
+      (by simpa [Metric.mem_sphere] using (p (v i.castSucc)).property)
+      (by simpa [Metric.mem_sphere] using (p (v i.succ)).property) (huv i)
+
+@[simp] theorem normalizedChordChain_start
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {x y : Metric.sphere (0 : E) 1} (p : Path x y) {n : ℕ}
+    (v : Fin (n + 1) → unitInterval)
+    (huv : ∀ i : Fin n,
+      dist (p (v i.castSucc) : E) (p (v i.succ) : E) < 2) :
+    normalizedChordChain p v huv 0 = p (v 0) :=
+  (normalizedChordChain p v huv).source
+
+@[simp] theorem normalizedChordChain_end
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {x y : Metric.sphere (0 : E) 1} (p : Path x y) {n : ℕ}
+    (v : Fin (n + 1) → unitInterval)
+    (huv : ∀ i : Fin n,
+      dist (p (v i.castSucc) : E) (p (v i.succ) : E) < 2) :
+    normalizedChordChain p v huv 1 = p (v (Fin.last n)) :=
+  (normalizedChordChain p v huv).target
+
+/-- Replacing every sampled subpath by its normalized chord replaces their
+finite concatenation by a path-homotopic polygonal chain. -/
+theorem normalizedChordChain_homotopic_sampledPath
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {x y : Metric.sphere (0 : E) 1} (p : Path x y) {n : ℕ}
+    (v : Fin (n + 1) → unitInterval)
+    (huv : ∀ i : Fin n,
+      dist (p (v i.castSucc) : E) (p (v i.succ) : E) < 2)
+    (hedge : ∀ i : Fin n,
+      Path.Homotopic (p.subpath (v i.castSucc) (v i.succ))
+        (normalizedChord (p (v i.castSucc) : E) (p (v i.succ) : E)
+          (by simpa [Metric.mem_sphere] using (p (v i.castSucc)).property)
+          (by simpa [Metric.mem_sphere] using (p (v i.succ)).property) (huv i))) :
+    Path.Homotopic (p.subpath (v 0) (v (Fin.last n)))
+      (normalizedChordChain p v huv) := by
+  exact (Path.Homotopic.concat_subpath p v).symm.trans
+    (Path.Homotopic.concat_hcomp (p ∘ v)
+      (fun i ↦ p.subpath (v i.castSucc) (v i.succ))
+      (fun i ↦ normalizedChord (p (v i.castSucc) : E) (p (v i.succ) : E)
+        (by simpa [Metric.mem_sphere] using (p (v i.castSucc)).property)
+        (by simpa [Metric.mem_sphere] using (p (v i.succ)).property) (huv i)) hedge)
+
+/-- Every sphere-valued path is homotopic relative to its endpoints to a finite
+polygon whose edges are normalized chords between explicitly sampled vertices. -/
+theorem Path.exists_normalizedChordPolygon_homotopic
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {x y : Metric.sphere (0 : E) 1} (p : Path x y) :
+    ∃ n : ℕ, 0 < n ∧ ∃ v : Fin (n + 1) → unitInterval,
+      v 0 = 0 ∧ v (Fin.last n) = 1 ∧
+      ∃ huv : ∀ i : Fin n,
+        dist (p (v i.castSucc) : E) (p (v i.succ) : E) < 2,
+      ∃ h0 : x = p (v 0), ∃ h1 : y = p (v (Fin.last n)),
+      ∃ q : Path x y,
+        q = (normalizedChordChain p v huv).cast h0 h1 ∧
+        Path.Homotopic p q := by
+  obtain ⟨n, hn, v, hv0, hv1, hedge⟩ :=
+    Path.exists_sampled_subpath_homotopic_normalizedChord p
+  choose huv hhom using hedge
+  have h0 : x = p (v 0) := by simp [hv0]
+  have h1 : y = p (v (Fin.last n)) := by simp [hv1]
+  refine ⟨n, hn, v, hv0, hv1, huv, h0, h1,
+    (normalizedChordChain p v huv).cast h0 h1, rfl, ?_⟩
+  have hchain := normalizedChordChain_homotopic_sampledPath p v huv hhom
+  have hcast := hchain.pathCast h0 h1
+  have heq : (p.subpath (v 0) (v (Fin.last n))).cast h0 h1 = p := by
+    ext t
+    simp [Path.subpath, hv0, hv1]
+  rw [heq] at hcast
+  exact hcast
+
 end Poincare
