@@ -945,5 +945,48 @@ theorem openEdgeNeighborhood_delete_midpoint_not_simplyConnected
     e.toHomotopyEquiv.simplyConnectedSpace
   exact hradial inferInstance
 
+/-- The ambient-coordinate family underlying the small radial circles.  Unlike
+`edgeRadialCircleInclusion`, it is also defined at scale zero; there the whole
+circle collapses to the radial midpoint.  Keeping this preliminary family in
+the ambient product avoids putting positivity proofs into the parameter type.
+-/
+noncomputable def edgeRadialCircleAmbientFamily
+    (x : Nat) (qA qB : Nat → ℝ) (δz : ℝ × Circle) : ℝ × (Nat → ℝ) :=
+  let δ := δz.1
+  let z := δz.2
+  let q := if 0 ≤ z.1.im then
+      (AffineMap.lineMap (triangulationTopologicalGeometricVertex x) qA)
+        (δ * z.1.im / (1 - qA x))
+    else
+      (AffineMap.lineMap (triangulationTopologicalGeometricVertex x) qB)
+        (δ * (-z.1.im) / (1 - qB x))
+  ((2 : ℝ)⁻¹ + δ * z.1.re, q)
+
+/-- The small radial-circle formula is jointly continuous in its scale and
+circle variables, including at scale zero. -/
+theorem continuous_edgeRadialCircleAmbientFamily
+    (x : Nat) (qA qB : Nat → ℝ) :
+    Continuous (edgeRadialCircleAmbientFamily x qA qB) := by
+  apply Continuous.prodMk
+  · fun_prop
+  · dsimp only [edgeRadialCircleAmbientFamily]
+    apply continuous_if_le continuous_const
+      (Complex.continuous_im.comp
+        (continuous_subtype_val.comp continuous_snd))
+    · fun_prop
+    · fun_prop
+    · intro δz hz
+      change 0 = δz.2.1.im at hz
+      rw [← hz]
+      simp [AffineMap.lineMap_apply]
+
+/-- At scale zero the joint family is exactly the radial midpoint, uniformly
+in the circle variable. -/
+@[simp] theorem edgeRadialCircleAmbientFamily_zero
+    (x : Nat) (qA qB : Nat → ℝ) (z : Circle) :
+    edgeRadialCircleAmbientFamily x qA qB (0, z) =
+      ((2 : ℝ)⁻¹, triangulationTopologicalGeometricVertex x) := by
+  simp [edgeRadialCircleAmbientFamily, AffineMap.lineMap_apply]
+
 
 end Poincare
