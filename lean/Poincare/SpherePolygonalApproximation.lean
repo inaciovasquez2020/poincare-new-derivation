@@ -45,4 +45,38 @@ theorem Path.exists_sampled_vertices_dist_lt_quarter
       add_div, one_div]
     simp
 
+/-- A sphere-valued path has uniformly short sampled edges whose normalized chord
+stays within `1 / 2` of the source vertex.  This is the quantitative local input for
+homotoping each sampled subpath to its polygonal replacement. -/
+theorem Path.exists_sampled_sphere_vertices_normalizedChord_close
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {x y : Metric.sphere (0 : E) 1} (p : Path x y) :
+    ∃ n : ℕ, 0 < n ∧ ∃ v : Fin (n + 1) → unitInterval,
+      v 0 = 0 ∧ v (Fin.last n) = 1 ∧
+        ∀ i : Fin n,
+          dist (p (v i.castSucc) : E) (p (v i.succ) : E) < (1 : ℝ) / 4 ∧
+          ∃ huv : dist (p (v i.castSucc) : E) (p (v i.succ) : E) < 2,
+            ∀ s : unitInterval,
+              dist
+                  ((normalizedChord
+                    (p (v i.castSucc) : E) (p (v i.succ) : E)
+                    (by simpa [Metric.mem_sphere] using (p (v i.castSucc)).property)
+                    (by simpa [Metric.mem_sphere] using (p (v i.succ)).property)
+                    huv) s : E)
+                  (p (v i.castSucc) : E) < (1 : ℝ) / 2 := by
+  obtain ⟨n, hn, v, hv0, hv1, hv⟩ := Path.exists_sampled_vertices_dist_lt_quarter p
+  have hedge (i : Fin n) :
+      dist (p (v i.castSucc) : E) (p (v i.succ) : E) < (1 : ℝ) / 4 := by
+    simpa [Subtype.dist_eq] using hv i
+  refine ⟨n, hn, v, hv0, hv1, fun i ↦ ⟨hedge i, ?_⟩⟩
+  have hu : ‖(p (v i.castSucc) : E)‖ = 1 := by
+    simpa [Metric.mem_sphere] using (p (v i.castSucc)).property
+  have hw : ‖(p (v i.succ) : E)‖ = 1 := by
+    simpa [Metric.mem_sphere] using (p (v i.succ)).property
+  have huv : dist (p (v i.castSucc) : E) (p (v i.succ) : E) < 2 := by
+    linarith [hedge i]
+  refine ⟨huv, fun s ↦ ?_⟩
+  exact lt_of_le_of_lt
+    (dist_normalizedChord_source_le_two_mul hu hw huv s) (by linarith [hedge i])
+
 end Poincare
