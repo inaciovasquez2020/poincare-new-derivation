@@ -268,4 +268,36 @@ theorem mem_move41PiSourceLocalCarrier_of_coordinates
       · subst z; simp_all
       simp [hza, hzb, hzc, hze, hoff hza hzb hzc hzd hze]
 
+/-- The barycentric coordinate conditions for the solid outer tetrahedron
+are sufficient for membership in the genuine `4 → 1` target region. -/
+theorem mem_move41PiTargetLocalCarrier_of_coordinates
+    {a b c d e : Nat} (h : [a, b, c, d, e].Nodup) {p : Nat → ℝ}
+    (hnonneg : ∀ z, 0 ≤ p z)
+    (hsum : p a + p b + p c + p d + p e = 1)
+    (he : p e = 0)
+    (hoff : ∀ {z}, z ≠ a → z ≠ b → z ≠ c → z ≠ d → p z = 0) :
+    p ∈ move41PiTargetLocalCarrier a b c d e := by
+  rw [move41PiTargetLocalCarrier]
+  apply mem_convexHull_of_exists_fintype (R := ℝ)
+      (fun i : Fin 4 ↦ p (move23PiABCD a b c d e i))
+      (fun i ↦ triangulationTopologicalGeometricVertex
+        (move23PiABCD a b c d e i))
+  · exact fun i ↦ hnonneg _
+  · simp [Fin.sum_univ_four, move23PiABCD]
+    linarith
+  · exact fun i ↦ ⟨i, rfl⟩
+  · funext z
+    simp only [Fin.sum_univ_four, move23PiABCD, Matrix.cons_val_zero,
+      Matrix.cons_val_one]
+    simp [triangulationTopologicalGeometricVertex]
+    by_cases hza : z = a
+    · subst z; simp_all [List.nodup_cons]
+    by_cases hzb : z = b
+    · subst z; simp_all [List.nodup_cons]
+    by_cases hzc : z = c
+    · subst z; simp_all [List.nodup_cons]
+    by_cases hzd : z = d
+    · subst z; simp_all [List.nodup_cons]
+    simp [hza, hzb, hzc, hzd, hoff hza hzb hzc hzd]
+
 end Poincare
