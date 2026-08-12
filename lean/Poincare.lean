@@ -85,6 +85,7 @@ import Poincare.ZeroDefect
 import Poincare.VertexLink
 import Poincare.VertexLinkMod2Chain
 import Poincare.VertexLinkMod2BoundaryOneRank
+import Poincare.VertexLinkMod2BoundaryTwoRank
 import Poincare.VertexLinkConnectednessCounterexample
 import Poincare.VertexLinkLocalConnectednessCounterexample
 import Poincare.TriangulationTopologicalVertexLinkStarConnectedness
