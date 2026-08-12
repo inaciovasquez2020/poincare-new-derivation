@@ -93,6 +93,8 @@ import Poincare.VertexLinkMod2CycleContinuation
 import Poincare.GlobalPhiSupportDegreeGap
 import Poincare.GlobalNoDegreeFourMove32Descent
 import Poincare.GlobalMove32IncidenceThreeSplit
+import Poincare.GlobalMove32IncidenceThreeComposition
+import Poincare.GlobalDegreeFourTargetPresentSaturation
 import Poincare.GlobalEdgeIncidenceStarCount
 import Poincare.GlobalEdgeIncidenceThreeStarExtraction
 import Poincare.GlobalEdgeIncidenceThreeStarAdjacency
@@ -114,3 +116,4 @@ import Poincare.SphereNormalizedChord
 import Poincare.SpherePolygonalApproximation
 import Poincare.CircleNotSimplyConnected
 import Poincare.TriangulationTopologicalManifoldVertexLinkSimplyConnectedness
+import Poincare.GlobalDegreeFourMove41OrFiveTet
