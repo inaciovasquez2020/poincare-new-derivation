@@ -1,3 +1,4 @@
+import Poincare.TetrahedronFaceClassification
 import Poincare.DegreeFourVertexLinkClassification
 
 namespace Poincare
@@ -215,6 +216,405 @@ theorem Move41Site.exists_represented_fiveTetCluster_nodup_of_targetPresent
     htau₃K, htau₃, htargetK, htargetSame,
     by simp [htau01, htau02, htau03, htau0t, htau12, htau13,
       htau1t, htau23, htau2t, htau3t]⟩
+
+/-- Every represented triangular face of one of the five concrete
+tetrahedra in a target-present `4 → 1` cluster has its closed-core partner
+inside the same cluster.  This is purely the finite face-incidence closure
+statement; it makes no connectivity or global-classification assertion. -/
+theorem Move41Site.represented_fiveTetCluster_closed_under_common_face
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (s : Move41Site)
+    {tau₀ tau₁ tau₂ tau₃ target : Tet}
+    (htau₀K : tau₀ ∈ K.tets) (htau₀ : SameTetVertices tau₀ s.sourceTet₀)
+    (htau₁K : tau₁ ∈ K.tets) (htau₁ : SameTetVertices tau₁ s.sourceTet₁)
+    (htau₂K : tau₂ ∈ K.tets) (htau₂ : SameTetVertices tau₂ s.sourceTet₂)
+    (htau₃K : tau₃ ∈ K.tets) (htau₃ : SameTetVertices tau₃ s.sourceTet₃)
+    (htargetK : target ∈ K.tets) (htarget : SameTetVertices target s.targetTet)
+    (hnodup : [tau₀, tau₁, tau₂, tau₃, target].Nodup) :
+    ∀ alpha sigma x y z,
+      (alpha = tau₀ ∨ alpha = tau₁ ∨ alpha = tau₂ ∨
+        alpha = tau₃ ∨ alpha = target) →
+      sigma ∈ K.tets →
+      [x, y, z].Nodup →
+      (x ∈ alpha.verts ∧ y ∈ alpha.verts ∧ z ∈ alpha.verts) →
+      (x ∈ sigma.verts ∧ y ∈ sigma.verts ∧ z ∈ sigma.verts) →
+      (sigma = tau₀ ∨ sigma = tau₁ ∨ sigma = tau₂ ∨
+        sigma = tau₃ ∨ sigma = target) := by
+  classical
+
+  let cluster : List Tet := [tau₀, tau₁, tau₂, tau₃, target]
+
+  have h01 : tau₀ ≠ tau₁ := by
+    intro h
+    subst tau₁
+    simpa using hnodup
+  have h02 : tau₀ ≠ tau₂ := by
+    intro h
+    subst tau₂
+    simpa using hnodup
+  have h03 : tau₀ ≠ tau₃ := by
+    intro h
+    subst tau₃
+    simpa using hnodup
+  have h0t : tau₀ ≠ target := by
+    intro h
+    subst target
+    simpa using hnodup
+  have h12 : tau₁ ≠ tau₂ := by
+    intro h
+    subst tau₂
+    simpa using hnodup
+  have h13 : tau₁ ≠ tau₃ := by
+    intro h
+    subst tau₃
+    simpa using hnodup
+  have h1t : tau₁ ≠ target := by
+    intro h
+    subst target
+    simpa using hnodup
+  have h23 : tau₂ ≠ tau₃ := by
+    intro h
+    subst tau₃
+    simpa using hnodup
+  have h2t : tau₂ ≠ target := by
+    intro h
+    subst target
+    simpa using hnodup
+  have h3t : tau₃ ≠ target := by
+    intro h
+    subst target
+    simpa using hnodup
+
+  have liftFace
+      {x y z u v w : Nat}
+      {beta model : Tet}
+      (hrep : SameTetVertices beta model)
+      (hu : u ∈ model.verts)
+      (hv : v ∈ model.verts)
+      (hw : w ∈ model.verts)
+      (hface :
+        ∀ q,
+          (q = x ∨ q = y ∨ q = z) ↔
+          (q = u ∨ q = v ∨ q = w)) :
+      x ∈ beta.verts ∧ y ∈ beta.verts ∧ z ∈ beta.verts := by
+    have hx : x = u ∨ x = v ∨ x = w :=
+      (hface x).1 (Or.inl rfl)
+    have hy : y = u ∨ y = v ∨ y = w :=
+      (hface y).1 (Or.inr (Or.inl rfl))
+    have hz : z = u ∨ z = v ∨ z = w :=
+      (hface z).1 (Or.inr (Or.inr rfl))
+    refine ⟨?_, ?_, ?_⟩
+    · apply (hrep x).2
+      rcases hx with rfl | rfl | rfl <;> assumption
+    · apply (hrep y).2
+      rcases hy with rfl | rfl | rfl <;> assumption
+    · apply (hrep z).2
+      rcases hz with rfl | rfl | rfl <;> assumption
+
+  have partner0 :
+      ∀ x y z,
+        [x, y, z].Nodup →
+        (x ∈ tau₀.verts ∧ y ∈ tau₀.verts ∧ z ∈ tau₀.verts) →
+        ∃ beta,
+          beta ∈ cluster ∧
+          beta ≠ tau₀ ∧
+          beta ∈ K.tets ∧
+          (x ∈ beta.verts ∧ y ∈ beta.verts ∧ z ∈ beta.verts) := by
+    intro x y z hxyz hface
+    have hx := (htau₀ x).1 hface.1
+    have hy := (htau₀ y).1 hface.2.1
+    have hz := (htau₀ z).1 hface.2.2
+    rcases Tet.distinct_triple_face_cases
+        s.sourceTet₀ x y z hxyz hx hy hz with h | h | h | h
+    · refine ⟨tau₃, by simp [cluster], Ne.symm h03, htau₃K, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.b) (v := s.c) (w := s.e)
+        htau₃
+        (by simp [Move41Site.sourceTet₃, Tet.verts])
+        (by simp [Move41Site.sourceTet₃, Tet.verts])
+        (by simp [Move41Site.sourceTet₃, Tet.verts])
+        (by simpa [Move41Site.sourceTet₀] using h)
+    · refine ⟨tau₂, by simp [cluster], Ne.symm h02, htau₂K, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.a) (v := s.c) (w := s.e)
+        htau₂
+        (by simp [Move41Site.sourceTet₂, Tet.verts])
+        (by simp [Move41Site.sourceTet₂, Tet.verts])
+        (by simp [Move41Site.sourceTet₂, Tet.verts])
+        (by simpa [Move41Site.sourceTet₀] using h)
+    · refine ⟨tau₁, by simp [cluster], Ne.symm h01, htau₁K, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.a) (v := s.b) (w := s.e)
+        htau₁
+        (by simp [Move41Site.sourceTet₁, Tet.verts])
+        (by simp [Move41Site.sourceTet₁, Tet.verts])
+        (by simp [Move41Site.sourceTet₁, Tet.verts])
+        (by simpa [Move41Site.sourceTet₀] using h)
+    · refine ⟨target, by simp [cluster], Ne.symm h0t, htargetK, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.a) (v := s.b) (w := s.c)
+        htarget
+        (by simp [Move41Site.targetTet, Tet.verts])
+        (by simp [Move41Site.targetTet, Tet.verts])
+        (by simp [Move41Site.targetTet, Tet.verts])
+        (by simpa [Move41Site.sourceTet₀] using h)
+
+  have partner1 :
+      ∀ x y z,
+        [x, y, z].Nodup →
+        (x ∈ tau₁.verts ∧ y ∈ tau₁.verts ∧ z ∈ tau₁.verts) →
+        ∃ beta,
+          beta ∈ cluster ∧
+          beta ≠ tau₁ ∧
+          beta ∈ K.tets ∧
+          (x ∈ beta.verts ∧ y ∈ beta.verts ∧ z ∈ beta.verts) := by
+    intro x y z hxyz hface
+    have hx := (htau₁ x).1 hface.1
+    have hy := (htau₁ y).1 hface.2.1
+    have hz := (htau₁ z).1 hface.2.2
+    rcases Tet.distinct_triple_face_cases
+        s.sourceTet₁ x y z hxyz hx hy hz with h | h | h | h
+    · refine ⟨tau₃, by simp [cluster], Ne.symm h13, htau₃K, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.b) (v := s.d) (w := s.e)
+        htau₃
+        (by simp [Move41Site.sourceTet₃, Tet.verts])
+        (by simp [Move41Site.sourceTet₃, Tet.verts])
+        (by simp [Move41Site.sourceTet₃, Tet.verts])
+        (by simpa [Move41Site.sourceTet₁] using h)
+    · refine ⟨tau₂, by simp [cluster], Ne.symm h12, htau₂K, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.a) (v := s.d) (w := s.e)
+        htau₂
+        (by simp [Move41Site.sourceTet₂, Tet.verts])
+        (by simp [Move41Site.sourceTet₂, Tet.verts])
+        (by simp [Move41Site.sourceTet₂, Tet.verts])
+        (by simpa [Move41Site.sourceTet₁] using h)
+    · refine ⟨tau₀, by simp [cluster], h01, htau₀K, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.a) (v := s.b) (w := s.e)
+        htau₀
+        (by simp [Move41Site.sourceTet₀, Tet.verts])
+        (by simp [Move41Site.sourceTet₀, Tet.verts])
+        (by simp [Move41Site.sourceTet₀, Tet.verts])
+        (by simpa [Move41Site.sourceTet₁] using h)
+    · refine ⟨target, by simp [cluster], Ne.symm h1t, htargetK, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.a) (v := s.b) (w := s.d)
+        htarget
+        (by simp [Move41Site.targetTet, Tet.verts])
+        (by simp [Move41Site.targetTet, Tet.verts])
+        (by simp [Move41Site.targetTet, Tet.verts])
+        (by simpa [Move41Site.sourceTet₁] using h)
+
+  have partner2 :
+      ∀ x y z,
+        [x, y, z].Nodup →
+        (x ∈ tau₂.verts ∧ y ∈ tau₂.verts ∧ z ∈ tau₂.verts) →
+        ∃ beta,
+          beta ∈ cluster ∧
+          beta ≠ tau₂ ∧
+          beta ∈ K.tets ∧
+          (x ∈ beta.verts ∧ y ∈ beta.verts ∧ z ∈ beta.verts) := by
+    intro x y z hxyz hface
+    have hx := (htau₂ x).1 hface.1
+    have hy := (htau₂ y).1 hface.2.1
+    have hz := (htau₂ z).1 hface.2.2
+    rcases Tet.distinct_triple_face_cases
+        s.sourceTet₂ x y z hxyz hx hy hz with h | h | h | h
+    · refine ⟨tau₃, by simp [cluster], Ne.symm h23, htau₃K, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.c) (v := s.d) (w := s.e)
+        htau₃
+        (by simp [Move41Site.sourceTet₃, Tet.verts])
+        (by simp [Move41Site.sourceTet₃, Tet.verts])
+        (by simp [Move41Site.sourceTet₃, Tet.verts])
+        (by simpa [Move41Site.sourceTet₂] using h)
+    · refine ⟨tau₁, by simp [cluster], h12, htau₁K, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.a) (v := s.d) (w := s.e)
+        htau₁
+        (by simp [Move41Site.sourceTet₁, Tet.verts])
+        (by simp [Move41Site.sourceTet₁, Tet.verts])
+        (by simp [Move41Site.sourceTet₁, Tet.verts])
+        (by simpa [Move41Site.sourceTet₂] using h)
+    · refine ⟨tau₀, by simp [cluster], h02, htau₀K, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.a) (v := s.c) (w := s.e)
+        htau₀
+        (by simp [Move41Site.sourceTet₀, Tet.verts])
+        (by simp [Move41Site.sourceTet₀, Tet.verts])
+        (by simp [Move41Site.sourceTet₀, Tet.verts])
+        (by simpa [Move41Site.sourceTet₂] using h)
+    · refine ⟨target, by simp [cluster], Ne.symm h2t, htargetK, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.a) (v := s.c) (w := s.d)
+        htarget
+        (by simp [Move41Site.targetTet, Tet.verts])
+        (by simp [Move41Site.targetTet, Tet.verts])
+        (by simp [Move41Site.targetTet, Tet.verts])
+        (by simpa [Move41Site.sourceTet₂] using h)
+
+  have partner3 :
+      ∀ x y z,
+        [x, y, z].Nodup →
+        (x ∈ tau₃.verts ∧ y ∈ tau₃.verts ∧ z ∈ tau₃.verts) →
+        ∃ beta,
+          beta ∈ cluster ∧
+          beta ≠ tau₃ ∧
+          beta ∈ K.tets ∧
+          (x ∈ beta.verts ∧ y ∈ beta.verts ∧ z ∈ beta.verts) := by
+    intro x y z hxyz hface
+    have hx := (htau₃ x).1 hface.1
+    have hy := (htau₃ y).1 hface.2.1
+    have hz := (htau₃ z).1 hface.2.2
+    rcases Tet.distinct_triple_face_cases
+        s.sourceTet₃ x y z hxyz hx hy hz with h | h | h | h
+    · refine ⟨tau₂, by simp [cluster], h23, htau₂K, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.c) (v := s.d) (w := s.e)
+        htau₂
+        (by simp [Move41Site.sourceTet₂, Tet.verts])
+        (by simp [Move41Site.sourceTet₂, Tet.verts])
+        (by simp [Move41Site.sourceTet₂, Tet.verts])
+        (by simpa [Move41Site.sourceTet₃] using h)
+    · refine ⟨tau₁, by simp [cluster], h13, htau₁K, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.b) (v := s.d) (w := s.e)
+        htau₁
+        (by simp [Move41Site.sourceTet₁, Tet.verts])
+        (by simp [Move41Site.sourceTet₁, Tet.verts])
+        (by simp [Move41Site.sourceTet₁, Tet.verts])
+        (by simpa [Move41Site.sourceTet₃] using h)
+    · refine ⟨tau₀, by simp [cluster], h03, htau₀K, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.b) (v := s.c) (w := s.e)
+        htau₀
+        (by simp [Move41Site.sourceTet₀, Tet.verts])
+        (by simp [Move41Site.sourceTet₀, Tet.verts])
+        (by simp [Move41Site.sourceTet₀, Tet.verts])
+        (by simpa [Move41Site.sourceTet₃] using h)
+    · refine ⟨target, by simp [cluster], Ne.symm h3t, htargetK, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.b) (v := s.c) (w := s.d)
+        htarget
+        (by simp [Move41Site.targetTet, Tet.verts])
+        (by simp [Move41Site.targetTet, Tet.verts])
+        (by simp [Move41Site.targetTet, Tet.verts])
+        (by simpa [Move41Site.sourceTet₃] using h)
+
+  have partnerT :
+      ∀ x y z,
+        [x, y, z].Nodup →
+        (x ∈ target.verts ∧ y ∈ target.verts ∧ z ∈ target.verts) →
+        ∃ beta,
+          beta ∈ cluster ∧
+          beta ≠ target ∧
+          beta ∈ K.tets ∧
+          (x ∈ beta.verts ∧ y ∈ beta.verts ∧ z ∈ beta.verts) := by
+    intro x y z hxyz hface
+    have hx := (htarget x).1 hface.1
+    have hy := (htarget y).1 hface.2.1
+    have hz := (htarget z).1 hface.2.2
+    rcases Tet.distinct_triple_face_cases
+        s.targetTet x y z hxyz hx hy hz with h | h | h | h
+    · refine ⟨tau₃, by simp [cluster], h3t, htau₃K, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.b) (v := s.c) (w := s.d)
+        htau₃
+        (by simp [Move41Site.sourceTet₃, Tet.verts])
+        (by simp [Move41Site.sourceTet₃, Tet.verts])
+        (by simp [Move41Site.sourceTet₃, Tet.verts])
+        (by simpa [Move41Site.targetTet] using h)
+    · refine ⟨tau₂, by simp [cluster], h2t, htau₂K, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.a) (v := s.c) (w := s.d)
+        htau₂
+        (by simp [Move41Site.sourceTet₂, Tet.verts])
+        (by simp [Move41Site.sourceTet₂, Tet.verts])
+        (by simp [Move41Site.sourceTet₂, Tet.verts])
+        (by simpa [Move41Site.targetTet] using h)
+    · refine ⟨tau₁, by simp [cluster], h1t, htau₁K, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.a) (v := s.b) (w := s.d)
+        htau₁
+        (by simp [Move41Site.sourceTet₁, Tet.verts])
+        (by simp [Move41Site.sourceTet₁, Tet.verts])
+        (by simp [Move41Site.sourceTet₁, Tet.verts])
+        (by simpa [Move41Site.targetTet] using h)
+    · refine ⟨tau₀, by simp [cluster], h0t, htau₀K, ?_⟩
+      exact liftFace
+        (x := x) (y := y) (z := z)
+        (u := s.a) (v := s.b) (w := s.c)
+        htau₀
+        (by simp [Move41Site.sourceTet₀, Tet.verts])
+        (by simp [Move41Site.sourceTet₀, Tet.verts])
+        (by simp [Move41Site.sourceTet₀, Tet.verts])
+        (by simpa [Move41Site.targetTet] using h)
+
+  have hpartner :
+      ∀ alpha x y z,
+        alpha ∈ cluster →
+        [x, y, z].Nodup →
+        (x ∈ alpha.verts ∧ y ∈ alpha.verts ∧ z ∈ alpha.verts) →
+        ∃ beta,
+          beta ∈ cluster ∧
+          beta ≠ alpha ∧
+          beta ∈ K.tets ∧
+          (x ∈ beta.verts ∧ y ∈ beta.verts ∧ z ∈ beta.verts) := by
+    intro alpha x y z halpha hxyz hface
+    simp [cluster] at halpha
+    rcases halpha with rfl | rfl | rfl | rfl | rfl
+    · exact partner0 x y z hxyz hface
+    · exact partner1 x y z hxyz hface
+    · exact partner2 x y z hxyz hface
+    · exact partner3 x y z hxyz hface
+    · exact partnerT x y z hxyz hface
+
+  intro alpha sigma x y z halpha hsigmaK hxyz halphaFace hsigmaFace
+
+  have halphaMem : alpha ∈ cluster := by
+    simpa [cluster] using halpha
+
+  obtain ⟨beta, hbetaMem, hbetaNeAlpha, hbetaK, hbetaFace⟩ :=
+    hpartner alpha x y z halphaMem hxyz halphaFace
+
+  have halphaK : alpha ∈ K.tets := by
+    rcases halpha with rfl | rfl | rfl | rfl | rfl <;> assumption
+
+  rcases hcore.eq_left_or_eq_right_of_common_face
+      hxyz
+      halphaK
+      hbetaK
+      halphaFace
+      hbetaFace
+      (Ne.symm hbetaNeAlpha)
+      hsigmaK
+      hsigmaFace with hsigma | hsigma
+  · subst sigma
+    exact halpha
+  · subst sigma
+    simpa [cluster] using hbetaMem
 
 /-- In the target-present branch at a degree-four center, the four source
 tetrahedra fill the entire represented vertex link.  The target witness is
