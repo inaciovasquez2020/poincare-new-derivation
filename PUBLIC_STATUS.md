@@ -13,7 +13,7 @@ topology, explicit geometric-carrier homeomorphisms, and the defect functional
 
 The validated public checkpoint reaches:
 
-`Poincare.Move41Site.exists_represented_fiveTetCluster_nodup_of_targetPresent`
+`Poincare.Move41Site.represented_fiveTetCluster_closed_under_common_face`
 
 Validated infrastructure also includes:
 
@@ -32,11 +32,15 @@ Validated infrastructure also includes:
 - exact represented Move41 source tetrahedra;
 - a represented five-tetrahedron target-present cluster;
 - pairwise distinctness of that cluster.
+- exact finite common-face closure of that cluster.
 
 ## Current open frontier
 
-The next unresolved theorem is the exact common-face closure of the
-target-present five-tetrahedron cluster.
+The exact finite common-face closure of the target-present
+five-tetrahedron cluster is now certified.
+
+The next unresolved theorem is the corrected global degree-four
+classification.
 
 Subsequent major open objects include:
 
