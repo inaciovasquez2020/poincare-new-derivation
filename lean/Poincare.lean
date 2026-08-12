@@ -99,3 +99,4 @@ import Poincare.SphereFiniteEscape
 import Poincare.SphereNormalizedChord
 import Poincare.SpherePolygonalApproximation
 import Poincare.CircleNotSimplyConnected
+import Poincare.TriangulationTopologicalManifoldVertexLinkSimplyConnectedness
