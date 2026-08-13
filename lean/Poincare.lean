@@ -133,3 +133,4 @@ import Poincare.GlobalMove32SupportedEdgeState
 import Poincare.GlobalMove32ReentryFiniteRecurrence
 
 import Poincare.GlobalMove32WitnessedSourceFaceReentry
+import Poincare.GlobalMove32SharedEdgeThreeTetSaturation
