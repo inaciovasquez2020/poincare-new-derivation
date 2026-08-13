@@ -141,3 +141,4 @@ import Poincare.GlobalMove32WitnessedReentryFacePairSeparation
 
 import Poincare.GlobalMove32ReentryReturnCrossingConfiguration
 import Poincare.GlobalMove32PerpetualWitnessedReentryRecurrentCrossing
+import Poincare.GlobalMove32ReentryReturnSourceFaceOverlap
