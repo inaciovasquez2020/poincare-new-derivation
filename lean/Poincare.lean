@@ -131,3 +131,5 @@ import Poincare.GlobalMove32SourceFaceReentryStep
 import Poincare.GlobalMove32SupportedEdgeState
 
 import Poincare.GlobalMove32ReentryFiniteRecurrence
+
+import Poincare.GlobalMove32WitnessedSourceFaceReentry
