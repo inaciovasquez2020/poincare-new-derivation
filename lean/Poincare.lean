@@ -125,3 +125,4 @@ import Poincare.GlobalFiveTetNoDegreeFourContradiction
 
 import Poincare.GlobalMove32BothSourcesNoDegreeFour
 import Poincare.GlobalMove32SelfReentryNoDegreeFour
+import Poincare.GlobalMove32SourceFaceNonselfClassification
