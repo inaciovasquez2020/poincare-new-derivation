@@ -124,3 +124,4 @@ import Poincare.GlobalFiveTetDegreeFourConverse
 import Poincare.GlobalFiveTetNoDegreeFourContradiction
 
 import Poincare.GlobalMove32BothSourcesNoDegreeFour
+import Poincare.GlobalMove32SelfReentryNoDegreeFour
