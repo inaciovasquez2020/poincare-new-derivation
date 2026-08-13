@@ -162,3 +162,4 @@ import Poincare.GlobalMove32ReentrySameSourcePredecessorCarrierEscape
 
 import Poincare.GlobalMove32ReentryTwoSidedCarrierEscape
 import Poincare.GlobalMove32ReentryCarrierSupportChange
+import Poincare.GlobalMove32CarrierPairRepresented
