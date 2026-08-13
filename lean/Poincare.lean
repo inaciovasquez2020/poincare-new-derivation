@@ -154,3 +154,4 @@ import Poincare.GlobalMove32ReentryReturnSourceFaceCarrierEscape
 import Poincare.GlobalMove32ReentrySameSourcePredecessorCarrierEscape
 
 import Poincare.GlobalMove32ReentryTwoSidedCarrierEscape
+import Poincare.GlobalMove32ReentryCarrierSupportChange
