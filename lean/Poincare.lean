@@ -138,3 +138,5 @@ import Poincare.GlobalMove32ReentryReturnTargetCompatibility
 
 import Poincare.GlobalMove32WitnessedFiniteRecurrenceReturn
 import Poincare.GlobalMove32WitnessedReentryFacePairSeparation
+
+import Poincare.GlobalMove32ReentryReturnCrossingConfiguration
