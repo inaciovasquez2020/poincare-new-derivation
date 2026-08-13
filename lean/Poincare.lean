@@ -122,3 +122,5 @@ import Poincare.TriangulationTopologicalManifoldVertexLinkSimplyConnectedness
 import Poincare.GlobalDegreeFourMove41OrFiveTet
 import Poincare.GlobalFiveTetDegreeFourConverse
 import Poincare.GlobalFiveTetNoDegreeFourContradiction
+
+import Poincare.GlobalMove32BothSourcesNoDegreeFour
