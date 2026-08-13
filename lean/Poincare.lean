@@ -94,6 +94,7 @@ import Poincare.GlobalPhiSupportDegreeGap
 import Poincare.GlobalNoDegreeFourMove32Descent
 import Poincare.GlobalMove32IncidenceThreeSplit
 import Poincare.GlobalMove32IncidenceThreeComposition
+import Poincare.GlobalMove32SourceFaceClassification
 import Poincare.GlobalDegreeFourTargetPresentSaturation
 import Poincare.GlobalEdgeIncidenceStarCount
 import Poincare.GlobalEdgeIncidenceThreeStarExtraction
