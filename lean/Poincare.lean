@@ -120,3 +120,4 @@ import Poincare.SpherePolygonalApproximation
 import Poincare.CircleNotSimplyConnected
 import Poincare.TriangulationTopologicalManifoldVertexLinkSimplyConnectedness
 import Poincare.GlobalDegreeFourMove41OrFiveTet
+import Poincare.GlobalFiveTetDegreeFourConverse
