@@ -128,3 +128,4 @@ import Poincare.GlobalMove32SelfReentryNoDegreeFour
 import Poincare.GlobalMove32SourceFaceNonselfClassification
 import Poincare.GlobalMove32SourceFaceNonselfIncidenceSplit
 import Poincare.GlobalMove32SourceFaceReentryStep
+import Poincare.GlobalMove32SupportedEdgeState
