@@ -135,3 +135,5 @@ import Poincare.GlobalMove32ReentryFiniteRecurrence
 import Poincare.GlobalMove32WitnessedSourceFaceReentry
 import Poincare.GlobalMove32SharedEdgeThreeTetSaturation
 import Poincare.GlobalMove32ReentryReturnTargetCompatibility
+
+import Poincare.GlobalMove32WitnessedFiniteRecurrenceReturn
