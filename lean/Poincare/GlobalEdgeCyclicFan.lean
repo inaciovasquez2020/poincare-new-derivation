@@ -102,6 +102,53 @@ theorem AmbientEdgeCyclicFan.adjacent_tets_share_face
   · exact (F.tetAt sigma).linkTriangleAt?_verts_subset v sigma.1 (F.tetAt_link sigma) y hys
   · exact (F.tetAt rho).linkTriangleAt?_verts_subset v rho.1 (F.tetAt_link rho) y hyr
 
+/-- Successive vertices of the link cycle represent genuinely distinct
+ambient tetrahedra. -/
+theorem AmbientEdgeCyclicFan.adjacent_tets_ne
+    {K : Triangulation} {v x : Nat} (F : AmbientEdgeCyclicFan K v x)
+    {sigma rho} (hadj : (vertexLinkStarGraph K v x).Adj sigma rho) :
+    F.tetAt sigma ≠ F.tetAt rho := by
+  intro heq
+  have hsr : sigma = rho := F.tetAt_injective heq
+  exact hadj.ne hsr
+
+/-- Graph adjacency gives an actual nondegenerate ambient face containing the
+central edge.  The `Nodup` certificate is the form consumed by tetrahedron
+face classification and bistellar-move legality arguments. -/
+theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_tets_share_face
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    {v x : Nat} (F : AmbientEdgeCyclicFan K v x)
+    {sigma rho} (hadj : (vertexLinkStarGraph K v x).Adj sigma rho) :
+    exists y, [v, x, y].Nodup /\
+      v ∈ (F.tetAt sigma).verts /\ x ∈ (F.tetAt sigma).verts /\
+      y ∈ (F.tetAt sigma).verts /\
+      v ∈ (F.tetAt rho).verts /\ x ∈ (F.tetAt rho).verts /\
+      y ∈ (F.tetAt rho).verts := by
+  obtain ⟨_, hstar⟩ := (vertexLinkStarGraph_adj K v x sigma rho).1 hadj
+  obtain ⟨_, _, y, hyx, hysLink, hyrLink⟩ := hstar
+  have hvs := F.tetAt_contains_center sigma
+  have hxs := F.tetAt_contains_edgeVertex sigma
+  have hys := (F.tetAt sigma).linkTriangleAt?_verts_subset v sigma.1
+    (F.tetAt_link sigma) y hysLink
+  have hvr := F.tetAt_contains_center rho
+  have hxr := F.tetAt_contains_edgeVertex rho
+  have hyr := (F.tetAt rho).linkTriangleAt?_verts_subset v rho.1
+    (F.tetAt_link rho) y hyrLink
+  have hnodup := hcore.1 (F.tetAt sigma) (F.tetAt_mem sigma)
+  have hvx : v ≠ x := by
+    intro hvx
+    subst x
+    exact (F.tetAt sigma).linkTriangleAt?_vertex_not_mem v sigma.1 hnodup
+      (F.tetAt_link sigma)
+      (((mem_vertexLinkStarTriangles_iff K v v sigma.1).1 sigma.2).2)
+  have hyv : y ≠ v := by
+    intro hyv
+    subst y
+    exact (F.tetAt sigma).linkTriangleAt?_vertex_not_mem v sigma.1 hnodup
+      (F.tetAt_link sigma) hysLink
+  refine ⟨y, ?_, hvs, hxs, hys, hvr, hxr, hyr⟩
+  simp [List.nodup_cons, hvx, hyv.symm, hyx.symm]
+
 /-- A represented edge in an honest closed triangulated three-manifold has a
 single finite cyclic fan whose subgraph contains every represented link
 triangle in the edge star. -/
