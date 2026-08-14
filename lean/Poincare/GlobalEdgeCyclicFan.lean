@@ -1,4 +1,6 @@
 import Poincare.TriangulationTopologicalManifoldVertexLinkStarConnectedness
+import Poincare.GlobalEdgeIncidenceThreeStarAdjacency
+import Poincare.Move32CombinatorialFoundation
 
 namespace Poincare
 
@@ -62,5 +64,43 @@ theorem ClosedTriangulationCore.exists_vertexLinkStar_coveringCycle_of_topologic
   rw [← SimpleGraph.Walk.mem_verts_toSubgraph]
   rw [hpcover]
   exact Set.mem_univ tau
+
+/-- The shared edge of every realized incidence-three `Move32Site` is carried
+by the exact three-triangle cyclic fan supplied by the honest manifold
+structure.  This is the compiler-visible bridge from the Move32 recurrence
+objects to the cyclic edge-fan API. -/
+theorem ClosedTriangulationCore.exists_move32Site_sharedEdge_exact_coveringCycle_of_topologicalThreeManifold
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hM :
+      TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K)
+    (s : Move32Site)
+    (hrealized : s.RealizedIn K)
+    (hthree : s.SharedEdgeExactlyThree K) :
+    (vertexLinkStarTriangles K s.d s.e).length = 3 ∧
+      ∃
+        (sigma :
+          {tau : LinkTriangle //
+            tau ∈ vertexLinkStarTriangles K s.d s.e}),
+        ∃
+          (p : (vertexLinkStarGraph K s.d s.e).Walk sigma sigma),
+          p.IsCycle ∧
+          p.toSubgraph.verts =
+            (Set.univ :
+              Set
+                {tau : LinkTriangle //
+                  tau ∈ vertexLinkStarTriangles K s.d s.e}) := by
+  have hdistinct := hcore.move32Site_distinct s hrealized
+  have hde : s.d ≠ s.e := by
+    simp [List.nodup_cons] at hdistinct
+    aesop
+  have hrep : VertexLinkVertexRepresented K s.d s.e :=
+    (hcore.vertexLinkVertexRepresented_and_star_length_three_of_edgeIncidence_three
+      s.d s.e hde hthree).1
+  exact
+    ⟨(hcore.vertexLinkVertexRepresented_and_star_length_three_of_edgeIncidence_three
+        s.d s.e hde hthree).2,
+      hcore.exists_vertexLinkStar_exact_coveringCycle_of_topologicalThreeManifold
+        hM hrep⟩
 
 end Poincare
