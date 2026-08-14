@@ -72,6 +72,15 @@ structure AmbientEdgeCyclicFan (K : Triangulation) (v x : Nat) where
   covers_ambient : ∀ tau ∈ K.tets,
     v ∈ tau.verts → x ∈ tau.verts → ∃ sigma, tetAt sigma = tau
 
+/-- Every ambient cyclic fan contains an adjacent pair of star triangles. -/
+theorem AmbientEdgeCyclicFan.exists_adjacent
+    {K : Triangulation} {v x : Nat} (F : AmbientEdgeCyclicFan K v x) :
+    ∃ sigma rho, (vertexLinkStarGraph K v x).Adj sigma rho := by
+  have hlength := F.length_ge_three
+  cases hwalk : F.walk with
+  | nil => simp [hwalk] at hlength
+  | cons hadj tail => exact ⟨_, _, hadj⟩
+
 theorem AmbientEdgeCyclicFan.tetAt_contains_center
     {K : Triangulation} {v x : Nat} (F : AmbientEdgeCyclicFan K v x)
     (sigma) : v ∈ (F.tetAt sigma).verts := by

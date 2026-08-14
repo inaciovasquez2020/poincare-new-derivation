@@ -84,4 +84,23 @@ theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_transition
         incidence := Or.inr ⟨hinc,
           hcore.exists_ambientEdgeCyclicFan_of_topologicalThreeManifold hM hrep⟩ }⟩
 
+/-- The high-incidence output of a fan-chord transition is immediately
+composable: choose an edge of its certified new fan and run the same local
+transition theorem about the new central edge. -/
+theorem ClosedTriangulationCore.FanChordTransition.continue_high
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (hM : TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K)
+    {v x : Nat} (T : FanChordTransition K v x)
+    (hhigh :
+      4 ≤ (K.tets.filter
+        (fun tau => T.z0 ∈ tau.verts ∧ T.z1 ∈ tau.verts)).length ∧
+      Nonempty (AmbientEdgeCyclicFan K T.z0 T.z1)) :
+    (∃ m : Move23Site, m.LegalIn K) ∨
+    (K.tets.filter
+      (fun tau => T.z0 ∈ tau.verts ∧ T.z1 ∈ tau.verts)).length = 3 ∨
+    Nonempty (FanChordTransition K T.z0 T.z1) := by
+  obtain ⟨F⟩ := hhigh.2
+  obtain ⟨sigma, rho, hadj⟩ := F.exists_adjacent
+  exact hcore.ambientEdgeCyclicFan_adjacent_transition hM F hadj
+
 end Poincare
