@@ -115,6 +115,7 @@ import Poincare.VertexLinkLocalConnectednessCounterexample
 import Poincare.TriangulationTopologicalVertexLinkStarConnectedness
 import Poincare.TriangulationTopologicalEdgeLocalModel
 import Poincare.TriangulationTopologicalManifoldVertexLinkStarConnectedness
+import Poincare.GlobalEdgeCyclicFan
 
 import Poincare.TetrahedronSphere
 import Poincare.FourSimplexSphere
