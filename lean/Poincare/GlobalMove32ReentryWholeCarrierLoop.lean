@@ -96,6 +96,69 @@ theorem WitnessedReentryCrossingCertificate.wholeCarrierLoop_homotopic_refl
   rw [c.loop_eq_crossingPath_trans_symm]
   exact Path.Homotopic.trans_symm c.crossingPath
 
+/--
+The ordered finite interval underlying a recurrent crossing certificate.
+
+Unlike the `sites` field of `WitnessedReentryCrossingCertificate`, the index
+of `trace` is finite and starts at the recurrent anchor.  Its final entry is
+the returned site (one step after the predecessor).  Thus no ordering
+information has to be reconstructed from the crossing certificate later.
+-/
+structure WitnessedReentryOrderedTraceCertificate (K : Triangulation) where
+  crossing : WitnessedReentryCrossingCertificate K
+  traceAt : (n : Nat) →
+    crossing.anchorIndex ≤ n → n ≤ crossing.predecessorIndex + 1 → Move32Site
+  traceAt_eq_site : ∀ n hn₀ hn₁, traceAt n hn₀ hn₁ = crossing.sites n
+  first_eq_anchor :
+    traceAt crossing.anchorIndex (by omega)
+      (by have h := crossing.gap; omega) =
+      crossing.sites crossing.anchorIndex
+  last_eq_return :
+    traceAt (crossing.predecessorIndex + 1)
+      (by have h := crossing.gap; omega) (by omega) =
+      crossing.sites (crossing.predecessorIndex + 1)
+  realized : ∀ n hn₀ hn₁, (traceAt n hn₀ hn₁).RealizedIn K
+  sharedEdgeExactlyThree : ∀ n hn₀ hn₁,
+    (traceAt n hn₀ hn₁).SharedEdgeExactlyThree K
+  consecutive_witnessed :
+    ∀ (n : Nat) (hn₀ : crossing.anchorIndex ≤ n)
+      (hn₁ : n < crossing.predecessorIndex + 1),
+      Move32SourceFaceWitnessedReentry K
+        (traceAt n hn₀ (by omega))
+        (traceAt (n + 1) (by omega) (by omega))
+
+/-- Package a crossing certificate together with the actual ordered recurrent
+interval.  This theorem is deliberately geometric-claim-free: in particular,
+it does not use the old backtracking `wholeCarrierLoop` as the desired cycle. -/
+theorem WitnessedReentryCrossingCertificate.exists_ordered_trace
+    {K : Triangulation} (c : WitnessedReentryCrossingCertificate K)
+    (hrealized : ∀ n, (c.sites n).RealizedIn K)
+    (hthree : ∀ n, (c.sites n).SharedEdgeExactlyThree K)
+    (hwitnessed : ∀ n,
+      Move32SourceFaceWitnessedReentry K (c.sites n) (c.sites (n + 1))) :
+    Nonempty (WitnessedReentryOrderedTraceCertificate K) := by
+  let tr : (n : Nat) → c.anchorIndex ≤ n →
+      n ≤ c.predecessorIndex + 1 → Move32Site := fun n _ _ => c.sites n
+  refine ⟨{
+    crossing := c
+    traceAt := tr
+    traceAt_eq_site := ?_
+    first_eq_anchor := ?_
+    last_eq_return := ?_
+    realized := ?_
+    sharedEdgeExactlyThree := ?_
+    consecutive_witnessed := ?_ }⟩
+  · intro n hn₀ hn₁
+    rfl
+  · simp [tr]
+  · simp [tr]
+  · intro n hn₀ hn₁
+    exact hrealized _
+  · intro n hn₀ hn₁
+    exact hthree _
+  · intro n hn₀ hn₁
+    exact hwitnessed n
+
 theorem ClosedTriangulationCore.exists_wholeCarrierLoop_of_witnessedReentry_recurrent_crossing
     {K : Triangulation}
     (hcore : ClosedTriangulationCore K)
