@@ -166,3 +166,4 @@ import Poincare.GlobalMove32ReentryTwoSidedCarrierEscape
 import Poincare.GlobalMove32ReentryCarrierSupportChange
 import Poincare.GlobalMove32CarrierPairRepresented
 import Poincare.GlobalMove23OutsideCarrierNeighbor
+import Poincare.GlobalDegreeFourDescent
