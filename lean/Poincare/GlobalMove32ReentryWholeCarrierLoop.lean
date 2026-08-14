@@ -159,6 +159,52 @@ theorem WitnessedReentryCrossingCertificate.exists_ordered_trace
   · intro n hn₀ hn₁
     exact hwitnessed n
 
+/--
+The actual relative null-homotopy data supplied by simple connectivity for a
+loop in the whole carrier.  Keeping the homotopy itself (rather than only its
+propositional truncation) makes all four sides of the parameter square
+available to a later finite relative-approximation argument.
+
+This structure is intentionally independent of
+`WitnessedReentryCrossingCertificate.wholeCarrierLoop`: a later stage must
+supply the new geometrically constrained recurrent loop.
+-/
+structure CarrierLoopNullHomotopyData (K : Triangulation)
+    (x : triangulationTopologicalGeometricCarrier K) (loop : Path x x) where
+  homotopy : Path.Homotopy loop (Path.refl x)
+  loop_boundary : ∀ t : unitInterval, homotopy (0, t) = loop t
+  constant_boundary : ∀ t : unitInterval, homotopy (1, t) = x
+  source_boundary : ∀ s : unitInterval, homotopy (s, 0) = x
+  target_boundary : ∀ s : unitInterval, homotopy (s, 1) = x
+
+/-- Simple connectivity produces an actual relative homotopy square for every
+genuinely supplied carrier loop. -/
+theorem exists_carrierLoopNullHomotopyData
+    {K : Triangulation}
+    (hSC : TriangulationRealizationSimplyConnected K)
+    {x : triangulationTopologicalGeometricCarrier K} (loop : Path x x) :
+    Nonempty (CarrierLoopNullHomotopyData K x loop) := by
+  letI : SimplyConnectedSpace
+      (triangulationTopologicalGeometricCarrier K) := hSC
+  let H : Path.Homotopy loop (Path.refl x) :=
+    (SimplyConnectedSpace.paths_homotopic loop (Path.refl x)).some
+  refine ⟨{
+    homotopy := H
+    loop_boundary := ?_
+    constant_boundary := ?_
+    source_boundary := ?_
+    target_boundary := ?_ }⟩
+  · intro t
+    exact H.apply_zero t
+  · intro t
+    exact H.apply_one t
+  · intro s
+    simpa using H.eq_fst s
+      (show (0 : unitInterval) ∈ ({0, 1} : Set unitInterval) by simp)
+  · intro s
+    simpa using H.eq_fst s
+      (show (1 : unitInterval) ∈ ({0, 1} : Set unitInterval) by simp)
+
 theorem ClosedTriangulationCore.exists_wholeCarrierLoop_of_witnessedReentry_recurrent_crossing
     {K : Triangulation}
     (hcore : ClosedTriangulationCore K)
