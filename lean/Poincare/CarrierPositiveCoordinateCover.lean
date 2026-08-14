@@ -121,6 +121,41 @@ theorem carrier_exists_vertexSupport_coordinate_pos
   · rw [geometricVertex_weighted_sum_coordinate F w p.1 hwp v, if_pos hvF]
     exact hwv
 
+/-- Every carrier point has a represented vertex coordinate at least `1 / 4`.
+This is the quantitative form of the positive-coordinate cover: the point is
+an honest convex combination supported on a subset of the four vertices of a
+represented tetrahedron. -/
+theorem carrier_exists_vertexSupport_coordinate_ge_quarter
+    {K : Triangulation}
+    (p : triangulationTopologicalGeometricCarrier K) :
+    ∃ v, v ∈ vertexSupport K ∧ (1 : ℝ) / 4 ≤ p.1 v := by
+  obtain ⟨F, hF, tau, htau, hFtau, w, hw0, hw1, hwp⟩ :=
+    carrier_exists_finite_barycentric_support p
+  have hcard : F.card ≤ 4 := by
+    calc
+      F.card ≤ tau.verts.toFinset.card := Finset.card_le_card hFtau
+      _ ≤ tau.verts.length := List.toFinset_card_le tau.verts
+      _ = 4 := by simp [Tet.verts]
+  have hex : ∃ v ∈ F, (1 : ℝ) / 4 ≤ w v := by
+    by_contra h
+    push Not at h
+    have hsumlt : ∑ v ∈ F, w v < ∑ _v ∈ F, ((1 : ℝ) / 4) := by
+      obtain ⟨v, hv⟩ := hF
+      exact Finset.sum_lt_sum (fun i hi => (h i hi).le) ⟨v, hv, h v hv⟩
+    have hbound : ∑ _v ∈ F, ((1 : ℝ) / 4) ≤ 1 := by
+      simp only [Finset.sum_const, nsmul_eq_mul]
+      have hcardR : (F.card : ℝ) ≤ 4 := by exact_mod_cast hcard
+      norm_num
+      nlinarith
+    linarith
+  obtain ⟨v, hvF, hwv⟩ := hex
+  refine ⟨v, ?_, ?_⟩
+  · rw [mem_vertexSupport_iff]
+    simp only [allVerts, List.mem_flatMap]
+    exact ⟨tau, htau, List.mem_toFinset.mp (hFtau hvF)⟩
+  · rw [geometricVertex_weighted_sum_coordinate F w p.1 hwp v, if_pos hvF]
+    exact hwv
+
 /-- The open positive-coordinate part of the carrier. -/
 def triangulationTopologicalPositiveCoordinate
     (K : Triangulation) (v : Nat) :
