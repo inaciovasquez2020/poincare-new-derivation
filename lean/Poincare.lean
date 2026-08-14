@@ -116,6 +116,7 @@ import Poincare.TriangulationTopologicalVertexLinkStarConnectedness
 import Poincare.TriangulationTopologicalEdgeLocalModel
 import Poincare.TriangulationTopologicalManifoldVertexLinkStarConnectedness
 import Poincare.GlobalEdgeCyclicFan
+import Poincare.GlobalEdgeCyclicFanChordClassification
 
 import Poincare.TetrahedronSphere
 import Poincare.FourSimplexSphere
