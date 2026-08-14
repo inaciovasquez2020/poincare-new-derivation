@@ -228,6 +228,32 @@ theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_exists_legalMove23
         exact hedge ⟨tau, htau, by simpa [m] using hboth⟩
       exact ⟨hrealized, hshared, habsent⟩
 
+/-- The five-label form of the adjacent-fan tetrahedron geometry.  This
+exposes the complement vertices and their nondegeneracy directly, while
+retaining the fully checked `Move23Site.LegalIn`/represented-chord split. -/
+theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_fiveLabelGeometry
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    {v x : Nat} (F : AmbientEdgeCyclicFan K v x)
+    {sigma rho} (hadj : (vertexLinkStarGraph K v x).Adj sigma rho) :
+    ∃ y z0 z1, [v, x, y, z0].Nodup ∧ [v, x, y, z1].Nodup ∧ z0 ≠ z1 ∧
+      SameTetVertices (F.tetAt sigma) (⟨v, x, y, z0⟩ : Tet) ∧
+      SameTetVertices (F.tetAt rho) (⟨v, x, y, z1⟩ : Tet) ∧
+      (∃ m : Move23Site,
+        m.a = v ∧ m.b = x ∧ m.c = y ∧ m.d = z0 ∧ m.e = z1 ∧
+        (m.LegalIn K ∨
+          ∃ tau ∈ K.tets, z0 ∈ tau.verts ∧ z1 ∈ tau.verts)) := by
+  obtain ⟨y, z0, z1, m, ha, hb, hc, hd, he, hleft, hright, hstatus⟩ :=
+    hcore.ambientEdgeCyclicFan_adjacent_exists_legalMove23_or_representedChord F hadj
+  have hfive : [v, x, y, z0, z1].Nodup := by
+    simpa [ha, hb, hc, hd, he] using m.distinct
+  refine ⟨y, z0, z1, ?_, ?_, ?_, ?_, ?_, m, ha, hb, hc, hd, he, hstatus⟩
+  · exact hfive.sublist (by simp)
+  · exact hfive.sublist (by simp)
+  · simp [List.nodup_cons] at hfive
+    aesop
+  · simpa [ha, hb, hc, hd, Move23Site.leftTet] using hleft
+  · simpa [ha, hb, hc, he, Move23Site.rightTet] using hright
+
 /-- A represented edge in an honest closed triangulated three-manifold has a
 single finite cyclic fan whose subgraph contains every represented link
 triangle in the edge star. -/
