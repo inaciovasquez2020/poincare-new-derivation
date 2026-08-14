@@ -83,6 +83,19 @@ structure WitnessedReentryCrossingCertificate (K : Triangulation) where
   loop_eq_crossingPath_trans_symm :
     wholeCarrierLoop = crossingPath.trans crossingPath.symm
 
+/--
+The loop currently carried by a witnessed-reentry crossing certificate is
+unconditionally null-homotopic: it traverses the chosen crossing path and
+then immediately traverses the same path backwards.  Thus the combinatorial
+crossing fields of the certificate cannot, by themselves, make this loop a
+nonzero global fundamental-group class.
+-/
+theorem WitnessedReentryCrossingCertificate.wholeCarrierLoop_homotopic_refl
+    {K : Triangulation} (c : WitnessedReentryCrossingCertificate K) :
+    Path.Homotopic c.wholeCarrierLoop (Path.refl c.predecessorPoint) := by
+  rw [c.loop_eq_crossingPath_trans_symm]
+  exact Path.Homotopic.trans_symm c.crossingPath
+
 theorem ClosedTriangulationCore.exists_wholeCarrierLoop_of_witnessedReentry_recurrent_crossing
     {K : Triangulation}
     (hcore : ClosedTriangulationCore K)
