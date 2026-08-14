@@ -381,4 +381,69 @@ theorem ClosedTriangulationCore.exists_move32Site_sharedEdge_exact_coveringCycle
       hcore.exists_vertexLinkStar_exact_coveringCycle_of_topologicalThreeManifold
         hM hrep⟩
 
+/-- Exact ambient fan-and-chord geometry attached to an incidence-three
+shared edge. -/
+structure Move32Site.AmbientFanChordCertificate
+    (K : Triangulation) (s : Move32Site) where
+  fan : AmbientEdgeCyclicFan K s.d s.e
+  sigma : {t : LinkTriangle //
+    t ∈ vertexLinkStarTriangles K s.d s.e}
+  rho : {t : LinkTriangle //
+    t ∈ vertexLinkStarTriangles K s.d s.e}
+  adjacent : (vertexLinkStarGraph K s.d s.e).Adj sigma rho
+  y : Nat
+  z0 : Nat
+  z1 : Nat
+  move23 : Move23Site
+  move23_a : move23.a = s.d
+  move23_b : move23.b = s.e
+  move23_c : move23.c = y
+  move23_d : move23.d = z0
+  move23_e : move23.e = z1
+  left_ambient : SameTetVertices (fan.tetAt sigma) move23.leftTet
+  right_ambient : SameTetVertices (fan.tetAt rho) move23.rightTet
+  chord_status : move23.LegalIn K ∨
+    ∃ tau ∈ K.tets, z0 ∈ tau.verts ∧ z1 ∈ tau.verts
+
+theorem ClosedTriangulationCore.exists_ambientFanChordCertificate_of_move32Site
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (hM : TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K)
+    (s : Move32Site) (hrealized : s.RealizedIn K)
+    (hthree : s.SharedEdgeExactlyThree K) :
+    Nonempty (s.AmbientFanChordCertificate K) := by
+  classical
+  have hdistinct := hcore.move32Site_distinct s hrealized
+  have hde : s.d ≠ s.e := by
+    simp [List.nodup_cons] at hdistinct
+    aesop
+  have hrep : VertexLinkVertexRepresented K s.d s.e :=
+    (hcore.vertexLinkVertexRepresented_and_star_length_three_of_edgeIncidence_three
+      s.d s.e hde hthree).1
+  obtain ⟨F⟩ :=
+    hcore.exists_ambientEdgeCyclicFan_of_topologicalThreeManifold hM hrep
+  obtain ⟨sigma0, sigma1, sigma2, h01, h02, h12,
+      hadj01, hadj02, hadj12⟩ :=
+    hcore.exists_three_pairwiseAdjacent_vertexLinkStarTriangles_of_edgeIncidence_three
+      s.d s.e hde hthree
+  let sigma : {t : LinkTriangle //
+      t ∈ vertexLinkStarTriangles K s.d s.e} := ⟨sigma0, hadj01.1⟩
+  let rho : {t : LinkTriangle //
+      t ∈ vertexLinkStarTriangles K s.d s.e} := ⟨sigma1, hadj01.2.1⟩
+  have hsigmarho : sigma ≠ rho := by
+    intro h
+    exact h01 (congrArg Subtype.val h)
+  have hadj : (vertexLinkStarGraph K s.d s.e).Adj sigma rho :=
+    (vertexLinkStarGraph_adj K s.d s.e sigma rho).2 ⟨hsigmarho, hadj01⟩
+  obtain ⟨y, z0, z1, m, ha, hb, hc, hd, he,
+      hleft, hright, hstatus⟩ :=
+    hcore.ambientEdgeCyclicFan_adjacent_exists_legalMove23_or_representedChord
+      F hadj
+  exact ⟨{
+    fan := F, sigma := sigma, rho := rho, adjacent := hadj,
+    y := y, z0 := z0, z1 := z1, move23 := m,
+    move23_a := ha, move23_b := hb, move23_c := hc,
+    move23_d := hd, move23_e := he,
+    left_ambient := hleft, right_ambient := hright,
+    chord_status := hstatus }⟩
+
 end Poincare
