@@ -2,6 +2,7 @@ import Poincare.GlobalEdgeCyclicFanChordClassification
 import Poincare.GlobalRepresentedEdgeIncidenceSplit
 import Poincare.GlobalMove32SupportedEdgeState
 import Poincare.GlobalMove32IncidenceThreeComposition
+import Poincare.GlobalMove32WitnessedSourceFaceReentry
 import Mathlib.Tactic
 
 namespace Poincare
@@ -149,5 +150,62 @@ theorem ClosedTriangulationCore.FanChordTransition.continue
     · exact Or.inl hmove23
     · omega
     · exact Or.inr (Or.inr (Or.inr hnext))
+
+/-- Consume a fan-chord transition through the witnessed source-face reentry
+classification.  Unlike `continue`, this theorem does not leave a raw
+incidence-three source-face obstruction: that obstruction is converted into
+the existing witnessed reentry state (or one of its certified alternatives).
+
+The last alternative is again a `FanChordTransition` about the output edge,
+so the fan branch is genuinely composable. -/
+theorem ClosedTriangulationCore.FanChordTransition.continue_witnessed
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (hM : TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K)
+    (hlinks :
+      ∀ v ∈ vertexSupport K,
+        VertexLinkConnected K v)
+    (hconn : TetrahedronVertexOverlapConnected K)
+    (hNoFour :
+      ∀ v ∈ vertexSupport K,
+        vertexDegree K v ≠ 4)
+    {v x : Nat} (T : FanChordTransition K v x) :
+    (∃ m : Move23Site, m.LegalIn K) ∨
+    (∃ K',
+      ClosedTriangulationCore K' ∧
+      PhiSupport K' < PhiSupport K ∧
+      Nonempty
+        (triangulationTopologicalGeometricCarrier K ≃ₜ
+          triangulationTopologicalGeometricCarrier K')) ∨
+    (∃ p q sigma,
+      p ≠ q ∧
+      sigma ∈ K.tets ∧
+      p ∈ sigma.verts ∧
+      q ∈ sigma.verts ∧
+      4 ≤
+        (K.tets.filter
+          (fun gamma =>
+            decide (p ∈ gamma.verts ∧ q ∈ gamma.verts))).length) ∨
+    (∃ s s' : Move32Site,
+      s.RealizedIn K ∧
+      s.SharedEdgeExactlyThree K ∧
+      Move32SourceFaceWitnessedReentry K s s') ∨
+    Nonempty (FanChordTransition K T.z0 T.z1) := by
+  rcases ClosedTriangulationCore.FanChordTransition.continue
+      hcore hM hNoFour T with
+    hmove23 | hdescent | hobstruction | hnext
+  · exact Or.inl hmove23
+  · exact Or.inr (Or.inl hdescent)
+  · obtain ⟨s, _hsd, _hse, hrealized, hthree, hsource⟩ := hobstruction
+    rcases
+        hcore.exists_legal_move23_or_descent_or_nonself_complementEdge_high_or_witnessedReentry_of_move32_sourceFace_obstruction
+          hlinks hconn hNoFour s hrealized hsource with
+      hlegal | hdescent | hhigh | hreentry
+    · exact Or.inl ⟨hlegal.choose, hlegal.choose_spec.2.2.2⟩
+    · exact Or.inr (Or.inl hdescent)
+    · obtain ⟨p, q, sigma, hpq, hsigma, hp, hq, _hnonself, hinc⟩ := hhigh
+      exact Or.inr (Or.inr (Or.inl ⟨p, q, sigma, hpq, hsigma, hp, hq, hinc⟩))
+    · obtain ⟨s', hstep⟩ := hreentry
+      exact Or.inr (Or.inr (Or.inr (Or.inl ⟨s, s', hrealized, hthree, hstep⟩)))
+  · exact Or.inr (Or.inr (Or.inr (Or.inr hnext)))
 
 end Poincare
