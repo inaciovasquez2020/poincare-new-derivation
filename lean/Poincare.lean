@@ -172,3 +172,4 @@ import Poincare.GlobalMove32CarrierPairRepresented
 import Poincare.GlobalMove23OutsideCarrierNeighbor
 import Poincare.GlobalDegreeFourDescent
 import Poincare.TriangulationTopologicalHomeomorphTransport
+import Poincare.CarrierPolygonalPath
