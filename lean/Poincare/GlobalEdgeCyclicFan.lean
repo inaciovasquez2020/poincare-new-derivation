@@ -2,6 +2,7 @@ import Poincare.TriangulationTopologicalManifoldVertexLinkStarConnectedness
 import Poincare.GlobalEdgeIncidenceThreeStarAdjacency
 import Poincare.Move32CombinatorialFoundation
 import Poincare.Move23SimpleBistellarData
+import Poincare.ComplementVertex
 
 namespace Poincare
 
@@ -148,6 +149,84 @@ theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_tets_share_face
       (F.tetAt_link sigma) hysLink
   refine ⟨y, ?_, hvs, hxs, hys, hvr, hxr, hyr⟩
   simp [List.nodup_cons, hvx, hyv.symm, hyx.symm]
+
+/-- Adjacent tetrahedra in an ambient edge fan determine the honest local
+`2-3` candidate.  Either its prospective new edge is already represented, or
+the candidate is legal. -/
+theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_exists_legalMove23_or_representedChord
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    {v x : Nat} (F : AmbientEdgeCyclicFan K v x)
+    {sigma rho} (hadj : (vertexLinkStarGraph K v x).Adj sigma rho) :
+    ∃ y z0 z1, ∃ m : Move23Site,
+      m.a = v ∧ m.b = x ∧ m.c = y ∧ m.d = z0 ∧ m.e = z1 ∧
+      SameTetVertices (F.tetAt sigma) m.leftTet ∧
+      SameTetVertices (F.tetAt rho) m.rightTet ∧
+      (m.LegalIn K ∨
+        ∃ tau ∈ K.tets, z0 ∈ tau.verts ∧ z1 ∈ tau.verts) := by
+  classical
+  obtain ⟨y, habc, hv0, hx0, hy0, hv1, hx1, hy1⟩ :=
+    hcore.ambientEdgeCyclicFan_adjacent_tets_share_face F hadj
+  have hn0 := hcore.1 (F.tetAt sigma) (F.tetAt_mem sigma)
+  have hn1 := hcore.1 (F.tetAt rho) (F.tetAt_mem rho)
+  have hnotSame : ¬ SameTetVertices (F.tetAt sigma) (F.tetAt rho) := by
+    intro hs
+    exact F.adjacent_tets_ne hadj
+      (hcore.eq_of_mem_of_sameTetVertices
+        (F.tetAt_mem sigma) (F.tetAt_mem rho) hs)
+  obtain ⟨z0, z1, hz00, hz0out, hz11, hz1out, hz01, hcover0, hcover1⟩ :=
+    Tet.exists_distinct_complement_vertices
+      (F.tetAt sigma) (F.tetAt rho) hn0 hn1 habc
+      hv0 hx0 hy0 hv1 hx1 hy1 hnotSame
+  have hsame0 : SameTetVertices (F.tetAt sigma) (⟨v, x, y, z0⟩ : Tet) := by
+    intro w
+    constructor
+    · intro hw
+      rcases hcover0 w hw with rfl | rfl | rfl | rfl <;> simp [Tet.verts]
+    · intro hw
+      simp [Tet.verts] at hw
+      rcases hw with rfl | rfl | rfl | rfl
+      · exact hv0
+      · exact hx0
+      · exact hy0
+      · exact hz00
+  have hsame1 : SameTetVertices (F.tetAt rho) (⟨v, x, y, z1⟩ : Tet) := by
+    intro w
+    constructor
+    · intro hw
+      rcases hcover1 w hw with rfl | rfl | rfl | rfl <;> simp [Tet.verts]
+    · intro hw
+      simp [Tet.verts] at hw
+      rcases hw with rfl | rfl | rfl | rfl
+      · exact hv1
+      · exact hx1
+      · exact hy1
+      · exact hz11
+  have hfive : [v, x, y, z0, z1].Nodup := by
+    have hnleft := Tet.verts_nodup_of_sameTetVertices hn0 hsame0
+    have hnright := Tet.verts_nodup_of_sameTetVertices hn1 hsame1
+    simp [Tet.verts] at hnleft hnright ⊢
+    aesop
+  let m : Move23Site :=
+    { a := v, b := x, c := y, d := z0, e := z1, distinct := hfive }
+  refine ⟨y, z0, z1, m, rfl, rfl, rfl, rfl, rfl, ?_, ?_, ?_⟩
+  · simpa [m, Move23Site.leftTet] using hsame0
+  · simpa [m, Move23Site.rightTet] using hsame1
+  · by_cases hedge : ∃ tau ∈ K.tets, z0 ∈ tau.verts ∧ z1 ∈ tau.verts
+    · exact Or.inr hedge
+    · left
+      have hrealized : m.RealizedIn K := by
+        exact ⟨⟨F.tetAt sigma, F.tetAt_mem sigma, by
+          simpa [m, Move23Site.leftTet] using hsame0⟩,
+          ⟨F.tetAt rho, F.tetAt_mem rho, by
+            simpa [m, Move23Site.rightTet] using hsame1⟩⟩
+      have hshared : m.SharedFaceExactlyTwo K := by
+        have hlength := hcore.2.2 v x y habc
+          ⟨F.tetAt sigma, F.tetAt_mem sigma, hv0, hx0, hy0⟩
+        simpa [m, Move23Site.SharedFaceExactlyTwo] using hlength
+      have habsent : m.NewEdgeAbsent K := by
+        intro tau htau hboth
+        exact hedge ⟨tau, htau, by simpa [m] using hboth⟩
+      exact ⟨hrealized, hshared, habsent⟩
 
 /-- A represented edge in an honest closed triangulated three-manifold has a
 single finite cyclic fan whose subgraph contains every represented link
