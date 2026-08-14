@@ -1,6 +1,7 @@
 import Poincare.GlobalEdgeCyclicFanChordClassification
 import Poincare.GlobalRepresentedEdgeIncidenceSplit
 import Poincare.GlobalMove32SupportedEdgeState
+import Poincare.GlobalMove32IncidenceThreeComposition
 import Mathlib.Tactic
 
 namespace Poincare
@@ -102,5 +103,51 @@ theorem ClosedTriangulationCore.FanChordTransition.continue_high
   obtain ⟨F⟩ := hhigh.2
   obtain ⟨sigma, rho, hadj⟩ := F.exists_adjacent
   exact hcore.ambientEdgeCyclicFan_adjacent_transition hM F hadj
+
+/-- Consume either certified incidence branch of a chord transition.
+
+At incidence three this enters the existing `Move32` candidate/source-face
+machinery.  At high incidence it selects an actual adjacent pair in the new
+fan and applies the fan transition theorem again.  The source-face
+obstruction is deliberately retained: eliminating it requires the separate
+reentry dynamics, and is not a fan-chord transition by itself. -/
+theorem ClosedTriangulationCore.FanChordTransition.continue
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (hM : TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K)
+    (hNoFour :
+      ∀ v ∈ vertexSupport K,
+        vertexDegree K v ≠ 4)
+    {v x : Nat} (T : FanChordTransition K v x) :
+    (∃ m : Move23Site, m.LegalIn K) ∨
+    (∃ K',
+      ClosedTriangulationCore K' ∧
+      PhiSupport K' < PhiSupport K ∧
+      Nonempty
+        (triangulationTopologicalGeometricCarrier K ≃ₜ
+          triangulationTopologicalGeometricCarrier K')) ∨
+    (∃ s : Move32Site,
+      s.d = T.z0 ∧
+      s.e = T.z1 ∧
+      s.RealizedIn K ∧
+      s.SharedEdgeExactlyThree K ∧
+      ∃ tau ∈ K.tets,
+        s.a ∈ tau.verts ∧
+        s.b ∈ tau.verts ∧
+        s.c ∈ tau.verts) ∨
+    Nonempty (FanChordTransition K T.z0 T.z1) := by
+  rcases T.incidence with hthree | hhigh
+  · rcases
+      hcore.exists_descent_or_realized_sourceFace_obstruction_of_edgeIncidence_three
+        hNoFour T.z0 T.z1 T.endpoints_ne (by simpa using hthree) with
+      hdescent | hobstruction
+    · exact Or.inr (Or.inl hdescent)
+    · exact Or.inr (Or.inr (Or.inl hobstruction))
+  · rcases
+      ClosedTriangulationCore.FanChordTransition.continue_high
+        hcore hM T hhigh with
+      hmove23 | hthree' | hnext
+    · exact Or.inl hmove23
+    · omega
+    · exact Or.inr (Or.inr (Or.inr hnext))
 
 end Poincare
