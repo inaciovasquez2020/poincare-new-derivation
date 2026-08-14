@@ -1,0 +1,166 @@
+import Poincare.GlobalMove32PerpetualWitnessedReentryPredecessorFaceCrossing
+import Poincare.GlobalMove32ReentryTwoSidedCarrierEscape
+import Poincare.GlobalMove32WitnessedReentryFreshEndpoints
+import Poincare.TriangulationTopologicalVertexStarNeighborhood
+import Mathlib.Topology.Connected.PathConnected
+
+namespace Poincare
+
+/--
+Finite recurrent witnessed-reentry data, together with an actual loop in the
+whole geometric carrier.  The final fields record the combinatorial crossing
+carried by the endpoints of `crossingPath`; they deliberately make no claim
+that this crossing is invariant under homotopy.
+-/
+structure WitnessedReentryCrossingCertificate (K : Triangulation) where
+  sites : Nat → Move32Site
+  anchorIndex : Nat
+  predecessorIndex : Nat
+  tau : Tet
+  rho : Tet
+  sigma : Tet
+  gap : anchorIndex + 1 < predecessorIndex + 1
+  finiteBound : predecessorIndex + 1 ≤ Fintype.card (SupportedEdgeState K)
+  tau_mem : tau ∈ K.tets
+  rho_mem : rho ∈ K.tets
+  sigma_mem : sigma ∈ K.tets
+  tau_rho_ne : ¬ SameTetVertices tau rho
+  predecessor_source_mem_tau :
+    (sites predecessorIndex).a ∈ tau.verts ∧
+    (sites predecessorIndex).b ∈ tau.verts ∧
+    (sites predecessorIndex).c ∈ tau.verts
+  predecessor_source_mem_rho :
+    (sites predecessorIndex).a ∈ rho.verts ∧
+    (sites predecessorIndex).b ∈ rho.verts ∧
+    (sites predecessorIndex).c ∈ rho.verts
+  return_endpoints_cross :
+    (sites (predecessorIndex + 1)).d ∈ tau.verts ∧
+    (sites (predecessorIndex + 1)).e ∈ rho.verts ∧
+    (sites (predecessorIndex + 1)).e ∉ tau.verts ∧
+    (sites (predecessorIndex + 1)).d ∉ rho.verts
+  return_endpoints_mem_sigma :
+    (sites (predecessorIndex + 1)).d ∈ sigma.verts ∧
+    (sites (predecessorIndex + 1)).e ∈ sigma.verts
+  sigma_ne : ¬ SameTetVertices sigma tau ∧ ¬ SameTetVertices sigma rho
+  return_edge_eq_anchor :
+    (((sites (predecessorIndex + 1)).d = (sites anchorIndex).d ∧
+        (sites (predecessorIndex + 1)).e = (sites anchorIndex).e) ∨
+      ((sites (predecessorIndex + 1)).d = (sites anchorIndex).e ∧
+        (sites (predecessorIndex + 1)).e = (sites anchorIndex).d))
+  sigma_in_anchor_target :
+    SameTetVertices sigma (sites anchorIndex).targetTet₀ ∨
+    SameTetVertices sigma (sites anchorIndex).targetTet₁ ∨
+    SameTetVertices sigma (sites anchorIndex).targetTet₂
+  predecessor_sourceFace_ne_anchor :
+    ¬ (∀ z : Nat,
+      z ∈ [(sites predecessorIndex).a, (sites predecessorIndex).b,
+        (sites predecessorIndex).c] ↔
+      z ∈ [(sites anchorIndex).a, (sites anchorIndex).b,
+        (sites anchorIndex).c])
+  twoSidedCarrierEscape :
+    (∃ q ∈ [(sites (predecessorIndex + 1)).a,
+        (sites (predecessorIndex + 1)).b,
+        (sites (predecessorIndex + 1)).c],
+      q ∉ [(sites anchorIndex).a, (sites anchorIndex).b,
+        (sites anchorIndex).c, (sites anchorIndex).d, (sites anchorIndex).e]) ∨
+    (∃ z ∈ [(sites predecessorIndex).a, (sites predecessorIndex).b,
+        (sites predecessorIndex).c],
+      z ∉ [(sites (predecessorIndex + 1)).a,
+        (sites (predecessorIndex + 1)).b,
+        (sites (predecessorIndex + 1)).c,
+        (sites (predecessorIndex + 1)).d,
+        (sites (predecessorIndex + 1)).e])
+  freshEndpoints :
+    List.Disjoint
+      [(sites (predecessorIndex + 1)).d, (sites (predecessorIndex + 1)).e]
+      [(sites predecessorIndex).a, (sites predecessorIndex).b,
+        (sites predecessorIndex).c, (sites predecessorIndex).d,
+        (sites predecessorIndex).e]
+  predecessorPoint : triangulationTopologicalGeometricCarrier K
+  returnPoint : triangulationTopologicalGeometricCarrier K
+  crossingPath : Path predecessorPoint returnPoint
+  wholeCarrierLoop : Path predecessorPoint predecessorPoint
+  loop_eq_crossingPath_trans_symm :
+    wholeCarrierLoop = crossingPath.trans crossingPath.symm
+
+theorem ClosedTriangulationCore.exists_wholeCarrierLoop_of_witnessedReentry_recurrent_crossing
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hlinks : ∀ v ∈ vertexSupport K, VertexLinkConnected K v)
+    (hconn : TetrahedronVertexOverlapConnected K)
+    (hSC : TriangulationRealizationSimplyConnected K)
+    (hNoFour : ∀ v ∈ vertexSupport K, vertexDegree K v ≠ 4)
+    (sites : Nat → Move32Site)
+    (hrealized : ∀ n, (sites n).RealizedIn K)
+    (hthree : ∀ n, (sites n).SharedEdgeExactlyThree K)
+    (hwitnessed : ∀ n,
+      Move32SourceFaceWitnessedReentry K (sites n) (sites (n + 1))) :
+    Nonempty (WitnessedReentryCrossingCertificate K) := by
+  classical
+  obtain ⟨i, k, hgap, hbound, hstate, hstep, _⟩ :=
+    hcore.exists_recurrent_returnSigma_target_of_perpetual_witnessedReentry
+      sites hrealized hthree hwitnessed
+  obtain ⟨tau, rho, sigma, hconfig⟩ :=
+    hcore.exists_witnessedReentry_return_crossing_anchor_target_of_sharedSupportedEdgeState_eq
+      (sites i) (sites k) (sites (k + 1))
+      (hrealized i) (hthree i) (hrealized k) (hrealized (k + 1))
+      hstep hstate
+  rcases hconfig with
+    ⟨htau, hrho, hsigma, htaurho, haTau, hbTau, hcTau,
+      haRho, hbRho, hcRho, hdTau, heRho, hdSigma, heSigma,
+      heNotTau, hdNotRho, hSigmaTau, hSigmaRho, hreturn, htarget⟩
+  have hpredNe :=
+    hcore.not_predecessor_sourceFace_support_eq_anchor_of_witnessedReentry_return_edge_of_no_degree_four
+      hlinks hconn hNoFour (sites i) (sites k) (sites (k + 1))
+      (hrealized i) hstep hreturn
+  have hescape :=
+    hcore.exists_return_sourceFace_vertex_outside_anchor_carrier_or_predecessor_sourceFace_vertex_outside_return_carrier_of_witnessedReentry_return_state_of_no_degree_four
+      hlinks hconn hNoFour (sites i) (sites k) (sites (k + 1))
+      (hrealized i) (hthree i) (hrealized k) (hrealized (k + 1))
+      (hthree (k + 1)) hstep hstate
+  have hfresh :=
+    hcore.witnessedReentry_next_sharedEdge_disjoint_previous_carrier_of_no_degree_four
+      hlinks hNoFour (sites k) (sites (k + 1)) (hrealized k) hstep
+  have haSupport : (sites k).a ∈ vertexSupport K := by
+    rw [mem_vertexSupport_iff]
+    simp only [allVerts, List.mem_flatMap]
+    exact ⟨tau, htau, haTau⟩
+  have hdSupport : (sites (k + 1)).d ∈ vertexSupport K := by
+    rw [mem_vertexSupport_iff]
+    simp only [allVerts, List.mem_flatMap]
+    exact ⟨tau, htau, hdTau⟩
+  let p0 := triangulationTopologicalCarrierVertex K (sites k).a haSupport
+  let p1 := triangulationTopologicalCarrierVertex K (sites (k + 1)).d hdSupport
+  letI : SimplyConnectedSpace (triangulationTopologicalGeometricCarrier K) := hSC
+  let crossing : Path p0 p1 := (PathConnectedSpace.joined p0 p1).somePath
+  let loop : Path p0 p0 := crossing.trans crossing.symm
+  exact ⟨{
+    sites := sites
+    anchorIndex := i
+    predecessorIndex := k
+    tau := tau
+    rho := rho
+    sigma := sigma
+    gap := hgap
+    finiteBound := hbound
+    tau_mem := htau
+    rho_mem := hrho
+    sigma_mem := hsigma
+    tau_rho_ne := htaurho
+    predecessor_source_mem_tau := ⟨haTau, hbTau, hcTau⟩
+    predecessor_source_mem_rho := ⟨haRho, hbRho, hcRho⟩
+    return_endpoints_cross := ⟨hdTau, heRho, heNotTau, hdNotRho⟩
+    return_endpoints_mem_sigma := ⟨hdSigma, heSigma⟩
+    sigma_ne := ⟨hSigmaTau, hSigmaRho⟩
+    return_edge_eq_anchor := hreturn
+    sigma_in_anchor_target := htarget
+    predecessor_sourceFace_ne_anchor := hpredNe
+    twoSidedCarrierEscape := hescape
+    freshEndpoints := hfresh
+    predecessorPoint := p0
+    returnPoint := p1
+    crossingPath := crossing
+    wholeCarrierLoop := loop
+    loop_eq_crossingPath_trans_symm := rfl }⟩
+
+end Poincare
