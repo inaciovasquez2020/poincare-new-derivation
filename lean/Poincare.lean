@@ -173,3 +173,4 @@ import Poincare.GlobalMove23OutsideCarrierNeighbor
 import Poincare.GlobalDegreeFourDescent
 import Poincare.TriangulationTopologicalHomeomorphTransport
 import Poincare.CarrierPolygonalPath
+import Poincare.GlobalMove32ReentryPolygonalLoop

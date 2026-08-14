@@ -1,11 +1,37 @@
 import Poincare.Move23ActualRegions
 import Poincare.TriangulationTopologicalSimplyConnected
+import Poincare.TriangulationTopologicalEdgeLocalModel
 import Mathlib.Analysis.Convex.PathConnected
 
 open Set
 open scoped unitInterval
 
 namespace Poincare
+
+/-- A represented vertex belongs to the filled body of its tetrahedron. -/
+theorem triangulationTopologicalGeometricVertex_mem_tetBody
+    {v : Nat} {tau : Tet} (hv : v ∈ tau.verts) :
+    triangulationTopologicalGeometricVertex v ∈
+      triangulationTopologicalTetBody tau := by
+  apply subset_convexHull ℝ
+  exact ⟨v, List.mem_toFinset.mpr hv, rfl⟩
+
+/-- The midpoint of two represented vertices belongs to every tetrahedron
+containing both endpoints. -/
+theorem triangulationTopologicalGeometricEdgeMidpoint_mem_tetBody
+    {v w : Nat} {tau : Tet} (hv : v ∈ tau.verts) (hw : w ∈ tau.verts) :
+    triangulationTopologicalGeometricEdgeMidpoint v w ∈
+      triangulationTopologicalTetBody tau := by
+  rw [triangulationTopologicalGeometricEdgeMidpoint]
+  have hv' := triangulationTopologicalGeometricVertex_mem_tetBody hv
+  have hw' := triangulationTopologicalGeometricVertex_mem_tetBody hw
+  convert (convex_convexHull ℝ _).lineMap_mem hv' hw'
+    (show (2 : ℝ)⁻¹ ∈ Set.Icc (0 : ℝ) 1 by norm_num) using 1 <;>
+    ext j <;>
+    simp [AffineMap.lineMap_apply,
+      triangulationTopologicalGeometricEdgeMidpoint_apply,
+      triangulationTopologicalGeometricVertex] <;>
+    ring
 
 /-- A tetrahedron occurring in `K` has its whole geometric body in the carrier. -/
 theorem triangulationTopologicalTetBody_subset_carrier
