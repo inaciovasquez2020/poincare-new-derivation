@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 318a36b78373ba14b053847c3d5c7e39cb1430ee
+          ref: 6be64881fa31ca38113450165e30365dd389f400
           fetch-depth: 1
       - uses: leanprover/lean-action@v1
         with:
