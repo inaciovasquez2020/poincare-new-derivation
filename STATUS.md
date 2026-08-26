@@ -39,5 +39,3 @@ No repository-level claim of a Poincare proof.
 No repository-level claim of move-system completeness.
 
 Remaining frontier: prove that every required geometric/topological reduction admits a strictly height-decreasing admissible move.
-
-<!-- temporary CI trigger: endpoint support-bound verifier fallback -->
