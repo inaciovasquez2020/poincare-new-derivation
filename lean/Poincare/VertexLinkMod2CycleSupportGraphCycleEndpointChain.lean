@@ -126,7 +126,7 @@ theorem vertexLinkMod2CycleSupportGraph_isCycle_exists_ordered_support_edge_endp
       x.1 = ((e :: es).getLast (by simp)).1.hi := by
     have hnGetLast : (e :: es)[n] = (e :: es).getLast (by simp) := by
       dsimp [n]
-      simpa using List.getElem_length_sub_one (e :: es)
+      simpa using List.getElem_length_sub_one_eq_getLast (l := e :: es) (by simp)
     rcases hlastEnds with hforward | hreverse
     · right
       rw [← hnGetLast]
