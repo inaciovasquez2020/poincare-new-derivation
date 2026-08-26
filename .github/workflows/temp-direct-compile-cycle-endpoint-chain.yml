@@ -1,4 +1,4 @@
-name: temp-direct-compile-grid-ambient-fan
+name: temp-direct-compile-grid-fan-transition
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 10619a9fdba5e18b1dc487dfdb2924f4f7471af8
+          ref: d9dabf9c03f65d6de9b937c122c000f7d6550559
           fetch-depth: 1
       - uses: leanprover/lean-action@v1
         with:
@@ -21,13 +21,13 @@ jobs:
           test: false
           lint: false
       - name: Build direct dependencies
-        run: lake build Poincare.GlobalMove32ReentryPolygonalLoopGridEdge Poincare.GlobalEdgeCyclicFan
+        run: lake build Poincare.GlobalMove32ReentryPolygonalLoopGridFan Poincare.GlobalFanChordTransition
       - name: Direct compile and capture diagnostic
         id: lean
         shell: bash
         run: |
           set +e
-          lake env lean lean/Poincare/GlobalMove32ReentryPolygonalLoopGridFan.lean > lean-error.log 2>&1
+          lake env lean lean/Poincare/GlobalMove32ReentryPolygonalLoopGridFanTransition.lean > lean-error.log 2>&1
           status=$?
           cat lean-error.log
           echo "status=$status" >> "$GITHUB_OUTPUT"
@@ -35,7 +35,7 @@ jobs:
       - name: Upload Lean diagnostic
         uses: actions/upload-artifact@v4
         with:
-          name: lean-grid-ambient-fan-diagnostic
+          name: lean-grid-fan-transition-diagnostic
           path: lean-error.log
       - name: Preserve compile failure
         if: steps.lean.outputs.status != '0'
