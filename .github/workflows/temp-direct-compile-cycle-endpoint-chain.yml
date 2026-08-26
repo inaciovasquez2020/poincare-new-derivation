@@ -1,0 +1,26 @@
+name: temp-direct-compile-cycle-endpoint-chain
+
+on:
+  push:
+    branches:
+      - ci/direct-compile-cycle-endpoint-chain-20260826
+
+jobs:
+  direct-compile:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 630e105169e4ff666ae5f04692caeb6c72704318
+          fetch-depth: 1
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+          lint: false
+      - name: Build direct dependency
+        run: lake build Poincare.VertexLinkMod2CycleSupportGraphCycleWitnessLength
+      - name: Direct compile touched Lean file
+        run: lake env lean lean/Poincare/VertexLinkMod2CycleSupportGraphCycleEndpointChain.lean
