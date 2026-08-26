@@ -14,24 +14,26 @@ theorem vertexLinkVertexRepresented_of_positive_coordinates
     (hv : 0 < p.1 v)
     (hx : 0 < p.1 x) :
     VertexLinkVertexRepresented K v x := by
-  have hp := p.2
-  rw [triangulationTopologicalGeometricComplex_space_eq_tetrahedronUnion] at hp
-  simp only [Set.mem_iUnion] at hp
-  obtain ⟨tau, htau, hpbody⟩ := hp
+  obtain ⟨F, _hF, tau, htau, hFtau, w, _hw0, _hw1, hwp⟩ :=
+    carrier_exists_finite_barycentric_support p
 
-  have hvtau : v ∈ tau.verts := by
+  have hvF : v ∈ F := by
     by_contra hvnot
-    have hz :=
-      triangulationTopologicalTetBody_coordinate_eq_zero_of_not_mem
-        tau v hvnot hpbody
+    have hz := geometricVertex_weighted_sum_coordinate F w p.1 hwp v
+    rw [if_neg hvnot] at hz
     linarith
 
-  have hxtau : x ∈ tau.verts := by
+  have hxF : x ∈ F := by
     by_contra hxnot
-    have hz :=
-      triangulationTopologicalTetBody_coordinate_eq_zero_of_not_mem
-        tau x hxnot hpbody
+    have hz := geometricVertex_weighted_sum_coordinate F w p.1 hwp x
+    rw [if_neg hxnot] at hz
     linarith
+
+  have hvtau : v ∈ tau.verts :=
+    List.mem_toFinset.mp (hFtau hvF)
+
+  have hxtau : x ∈ tau.verts :=
+    List.mem_toFinset.mp (hFtau hxF)
 
   obtain ⟨sigma, hsigma, hlink⟩ :=
     exists_vertexLinkTriangle_of_tet_mem_of_vertex_mem
