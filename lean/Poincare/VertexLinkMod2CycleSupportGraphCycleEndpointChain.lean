@@ -112,6 +112,9 @@ theorem vertexLinkMod2CycleSupportGraph_isCycle_exists_ordered_support_edge_endp
     have hnTail : n < p.support.tail.length := by
       rw [htailLength]
       exact hnD
+    have hnSupport : n + 1 < p.support.length := by
+      rw [SimpleGraph.Walk.length_support]
+      omega
     calc
       p.darts[n].snd = p.support.tail[n] := by
         simpa using SimpleGraph.Walk.snd_darts_getElem (p := p) hnD
