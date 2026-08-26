@@ -1,4 +1,4 @@
-name: temp-direct-compile-manifold-link-connectivity
+name: temp-direct-compile-positive-grid
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 5bda73f2e782cfab999283e72551b7e59031264d
+          ref: 72f4a4025e86bd5662ca1670c6c66909d3b085e5
           fetch-depth: 1
       - uses: leanprover/lean-action@v1
         with:
@@ -21,13 +21,13 @@ jobs:
           test: false
           lint: false
       - name: Build direct dependency
-        run: lake build Poincare.TriangulationTopologicalManifoldVertexLinkStarConnectedness
+        run: lake build Poincare.GlobalMove32ReentryPolygonalLoopNullHomotopy
       - name: Direct compile and capture diagnostic
         id: lean
         shell: bash
         run: |
           set +e
-          lake env lean lean/Poincare/TriangulationTopologicalManifoldVertexLinkCombinatorialConnectedness.lean > lean-error.log 2>&1
+          lake env lean lean/Poincare/GlobalMove32ReentryPolygonalLoopPositiveGrid.lean > lean-error.log 2>&1
           status=$?
           cat lean-error.log
           echo "status=$status" >> "$GITHUB_OUTPUT"
@@ -35,7 +35,7 @@ jobs:
       - name: Upload Lean diagnostic
         uses: actions/upload-artifact@v4
         with:
-          name: lean-manifold-link-connectivity-diagnostic
+          name: lean-positive-grid-diagnostic
           path: lean-error.log
       - name: Preserve compile failure
         if: steps.lean.outputs.status != '0'
