@@ -85,7 +85,9 @@ theorem vertexLinkMod2CycleSupportGraph_isCycle_exists_ordered_support_edge_endp
   have hfirst := hes.get hzeroD hzeroE
   rcases hfirst with ⟨_, hfirstEnds⟩
   have hfirstFst : p.darts[0].fst = x := by
-    grind [SimpleGraph.Walk.fst_darts_getElem]
+    cases p with
+    | nil => simp at hzeroD
+    | cons h p => rfl
   have hfirstEndpoint : x.1 = e.1.lo ∨ x.1 = e.1.hi := by
     rcases hfirstEnds with hforward | hreverse
     · exact Or.inl ((congrArg (fun z : VertexLinkMod2Vertex K v => z.1) hfirstFst).symm.trans hforward.1)
