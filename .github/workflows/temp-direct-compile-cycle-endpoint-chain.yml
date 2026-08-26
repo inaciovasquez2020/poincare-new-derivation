@@ -1,4 +1,4 @@
-name: temp-direct-compile-s3-transport
+name: temp-direct-compile-normalization-induction
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: e3812740a40f2daf6e612a5879ef7bc38eef1733
+          ref: 3fecc7498f19a3701de821bc8b41e93f5f9b7e09
           fetch-depth: 1
       - uses: leanprover/lean-action@v1
         with:
@@ -21,13 +21,13 @@ jobs:
           test: false
           lint: false
       - name: Build direct dependency
-        run: lake build Poincare.TriangulationTopologicalS3
+        run: lake build Poincare.TriangulationTopologicalS3Transport
       - name: Direct compile and capture diagnostic
         id: lean
         shell: bash
         run: |
           set +e
-          lake env lean lean/Poincare/TriangulationTopologicalS3Transport.lean > lean-error.log 2>&1
+          lake env lean lean/Poincare/TriangulationTopologicalNormalizationInduction.lean > lean-error.log 2>&1
           status=$?
           cat lean-error.log
           echo "status=$status" >> "$GITHUB_OUTPUT"
@@ -35,7 +35,7 @@ jobs:
       - name: Upload Lean diagnostic
         uses: actions/upload-artifact@v4
         with:
-          name: lean-s3-transport-diagnostic
+          name: lean-normalization-induction-diagnostic
           path: lean-error.log
       - name: Preserve compile failure
         if: steps.lean.outputs.status != '0'
