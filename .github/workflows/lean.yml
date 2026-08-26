@@ -13,32 +13,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+
+      - name: Lean build
+        uses: leanprover/lean-action@v1
         with:
-          ref: 37fd40a2be40ec82a3277d6c7777b97112dfa77a
-          fetch-depth: 1
-      - uses: leanprover/lean-action@v1
-        with:
-          build: false
-          test: false
-          lint: false
           use-github-cache: false
-      - name: Build direct dependency
-        run: lake build Poincare.VertexLinkMod2CycleSupportGraphCycleWitnessLength
-      - name: Direct compile and capture diagnostic
-        id: lean
-        shell: bash
-        run: |
-          set +e
-          lake env lean lean/Poincare/VertexLinkMod2CycleSupportGraphCycleEndpointChain.lean > lean-error.log 2>&1
-          status=$?
-          cat lean-error.log
-          echo "status=$status" >> "$GITHUB_OUTPUT"
-          exit 0
-      - name: Upload Lean diagnostic
-        uses: actions/upload-artifact@v4
-        with:
-          name: lean-cycle-endpoint-chain-diagnostic
-          path: lean-error.log
-      - name: Preserve compile failure
-        if: steps.lean.outputs.status != '0'
-        run: exit 1
