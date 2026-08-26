@@ -1,4 +1,4 @@
-name: temp-direct-compile-cycle-endpoint-chain
+name: temp-direct-compile-s3-transport
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 38fe35e44fdb4fc10a8d7e4bbeedaeb073bbcb6e
+          ref: e3812740a40f2daf6e612a5879ef7bc38eef1733
           fetch-depth: 1
       - uses: leanprover/lean-action@v1
         with:
@@ -21,13 +21,13 @@ jobs:
           test: false
           lint: false
       - name: Build direct dependency
-        run: lake build Poincare.VertexLinkMod2CycleSupportGraphCycleWitnessLength
+        run: lake build Poincare.TriangulationTopologicalS3
       - name: Direct compile and capture diagnostic
         id: lean
         shell: bash
         run: |
           set +e
-          lake env lean lean/Poincare/VertexLinkMod2CycleSupportGraphCycleEndpointChain.lean > lean-error.log 2>&1
+          lake env lean lean/Poincare/TriangulationTopologicalS3Transport.lean > lean-error.log 2>&1
           status=$?
           cat lean-error.log
           echo "status=$status" >> "$GITHUB_OUTPUT"
@@ -35,7 +35,7 @@ jobs:
       - name: Upload Lean diagnostic
         uses: actions/upload-artifact@v4
         with:
-          name: lean-cycle-endpoint-chain-diagnostic
+          name: lean-s3-transport-diagnostic
           path: lean-error.log
       - name: Preserve compile failure
         if: steps.lean.outputs.status != '0'
