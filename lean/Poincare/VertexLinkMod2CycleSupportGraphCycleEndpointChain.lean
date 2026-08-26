@@ -119,7 +119,7 @@ theorem vertexLinkMod2CycleSupportGraph_isCycle_exists_ordered_support_edge_endp
       p.darts[n].snd = p.support.tail[n] := by
         simpa using SimpleGraph.Walk.snd_darts_getElem (p := p) hnD
       _ = p.support[n + 1] := by simp
-      _ = p.support[p.length] := by rw [hnLen]
+      _ = p.support[p.length] := by simpa [hnLen]
       _ = x := SimpleGraph.Walk.support_getElem_length p
   have hlastEndpoint :
       x.1 = ((e :: es).getLast (by simp)).1.lo ∨
