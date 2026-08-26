@@ -1,4 +1,4 @@
-name: temp-direct-compile-positive-coordinate-edge
+name: temp-direct-compile-grid-edge-specialization
 
 on:
   push:
@@ -13,21 +13,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 6be64881fa31ca38113450165e30365dd389f400
+          ref: 79f81f874616c1e55afe2df92682760cc15e27ac
           fetch-depth: 1
       - uses: leanprover/lean-action@v1
         with:
           build: false
           test: false
           lint: false
-      - name: Build direct dependency
-        run: lake build Poincare.CarrierPositiveCoordinateCover Poincare.VertexLink
+      - name: Build direct dependencies
+        run: lake build Poincare.GlobalMove32ReentryPolygonalLoopPositiveGrid Poincare.CarrierPositiveCoordinateRepresentedEdge
       - name: Direct compile and capture diagnostic
         id: lean
         shell: bash
         run: |
           set +e
-          lake env lean lean/Poincare/CarrierPositiveCoordinateRepresentedEdge.lean > lean-error.log 2>&1
+          lake env lean lean/Poincare/GlobalMove32ReentryPolygonalLoopGridEdge.lean > lean-error.log 2>&1
           status=$?
           cat lean-error.log
           echo "status=$status" >> "$GITHUB_OUTPUT"
@@ -35,7 +35,7 @@ jobs:
       - name: Upload Lean diagnostic
         uses: actions/upload-artifact@v4
         with:
-          name: lean-positive-coordinate-edge-diagnostic
+          name: lean-grid-edge-specialization-diagnostic
           path: lean-error.log
       - name: Preserve compile failure
         if: steps.lean.outputs.status != '0'
