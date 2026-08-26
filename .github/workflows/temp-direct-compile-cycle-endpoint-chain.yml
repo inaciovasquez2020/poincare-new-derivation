@@ -1,4 +1,4 @@
-name: temp-direct-compile-normalization-induction
+name: temp-direct-compile-manifold-link-connectivity
 
 on:
   push:
@@ -13,21 +13,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 3fecc7498f19a3701de821bc8b41e93f5f9b7e09
+          ref: 5bda73f2e782cfab999283e72551b7e59031264d
           fetch-depth: 1
       - uses: leanprover/lean-action@v1
         with:
           build: false
           test: false
           lint: false
-      - name: Build direct dependencies
-        run: lake build Poincare.Validity Poincare.TriangulationTopologicalS3Transport
+      - name: Build direct dependency
+        run: lake build Poincare.TriangulationTopologicalManifoldVertexLinkStarConnectedness
       - name: Direct compile and capture diagnostic
         id: lean
         shell: bash
         run: |
           set +e
-          lake env lean lean/Poincare/TriangulationTopologicalNormalizationInduction.lean > lean-error.log 2>&1
+          lake env lean lean/Poincare/TriangulationTopologicalManifoldVertexLinkCombinatorialConnectedness.lean > lean-error.log 2>&1
           status=$?
           cat lean-error.log
           echo "status=$status" >> "$GITHUB_OUTPUT"
@@ -35,7 +35,7 @@ jobs:
       - name: Upload Lean diagnostic
         uses: actions/upload-artifact@v4
         with:
-          name: lean-normalization-induction-diagnostic
+          name: lean-manifold-link-connectivity-diagnostic
           path: lean-error.log
       - name: Preserve compile failure
         if: steps.lean.outputs.status != '0'
