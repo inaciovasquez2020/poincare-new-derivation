@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: ab7254914ffe36d6395094ca9d9087202c60fd0d
+          ref: 503b85a58a8ac61c571f0363ac8b172a5dbf4c36
           fetch-depth: 1
 
       - name: Locate JIID declaration
