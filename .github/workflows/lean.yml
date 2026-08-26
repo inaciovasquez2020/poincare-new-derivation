@@ -13,12 +13,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-        with:
-          ref: 503b85a58a8ac61c571f0363ac8b172a5dbf4c36
-          fetch-depth: 1
 
-      - name: Locate JIID declaration
-        shell: bash
-        run: |
-          set -o pipefail
-          grep -R -n --include='*.lean' -E '(^|[^A-Za-z0-9_])JIID([^A-Za-z0-9_]|$)' .
+      - name: Lean build
+        uses: leanprover/lean-action@v1
+        with:
+          use-github-cache: false
