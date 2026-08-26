@@ -1,5 +1,6 @@
 name: temp-direct-compile-cycle-endpoint-chain
 # verification retry for source 37fd40a2be40ec82a3277d6c7777b97112dfa77a
+# trigger installed Lean Action CI harness
 
 on:
   push:
