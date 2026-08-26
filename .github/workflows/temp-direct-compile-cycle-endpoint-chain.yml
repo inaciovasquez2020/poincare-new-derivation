@@ -20,8 +20,8 @@ jobs:
           build: false
           test: false
           lint: false
-      - name: Build direct dependency
-        run: lake build Poincare.TriangulationTopologicalS3Transport
+      - name: Build direct dependencies
+        run: lake build Poincare.Validity Poincare.TriangulationTopologicalS3Transport
       - name: Direct compile and capture diagnostic
         id: lean
         shell: bash
