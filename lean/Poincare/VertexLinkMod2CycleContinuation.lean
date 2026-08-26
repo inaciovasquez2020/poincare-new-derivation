@@ -241,4 +241,21 @@ theorem vertexLinkMod2Cycle_exists_successor_at_hi
   right
   rfl
 
+/--
+The finite simple graph carried by the nonzero edges of a represented mod-2
+one-cycle. Its vertices are represented link vertices; a support edge joins
+its canonical low and high endpoints.
+-/
+def vertexLinkMod2CycleSupportGraph
+    (K : Triangulation)
+    (hcore : ClosedTriangulationCore K)
+    (v : Nat)
+    (f : VertexLinkMod2Edge K hcore v → ZMod 2) :
+    SimpleGraph (VertexLinkMod2Vertex K v) :=
+  SimpleGraph.fromRel fun x y =>
+    ∃ e : VertexLinkMod2Edge K hcore v,
+      e ∈ vertexLinkMod2CycleSupportEdges K hcore v f ∧
+      x.1 = e.1.lo ∧
+      y.1 = e.1.hi
+
 end Poincare
