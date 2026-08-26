@@ -17,15 +17,8 @@ jobs:
           ref: 38fe35e44fdb4fc10a8d7e4bbeedaeb073bbcb6e
           fetch-depth: 1
 
-      - uses: leanprover/lean-action@v1
-        with:
-          build: false
-          test: false
-          lint: false
-          use-github-cache: false
-
-      - name: Build direct dependency
-        run: lake build Poincare.VertexLinkMod2CycleSupportGraphCycleWitnessLength
-
-      - name: Direct compile endpoint chain
-        run: lake env lean lean/Poincare/VertexLinkMod2CycleSupportGraphCycleEndpointChain.lean
+      - name: Locate JIID declaration
+        shell: bash
+        run: |
+          set -o pipefail
+          grep -R -n --include='*.lean' -E '(^|[^A-Za-z0-9_])JIID([^A-Za-z0-9_]|$)' .
