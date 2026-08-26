@@ -13,8 +13,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
-
-      - name: Lean build
-        uses: leanprover/lean-action@v1
         with:
+          ref: acb7617114dc6fea4a30ff585a802a8e0cdcd50d
+          fetch-depth: 1
+
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+          lint: false
           use-github-cache: false
+
+      - name: Build direct dependency
+        run: lake build Poincare.VertexLinkMod2CycleSupportGraphCycleWitnessLength
+
+      - name: Direct compile endpoint chain
+        run: lake env lean lean/Poincare/VertexLinkMod2CycleSupportGraphCycleEndpointChain.lean
