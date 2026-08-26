@@ -25,7 +25,9 @@ theorem vertexLinkMod2CycleSupportGraph_isCycle_exists_ordered_support_edge_endp
                (d.snd.1 = e.1.lo ∧ d.fst.1 = e.1.hi)))
             p.darts (e :: es) ∧
           3 ≤ (e :: es).length ∧
-          (∀ i (hi : i + 1 < (e :: es).length),
+          (∀ i
+              (hiD : i + 1 < p.darts.length)
+              (hiE : i + 1 < (e :: es).length),
             p.darts[i].snd.1 = p.darts[i + 1].fst.1 ∧
             (p.darts[i].snd.1 = (e :: es)[i].1.lo ∨
              p.darts[i].snd.1 = (e :: es)[i].1.hi) ∧
@@ -42,15 +44,15 @@ theorem vertexLinkMod2CycleSupportGraph_isCycle_exists_ordered_support_edge_endp
     hes.length_eq
   have hchainDarts := SimpleGraph.Walk.isChain_dartAdj_darts p
   have hconsecutive :
-      ∀ i (hi : i + 1 < (e :: es).length),
+      ∀ i
+          (hiD : i + 1 < p.darts.length)
+          (hiE : i + 1 < (e :: es).length),
         p.darts[i].snd.1 = p.darts[i + 1].fst.1 ∧
         (p.darts[i].snd.1 = (e :: es)[i].1.lo ∨
          p.darts[i].snd.1 = (e :: es)[i].1.hi) ∧
         (p.darts[i].snd.1 = (e :: es)[i + 1].1.lo ∨
          p.darts[i].snd.1 = (e :: es)[i + 1].1.hi) := by
-    intro i hi
-    have hiD : i + 1 < p.darts.length := by
-      omega
+    intro i hiD hiE
     have hi0D : i < p.darts.length := by
       omega
     have hi0E : i < (e :: es).length := by
@@ -60,7 +62,7 @@ theorem vertexLinkMod2CycleSupportGraph_isCycle_exists_ordered_support_edge_endp
     have hmeet : p.darts[i].snd.1 = p.darts[i + 1].fst.1 :=
       congrArg (fun z : VertexLinkMod2Vertex K v => z.1) hdadj
     have hwi := List.Forall₂.get hes hi0D hi0E
-    have hwj := List.Forall₂.get hes hiD hi
+    have hwj := List.Forall₂.get hes hiD hiE
     rcases hwi with ⟨_, hendi⟩
     rcases hwj with ⟨_, hendj⟩
     have hiEndpoint :
