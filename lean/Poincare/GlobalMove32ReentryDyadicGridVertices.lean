@@ -151,5 +151,42 @@ theorem carrier_two_positive_coordinates_common_tet_probe
     List.mem_toFinset.mp (hFtau hwF)
   ⟩
 
+/--
+The finite positive-coordinate filling can be labelled so that any two cells
+which meet have labels occurring together in one represented tetrahedron.
+This packages the local compatibility fact in exactly the form needed before
+proving the horizontal and vertical shared-grid-point cases.
+-/
+theorem exists_finite_squareGrid_overlap_compatible_labelling_probe
+    {K : Triangulation}
+    {x : triangulationTopologicalGeometricCarrier K}
+    {loop : Path x x}
+    (H : CarrierLoopNullHomotopyData K x loop) :
+    ∃ N : Nat, ∃ hN : 0 < N,
+      ∃ label : Fin N → Fin N → Nat,
+        (∀ i j : Fin N,
+          label i j ∈ vertexSupport K) ∧
+        (∀ i j : Fin N,
+          ∀ z ∈ squareGridCell N hN i j,
+            0 < (H.homotopy z).1 (label i j)) ∧
+        ∀ i j i' j' : Fin N,
+          ∀ z,
+            z ∈ squareGridCell N hN i j →
+            z ∈ squareGridCell N hN i' j' →
+            ∃ tau : Tet,
+              tau ∈ K.tets ∧
+              label i j ∈ tau.verts ∧
+              label i' j' ∈ tau.verts := by
+  obtain ⟨N, hN, label, hsupport, hpositive⟩ :=
+    H.exists_finite_squareGrid_positiveCoordinate_labelling_probe
+
+  refine ⟨N, hN, label, hsupport, hpositive, ?_⟩
+  intro i j i' j' z hz hz'
+
+  exact carrier_two_positive_coordinates_common_tet_probe
+    (H.homotopy z)
+    (hpositive i j z hz)
+    (hpositive i' j' z hz')
+
 end CarrierLoopNullHomotopyData
 end Poincare
