@@ -256,5 +256,49 @@ theorem squareGridCell_neighbor_overlap_probe
     rw [hj]
     exact ⟨le_rfl, hxup, hyup, le_rfl⟩
 
+/--
+The finite filling labels are compatible across every horizontal and vertical
+grid edge: consecutive cell labels occur together in one represented
+tetrahedron.
+-/
+theorem exists_finite_squareGrid_neighbor_tet_compatible_labelling_probe
+    {K : Triangulation}
+    {x : triangulationTopologicalGeometricCarrier K}
+    {loop : Path x x}
+    (H : CarrierLoopNullHomotopyData K x loop) :
+    ∃ N : Nat, ∃ hN : 0 < N,
+      ∃ label : Fin N → Fin N → Nat,
+        (∀ i j : Fin N,
+          label i j ∈ vertexSupport K) ∧
+        (∀ i j : Fin N,
+          ∀ z ∈ squareGridCell N hN i j,
+            0 < (H.homotopy z).1 (label i j)) ∧
+        (∀ i i' j : Fin N,
+          (i : Nat) + 1 = (i' : Nat) →
+          ∃ tau : Tet,
+            tau ∈ K.tets ∧
+            label i j ∈ tau.verts ∧
+            label i' j ∈ tau.verts) ∧
+        ∀ i j j' : Fin N,
+          (j : Nat) + 1 = (j' : Nat) →
+          ∃ tau : Tet,
+            tau ∈ K.tets ∧
+            label i j ∈ tau.verts ∧
+            label i j' ∈ tau.verts := by
+  obtain ⟨N, hN, label, hsupport, hpositive, hoverlap⟩ :=
+    H.exists_finite_squareGrid_overlap_compatible_labelling_probe
+  obtain ⟨hhorizontal, hvertical⟩ :=
+    squareGridCell_neighbor_overlap_probe N hN
+
+  refine ⟨N, hN, label, hsupport, hpositive, ?_, ?_⟩
+
+  · intro i i' j hii
+    obtain ⟨z, hz, hz'⟩ := hhorizontal i i' j hii
+    exact hoverlap i j i' j z hz hz'
+
+  · intro i j j' hjj
+    obtain ⟨z, hz, hz'⟩ := hvertical i j j' hjj
+    exact hoverlap i j i j' z hz hz'
+
 end CarrierLoopNullHomotopyData
 end Poincare
