@@ -149,46 +149,6 @@ noncomputable def orderedTransitionPath
   | Nat.succ (Nat.succ m) =>
       (orderedTransitionPath p arc (Nat.succ m)).trans (arc (Nat.succ m))
 
-/-- Support on the first quarter of the first transition propagates through
-the recursively concatenated ordered path after the exact dyadic rescaling. -/
-theorem orderedTransitionPath_first_arc_initial_quarter_supported_probe
-    {X : Type*} [TopologicalSpace X]
-    (p : Nat → X)
-    (arc : ∀ n, Path (p n) (p (n + 1)))
-    (P : X → Prop)
-    (hfirst : ∀ u : unitInterval,
-      (u : ℝ) ≤ 1 / 4 → P (arc 0 u))
-    (m : Nat) (hm : 0 < m)
-    (u : unitInterval)
-    (hu : (2 : ℝ) ^ (m - 1) * (u : ℝ) ≤ 1 / 4) :
-    P (orderedTransitionPath p arc m u) := by
-  induction m using Nat.strong_induction_on generalizing u with
-  | h m ih =>
-      cases m with
-      | zero => omega
-      | succ m =>
-          cases m with
-          | zero =>
-              simpa [orderedTransitionPath] using hfirst u (by simpa using hu)
-          | succ m =>
-              have hpow :
-                  1 ≤ (2 : ℝ) ^ (Nat.succ (Nat.succ m) - 1) := by
-                exact one_le_pow₀ (by norm_num)
-              have huNonneg : 0 ≤ (u : ℝ) := u.property.1
-              have huLeScaled :
-                  (u : ℝ) ≤
-                    (2 : ℝ) ^ (Nat.succ (Nat.succ m) - 1) * (u : ℝ) := by
-                exact mul_le_mul_of_nonneg_right hpow huNonneg
-              have huHalf : (u : ℝ) ≤ 1 / 2 := by
-                linarith
-              rw [orderedTransitionPath, Path.trans_apply]
-              split_ifs with hhalf
-              · apply ih (Nat.succ m) (by omega) (by omega)
-                have hscaled := hu
-                change
-                  (2 : ℝ) ^ m * (2 * (u : ℝ)) ≤ 1 / 4
-                simpa [pow_succ, mul_assoc, mul_left_comm, mul_comm] using hscaled
-
 /-- The exact ordered recurrent loop determined by the crossing, realized
 sites, and witnessed transition arcs, transported to the chosen basepoint. -/
 noncomputable def witnessedReentryOrderedLoop
