@@ -3,6 +3,7 @@ import Poincare.GlobalRepresentedEdgeIncidenceSplit
 import Poincare.GlobalMove32SupportedEdgeState
 import Poincare.GlobalMove32IncidenceThreeComposition
 import Poincare.GlobalMove32WitnessedSourceFaceReentry
+import Poincare.CarrierPolygonalPath
 import Mathlib.Tactic
 
 namespace Poincare
@@ -36,6 +37,71 @@ structure FanChordTransition (K : Triangulation) (v x : Nat) where
     (K.tets.filter (fun tau => z0 ∈ tau.verts ∧ z1 ∈ tau.verts)).length = 3 ∨
     (4 ≤ (K.tets.filter (fun tau => z0 ∈ tau.verts ∧ z1 ∈ tau.verts)).length ∧
       Nonempty (AmbientEdgeCyclicFan K z0 z1))
+
+/-- The old central-edge midpoint, bundled in the carrier using the retained
+bridge tetrahedron. -/
+noncomputable def FanChordTransition.parentEdgeMidpoint
+    {K : Triangulation} {v x : Nat} (T : FanChordTransition K v x) :
+    triangulationTopologicalGeometricCarrier K :=
+  ⟨triangulationTopologicalGeometricEdgeMidpoint v x,
+    triangulationTopologicalTetBody_subset_carrier K T.bridge_mem
+      (triangulationTopologicalGeometricEdgeMidpoint_mem_tetBody
+        T.v_mem_bridge T.x_mem_bridge)⟩
+
+/-- The new chord midpoint, bundled in the carrier using the represented
+witness tetrahedron. -/
+noncomputable def FanChordTransition.edgeMidpoint
+    {K : Triangulation} {v x : Nat} (T : FanChordTransition K v x) :
+    triangulationTopologicalGeometricCarrier K :=
+  ⟨triangulationTopologicalGeometricEdgeMidpoint T.z0 T.z1,
+    triangulationTopologicalTetBody_subset_carrier K T.witness_mem
+      (triangulationTopologicalGeometricEdgeMidpoint_mem_tetBody
+        T.z0_mem T.z1_mem)⟩
+
+/-- The retained chord endpoint used to pass from the old-edge carrier to the
+new-edge carrier. -/
+noncomputable def FanChordTransition.bridgeVertex
+    {K : Triangulation} {v x : Nat} (T : FanChordTransition K v x) :
+    triangulationTopologicalGeometricCarrier K :=
+  ⟨triangulationTopologicalGeometricVertex T.z0,
+    triangulationTopologicalTetBody_subset_carrier K T.bridge_mem
+      (triangulationTopologicalGeometricVertex_mem_tetBody T.z0_mem_bridge)⟩
+
+/-- Every fan-chord transition has an ordered local carrier arc from the old
+central-edge midpoint to the new chord midpoint.  The first segment stays in
+the retained bridge tetrahedron and the second stays in the off-old-edge
+witness tetrahedron. -/
+theorem FanChordTransition.exists_transitionArc
+    {K : Triangulation} {v x : Nat} (T : FanChordTransition K v x) :
+    ∃ gamma : Path T.parentEdgeMidpoint T.edgeMidpoint,
+      Set.range gamma ⊆
+        (Subtype.val ⁻¹' triangulationTopologicalTetBody T.bridge) ∪
+        (Subtype.val ⁻¹' triangulationTopologicalTetBody T.witness) := by
+  let p0 := T.parentEdgeMidpoint
+  let p1 := T.bridgeVertex
+  let p2 := T.edgeMidpoint
+  have hp0 : p0.1 ∈ triangulationTopologicalTetBody T.bridge := by
+    exact triangulationTopologicalGeometricEdgeMidpoint_mem_tetBody
+      T.v_mem_bridge T.x_mem_bridge
+  have hp1bridge : p1.1 ∈ triangulationTopologicalTetBody T.bridge := by
+    exact triangulationTopologicalGeometricVertex_mem_tetBody T.z0_mem_bridge
+  have hp1witness : p1.1 ∈ triangulationTopologicalTetBody T.witness := by
+    exact triangulationTopologicalGeometricVertex_mem_tetBody T.z0_mem
+  have hp2 : p2.1 ∈ triangulationTopologicalTetBody T.witness := by
+    exact triangulationTopologicalGeometricEdgeMidpoint_mem_tetBody
+      T.z0_mem T.z1_mem
+  let a0 := carrierSegmentInTet K T.bridge T.bridge_mem p0 p1 hp0 hp1bridge
+  let a1 := carrierSegmentInTet K T.witness T.witness_mem p1 p2 hp1witness hp2
+  refine ⟨a0.trans a1, ?_⟩
+  exact carrierPath_trans_range_subset a0 a1
+    (by
+      rintro y ⟨t, rfl⟩
+      exact carrierSegmentInTet_mem K T.bridge T.bridge_mem
+        p0 p1 hp0 hp1bridge t)
+    (by
+      rintro y ⟨t, rfl⟩
+      exact carrierSegmentInTet_mem K T.witness T.witness_mem
+        p1 p2 hp1witness hp2 t)
 
 /-- An obstructed adjacent `2-3` candidate either closes the old fan as an
 incidence-three triangle, or gives a finite supported chord state with a
