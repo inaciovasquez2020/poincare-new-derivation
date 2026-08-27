@@ -112,5 +112,44 @@ theorem exists_finite_squareGrid_positiveCoordinate_labelling_probe
   · intro i j z hz
     exact (hlabel i j).2 z hz
 
+/--
+Two strictly positive carrier coordinates at one point are represented in a
+common tetrahedron.  This is the local compatibility mechanism for labels of
+neighboring filling cells.
+-/
+theorem carrier_two_positive_coordinates_common_tet_probe
+    {K : Triangulation}
+    (p : triangulationTopologicalGeometricCarrier K)
+    {v w : Nat}
+    (hv : 0 < p.1 v)
+    (hw : 0 < p.1 w) :
+    ∃ tau : Tet,
+      tau ∈ K.tets ∧
+      v ∈ tau.verts ∧
+      w ∈ tau.verts := by
+  obtain ⟨F, _, tau, htau, hFtau, a, _, _, hap⟩ :=
+    carrier_exists_finite_barycentric_support p
+
+  have hvF : v ∈ F := by
+    by_contra hvF
+    have hz : p.1 v = 0 := by
+      rw [geometricVertex_weighted_sum_coordinate F a p.1 hap v]
+      simp [hvF]
+    linarith
+
+  have hwF : w ∈ F := by
+    by_contra hwF
+    have hz : p.1 w = 0 := by
+      rw [geometricVertex_weighted_sum_coordinate F a p.1 hap w]
+      simp [hwF]
+    linarith
+
+  exact ⟨
+    tau,
+    htau,
+    List.mem_toFinset.mp (hFtau hvF),
+    List.mem_toFinset.mp (hFtau hwF)
+  ⟩
+
 end CarrierLoopNullHomotopyData
 end Poincare
