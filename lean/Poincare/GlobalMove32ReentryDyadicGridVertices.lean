@@ -363,5 +363,58 @@ theorem exists_finite_squareGrid_dyadic_refinement_positiveCoordinate_labelling_
   · intro i j z hz
     exact (hlabel i j).2 z hz
 
+/--
+At the same requested dyadic refinement depth, consecutive refined-cell
+labels across every horizontal and vertical grid edge occur together in one
+represented tetrahedron.
+-/
+theorem exists_finite_squareGrid_dyadic_refinement_neighbor_tet_compatible_labelling_probe
+    {K : Triangulation}
+    {x : triangulationTopologicalGeometricCarrier K}
+    {loop : Path x x}
+    (H : CarrierLoopNullHomotopyData K x loop)
+    (m : Nat) :
+    ∃ N : Nat, ∃ hN : 0 < N,
+      ∃ hD : 0 < N * 2 ^ m,
+        ∃ label : Fin (N * 2 ^ m) → Fin (N * 2 ^ m) → Nat,
+          (∀ i j : Fin (N * 2 ^ m),
+            label i j ∈ vertexSupport K) ∧
+          (∀ i j : Fin (N * 2 ^ m),
+            ∀ z ∈ squareGridCell (N * 2 ^ m) hD i j,
+              0 < (H.homotopy z).1 (label i j)) ∧
+          (∀ i i' j : Fin (N * 2 ^ m),
+            (i : Nat) + 1 = (i' : Nat) →
+            ∃ tau : Tet,
+              tau ∈ K.tets ∧
+              label i j ∈ tau.verts ∧
+              label i' j ∈ tau.verts) ∧
+          ∀ i j j' : Fin (N * 2 ^ m),
+            (j : Nat) + 1 = (j' : Nat) →
+            ∃ tau : Tet,
+              tau ∈ K.tets ∧
+              label i j ∈ tau.verts ∧
+              label i j' ∈ tau.verts := by
+  obtain ⟨N, hN, hD, label, hsupport, hpositive⟩ :=
+    H.exists_finite_squareGrid_dyadic_refinement_positiveCoordinate_labelling_probe m
+
+  obtain ⟨hhorizontal, hvertical⟩ :=
+    squareGridCell_neighbor_overlap_probe (N * 2 ^ m) hD
+
+  refine ⟨N, hN, hD, label, hsupport, hpositive, ?_, ?_⟩
+
+  · intro i i' j hii
+    obtain ⟨z, hz, hz'⟩ := hhorizontal i i' j hii
+    exact carrier_two_positive_coordinates_common_tet_probe
+      (H.homotopy z)
+      (hpositive i j z hz)
+      (hpositive i' j z hz')
+
+  · intro i j j' hjj
+    obtain ⟨z, hz, hz'⟩ := hvertical i j j' hjj
+    exact carrier_two_positive_coordinates_common_tet_probe
+      (H.homotopy z)
+      (hpositive i j z hz)
+      (hpositive i j' z hz')
+
 end CarrierLoopNullHomotopyData
 end Poincare
