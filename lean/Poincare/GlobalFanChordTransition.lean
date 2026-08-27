@@ -9,8 +9,10 @@ namespace Poincare
 
 /-- The finite edge state and geometric escape data produced when the chord
 of an adjacent pair in an ambient edge fan is already represented off the
-old central edge.  In the high-incidence branch `newFan` is an honest fan
-about the chord; no comparison of the two fan sizes is asserted. -/
+old central edge.  The bridge tetrahedron retains the local carrier joining
+the old central edge to one endpoint of the new chord.  In the high-incidence
+branch `newFan` is an honest fan about the chord; no comparison of the two fan
+sizes is asserted. -/
 structure FanChordTransition (K : Triangulation) (v x : Nat) where
   z0 : Nat
   z1 : Nat
@@ -20,6 +22,11 @@ structure FanChordTransition (K : Triangulation) (v x : Nat) where
   edgeState : SupportedEdgeState K
   edgeState_eq : edgeState =
     supportedEdgeStateOfDistinct K z0 z1 z0_supported z1_supported endpoints_ne
+  bridge : Tet
+  bridge_mem : bridge ∈ K.tets
+  v_mem_bridge : v ∈ bridge.verts
+  x_mem_bridge : x ∈ bridge.verts
+  z0_mem_bridge : z0 ∈ bridge.verts
   witness : Tet
   witness_mem : witness ∈ K.tets
   z0_mem : z0 ∈ witness.verts
@@ -60,6 +67,9 @@ theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_transition
     have hz1support : z1 ∈ vertexSupport K := by
       rw [mem_vertexSupport_iff]
       exact List.mem_flatMap.2 ⟨tau, htau, hz1⟩
+    have hz0bridge : z0 ∈ (F.tetAt sigma).verts :=
+      (hleft z0).2 (by
+        simp [Move23Site.leftTet, Tet.verts, ha, hb, hc, hd])
     have hpos : 0 < (K.tets.filter
         (fun t => z0 ∈ t.verts ∧ z1 ∈ t.verts)).length := by
       apply List.length_pos_iff.2
@@ -72,6 +82,11 @@ theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_transition
         z0_supported := hz0support, z1_supported := hz1support
         edgeState := supportedEdgeStateOfDistinct K z0 z1 hz0support hz1support hne
         edgeState_eq := rfl
+        bridge := F.tetAt sigma
+        bridge_mem := F.tetAt_mem sigma
+        v_mem_bridge := F.tetAt_contains_center sigma
+        x_mem_bridge := F.tetAt_contains_edgeVertex sigma
+        z0_mem_bridge := hz0bridge
         witness := tau, witness_mem := htau, z0_mem := hz0, z1_mem := hz1
         escapes_old_edge := hoff, incidence := Or.inl hinc }⟩
     · have hrep : VertexLinkVertexRepresented K z0 z1 :=
@@ -81,6 +96,11 @@ theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_transition
         z0_supported := hz0support, z1_supported := hz1support
         edgeState := supportedEdgeStateOfDistinct K z0 z1 hz0support hz1support hne
         edgeState_eq := rfl
+        bridge := F.tetAt sigma
+        bridge_mem := F.tetAt_mem sigma
+        v_mem_bridge := F.tetAt_contains_center sigma
+        x_mem_bridge := F.tetAt_contains_edgeVertex sigma
+        z0_mem_bridge := hz0bridge
         witness := tau, witness_mem := htau, z0_mem := hz0, z1_mem := hz1
         escapes_old_edge := hoff
         incidence := Or.inr ⟨hinc,
