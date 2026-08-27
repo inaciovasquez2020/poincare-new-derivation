@@ -179,3 +179,4 @@ import Poincare.CarrierPolygonalPath
 import Poincare.GlobalMove32ReentryPolygonalLoop
 import Poincare.GlobalMove32ReentryPolygonalLoopNullHomotopy
 import Poincare.GlobalMove32ReentryDyadicGridVertices
+import Poincare.GlobalMove32ReentryFiniteFillingEar
