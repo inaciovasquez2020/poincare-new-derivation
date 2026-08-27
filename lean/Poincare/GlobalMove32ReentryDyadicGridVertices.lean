@@ -188,5 +188,27 @@ theorem exists_finite_squareGrid_overlap_compatible_labelling_probe
     (hpositive i j z hz)
     (hpositive i' j' z hz')
 
+/-- The southwest corner of every standard cell belongs to that closed cell. -/
+theorem squareGridCellSource_mem_probe
+    (N : Nat) (hN : 0 < N) (i j : Fin N) :
+    squareGridCellSource N hN i j ∈ squareGridCell N hN i j := by
+  have hNr : 0 < (N : ℝ) := by
+    exact_mod_cast hN
+
+  simp only [squareGridCell, squareGridCellSource]
+  refine ⟨le_rfl, ?_, le_rfl, ?_⟩
+
+  · change
+      ((i : ℝ) / (N : ℝ)) ≤
+        (((i.succ : Fin (N + 1)) : ℝ) / (N : ℝ))
+    rw [div_le_div_iff₀ hNr]
+    norm_num
+
+  · change
+      ((j : ℝ) / (N : ℝ)) ≤
+        (((j.succ : Fin (N + 1)) : ℝ) / (N : ℝ))
+    rw [div_le_div_iff₀ hNr]
+    norm_num
+
 end CarrierLoopNullHomotopyData
 end Poincare
