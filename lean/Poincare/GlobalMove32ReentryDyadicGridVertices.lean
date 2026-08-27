@@ -201,13 +201,15 @@ theorem squareGridCellSource_mem_probe
   · change
       ((i : ℝ) / (N : ℝ)) ≤
         (((i.succ : Fin (N + 1)) : ℝ) / (N : ℝ))
-    rw [div_le_div_iff₀ hNr hNr]
+    rw [show ((i.succ : Fin (N + 1)) : ℝ) = (i : ℝ) + 1 by norm_num,
+      div_le_div_iff₀ hNr hNr]
     nlinarith
 
   · change
       ((j : ℝ) / (N : ℝ)) ≤
         (((j.succ : Fin (N + 1)) : ℝ) / (N : ℝ))
-    rw [div_le_div_iff₀ hNr hNr]
+    rw [show ((j.succ : Fin (N + 1)) : ℝ) = (j : ℝ) + 1 by norm_num,
+      div_le_div_iff₀ hNr hNr]
     nlinarith
 
 end CarrierLoopNullHomotopyData
