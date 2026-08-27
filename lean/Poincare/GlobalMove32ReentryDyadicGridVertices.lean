@@ -235,6 +235,7 @@ theorem squareGridCell_neighbor_overlap_probe
       apply Fin.ext
       exact hii.symm
 
+    dsimp [z]
     simp only [squareGridCell, squareGridCellSource] at hleft ⊢
     rcases hleft with ⟨_, hxup, _, hyup⟩
     rw [hi]
@@ -249,6 +250,7 @@ theorem squareGridCell_neighbor_overlap_probe
       apply Fin.ext
       exact hjj.symm
 
+    dsimp [z]
     simp only [squareGridCell, squareGridCellSource] at hbelow ⊢
     rcases hbelow with ⟨_, hxup, _, hyup⟩
     rw [hj]
