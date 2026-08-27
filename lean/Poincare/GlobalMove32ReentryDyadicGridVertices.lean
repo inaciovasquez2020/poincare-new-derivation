@@ -212,5 +212,47 @@ theorem squareGridCellSource_mem_probe
       div_le_div_iff₀ hNr hNr]
     nlinarith
 
+/-- Consecutive horizontal or vertical grid cells meet in an explicit corner. -/
+theorem squareGridCell_neighbor_overlap_probe
+    (N : Nat) (hN : 0 < N) :
+    (∀ i i' j : Fin N,
+      (i : Nat) + 1 = (i' : Nat) →
+      ∃ z,
+        z ∈ squareGridCell N hN i j ∧
+        z ∈ squareGridCell N hN i' j) ∧
+    (∀ i j j' : Fin N,
+      (j : Nat) + 1 = (j' : Nat) →
+      ∃ z,
+        z ∈ squareGridCell N hN i j ∧
+        z ∈ squareGridCell N hN i j') := by
+  constructor
+  · intro i i' j hii
+    let z := squareGridCellSource N hN i' j
+    refine ⟨z, ?_, squareGridCellSource_mem_probe N hN i' j⟩
+
+    have hleft := squareGridCellSource_mem_probe N hN i j
+    have hi : i'.castSucc = i.succ := by
+      apply Fin.ext
+      exact hii.symm
+
+    simp only [squareGridCell, squareGridCellSource] at hleft ⊢
+    rcases hleft with ⟨_, hxup, _, hyup⟩
+    rw [hi]
+    exact ⟨hxup, le_rfl, le_rfl, hyup⟩
+
+  · intro i j j' hjj
+    let z := squareGridCellSource N hN i j'
+    refine ⟨z, ?_, squareGridCellSource_mem_probe N hN i j'⟩
+
+    have hbelow := squareGridCellSource_mem_probe N hN i j
+    have hj : j'.castSucc = j.succ := by
+      apply Fin.ext
+      exact hjj.symm
+
+    simp only [squareGridCell, squareGridCellSource] at hbelow ⊢
+    rcases hbelow with ⟨_, hxup, _, hyup⟩
+    rw [hj]
+    exact ⟨le_rfl, hxup, hyup, le_rfl⟩
+
 end CarrierLoopNullHomotopyData
 end Poincare
