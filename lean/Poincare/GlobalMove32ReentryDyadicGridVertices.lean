@@ -46,5 +46,43 @@ theorem orderedTransition_dyadic_breakpoint_refined_grid_vertex_probe
     orderedTransition_dyadic_breakpoint_on_refined_grid_probe
       N m k hN hk
 
+/--
+At one common finite square-grid scale, every cell has a represented vertex
+whose carrier coordinate stays strictly positive on the entire cell.  This
+retains the open-star witness used internally by the existing cell-control
+proof instead of weakening it to closed vertex-star membership.
+-/
+theorem exists_finite_squareGrid_positiveCoordinate_control_probe
+    {K : Triangulation}
+    {x : triangulationTopologicalGeometricCarrier K}
+    {loop : Path x x}
+    (H : CarrierLoopNullHomotopyData K x loop) :
+    ∃ N : Nat, ∃ hN : 0 < N,
+      ∀ i j : Fin N,
+        ∃ v, v ∈ vertexSupport K ∧
+          ∀ z ∈ squareGridCell N hN i j,
+            0 < (H.homotopy z).1 v := by
+  obtain ⟨N, hN, hcommon⟩ :=
+    H.exists_uniform_vertexSupport_coordinate_positive_scale_probe
+
+  refine ⟨N, hN, ?_⟩
+  intro i j
+
+  let a : unitInterval × unitInterval :=
+    squareGridCellSource N hN i j
+
+  obtain ⟨v, hvSupport, hvquarter⟩ :=
+    carrier_exists_vertexSupport_coordinate_ge_quarter
+      (H.homotopy a)
+
+  refine ⟨v, hvSupport, ?_⟩
+  intro z hz
+
+  have hd :
+      dist a z ≤ 1 / (N : ℝ) := by
+    exact squareGridCell_dist_source_le N hN i j hz
+
+  exact hcommon v hvSupport a z hd hvquarter
+
 end CarrierLoopNullHomotopyData
 end Poincare
