@@ -84,5 +84,33 @@ theorem exists_finite_squareGrid_positiveCoordinate_control_probe
 
   exact hcommon v hvSupport a z hd hvquarter
 
+/--
+Package the cellwise positive-coordinate witnesses into one finite label map.
+This is the first explicit finite combinatorial object extracted from the
+relative null-homotopy.
+-/
+theorem exists_finite_squareGrid_positiveCoordinate_labelling_probe
+    {K : Triangulation}
+    {x : triangulationTopologicalGeometricCarrier K}
+    {loop : Path x x}
+    (H : CarrierLoopNullHomotopyData K x loop) :
+    ∃ N : Nat, ∃ hN : 0 < N,
+      ∃ label : Fin N → Fin N → Nat,
+        (∀ i j : Fin N,
+          label i j ∈ vertexSupport K) ∧
+        ∀ i j : Fin N,
+          ∀ z ∈ squareGridCell N hN i j,
+            0 < (H.homotopy z).1 (label i j) := by
+  obtain ⟨N, hN, hcells⟩ :=
+    H.exists_finite_squareGrid_positiveCoordinate_control_probe
+
+  choose label hlabel using hcells
+
+  refine ⟨N, hN, label, ?_, ?_⟩
+  · intro i j
+    exact (hlabel i j).1
+  · intro i j z hz
+    exact (hlabel i j).2 z hz
+
 end CarrierLoopNullHomotopyData
 end Poincare
