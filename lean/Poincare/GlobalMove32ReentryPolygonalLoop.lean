@@ -115,12 +115,15 @@ theorem witnessedReentry_transitionArc
       apply Set.mem_iUnion_of_mem (by simp)
       exact carrierSegmentInTet_mem K sigma hsigma _ _ hpx2 hmt u
 
-/-- Concatenate an indexed sequence of transition arcs in its actual order. -/
+/-- Concatenate an indexed sequence of transition arcs in its actual order,
+without inserting an initial constant half-segment before the first arc. -/
 noncomputable def orderedTransitionPath
     {X : Type*} [TopologicalSpace X] (p : Nat → X)
     (arc : ∀ n, Path (p n) (p (n + 1))) : ∀ m, Path (p 0) (p m)
   | 0 => Path.refl _
-  | m + 1 => (orderedTransitionPath p arc m).trans (arc m)
+  | 1 => arc 0
+  | Nat.succ (Nat.succ m) =>
+      (orderedTransitionPath p arc (Nat.succ m)).trans (arc (Nat.succ m))
 
 /-- A recurrence-driven polygonal loop.  Its construction uses every
 transition in the ordered recurrent interval and never uses the old
