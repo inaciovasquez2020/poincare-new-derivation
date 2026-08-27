@@ -36,12 +36,21 @@ theorem move32SharedEdgeMidpoint_eq_of_endpoints
 
 /-- A witnessed reentry step realized as the canonical three-segment trace
 through precisely a represented target tetrahedron, the witnessed source
-tetrahedron, and the witnessed reentry tetrahedron. -/
+tetrahedron, and the witnessed reentry tetrahedron.  The initial quarter of
+the parameter interval is certified to remain in the realized target
+tetrahedron of the source site. -/
 structure WitnessedReentryTransitionArc (K : Triangulation)
     (s t : Move32Site) (hs : s.RealizedIn K) where
   targetRealized : t.RealizedIn K
   path : Path (move32SharedEdgeMidpoint s hs)
     (move32SharedEdgeMidpoint t targetRealized)
+  initialTarget : Tet
+  initialTarget_mem : initialTarget ∈ K.tets
+  initialTarget_same : SameTetVertices initialTarget s.targetTet₀
+  initial_quarter_supported :
+    ∀ u : unitInterval,
+      (u : ℝ) ≤ 1 / 4 →
+      (path u).1 ∈ triangulationTopologicalTetBody initialTarget
   supportingTets : List Tet
   supportingTets_mem : ∀ tau ∈ supportingTets, tau ∈ K.tets
   range_supported : Set.range path ⊆
@@ -97,9 +106,25 @@ theorem witnessedReentry_transitionArc
   refine ⟨{
     targetRealized := ht
     path := (a0.trans a1).trans a2
+    initialTarget := target
+    initialTarget_mem := htarget
+    initialTarget_same := htargetVerts
+    initial_quarter_supported := ?_
     supportingTets := [target, tau, sigma]
     supportingTets_mem := ?_
     range_supported := ?_ }⟩
+  · intro u hu
+    have huHalf : (u : ℝ) ≤ 1 / 2 := by
+      linarith
+    have htwo : 2 * (u : ℝ) ≤ 1 / 2 := by
+      linarith
+    rw [Path.trans_apply]
+    split_ifs with houter
+    · rw [Path.trans_apply]
+      split_ifs with hinner
+      · exact carrierSegmentInTet_mem K target htarget _ _ hm0 hpa0 _
+      · exact (hinner (by simpa using htwo)).elim
+    · exact (houter huHalf).elim
   · intro z hz
     simp only [List.mem_cons, List.not_mem_nil, or_false] at hz
     rcases hz with rfl | rfl | rfl <;> assumption
