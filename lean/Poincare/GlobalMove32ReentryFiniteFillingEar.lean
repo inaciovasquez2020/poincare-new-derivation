@@ -125,5 +125,100 @@ theorem finite_squareGrid_loopBoundary_anchor_endpoint_tet_probe
 
   exact ⟨j, tau, htau, hlabelTau, hdTau⟩
 
+/--
+At the recurrent anchor, one genuine loop-boundary filling label and both
+endpoints of the represented anchor shared edge occur in a single represented
+tetrahedron.  This is still only a boundary synchronization statement; it
+does not assert `Move32Site.LegalIn`.
+-/
+theorem finite_squareGrid_loopBoundary_anchor_sharedEdge_tet_probe
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (p : WitnessedReentryPolygonalLoopCertificate K)
+    (H : CarrierLoopNullHomotopyData K p.basepoint p.polygonalLoop)
+    (D : Nat)
+    (hD : 0 < D)
+    (label : Fin D → Fin D → Nat)
+    (hpositive :
+      ∀ i j : Fin D,
+        ∀ z ∈ squareGridCell D hD i j,
+          0 < (H.homotopy z).1 (label i j)) :
+    ∃ j : Fin D,
+      ∃ tau : Tet,
+        tau ∈ K.tets ∧
+        label ⟨0, hD⟩ j ∈ tau.verts ∧
+        (p.crossing.sites p.crossing.anchorIndex).d ∈ tau.verts ∧
+        (p.crossing.sites p.crossing.anchorIndex).e ∈ tau.verts := by
+  let s : Move32Site :=
+    p.crossing.sites p.crossing.anchorIndex
+
+  have hsRealized : s.RealizedIn K := by
+    exact p.realized p.crossing.anchorIndex
+
+  have hde : s.d ≠ s.e :=
+    (hcore.move32_sharedEdge_supported s hsRealized).2.2
+
+  obtain ⟨j, hcell, hloop⟩ :=
+    H.exists_squareGrid_loopBoundary_cell_probe
+      D hD (0 : unitInterval)
+
+  have hlabelPositive :
+      0 < p.basepoint.1 (label ⟨0, hD⟩ j) := by
+    have h :=
+      hpositive ⟨0, hD⟩ j
+        ((0 : unitInterval), (0 : unitInterval)) hcell
+    rw [hloop] at h
+    simpa using h
+
+  have hdPositive : 0 < p.basepoint.1 s.d := by
+    rw [p.basepoint_eq]
+    change
+      0 <
+        triangulationTopologicalGeometricEdgeMidpoint
+          s.d s.e s.d
+    simp [triangulationTopologicalGeometricEdgeMidpoint_apply, hde.symm]
+
+  have hePositive : 0 < p.basepoint.1 s.e := by
+    rw [p.basepoint_eq]
+    change
+      0 <
+        triangulationTopologicalGeometricEdgeMidpoint
+          s.d s.e s.e
+    simp [triangulationTopologicalGeometricEdgeMidpoint_apply, hde]
+
+  obtain ⟨F, _, tau, htau, hFtau, a, _, _, hap⟩ :=
+    carrier_exists_finite_barycentric_support p.basepoint
+
+  have hlabelF : label ⟨0, hD⟩ j ∈ F := by
+    by_contra hlabelF
+    have hz : p.basepoint.1 (label ⟨0, hD⟩ j) = 0 := by
+      rw [geometricVertex_weighted_sum_coordinate
+        F a p.basepoint.1 hap (label ⟨0, hD⟩ j)]
+      simp [hlabelF]
+    linarith
+
+  have hdF : s.d ∈ F := by
+    by_contra hdF
+    have hz : p.basepoint.1 s.d = 0 := by
+      rw [geometricVertex_weighted_sum_coordinate F a p.basepoint.1 hap s.d]
+      simp [hdF]
+    linarith
+
+  have heF : s.e ∈ F := by
+    by_contra heF
+    have hz : p.basepoint.1 s.e = 0 := by
+      rw [geometricVertex_weighted_sum_coordinate F a p.basepoint.1 hap s.e]
+      simp [heF]
+    linarith
+
+  exact ⟨
+    j,
+    tau,
+    htau,
+    List.mem_toFinset.mp (hFtau hlabelF),
+    List.mem_toFinset.mp (hFtau hdF),
+    List.mem_toFinset.mp (hFtau heF)
+  ⟩
+
 end CarrierLoopNullHomotopyData
 end Poincare
