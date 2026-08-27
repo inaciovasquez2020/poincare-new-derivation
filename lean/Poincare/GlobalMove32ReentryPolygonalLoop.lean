@@ -125,6 +125,41 @@ noncomputable def orderedTransitionPath
   | Nat.succ (Nat.succ m) =>
       (orderedTransitionPath p arc (Nat.succ m)).trans (arc (Nat.succ m))
 
+/-- The exact ordered recurrent loop determined by the crossing, realized
+sites, and witnessed transition arcs, transported to the chosen basepoint. -/
+noncomputable def witnessedReentryOrderedLoop
+    {K : Triangulation}
+    (crossing : WitnessedReentryCrossingCertificate K)
+    (realized : ∀ n, (crossing.sites n).RealizedIn K)
+    (steps : ∀ n, WitnessedReentryTransitionArc K
+      (crossing.sites n) (crossing.sites (n + 1)) (realized n))
+    (basepoint : triangulationTopologicalGeometricCarrier K)
+    (hbase : basepoint =
+      move32SharedEdgeMidpoint (crossing.sites crossing.anchorIndex)
+        (realized crossing.anchorIndex)) :
+    Path basepoint basepoint := by
+  subst basepoint
+  let p : Nat → triangulationTopologicalGeometricCarrier K := fun n =>
+    move32SharedEdgeMidpoint (crossing.sites (crossing.anchorIndex + n))
+      (realized (crossing.anchorIndex + n))
+  let arcs : ∀ n, Path (p n) (p (n + 1)) := fun n => by
+    let a := steps (crossing.anchorIndex + n)
+    exact a.path.cast rfl (by apply Subtype.ext; rfl)
+  have hle : crossing.anchorIndex ≤ crossing.predecessorIndex + 1 := by
+    have := crossing.gap
+    omega
+  let m := crossing.predecessorIndex + 1 - crossing.anchorIndex
+  have hendIndex : crossing.anchorIndex + m = crossing.predecessorIndex + 1 := by
+    simp [m, Nat.add_sub_of_le hle]
+  have hend : p m = p 0 := by
+    dsimp [p]
+    rw [hendIndex]
+    simpa using move32SharedEdgeMidpoint_eq_of_endpoints
+      (realized (crossing.predecessorIndex + 1))
+      (realized crossing.anchorIndex) crossing.return_edge_eq_anchor
+  let raw : Path (p 0) (p m) := orderedTransitionPath p arcs m
+  exact raw.cast rfl hend.symm
+
 /-- A recurrence-driven polygonal loop.  Its construction uses every
 transition in the ordered recurrent interval and never uses the old
 `crossingPath` or its reverse. -/
@@ -146,7 +181,9 @@ structure WitnessedReentryPolygonalLoopCertificate (K : Triangulation) where
         (realized (crossing.predecessorIndex + 1)) =
       move32SharedEdgeMidpoint (crossing.sites crossing.anchorIndex)
         (realized crossing.anchorIndex)
-  uses_ordered_steps : True
+  polygonalLoop_eq_ordered :
+    polygonalLoop =
+      witnessedReentryOrderedLoop crossing realized steps basepoint basepoint_eq
   predecessor_sourceFace_crossing :
     ¬ (∀ z : Nat,
       z ∈ [(crossing.sites crossing.predecessorIndex).a,
@@ -198,39 +235,24 @@ theorem ClosedTriangulationCore.exists_polygonalLoopCertificate_of_witnessedReen
       (c.sites n) (c.sites (n + 1)) (hrealized n) := fun n =>
     (witnessedReentry_transitionArc (c.sites n) (c.sites (n + 1))
       (hrealized n) (hwitnessed n)).some
-  let p : Nat → triangulationTopologicalGeometricCarrier K := fun n =>
-    move32SharedEdgeMidpoint (c.sites (c.anchorIndex + n))
-      (hrealized (c.anchorIndex + n))
-  let arcs : ∀ n, Path (p n) (p (n + 1)) := fun n => by
-    let a := stepArc (c.anchorIndex + n)
-    exact a.path.cast rfl (by apply Subtype.ext; rfl)
-  have hle : c.anchorIndex ≤ c.predecessorIndex + 1 := by
-    have := c.gap
-    omega
-  let m := c.predecessorIndex + 1 - c.anchorIndex
-  have hendIndex : c.anchorIndex + m = c.predecessorIndex + 1 := by
-    simp [m, Nat.add_sub_of_le hle]
-  have hend : p m = p 0 := by
-    dsimp [p]
-    rw [hendIndex]
-    simpa using move32SharedEdgeMidpoint_eq_of_endpoints
-      (hrealized (c.predecessorIndex + 1))
-      (hrealized c.anchorIndex) c.return_edge_eq_anchor
-  let raw : Path (p 0) (p m) := orderedTransitionPath p arcs m
-  let loop : Path (p 0) (p 0) := raw.cast rfl hend.symm
+  let basepoint :=
+    move32SharedEdgeMidpoint (c.sites c.anchorIndex)
+      (hrealized c.anchorIndex)
+  let loop : Path basepoint basepoint :=
+    witnessedReentryOrderedLoop c hrealized stepArc basepoint rfl
   refine ⟨{
     crossing := c
     ordered := ordered
     ordered_crossing := rfl
     realized := hrealized
     steps := stepArc
-    basepoint := p 0
-    basepoint_eq := by rfl
+    basepoint := basepoint
+    basepoint_eq := rfl
     polygonalLoop := loop
     anchor_return_midpoint := move32SharedEdgeMidpoint_eq_of_endpoints
       (hrealized (c.predecessorIndex + 1))
       (hrealized c.anchorIndex) c.return_edge_eq_anchor
-    uses_ordered_steps := trivial
+    polygonalLoop_eq_ordered := rfl
     predecessor_sourceFace_crossing := c.predecessor_sourceFace_ne_anchor
     two_sided_carrier_escape := c.twoSidedCarrierEscape }⟩
 
