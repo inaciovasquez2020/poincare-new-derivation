@@ -55,12 +55,7 @@ theorem
         f (n + 1) = (T n).edgeState := by
     intro n
     obtain ⟨hvnext, hxnext⟩ := hchain n
-    rw [show f (n + 1) =
-        supportedEdgeStateOfDistinct
-          K (v (n + 1)) (x (n + 1))
-            (hv (n + 1)) (hx (n + 1)) (hvx (n + 1)) by rfl]
-    rw [hvnext, hxnext]
-    exact (T n).edgeState_eq.symm
+    simpa [f, hvnext, hxnext] using (T n).edgeState_eq.symm
 
   have hconsecutive :
       ∀ n,
