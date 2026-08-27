@@ -300,5 +300,68 @@ theorem exists_finite_squareGrid_neighbor_tet_compatible_labelling_probe
     obtain ⟨z, hz, hz'⟩ := hvertical i j j' hjj
     exact hoverlap i j i j' z hz hz'
 
+/--
+At any requested dyadic refinement depth, retain strict positive-coordinate
+cell labels on the refined grid `D = N * 2^m`.  This is the refined analogue
+of the finite labelling above and is the scale needed to place every recursive
+`Path.trans` breakpoint literally on the left boundary grid.
+-/
+theorem exists_finite_squareGrid_dyadic_refinement_positiveCoordinate_labelling_probe
+    {K : Triangulation}
+    {x : triangulationTopologicalGeometricCarrier K}
+    {loop : Path x x}
+    (H : CarrierLoopNullHomotopyData K x loop)
+    (m : Nat) :
+    ∃ N : Nat, ∃ hN : 0 < N,
+      ∃ hD : 0 < N * 2 ^ m,
+        ∃ label : Fin (N * 2 ^ m) → Fin (N * 2 ^ m) → Nat,
+          (∀ i j : Fin (N * 2 ^ m),
+            label i j ∈ vertexSupport K) ∧
+          ∀ i j : Fin (N * 2 ^ m),
+            ∀ z ∈ squareGridCell (N * 2 ^ m) hD i j,
+              0 < (H.homotopy z).1 (label i j) := by
+  obtain ⟨N, hN, hcommon⟩ :=
+    H.exists_uniform_vertexSupport_coordinate_positive_scale_probe
+
+  have hscale :=
+    orderedTransition_refined_grid_scale_probe N m hN
+
+  have hcells :
+      ∀ i j : Fin (N * 2 ^ m),
+        ∃ v, v ∈ vertexSupport K ∧
+          ∀ z ∈ squareGridCell (N * 2 ^ m) hscale.1 i j,
+            0 < (H.homotopy z).1 v := by
+    intro i j
+
+    let a : unitInterval × unitInterval :=
+      squareGridCellSource (N * 2 ^ m) hscale.1 i j
+
+    obtain ⟨v, hvSupport, hvquarter⟩ :=
+      carrier_exists_vertexSupport_coordinate_ge_quarter
+        (H.homotopy a)
+
+    refine ⟨v, hvSupport, ?_⟩
+    intro z hz
+
+    have hdRefined :
+        dist a z ≤ 1 / ((N * 2 ^ m : Nat) : ℝ) := by
+      exact
+        squareGridCell_dist_source_le
+          (N * 2 ^ m) hscale.1 i j hz
+
+    have hdCommon :
+        dist a z ≤ 1 / (N : ℝ) := by
+      exact hdRefined.trans hscale.2
+
+    exact hcommon v hvSupport a z hdCommon hvquarter
+
+  choose label hlabel using hcells
+
+  refine ⟨N, hN, hscale.1, label, ?_, ?_⟩
+  · intro i j
+    exact (hlabel i j).1
+  · intro i j z hz
+    exact (hlabel i j).2 z hz
+
 end CarrierLoopNullHomotopyData
 end Poincare
