@@ -1,5 +1,5 @@
 import Poincare.GlobalMove32ReentryFirstNonzeroFillingSupport
-import Poincare.GlobalMove32ReentryFiniteFillingEar
+import Poincare.GlobalMove32ReentryFiniteFillingEarEscape
 
 namespace Poincare
 namespace CarrierLoopNullHomotopyData
@@ -166,6 +166,170 @@ theorem finite_squareGrid_first_nonzero_anchor_firstEar_sourceVertexFork_probe
           apply hcancel
           rw [he]
           exact heTau
+
+/-- At the same first refined ear, retain the exact source-vertex escape and
+classify the *same* compatibility tetrahedron `rho`.  In the non-cancellation
+branch, `rho` either contains both recurrent shared-edge endpoints and is
+therefore another anchor target tetrahedron, or it contains exactly one
+endpoint and is not any anchor target tetrahedron.  Thus a genuine one-sided
+ear escape carries the missing source vertex (`b` from `targetTet₁`, `a` from
+`targetTet₂`) without yet asserting a represented source face or a legal move. -/
+theorem finite_squareGrid_first_nonzero_anchor_firstEar_sourceEndpointEscape_probe
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (p : WitnessedReentryPolygonalLoopCertificate K)
+    (H : CarrierLoopNullHomotopyData K p.basepoint p.polygonalLoop)
+    (N : Nat) (hN : 0 < N) :
+    let m := p.crossing.predecessorIndex + 1 - p.crossing.anchorIndex
+    let D := N * 2 ^ (m + 1)
+    ∀ (hD : 0 < D)
+      (label : Fin D → Fin D → Nat),
+      (∀ i j : Fin D,
+        ∀ z ∈ squareGridCell D hD i j,
+          0 < (H.homotopy z).1 (label i j)) →
+      ∃ hDtwo : 1 < D,
+        ∃ tau : Tet,
+          tau ∈ K.tets ∧
+          label ⟨0, hD⟩ ⟨0, hD⟩ ∈ tau.verts ∧
+          (label ⟨0, hD⟩ ⟨1, hDtwo⟩ ∈ tau.verts ∨
+            ∃ rho : Tet,
+              rho ∈ K.tets ∧
+              rho ≠ tau ∧
+              label ⟨0, hD⟩ ⟨0, hD⟩ ∈ rho.verts ∧
+              label ⟨0, hD⟩ ⟨1, hDtwo⟩ ∈ rho.verts ∧
+              (((SameTetVertices tau
+                    (p.crossing.sites p.crossing.anchorIndex).targetTet₁ ∧
+                  label ⟨0, hD⟩ ⟨1, hDtwo⟩ =
+                    (p.crossing.sites p.crossing.anchorIndex).b) ∨
+                (SameTetVertices tau
+                    (p.crossing.sites p.crossing.anchorIndex).targetTet₂ ∧
+                  label ⟨0, hD⟩ ⟨1, hDtwo⟩ =
+                    (p.crossing.sites p.crossing.anchorIndex).a)) ∧
+                (((p.crossing.sites p.crossing.anchorIndex).d ∈ rho.verts ∧
+                    (p.crossing.sites p.crossing.anchorIndex).e ∈ rho.verts) ∧
+                    (SameTetVertices rho
+                        (p.crossing.sites p.crossing.anchorIndex).targetTet₀ ∨
+                      SameTetVertices rho
+                        (p.crossing.sites p.crossing.anchorIndex).targetTet₁ ∨
+                      SameTetVertices rho
+                        (p.crossing.sites p.crossing.anchorIndex).targetTet₂) ∨
+                  (((p.crossing.sites p.crossing.anchorIndex).d ∈ rho.verts ∧
+                        (p.crossing.sites p.crossing.anchorIndex).e ∉ rho.verts) ∨
+                      ((p.crossing.sites p.crossing.anchorIndex).e ∈ rho.verts ∧
+                        (p.crossing.sites p.crossing.anchorIndex).d ∉ rho.verts)) ∧
+                    ¬ SameTetVertices rho
+                        (p.crossing.sites p.crossing.anchorIndex).targetTet₀ ∧
+                    ¬ SameTetVertices rho
+                        (p.crossing.sites p.crossing.anchorIndex).targetTet₁ ∧
+                    ¬ SameTetVertices rho
+                        (p.crossing.sites p.crossing.anchorIndex).targetTet₂))) := by
+  classical
+  dsimp only
+  let s : Move32Site := p.crossing.sites p.crossing.anchorIndex
+  let m := p.crossing.predecessorIndex + 1 - p.crossing.anchorIndex
+  let D := N * 2 ^ (m + 1)
+  intro hD label hpositive
+
+  obtain ⟨hDtwo, tau, htau, hlabel0Tau, _, hfork⟩ :=
+    H.finite_squareGrid_first_nonzero_anchor_firstEar_sourceVertexFork_probe
+      hcore p N hN hD label hpositive
+
+  let i0 : Fin D := ⟨0, hD⟩
+  let j0 : Fin D := ⟨0, hD⟩
+  let j1 : Fin D := ⟨1, hDtwo⟩
+
+  obtain ⟨_, _, _, hlabel0Endpoint, _, _⟩ :=
+    H.finite_squareGrid_loopBoundary_anchor_firstEarEndpointFork_probe
+      hcore p D hD hDtwo label hpositive
+
+  have hlabel0Endpoint' :
+      label i0 j0 = s.d ∨ label i0 j0 = s.e := by
+    simpa [i0, j0, s] using hlabel0Endpoint
+
+  have hsRealized : s.RealizedIn K := by
+    exact p.realized p.crossing.anchorIndex
+
+  have hanchorThree : s.SharedEdgeExactlyThree K := by
+    have h :=
+      p.ordered.sharedEdgeExactlyThree
+        p.ordered.crossing.anchorIndex
+        (by omega)
+        (by
+          have hg := p.ordered.crossing.gap
+          omega)
+    rw [p.ordered.traceAt_eq_site] at h
+    rw [p.ordered_crossing] at h
+    exact h
+
+  refine ⟨hDtwo, tau, htau, hlabel0Tau, ?_⟩
+
+  rcases hfork with hcancel | ⟨rho, hrho, hrhoNe, hlabel0Rho, hlabel1Rho, hsource⟩
+  · exact Or.inl hcancel
+  · right
+    refine ⟨rho, hrho, hrhoNe, hlabel0Rho, hlabel1Rho, hsource, ?_⟩
+
+    change label i0 j0 ∈ rho.verts at hlabel0Rho
+
+    by_cases hdRho : s.d ∈ rho.verts
+    · by_cases heRho : s.e ∈ rho.verts
+      · left
+        refine ⟨⟨by simpa [s] using hdRho, by simpa [s] using heRho⟩, ?_⟩
+        have htargetRho :=
+          hcore.move32Site_same_target_of_contains_sharedEdge_of_realized_exactlyThree
+            s hsRealized hanchorThree hrho hdRho heRho
+        simpa [s] using htargetRho
+      · right
+        have hnot0 : ¬ SameTetVertices rho s.targetTet₀ := by
+          intro hsame
+          apply heRho
+          apply (hsame s.e).2
+          simp [Move32Site.targetTet₀, Tet.verts]
+        have hnot1 : ¬ SameTetVertices rho s.targetTet₁ := by
+          intro hsame
+          apply heRho
+          apply (hsame s.e).2
+          simp [Move32Site.targetTet₁, Tet.verts]
+        have hnot2 : ¬ SameTetVertices rho s.targetTet₂ := by
+          intro hsame
+          apply heRho
+          apply (hsame s.e).2
+          simp [Move32Site.targetTet₂, Tet.verts]
+        refine ⟨?_, ?_, ?_, ?_⟩
+        · left
+          exact ⟨by simpa [s] using hdRho, by simpa [s] using heRho⟩
+        · simpa [s] using hnot0
+        · simpa [s] using hnot1
+        · simpa [s] using hnot2
+    · have heRho : s.e ∈ rho.verts := by
+        rcases hlabel0Endpoint' with hlabelD | hlabelE
+        · exfalso
+          apply hdRho
+          rw [← hlabelD]
+          exact hlabel0Rho
+        · rw [← hlabelE]
+          exact hlabel0Rho
+      right
+      have hnot0 : ¬ SameTetVertices rho s.targetTet₀ := by
+        intro hsame
+        apply hdRho
+        apply (hsame s.d).2
+        simp [Move32Site.targetTet₀, Tet.verts]
+      have hnot1 : ¬ SameTetVertices rho s.targetTet₁ := by
+        intro hsame
+        apply hdRho
+        apply (hsame s.d).2
+        simp [Move32Site.targetTet₁, Tet.verts]
+      have hnot2 : ¬ SameTetVertices rho s.targetTet₂ := by
+        intro hsame
+        apply hdRho
+        apply (hsame s.d).2
+        simp [Move32Site.targetTet₂, Tet.verts]
+      refine ⟨?_, ?_, ?_, ?_⟩
+      · right
+        exact ⟨by simpa [s] using heRho, by simpa [s] using hdRho⟩
+      · simpa [s] using hnot0
+      · simpa [s] using hnot1
+      · simpa [s] using hnot2
 
 end CarrierLoopNullHomotopyData
 end Poincare
