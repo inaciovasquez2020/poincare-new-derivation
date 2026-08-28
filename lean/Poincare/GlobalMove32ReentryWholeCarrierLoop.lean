@@ -285,4 +285,91 @@ theorem ClosedTriangulationCore.exists_wholeCarrierLoop_of_witnessedReentry_recu
     wholeCarrierLoop := loop
     loop_eq_crossingPath_trans_symm := rfl }⟩
 
+/--
+Fail-closed composition of the perpetual witnessed-reentry builder with the
+finite recurrent crossing-certificate constructor.
+-/
+theorem ClosedTriangulationCore.exists_witnessedReentryCrossingCertificate_of_no_other_sourceFace_outcome
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hlinks :
+      ∀ u ∈ vertexSupport K,
+        VertexLinkConnected K u)
+    (hconn : TetrahedronVertexOverlapConnected K)
+    (hSC : TriangulationRealizationSimplyConnected K)
+    (hNoFour :
+      ∀ u ∈ vertexSupport K,
+        vertexDegree K u ≠ 4)
+    (hNoMove23 :
+      ∀ s : Move32Site,
+        s.RealizedIn K →
+        (∃ tau ∈ K.tets,
+          s.a ∈ tau.verts ∧
+          s.b ∈ tau.verts ∧
+          s.c ∈ tau.verts) →
+        ¬ ∃ m : Move23Site,
+          m.a = s.a ∧
+          m.b = s.b ∧
+          m.c = s.c ∧
+          m.LegalIn K)
+    (hNoDescent :
+      ¬ ∃ K',
+        ClosedTriangulationCore K' ∧
+        PhiSupport K' < PhiSupport K ∧
+        Nonempty
+          (triangulationTopologicalGeometricCarrier K ≃ₜ
+            triangulationTopologicalGeometricCarrier K'))
+    (hNoHigh :
+      ∀ s : Move32Site,
+        s.RealizedIn K →
+        (∃ tau ∈ K.tets,
+          s.a ∈ tau.verts ∧
+          s.b ∈ tau.verts ∧
+          s.c ∈ tau.verts) →
+        ¬ ∃ x y sigma,
+          x ≠ y ∧
+          sigma ∈ K.tets ∧
+          x ∈ sigma.verts ∧
+          y ∈ sigma.verts ∧
+          ¬ ((x = s.d ∧ y = s.e) ∨
+             (x = s.e ∧ y = s.d)) ∧
+          4 ≤
+            (K.tets.filter
+              (fun gamma =>
+                decide
+                  (x ∈ gamma.verts ∧
+                   y ∈ gamma.verts))).length)
+    (start : Move32Site)
+    (hstartRealized : start.RealizedIn K)
+    (hstartThree : start.SharedEdgeExactlyThree K)
+    (hstartObstruction :
+      ∃ tau ∈ K.tets,
+        start.a ∈ tau.verts ∧
+        start.b ∈ tau.verts ∧
+        start.c ∈ tau.verts) :
+    Nonempty (WitnessedReentryCrossingCertificate K) := by
+  obtain ⟨sites, _hzero, hrealized, hthree, _hobstruction, hwitnessed⟩ :=
+    hcore.exists_perpetual_witnessedReentry_of_no_other_sourceFace_outcome
+      hlinks
+      hconn
+      hNoFour
+      hNoMove23
+      hNoDescent
+      hNoHigh
+      start
+      hstartRealized
+      hstartThree
+      hstartObstruction
+
+  exact
+    hcore.exists_wholeCarrierLoop_of_witnessedReentry_recurrent_crossing
+      hlinks
+      hconn
+      hSC
+      hNoFour
+      sites
+      hrealized
+      hthree
+      hwitnessed
+
 end Poincare
