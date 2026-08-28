@@ -1,5 +1,6 @@
 import Poincare.GlobalMove32WitnessedFiniteRecurrenceReturn
 import Poincare.GlobalMove32ReentryReturnCrossingConfiguration
+import Poincare.GlobalMove32WitnessedReentryPerpetualBuilder
 import Mathlib.Tactic
 
 namespace Poincare
