@@ -285,6 +285,90 @@ theorem ClosedTriangulationCore.exists_wholeCarrierLoop_of_witnessedReentry_recu
     wholeCarrierLoop := loop
     loop_eq_crossingPath_trans_symm := rfl }⟩
 
+/-- Preserve the exact witnessed-reentry sequence used to build the recurrent
+crossing certificate.  This synchronization is the bridge needed by later
+ordered-loop constructions, whose hypotheses are stated on `c.sites`. -/
+theorem ClosedTriangulationCore.exists_wholeCarrierLoop_of_witnessedReentry_recurrent_crossing_with_sites_eq
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hlinks : ∀ v ∈ vertexSupport K, VertexLinkConnected K v)
+    (hconn : TetrahedronVertexOverlapConnected K)
+    (hSC : TriangulationRealizationSimplyConnected K)
+    (hNoFour : ∀ v ∈ vertexSupport K, vertexDegree K v ≠ 4)
+    (sites : Nat → Move32Site)
+    (hrealized : ∀ n, (sites n).RealizedIn K)
+    (hthree : ∀ n, (sites n).SharedEdgeExactlyThree K)
+    (hwitnessed : ∀ n,
+      Move32SourceFaceWitnessedReentry K (sites n) (sites (n + 1))) :
+    ∃ c : WitnessedReentryCrossingCertificate K,
+      c.sites = sites := by
+  classical
+  obtain ⟨i, k, hgap, hbound, hstate, hstep, _⟩ :=
+    hcore.exists_recurrent_returnSigma_target_of_perpetual_witnessedReentry
+      sites hrealized hthree hwitnessed
+  obtain ⟨tau, rho, sigma, hconfig⟩ :=
+    hcore.exists_witnessedReentry_return_crossing_anchor_target_of_sharedSupportedEdgeState_eq
+      (sites i) (sites k) (sites (k + 1))
+      (hrealized i) (hthree i) (hrealized k) (hrealized (k + 1))
+      hstep hstate
+  rcases hconfig with
+    ⟨htau, hrho, hsigma, htaurho, haTau, hbTau, hcTau,
+      haRho, hbRho, hcRho, hdTau, heRho, hdSigma, heSigma,
+      heNotTau, hdNotRho, hSigmaTau, hSigmaRho, hreturn, htarget⟩
+  have hpredNe :=
+    hcore.not_predecessor_sourceFace_support_eq_anchor_of_witnessedReentry_return_edge_of_no_degree_four
+      hlinks hconn hNoFour (sites i) (sites k) (sites (k + 1))
+      (hrealized i) hstep hreturn
+  have hescape :=
+    hcore.exists_return_sourceFace_vertex_outside_anchor_carrier_or_predecessor_sourceFace_vertex_outside_return_carrier_of_witnessedReentry_return_state_of_no_degree_four
+      hlinks hconn hNoFour (sites i) (sites k) (sites (k + 1))
+      (hrealized i) (hthree i) (hrealized k) (hrealized (k + 1))
+      (hthree (k + 1)) hstep hstate
+  have hfresh :=
+    hcore.witnessedReentry_next_sharedEdge_disjoint_previous_carrier_of_no_degree_four
+      hlinks hNoFour (sites k) (sites (k + 1)) (hrealized k) hstep
+  have haSupport : (sites k).a ∈ vertexSupport K := by
+    rw [mem_vertexSupport_iff]
+    simp only [allVerts, List.mem_flatMap]
+    exact ⟨tau, htau, haTau⟩
+  have hdSupport : (sites (k + 1)).d ∈ vertexSupport K := by
+    rw [mem_vertexSupport_iff]
+    simp only [allVerts, List.mem_flatMap]
+    exact ⟨tau, htau, hdTau⟩
+  let p0 := triangulationTopologicalCarrierVertex K (sites k).a haSupport
+  let p1 := triangulationTopologicalCarrierVertex K (sites (k + 1)).d hdSupport
+  letI : SimplyConnectedSpace (triangulationTopologicalGeometricCarrier K) := hSC
+  let crossing : Path p0 p1 := (PathConnectedSpace.joined p0 p1).somePath
+  let loop : Path p0 p0 := crossing.trans crossing.symm
+  refine ⟨{
+    sites := sites
+    anchorIndex := i
+    predecessorIndex := k
+    tau := tau
+    rho := rho
+    sigma := sigma
+    gap := hgap
+    finiteBound := hbound
+    tau_mem := htau
+    rho_mem := hrho
+    sigma_mem := hsigma
+    tau_rho_ne := htaurho
+    predecessor_source_mem_tau := ⟨haTau, hbTau, hcTau⟩
+    predecessor_source_mem_rho := ⟨haRho, hbRho, hcRho⟩
+    return_endpoints_cross := ⟨hdTau, heRho, heNotTau, hdNotRho⟩
+    return_endpoints_mem_sigma := ⟨hdSigma, heSigma⟩
+    sigma_ne := ⟨hSigmaTau, hSigmaRho⟩
+    return_edge_eq_anchor := hreturn
+    sigma_in_anchor_target := htarget
+    predecessor_sourceFace_ne_anchor := hpredNe
+    twoSidedCarrierEscape := hescape
+    freshEndpoints := hfresh
+    predecessorPoint := p0
+    returnPoint := p1
+    crossingPath := crossing
+    wholeCarrierLoop := loop
+    loop_eq_crossingPath_trans_symm := rfl }, rfl⟩
+
 /--
 Fail-closed composition of the perpetual witnessed-reentry builder with the
 finite recurrent crossing-certificate constructor.
