@@ -34,6 +34,7 @@ theorem finite_squareGrid_first_nonzero_anchor_initialTarget_labels_probe
           label ⟨0, hD⟩ ⟨1, hDtwo⟩ =
             (p.crossing.sites p.crossing.anchorIndex).e) := by
   classical
+  dsimp only
   let m := p.crossing.predecessorIndex + 1 - p.crossing.anchorIndex
   let D := N * 2 ^ (m + 1)
   intro hD label hpositive
