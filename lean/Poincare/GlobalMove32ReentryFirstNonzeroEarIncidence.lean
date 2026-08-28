@@ -54,6 +54,7 @@ theorem finite_squareGrid_first_nonzero_anchor_firstEar_sourceVertexFork_probe
                     label ⟨0, hD⟩ ⟨1, hDtwo⟩ =
                       (p.crossing.sites p.crossing.anchorIndex).a)))) := by
   classical
+  dsimp only
   let s : Move32Site := p.crossing.sites p.crossing.anchorIndex
   let m := p.crossing.predecessorIndex + 1 - p.crossing.anchorIndex
   let D := N * 2 ^ (m + 1)
