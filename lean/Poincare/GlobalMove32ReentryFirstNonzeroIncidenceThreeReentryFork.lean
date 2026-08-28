@@ -1,5 +1,6 @@
 import Poincare.GlobalMove32ReentryFirstNonzeroIncidenceThreeDescentFork
 import Poincare.GlobalMove32WitnessedSourceFaceReentry
+import Poincare.GlobalMove32WitnessedReentryPerpetualBuilder
 
 namespace Poincare
 
