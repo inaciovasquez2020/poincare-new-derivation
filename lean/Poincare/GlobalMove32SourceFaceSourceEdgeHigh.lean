@@ -25,7 +25,7 @@ private theorem sameTetVertices_of_four_distinct_mem
     intro z hz
     have hz' : z ∈ [a, b, c, d] := by
       exact List.mem_toFinset.mp hz
-    simp only [List.mem_cons, List.mem_singleton] at hz'
+    simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at hz'
     apply List.mem_toFinset.mpr
     rcases hz' with rfl | rfl | rfl | rfl
     · exact ha
