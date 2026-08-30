@@ -8,13 +8,13 @@ namespace CarrierLoopNullHomotopyData
 After the least boundary escape, the forced witnessed-reentry successor either
 has a canonical shared-edge key different from the recurrent anchor, or its
 retained represented tetrahedron on that returned shared edge is one of the
-anchor Move32 target tetrahedra and omits the escaped first-exit vertex.
+anchor Move32 target tetrahedra.
 
 Thus the two certified state changes sharpen to a three-state alternative:
 either the successor is a third shared-edge state, or an immediate return to
 the anchor state carries the exact anchor-target compatibility already known
-for recurrent returns together with separation from the escaped vertex.  This
-theorem does not yet rule out that immediate return.
+for recurrent returns.  This theorem does not yet rule out that immediate
+return.
 -/
 theorem finite_squareGrid_least_boundary_escape_successor_new_or_anchorTarget_return_probe
     {K : Triangulation}
@@ -109,8 +109,7 @@ theorem finite_squareGrid_least_boundary_escape_successor_new_or_anchorTarget_re
               SameTetVertices sigma
                 (p.crossing.sites p.crossing.anchorIndex).targetTet₁ ∨
               SameTetVertices sigma
-                (p.crossing.sites p.crossing.anchorIndex).targetTet₂) ∧
-            s.e ∉ sigma.verts) := by
+                (p.crossing.sites p.crossing.anchorIndex).targetTet₂)) := by
   classical
   dsimp only
 
@@ -124,12 +123,6 @@ theorem finite_squareGrid_least_boundary_escape_successor_new_or_anchorTarget_re
     finite_squareGrid_least_boundary_escape_two_state_changes_of_no_other_sourceFace_outcome
       hcore hlinks hconn hNoFour p H hNoMove23 hNoDescent hNoHigh
       N hN hD label hpositive
-
-  have hsEOutside :
-      s.e ∉ [anchor.a, anchor.b, anchor.c, anchor.d, anchor.e] := by
-    intro hsEmem
-    rw [hse] at hsEmem
-    exact hjOutside (by simpa [anchor] using hsEmem)
 
   have hanchorRealized : anchor.RealizedIn K := by
     simpa [anchor] using p.realized p.crossing.anchorIndex
@@ -157,8 +150,7 @@ theorem finite_squareGrid_least_boundary_escape_successor_new_or_anchorTarget_re
           anchor.e ∈ sigma.verts ∧
           (SameTetVertices sigma anchor.targetTet₀ ∨
             SameTetVertices sigma anchor.targetTet₁ ∨
-            SameTetVertices sigma anchor.targetTet₂) ∧
-          s.e ∉ sigma.verts := by
+            SameTetVertices sigma anchor.targetTet₂) := by
     by_cases hreturn :
         canonicalEdgeKey s'.d s'.e = canonicalEdgeKey anchor.d anchor.e
     · right
@@ -172,6 +164,7 @@ theorem finite_squareGrid_least_boundary_escape_successor_new_or_anchorTarget_re
         (canonicalEdgeKey_eq_iff
           s'.d s'.e anchor.d anchor.e hs'Distinct hanchorDistinct).1 hreturn
 
+      have hrelKeep := hrel
       rcases hrel with
         ⟨tau, rho, x, y, sigma,
           _htauK, _hrhoK, _hne,
@@ -207,22 +200,7 @@ theorem finite_squareGrid_least_boundary_escape_successor_new_or_anchorTarget_re
         hcore.move32Site_same_target_of_contains_sharedEdge_of_realized_exactlyThree
           anchor hanchorRealized hanchorThree hsigmaK hdAnchorSigma heAnchorSigma
 
-      have hsENotSigma : s.e ∉ sigma.verts := by
-        intro hsESigma
-        apply hsEOutside
-        have htargetKeep := htarget
-        rcases htarget with h0 | h1 | h2
-        · have hmem : s.e ∈ anchor.targetTet₀.verts :=
-            (h0 s.e).1 hsESigma
-          simpa [Move32Site.targetTet₀, Tet.verts] using hmem
-        · have hmem : s.e ∈ anchor.targetTet₁.verts :=
-            (h1 s.e).1 hsESigma
-          simpa [Move32Site.targetTet₁, Tet.verts] using hmem
-        · have hmem : s.e ∈ anchor.targetTet₂.verts :=
-            (h2 s.e).1 hsESigma
-          simpa [Move32Site.targetTet₂, Tet.verts] using hmem
-
-      exact ⟨sigma, hsigmaK, hdAnchorSigma, heAnchorSigma, htarget, hsENotSigma⟩
+      exact ⟨sigma, hsigmaK, hdAnchorSigma, heAnchorSigma, htarget⟩
     · exact Or.inl hreturn
 
   refine ⟨j, k, s, s', hjPos, hkSucc, hkInside, hjOutside,
