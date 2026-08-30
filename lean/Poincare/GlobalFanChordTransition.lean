@@ -3,6 +3,7 @@ import Poincare.GlobalRepresentedEdgeIncidenceSplit
 import Poincare.GlobalMove32SupportedEdgeState
 import Poincare.GlobalMove32IncidenceThreeComposition
 import Poincare.GlobalMove32WitnessedSourceFaceReentry
+import Poincare.GlobalMove32SourceFaceHighCollapse
 import Mathlib.Tactic
 
 namespace Poincare
@@ -207,5 +208,60 @@ theorem ClosedTriangulationCore.FanChordTransition.continue_witnessed
     · obtain ⟨s', hstep⟩ := hreentry
       exact Or.inr (Or.inr (Or.inr (Or.inl ⟨s, s', hrealized, hthree, hstep⟩)))
   · exact Or.inr (Or.inr (Or.inr (Or.inr hnext)))
+
+/-- Under the same fail-closed high-edge exclusion used by the global
+Move32 analysis, the incidence-three branch of a fan-chord transition can no
+longer end in a source-face obstruction.  It either produces an actual legal
+`2-3` move, a strict topology-preserving `PhiSupport` descent, or another
+high-incidence fan-chord transition. -/
+theorem ClosedTriangulationCore.FanChordTransition.continue_noHigh
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (hM : TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K)
+    (hlinks :
+      ∀ v ∈ vertexSupport K,
+        VertexLinkConnected K v)
+    (hNoFour :
+      ∀ v ∈ vertexSupport K,
+        vertexDegree K v ≠ 4)
+    (hNoHigh :
+      ∀ s : Move32Site,
+        s.RealizedIn K →
+        (∃ tau ∈ K.tets,
+          s.a ∈ tau.verts ∧
+          s.b ∈ tau.verts ∧
+          s.c ∈ tau.verts) →
+        ¬ ∃ p q sigma,
+          p ≠ q ∧
+          sigma ∈ K.tets ∧
+          p ∈ sigma.verts ∧
+          q ∈ sigma.verts ∧
+          ¬ ((p = s.d ∧ q = s.e) ∨
+             (p = s.e ∧ q = s.d)) ∧
+          4 ≤
+            (K.tets.filter
+              (fun gamma =>
+                decide
+                  (p ∈ gamma.verts ∧
+                   q ∈ gamma.verts))).length)
+    {v x : Nat} (T : FanChordTransition K v x) :
+    (∃ m : Move23Site, m.LegalIn K) ∨
+    (∃ K',
+      ClosedTriangulationCore K' ∧
+      PhiSupport K' < PhiSupport K ∧
+      Nonempty
+        (triangulationTopologicalGeometricCarrier K ≃ₜ
+          triangulationTopologicalGeometricCarrier K')) ∨
+    Nonempty (FanChordTransition K T.z0 T.z1) := by
+  rcases ClosedTriangulationCore.FanChordTransition.continue
+      hcore hM hNoFour T with
+    hmove23 | hdescent | hobstruction | hnext
+  · exact Or.inl hmove23
+  · exact Or.inr (Or.inl hdescent)
+  · obtain ⟨s, _hsd, _hse, hrealized, _hthree, hsource⟩ := hobstruction
+    exact
+      (hNoHigh s hrealized hsource
+        (hcore.exists_nonself_sourceEdge_high_of_move32_sourceFace_obstruction_of_no_degree_four
+          hlinks hNoFour s hrealized hsource)).elim
+  · exact Or.inr (Or.inr hnext)
 
 end Poincare
