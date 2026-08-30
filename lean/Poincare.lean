@@ -142,6 +142,7 @@ import Poincare.GlobalMove32SourceFaceNonselfIncidenceSplit
 import Poincare.GlobalMove32SourceFaceReentryStep
 import Poincare.GlobalMove32SupportedEdgeState
 import Poincare.GlobalFanChordTransition
+import Poincare.GlobalFanChordEdgeProgress
 
 import Poincare.GlobalMove32ReentryFiniteRecurrence
 
