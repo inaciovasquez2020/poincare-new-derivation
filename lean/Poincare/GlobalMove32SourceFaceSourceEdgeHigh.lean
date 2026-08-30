@@ -137,10 +137,14 @@ theorem ClosedTriangulationCore.move32_sourceEdge_ab_incidence_four_le_of_source
     have hsource :
         ∃ tau ∈ K.tets, SameTetVertices tau s.sourceTet₀ :=
       ⟨theta, hthetaK, hsame⟩
+    have hdSupport : s.d ∈ vertexSupport K := by
+      rw [mem_vertexSupport_iff]
+      simp only [allVerts, List.mem_flatMap]
+      exact ⟨theta, hthetaK, hd⟩
     exact
       hcore.not_move32_sourceTet0_represented_of_no_degree_four_of_connectedLink
         hNoFour s hrealized hsource
-        (hlinks s.d (hcore.move32_sharedEdge_supported s hrealized).1)
+        (hlinks s.d hdSupport)
 
   have heTheta : s.e ∉ theta.verts := by
     intro he
