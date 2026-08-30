@@ -1,4 +1,6 @@
 import Poincare.GlobalFanChordTransition
+import Mathlib.Combinatorics.Pigeonhole
+import Mathlib.Tactic
 
 namespace Poincare
 
@@ -180,5 +182,121 @@ theorem
 
   · intro n
     simpa [seq] using (hstep (seq n)).2.2
+
+/-- Every perpetual high-fan state sequence with genuine edge progress has a
+nonconsecutive recurrent canonical supported-edge state among the first
+`card + 1` states.  The whole recurrent segment retains the certified
+fan-chord endpoint transition and consecutive edge-state inequality.
+
+This is only a finite recurrence theorem; it does not assert that the return
+cycle is impossible. -/
+theorem exists_recurrent_highFanEdgeState
+    {K : Triangulation}
+    (states : Nat → HighFanState K)
+    (hstep :
+      ∀ n,
+        (states (n + 1)).v = (states n).transition.z0 ∧
+        (states (n + 1)).x = (states n).transition.z1)
+    (hconsecutive :
+      ∀ n,
+        (states (n + 1)).edgeState ≠
+          (states n).edgeState) :
+    ∃ i j,
+      i + 1 < j ∧
+      j ≤ Fintype.card (SupportedEdgeState K) ∧
+      (states i).edgeState = (states j).edgeState ∧
+      (∀ n,
+        i ≤ n →
+        n < j →
+        (states (n + 1)).v = (states n).transition.z0 ∧
+        (states (n + 1)).x = (states n).transition.z1) ∧
+      ∀ n,
+        i ≤ n →
+        n < j →
+        (states (n + 1)).edgeState ≠
+          (states n).edgeState := by
+  classical
+
+  let N : Nat :=
+    Fintype.card (SupportedEdgeState K)
+
+  let f : Nat → SupportedEdgeState K :=
+    fun n => (states n).edgeState
+
+  let S : Finset Nat :=
+    Finset.range (N + 1)
+
+  let T : Finset (SupportedEdgeState K) :=
+    Finset.univ
+
+  have hcard : T.card < S.card := by
+    simpa [T, S, N]
+
+  have hmaps :
+      Set.MapsTo
+        f
+        (↑S : Set Nat)
+        (↑T : Set (SupportedEdgeState K)) := by
+    intro n hn
+    simp [T]
+
+  obtain
+      ⟨i, hiS,
+        j, hjS,
+        hij,
+        hfij⟩ :=
+    Finset.exists_ne_map_eq_of_card_lt_of_maps_to
+      (s := S)
+      (t := T)
+      hcard
+      hmaps
+
+  have hiBound : i ≤ N := by
+    have hiLt : i < N + 1 := by
+      simpa [S] using hiS
+    omega
+
+  have hjBound : j ≤ N := by
+    have hjLt : j < N + 1 := by
+      simpa [S] using hjS
+    omega
+
+  have hconsecutive' :
+      ∀ n,
+        f (n + 1) ≠ f n := by
+    intro n
+    simpa [f] using hconsecutive n
+
+  rcases Nat.lt_or_gt_of_ne hij with hijlt | hjilt
+
+  · have hgap : i + 1 < j := by
+      by_contra hnot
+      have hsucc : j = i + 1 := by
+        omega
+      subst j
+      exact (hconsecutive' i) hfij.symm
+
+    refine ⟨i, j, hgap, ?_, ?_, ?_, ?_⟩
+    · simpa [N] using hjBound
+    · simpa [f] using hfij
+    · intro n hin hnj
+      exact hstep n
+    · intro n hin hnj
+      exact hconsecutive n
+
+  · have hgap : j + 1 < i := by
+      by_contra hnot
+      have hsucc : i = j + 1 := by
+        omega
+      subst i
+      exact (hconsecutive' j) hfij
+
+    refine ⟨j, i, hgap, ?_, ?_, ?_, ?_⟩
+    · simpa [N] using hiBound
+    · simpa [f] using hfij.symm
+    · intro n hjn hni
+      exact hstep n
+    · intro n hjn hni
+      exact hconsecutive n
 
 end Poincare
