@@ -1,4 +1,5 @@
 import Poincare.GlobalMove32SourceFaceSourceEdgeHigh
+import Poincare.GlobalMove32IncidenceThreeSplit
 
 namespace Poincare
 
@@ -84,5 +85,57 @@ theorem
       ?_⟩
 
   simpa using hhigh
+
+/--
+A realized exact-three `Move32Site` in the no-degree-four branch strictly
+descends whenever the nonself high-incidence alternative is excluded for
+that site.  The old source-face-obstruction branch is discharged directly by
+the source-edge high-incidence theorem above, so no witnessed-reentry or
+recurrence hypothesis is needed.
+-/
+theorem
+    ClosedTriangulationCore.exists_closedCore_homeomorphic_PhiSupport_lt_of_move32_incidence_three_of_noHigh
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hlinks :
+      ∀ v ∈ vertexSupport K,
+        VertexLinkConnected K v)
+    (hNoFour :
+      ∀ v ∈ vertexSupport K,
+        vertexDegree K v ≠ 4)
+    (s : Move32Site)
+    (hrealized : s.RealizedIn K)
+    (hthree : s.SharedEdgeExactlyThree K)
+    (hNoHigh :
+      ¬ ∃ x y sigma,
+        x ≠ y ∧
+        sigma ∈ K.tets ∧
+        x ∈ sigma.verts ∧
+        y ∈ sigma.verts ∧
+        ¬ ((x = s.d ∧ y = s.e) ∨
+           (x = s.e ∧ y = s.d)) ∧
+        4 ≤
+          (K.tets.filter
+            (fun gamma =>
+              decide
+                (x ∈ gamma.verts ∧
+                 y ∈ gamma.verts))).length) :
+    ∃ K',
+      ClosedTriangulationCore K' ∧
+      PhiSupport K' < PhiSupport K ∧
+      Nonempty
+        (triangulationTopologicalGeometricCarrier K ≃ₜ
+          triangulationTopologicalGeometricCarrier K') := by
+  rcases
+      exists_closedCore_homeomorphic_PhiSupport_lt_or_sourceFace_obstruction_of_move32_incidence_three
+        hcore hNoFour s hrealized hthree with
+    hdescent | hobstruction
+
+  · exact hdescent
+
+  · exact
+      (hNoHigh
+        (hcore.exists_nonself_sourceEdge_high_of_move32_sourceFace_obstruction_of_no_degree_four
+          hlinks hNoFour s hrealized hobstruction)).elim
 
 end Poincare
