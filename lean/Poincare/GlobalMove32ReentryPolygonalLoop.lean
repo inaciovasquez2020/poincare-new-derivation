@@ -36,12 +36,21 @@ theorem move32SharedEdgeMidpoint_eq_of_endpoints
 
 /-- A witnessed reentry step realized as the canonical three-segment trace
 through precisely a represented target tetrahedron, the witnessed source
-tetrahedron, and the witnessed reentry tetrahedron. -/
+tetrahedron, and the witnessed reentry tetrahedron.  The initial quarter of
+the parameter interval is certified to remain in the realized target
+tetrahedron of the source site. -/
 structure WitnessedReentryTransitionArc (K : Triangulation)
     (s t : Move32Site) (hs : s.RealizedIn K) where
   targetRealized : t.RealizedIn K
   path : Path (move32SharedEdgeMidpoint s hs)
     (move32SharedEdgeMidpoint t targetRealized)
+  initialTarget : Tet
+  initialTarget_mem : initialTarget ∈ K.tets
+  initialTarget_same : SameTetVertices initialTarget s.targetTet₀
+  initial_quarter_supported :
+    ∀ u : unitInterval,
+      (u : ℝ) ≤ 1 / 4 →
+      (path u).1 ∈ triangulationTopologicalTetBody initialTarget
   supportingTets : List Tet
   supportingTets_mem : ∀ tau ∈ supportingTets, tau ∈ K.tets
   range_supported : Set.range path ⊆
@@ -97,9 +106,24 @@ theorem witnessedReentry_transitionArc
   refine ⟨{
     targetRealized := ht
     path := (a0.trans a1).trans a2
+    initialTarget := target
+    initialTarget_mem := htarget
+    initialTarget_same := htargetVerts
+    initial_quarter_supported := ?_
     supportingTets := [target, tau, sigma]
     supportingTets_mem := ?_
     range_supported := ?_ }⟩
+  · intro u hu
+    have huHalf : (u : ℝ) ≤ 1 / 2 := by
+      linarith
+    have htwo : 2 * (u : ℝ) ≤ 1 / 2 := by
+      linarith
+    rw [Path.trans_apply]
+    split_ifs with houter
+    · rw [Path.trans_apply]
+      split_ifs with hinner
+      · exact carrierSegmentInTet_mem K target htarget _ _ hm0 hpa0 _
+      · exact (hinner (by simpa using htwo)).elim
   · intro z hz
     simp only [List.mem_cons, List.not_mem_nil, or_false] at hz
     rcases hz with rfl | rfl | rfl <;> assumption
@@ -115,12 +139,170 @@ theorem witnessedReentry_transitionArc
       apply Set.mem_iUnion_of_mem (by simp)
       exact carrierSegmentInTet_mem K sigma hsigma _ _ hpx2 hmt u
 
-/-- Concatenate an indexed sequence of transition arcs in its actual order. -/
+/-- Concatenate an indexed sequence of transition arcs in its actual order,
+without inserting an initial constant half-segment before the first arc. -/
 noncomputable def orderedTransitionPath
     {X : Type*} [TopologicalSpace X] (p : Nat → X)
     (arc : ∀ n, Path (p n) (p (n + 1))) : ∀ m, Path (p 0) (p m)
   | 0 => Path.refl _
-  | m + 1 => (orderedTransitionPath p arc m).trans (arc m)
+  | 1 => arc 0
+  | Nat.succ (Nat.succ m) =>
+      (orderedTransitionPath p arc (Nat.succ m)).trans (arc (Nat.succ m))
+
+/-- Support on the first quarter of the first transition propagates through
+the recursively concatenated ordered path after the exact dyadic rescaling. -/
+theorem orderedTransitionPath_first_arc_initial_quarter_supported_probe
+    {X : Type*} [TopologicalSpace X]
+    (p : Nat → X)
+    (arc : ∀ n, Path (p n) (p (n + 1)))
+    (P : X → Prop)
+    (hfirst : ∀ u : unitInterval,
+      (u : ℝ) ≤ 1 / 4 → P (arc 0 u))
+    (m : Nat) (hm : 0 < m)
+    (u : unitInterval)
+    (hu : (2 : ℝ) ^ (m - 1) * (u : ℝ) ≤ 1 / 4) :
+    P (orderedTransitionPath p arc m u) := by
+  induction m using Nat.strong_induction_on generalizing u with
+  | h m ih =>
+      cases m with
+      | zero => omega
+      | succ m =>
+          cases m with
+          | zero =>
+              simpa [orderedTransitionPath] using hfirst u (by simpa using hu)
+          | succ m =>
+              have hpow :
+                  1 ≤ (2 : ℝ) ^ (Nat.succ (Nat.succ m) - 1) := by
+                exact one_le_pow₀ (by norm_num)
+              have huNonneg : 0 ≤ (u : ℝ) := u.property.1
+              have huLeScaled :
+                  (u : ℝ) ≤
+                    (2 : ℝ) ^ (Nat.succ (Nat.succ m) - 1) * (u : ℝ) := by
+                simpa only [one_mul] using
+                  mul_le_mul_of_nonneg_right hpow huNonneg
+              have huHalf : (u : ℝ) ≤ 1 / 2 := by
+                linarith
+              rw [orderedTransitionPath, Path.trans_apply]
+              split_ifs with hhalf
+              · apply ih (Nat.succ m) (by omega) (by omega)
+                have hscaled := hu
+                change
+                  (2 : ℝ) ^ m * (2 * (u : ℝ)) ≤ 1 / 4
+                simpa [pow_succ, mul_assoc, mul_left_comm, mul_comm] using hscaled
+
+/-- The first positive point of an `N * 2^(m+1)` refinement is already
+small enough to remain in any property certified on the first quarter of the
+first transition. -/
+theorem orderedTransitionPath_first_nonzero_refinement_supported_probe
+    {X : Type*} [TopologicalSpace X]
+    (p : Nat → X)
+    (arc : ∀ n, Path (p n) (p (n + 1)))
+    (P : X → Prop)
+    (hfirst : ∀ u : unitInterval,
+      (u : ℝ) ≤ 1 / 4 → P (arc 0 u))
+    (N m : Nat) (hN : 0 < N) (hm : 0 < m) :
+    ∃ u : unitInterval,
+      (u : ℝ) =
+          1 / (((N * 2 ^ (m + 1) : Nat) : ℝ)) ∧
+        P (orderedTransitionPath p arc m u) := by
+  have hD : 0 < N * 2 ^ (m + 1) := by
+    exact Nat.mul_pos hN (by positivity)
+
+  let u : unitInterval :=
+    ⟨1 / (((N * 2 ^ (m + 1) : Nat) : ℝ)), by
+      constructor
+      · positivity
+      · have hDreal :
+            0 < (((N * 2 ^ (m + 1) : Nat) : ℝ)) := by
+          exact_mod_cast hD
+        rw [div_le_one hDreal]
+        have hDone : 1 ≤ N * 2 ^ (m + 1) := by
+          omega
+        exact_mod_cast hDone⟩
+
+  refine ⟨u, rfl, ?_⟩
+  apply
+    orderedTransitionPath_first_arc_initial_quarter_supported_probe
+      p arc P hfirst m hm u
+
+  dsimp [u]
+
+  have hDreal :
+      0 < (((N * 2 ^ (m + 1) : Nat) : ℝ)) := by
+    exact_mod_cast hD
+
+  have hmexp : m + 1 = (m - 1) + 2 := by
+    omega
+
+  have hNr : (1 : ℝ) ≤ (N : ℝ) := by
+    have hNone : 1 ≤ N := by
+      omega
+    exact_mod_cast hNone
+
+  have hpowNonneg : 0 ≤ (2 : ℝ) ^ (m - 1) := by
+    positivity
+
+  have hmul :
+      (2 : ℝ) ^ (m - 1) ≤
+        (N : ℝ) * (2 : ℝ) ^ (m - 1) := by
+    simpa only [one_mul] using
+      mul_le_mul_of_nonneg_right hNr hpowNonneg
+
+  have hdiv :
+      (2 : ℝ) ^ (m - 1) *
+          (1 / (((N * 2 ^ (m + 1) : Nat) : ℝ))) =
+        (2 : ℝ) ^ (m - 1) /
+          (((N * 2 ^ (m + 1) : Nat) : ℝ)) := by
+    simp only [div_eq_mul_inv, one_div, one_mul]
+
+  rw [hdiv]
+  rw [div_le_iff₀ hDreal]
+
+  have hrhs :
+      (1 / 4 : ℝ) * (((N * 2 ^ (m + 1) : Nat) : ℝ)) =
+        (N : ℝ) * (2 : ℝ) ^ (m - 1) := by
+    simp only [Nat.cast_mul, Nat.cast_pow, Nat.cast_ofNat]
+    rw [hmexp, pow_add]
+    norm_num
+    ring
+
+  rw [hrhs]
+  exact hmul
+
+/-- The exact ordered recurrent loop determined by the crossing, realized
+sites, and witnessed transition arcs, transported to the chosen basepoint. -/
+noncomputable def witnessedReentryOrderedLoop
+    {K : Triangulation}
+    (crossing : WitnessedReentryCrossingCertificate K)
+    (realized : ∀ n, (crossing.sites n).RealizedIn K)
+    (steps : ∀ n, WitnessedReentryTransitionArc K
+      (crossing.sites n) (crossing.sites (n + 1)) (realized n))
+    (basepoint : triangulationTopologicalGeometricCarrier K)
+    (hbase : basepoint =
+      move32SharedEdgeMidpoint (crossing.sites crossing.anchorIndex)
+        (realized crossing.anchorIndex)) :
+    Path basepoint basepoint := by
+  subst basepoint
+  let p : Nat → triangulationTopologicalGeometricCarrier K := fun n =>
+    move32SharedEdgeMidpoint (crossing.sites (crossing.anchorIndex + n))
+      (realized (crossing.anchorIndex + n))
+  let arcs : ∀ n, Path (p n) (p (n + 1)) := fun n => by
+    let a := steps (crossing.anchorIndex + n)
+    exact a.path.cast rfl (by apply Subtype.ext; rfl)
+  have hle : crossing.anchorIndex ≤ crossing.predecessorIndex + 1 := by
+    have := crossing.gap
+    omega
+  let m := crossing.predecessorIndex + 1 - crossing.anchorIndex
+  have hendIndex : crossing.anchorIndex + m = crossing.predecessorIndex + 1 := by
+    simp [m, Nat.add_sub_of_le hle]
+  have hend : p m = p 0 := by
+    dsimp [p]
+    rw [hendIndex]
+    simpa using move32SharedEdgeMidpoint_eq_of_endpoints
+      (realized (crossing.predecessorIndex + 1))
+      (realized crossing.anchorIndex) crossing.return_edge_eq_anchor
+  let raw : Path (p 0) (p m) := orderedTransitionPath p arcs m
+  exact raw.cast rfl hend.symm
 
 /-- A recurrence-driven polygonal loop.  Its construction uses every
 transition in the ordered recurrent interval and never uses the old
@@ -143,7 +325,9 @@ structure WitnessedReentryPolygonalLoopCertificate (K : Triangulation) where
         (realized (crossing.predecessorIndex + 1)) =
       move32SharedEdgeMidpoint (crossing.sites crossing.anchorIndex)
         (realized crossing.anchorIndex)
-  uses_ordered_steps : True
+  polygonalLoop_eq_ordered :
+    polygonalLoop =
+      witnessedReentryOrderedLoop crossing realized steps basepoint basepoint_eq
   predecessor_sourceFace_crossing :
     ¬ (∀ z : Nat,
       z ∈ [(crossing.sites crossing.predecessorIndex).a,
@@ -195,39 +379,24 @@ theorem ClosedTriangulationCore.exists_polygonalLoopCertificate_of_witnessedReen
       (c.sites n) (c.sites (n + 1)) (hrealized n) := fun n =>
     (witnessedReentry_transitionArc (c.sites n) (c.sites (n + 1))
       (hrealized n) (hwitnessed n)).some
-  let p : Nat → triangulationTopologicalGeometricCarrier K := fun n =>
-    move32SharedEdgeMidpoint (c.sites (c.anchorIndex + n))
-      (hrealized (c.anchorIndex + n))
-  let arcs : ∀ n, Path (p n) (p (n + 1)) := fun n => by
-    let a := stepArc (c.anchorIndex + n)
-    exact a.path.cast rfl (by apply Subtype.ext; rfl)
-  have hle : c.anchorIndex ≤ c.predecessorIndex + 1 := by
-    have := c.gap
-    omega
-  let m := c.predecessorIndex + 1 - c.anchorIndex
-  have hendIndex : c.anchorIndex + m = c.predecessorIndex + 1 := by
-    simp [m, Nat.add_sub_of_le hle]
-  have hend : p m = p 0 := by
-    dsimp [p]
-    rw [hendIndex]
-    simpa using move32SharedEdgeMidpoint_eq_of_endpoints
-      (hrealized (c.predecessorIndex + 1))
-      (hrealized c.anchorIndex) c.return_edge_eq_anchor
-  let raw : Path (p 0) (p m) := orderedTransitionPath p arcs m
-  let loop : Path (p 0) (p 0) := raw.cast rfl hend.symm
+  let basepoint :=
+    move32SharedEdgeMidpoint (c.sites c.anchorIndex)
+      (hrealized c.anchorIndex)
+  let loop : Path basepoint basepoint :=
+    witnessedReentryOrderedLoop c hrealized stepArc basepoint rfl
   refine ⟨{
     crossing := c
     ordered := ordered
     ordered_crossing := rfl
     realized := hrealized
     steps := stepArc
-    basepoint := p 0
-    basepoint_eq := by rfl
+    basepoint := basepoint
+    basepoint_eq := rfl
     polygonalLoop := loop
     anchor_return_midpoint := move32SharedEdgeMidpoint_eq_of_endpoints
       (hrealized (c.predecessorIndex + 1))
       (hrealized c.anchorIndex) c.return_edge_eq_anchor
-    uses_ordered_steps := trivial
+    polygonalLoop_eq_ordered := rfl
     predecessor_sourceFace_crossing := c.predecessor_sourceFace_ne_anchor
     two_sided_carrier_escape := c.twoSidedCarrierEscape }⟩
 
