@@ -76,7 +76,7 @@ Theorem status:
 - Any result depending on project axioms or sorries is Conditional.
 
 Current status:
-- Strongest verified theorem: none asserted at repository level
+- Strongest verified theorem: `exists_recurrent_highFanEdgeState` (finite recurrent high-fan supported-edge state checkpoint); this does not prove `Poincare.JIID`.
 - Weakest missing theorem: remove every load-bearing axiom and sorry, and formalize the core topological definitions against accepted Lean topology definitions
 - Conditional inventory: `docs/status/DEPRECATED_CONDITIONAL_STATUS_2026_04_27.md`
 
