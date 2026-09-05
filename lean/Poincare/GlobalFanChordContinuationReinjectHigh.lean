@@ -1,5 +1,6 @@
 import Poincare.GlobalHighEdgeToFanState
 import Poincare.GlobalFanChordTransition
+import Poincare.GlobalMove32SharedEdgeThreeTetSaturation
 import Poincare.Move23UnchangedOverlap
 
 namespace Poincare
@@ -143,5 +144,60 @@ theorem Move23Site.exists_move32_candidate_on_ab_after_incidence_four
   exact
     hcore'.exists_move32Site_realizedIn_of_edgeIncidence_three
       m.a m.b hab hthree
+
+/-- Any realized exact-three candidate on the post-`2-3` edge `(a,b)` has both
+new-edge endpoints `m.d,m.e` among its three source-face vertices.  The inserted
+tetrahedron `newTet₀ = {a,b,d,e}` is one of the three saturated edge targets,
+so its two vertices off the shared edge must be source vertices of the
+candidate. -/
+theorem Move23Site.move32_candidate_sourceFace_contains_newEdgeEndpoints
+    {K : Triangulation} (m : Move23Site)
+    (hcore : ClosedTriangulationCore K)
+    (hlegal : m.LegalIn K)
+    (s : Move32Site)
+    (hsd : s.d = m.a)
+    (hse : s.e = m.b)
+    (hrealized : s.RealizedIn (m.replace K))
+    (hthree : s.SharedEdgeExactlyThree (m.replace K)) :
+    m.d ∈ [s.a, s.b, s.c] ∧
+      m.e ∈ [s.a, s.b, s.c] := by
+  have hcore' : ClosedTriangulationCore (m.replace K) :=
+    hcore.move23Site_replace_closedCore m hlegal
+  have hnew : m.newTet₀ ∈ (m.replace K).tets := by
+    rw [m.replace_tets_eq K]
+    simp
+  have hsdNew : s.d ∈ m.newTet₀.verts := by
+    rw [hsd]
+    simp [Move23Site.newTet₀, Tet.verts]
+  have hseNew : s.e ∈ m.newTet₀.verts := by
+    rw [hse]
+    simp [Move23Site.newTet₀, Tet.verts]
+  have htarget :=
+    hcore'.move32Site_same_target_of_contains_sharedEdge_of_realized_exactlyThree
+      s hrealized hthree hnew hsdNew hseNew
+  have hm := m.distinct
+  simp at hm
+  rcases htarget with h0 | h1 | h2
+  · have hmd := (h0 m.d).1 (by
+      simp [Move23Site.newTet₀, Tet.verts])
+    have hme := (h0 m.e).1 (by
+      simp [Move23Site.newTet₀, Tet.verts])
+    simp [Move32Site.targetTet₀, Tet.verts, hsd, hse] at hmd hme
+    simp only [List.mem_cons, List.mem_singleton]
+    aesop
+  · have hmd := (h1 m.d).1 (by
+      simp [Move23Site.newTet₀, Tet.verts])
+    have hme := (h1 m.e).1 (by
+      simp [Move23Site.newTet₀, Tet.verts])
+    simp [Move32Site.targetTet₁, Tet.verts, hsd, hse] at hmd hme
+    simp only [List.mem_cons, List.mem_singleton]
+    aesop
+  · have hmd := (h2 m.d).1 (by
+      simp [Move23Site.newTet₀, Tet.verts])
+    have hme := (h2 m.e).1 (by
+      simp [Move23Site.newTet₀, Tet.verts])
+    simp [Move32Site.targetTet₂, Tet.verts, hsd, hse] at hmd hme
+    simp only [List.mem_cons, List.mem_singleton]
+    aesop
 
 end Poincare
