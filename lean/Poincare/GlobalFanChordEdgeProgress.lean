@@ -299,4 +299,99 @@ theorem exists_recurrent_highFanEdgeState
     · intro n hjn hni
       exact hconsecutive n
 
+/-- On the no-high branch, ruling out exactly the finite recurrent high-fan
+segment certified above forces genuine global progress: either a legal `2-3`
+move or strict `PhiSupport` descent.  This isolates the remaining high-fan
+cycle obstruction without asserting that such cycles are impossible. -/
+theorem
+    ClosedTriangulationCore.exists_move23_or_descent_of_noHigh_no_recurrent_highFan_cycle
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hM : TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K)
+    (hlinks :
+      ∀ v ∈ vertexSupport K,
+        VertexLinkConnected K v)
+    (hNoFour :
+      ∀ v ∈ vertexSupport K,
+        vertexDegree K v ≠ 4)
+    (hNoHigh :
+      ∀ s : Move32Site,
+        s.RealizedIn K →
+        (∃ tau ∈ K.tets,
+          s.a ∈ tau.verts ∧
+          s.b ∈ tau.verts ∧
+          s.c ∈ tau.verts) →
+        ¬ ∃ p q sigma,
+          p ≠ q ∧
+          sigma ∈ K.tets ∧
+          p ∈ sigma.verts ∧
+          q ∈ sigma.verts ∧
+          ¬ ((p = s.d ∧ q = s.e) ∨
+             (p = s.e ∧ q = s.d)) ∧
+          4 ≤
+            (K.tets.filter
+              (fun gamma =>
+                decide
+                  (p ∈ gamma.verts ∧
+                   q ∈ gamma.verts))).length)
+    (start : HighFanState K)
+    (hNoCycle :
+      ¬ ∃ (states : Nat → HighFanState K) i j,
+        i + 1 < j ∧
+        j ≤ Fintype.card (SupportedEdgeState K) ∧
+        (states i).edgeState = (states j).edgeState ∧
+        (∀ n,
+          i ≤ n →
+          n < j →
+          (states (n + 1)).v = (states n).transition.z0 ∧
+          (states (n + 1)).x = (states n).transition.z1) ∧
+        ∀ n,
+          i ≤ n →
+          n < j →
+          (states (n + 1)).edgeState ≠
+            (states n).edgeState) :
+    (∃ m : Move23Site,
+      m.LegalIn K) ∨
+      ∃ K',
+        ClosedTriangulationCore K' ∧
+        PhiSupport K' < PhiSupport K ∧
+        Nonempty
+          (triangulationTopologicalGeometricCarrier K ≃ₜ
+            triangulationTopologicalGeometricCarrier K') := by
+  classical
+  by_contra hnone
+
+  have hNoMove23 :
+      ¬ ∃ m : Move23Site,
+        m.LegalIn K := by
+    intro hmove23
+    exact hnone (Or.inl hmove23)
+
+  have hNoDescent :
+      ¬ ∃ K',
+        ClosedTriangulationCore K' ∧
+        PhiSupport K' < PhiSupport K ∧
+        Nonempty
+          (triangulationTopologicalGeometricCarrier K ≃ₜ
+            triangulationTopologicalGeometricCarrier K') := by
+    intro hdescent
+    exact hnone (Or.inr hdescent)
+
+  obtain ⟨states, _hstart, hstep, hconsecutive⟩ :=
+    hcore.exists_perpetual_highFanState_of_noMove23_noDescent_noHigh
+      hM
+      hlinks
+      hNoFour
+      hNoMove23
+      hNoDescent
+      hNoHigh
+      start
+
+  obtain
+      ⟨i, j, hgap, hbound, hreturn, hstepSegment, hconsecutiveSegment⟩ :=
+    exists_recurrent_highFanEdgeState states hstep hconsecutive
+
+  exact hNoCycle
+    ⟨states, i, j, hgap, hbound, hreturn, hstepSegment, hconsecutiveSegment⟩
+
 end Poincare
