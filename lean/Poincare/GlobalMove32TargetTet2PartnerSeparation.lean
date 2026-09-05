@@ -29,7 +29,7 @@ theorem Move32Site.targetTet₂_bc_face_partners_ne
       [s.b, s.c, s.d, s.e].toFinset ⊆ rhoD.verts.toFinset := by
     intro v hv
     simp only [List.mem_toFinset] at hv ⊢
-    simp only [List.mem_cons, List.mem_singleton] at hv
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hv
     rcases hv with rfl | rfl | rfl | rfl
     · exact hbD
     · exact hcD
