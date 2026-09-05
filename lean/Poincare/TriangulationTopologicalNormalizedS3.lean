@@ -32,4 +32,21 @@ theorem ClosedTriangulationCore.realizationHomeomorphicToThreeSphere_of_normaliz
   exact hcore.realizationHomeomorphicToThreeSphere_of_PhiSupport_eq_zero
     hnorm hconn htauK htau
 
+/-- The single explicit global hypothesis used by the conditional Poincare
+package: every positive-defect closed, connected, simply connected
+three-manifold realization admits a topology-preserving strict `PhiSupport`
+descent to another closed triangulation core. -/
+def SimplyConnectedGlobalPhiSupportDescent : Prop :=
+  ∀ K : Triangulation,
+    ClosedTriangulationCore K →
+    TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K →
+    TriangulationRealizationSimplyConnected K →
+    0 < PhiSupport K →
+    ∃ K' : Triangulation,
+      ClosedTriangulationCore K' ∧
+      PhiSupport K' < PhiSupport K ∧
+      Nonempty
+        (triangulationTopologicalGeometricCarrier K ≃ₜ
+          triangulationTopologicalGeometricCarrier K')
+
 end Poincare
