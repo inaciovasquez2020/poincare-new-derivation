@@ -206,4 +206,54 @@ theorem Move23Site.exists_move2332_descent_or_second_sourceFace_obstruction
     push_neg at habsent
     exact Or.inr ⟨t, htd, hte, htrealized, htthree, habsent⟩
 
+/-- Incidence four on both old shared-face edges `(a,b)` and `(a,c)` removes
+all caller-supplied Move32 data.  The first exact-three site is constructed and
+proved legal automatically; the second step then gives either strict
+homeomorphism-preserving `PhiSupport` descent or the explicit second source-face
+obstruction. -/
+theorem Move23Site.exists_move2332_descent_or_second_sourceFace_obstruction_of_ab_ac_incidence_four
+    {K : Triangulation} (m : Move23Site)
+    (hcore : ClosedTriangulationCore K)
+    (hlegal : m.LegalIn K)
+    (hinc4ab :
+      (K.tets.filter (fun tau =>
+        m.a ∈ tau.verts ∧ m.b ∈ tau.verts)).length = 4)
+    (hinc4ac :
+      (K.tets.filter (fun tau =>
+        m.a ∈ tau.verts ∧ m.c ∈ tau.verts)).length = 4) :
+    (∃ K',
+      ClosedTriangulationCore K' ∧
+      PhiSupport K' < PhiSupport K ∧
+      Nonempty
+        (triangulationTopologicalGeometricCarrier K ≃ₜ
+          triangulationTopologicalGeometricCarrier K')) ∨
+    ∃ s t : Move32Site,
+      s.d = m.a ∧
+      s.e = m.b ∧
+      s.LegalIn (m.replace K) ∧
+      t.d = m.a ∧
+      t.e = m.c ∧
+      t.RealizedIn (s.replace (m.replace K)) ∧
+      t.SharedEdgeExactlyThree (s.replace (m.replace K)) ∧
+      ∃ tau ∈ (s.replace (m.replace K)).tets,
+        t.a ∈ tau.verts ∧
+        t.b ∈ tau.verts ∧
+        t.c ∈ tau.verts := by
+  obtain ⟨s, hsd, hse, hslegal⟩ :=
+    m.exists_legal_move32_on_ab_after_incidence_four
+      hcore hlegal hinc4ab
+  have hnotc :=
+    m.move32_candidate_sourceFace_not_contains_oldThird
+      hcore hlegal s hsd hse hslegal.1
+  rcases
+      m.exists_move2332_descent_or_second_sourceFace_obstruction
+        s hcore hlegal hinc4ac hsd hse hslegal hnotc with
+    hdescent | hobstruction
+  · exact Or.inl hdescent
+  · obtain ⟨t, htd, hte, htrealized, htthree, hobstruction⟩ := hobstruction
+    exact
+      Or.inr
+        ⟨s, t, hsd, hse, hslegal,
+          htd, hte, htrealized, htthree, hobstruction⟩
+
 end Poincare
