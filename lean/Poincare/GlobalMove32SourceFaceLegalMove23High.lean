@@ -1,0 +1,6 @@
+import Poincare.GlobalMove32WitnessedSourceFaceReentry
+import Poincare.GlobalMove32TargetTet2PartnerSeparation
+
+namespace Poincare
+
+end Poincare
