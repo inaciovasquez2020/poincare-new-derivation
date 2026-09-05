@@ -49,4 +49,70 @@ def SimplyConnectedGlobalPhiSupportDescent : Prop :=
         (triangulationTopologicalGeometricCarrier K ≃ₜ
           triangulationTopologicalGeometricCarrier K')
 
+/-- Under the explicit global descent hypothesis, strong induction on
+`PhiSupport` reaches a normalized closed core while composing the carrier
+homeomorphisms along the descent chain. -/
+theorem exists_normalized_homeomorphic_triangulation_of_simplyConnected_global_PhiSupport_descent
+    (hdescent : SimplyConnectedGlobalPhiSupportDescent)
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hM : TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K)
+    (hSC : TriangulationRealizationSimplyConnected K) :
+    ∃ K' : Triangulation,
+      ClosedTriangulationCore K' ∧
+      normalized K' ∧
+      Nonempty
+        (triangulationTopologicalGeometricCarrier K ≃ₜ
+          triangulationTopologicalGeometricCarrier K') := by
+  unfold SimplyConnectedGlobalPhiSupportDescent at hdescent
+  let P : Nat → Prop := fun n =>
+    ∀ L : Triangulation,
+      PhiSupport L = n →
+      ClosedTriangulationCore L →
+      TriangulationRealizationIsClosedConnectedTopologicalThreeManifold L →
+      TriangulationRealizationSimplyConnected L →
+      ∃ L' : Triangulation,
+        ClosedTriangulationCore L' ∧
+        normalized L' ∧
+        Nonempty
+          (triangulationTopologicalGeometricCarrier L ≃ₜ
+            triangulationTopologicalGeometricCarrier L')
+  have hP : ∀ n : Nat, P n := by
+    intro n
+    induction n using Nat.strong_induction_on with
+    | h n ih =>
+      dsimp [P]
+      intro L hPhi hcoreL hML hSCL
+      by_cases hn : n = 0
+      · have hnorm : normalized L := by
+          unfold normalized
+          exact hPhi.trans hn
+        exact
+          ⟨L, hcoreL, hnorm,
+            ⟨Homeomorph.refl
+              (triangulationTopologicalGeometricCarrier L)⟩⟩
+      · have hposN : 0 < n := Nat.pos_of_ne_zero hn
+        have hpos : 0 < PhiSupport L := by
+          rw [hPhi]
+          exact hposN
+        obtain ⟨L', hcore', hlt, ⟨e⟩⟩ :=
+          hdescent L hcoreL hML hSCL hpos
+        have hML' :
+            TriangulationRealizationIsClosedConnectedTopologicalThreeManifold L' :=
+          triangulationRealizationIsClosedConnectedTopologicalThreeManifold_of_homeomorph
+            e hML
+        have hSCL' : TriangulationRealizationSimplyConnected L' :=
+          triangulationRealizationSimplyConnected_of_homeomorph e hSCL
+        have hltN : PhiSupport L' < n := by
+          rw [← hPhi]
+          exact hlt
+        have hrec := ih (PhiSupport L') hltN
+        dsimp [P] at hrec
+        obtain ⟨L'', hcore'', hnorm'', ⟨e'⟩⟩ :=
+          hrec L' rfl hcore' hML' hSCL'
+        exact ⟨L'', hcore'', hnorm'', ⟨e.trans e'⟩⟩
+  have hstart := hP (PhiSupport K)
+  dsimp [P] at hstart
+  exact hstart K rfl hcore hM hSC
+
 end Poincare
