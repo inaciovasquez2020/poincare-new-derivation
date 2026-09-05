@@ -1,4 +1,5 @@
 import Poincare.GlobalFanReentryModeContinuation
+import Poincare.Move2332LocalEscapeCriterion
 
 namespace Poincare
 
@@ -144,5 +145,65 @@ theorem Move23Site.exists_second_move32_candidate_on_ac
   exact
     hcore''.exists_move32Site_realizedIn_of_edgeIncidence_three
       m.a m.c hac hthree
+
+/-- Once the first legal `3-2` has exposed the second exact-three edge, there
+are only two possibilities: the second source face is absent and the full
+`2-3,3-2,3-2` block gives strict topology-preserving `PhiSupport` descent, or
+that second source face is represented and is returned explicitly as the
+remaining obstruction. -/
+theorem Move23Site.exists_move2332_descent_or_second_sourceFace_obstruction
+    {K : Triangulation} (m : Move23Site) (s : Move32Site)
+    (hcore : ClosedTriangulationCore K)
+    (hlegal : m.LegalIn K)
+    (hinc4ac :
+      (K.tets.filter (fun tau =>
+        m.a ∈ tau.verts ∧ m.c ∈ tau.verts)).length = 4)
+    (hsd : s.d = m.a)
+    (hse : s.e = m.b)
+    (hslegal : s.LegalIn (m.replace K))
+    (hnotc : m.c ∉ [s.a, s.b, s.c]) :
+    (∃ K',
+      ClosedTriangulationCore K' ∧
+      PhiSupport K' < PhiSupport K ∧
+      Nonempty
+        (triangulationTopologicalGeometricCarrier K ≃ₜ
+          triangulationTopologicalGeometricCarrier K')) ∨
+    ∃ t : Move32Site,
+      t.d = m.a ∧
+      t.e = m.c ∧
+      t.RealizedIn (s.replace (m.replace K)) ∧
+      t.SharedEdgeExactlyThree (s.replace (m.replace K)) ∧
+      ∃ tau ∈ (s.replace (m.replace K)).tets,
+        t.a ∈ tau.verts ∧
+        t.b ∈ tau.verts ∧
+        t.c ∈ tau.verts := by
+  classical
+  obtain ⟨t, htd, hte, htrealized, htthree⟩ :=
+    m.exists_second_move32_candidate_on_ac
+      s hcore hlegal hinc4ac hsd hse hslegal hnotc
+  by_cases habsent : t.SourceFaceAbsent (s.replace (m.replace K))
+  · have hcore1 : ClosedTriangulationCore (m.replace K) :=
+      hcore.move23Site_replace_closedCore m hlegal
+    have hcore2 : ClosedTriangulationCore (s.replace (m.replace K)) :=
+      hcore1.move32Site_replace_closedCore s hslegal
+    have htlegal : t.LegalIn (s.replace (m.replace K)) :=
+      ⟨htrealized, htthree, habsent⟩
+    have hcore3 :
+        ClosedTriangulationCore
+          (t.replace (s.replace (m.replace K))) :=
+      hcore2.move32Site_replace_closedCore t htlegal
+    have hminus4 :=
+      move2332Block_PhiSupport_add_four_eq
+        hcore m hlegal s hslegal hcore1 t htlegal hcore2 hcore3
+    have hlt :
+        PhiSupport (t.replace (s.replace (m.replace K))) < PhiSupport K := by
+      omega
+    refine Or.inl ⟨t.replace (s.replace (m.replace K)), hcore3, hlt, ?_⟩
+    exact ⟨(hcore.move23GeometricCarrierHomeomorph m hlegal).trans
+      ((hcore1.move32GeometricCarrierHomeomorph s hslegal).trans
+        (hcore2.move32GeometricCarrierHomeomorph t htlegal))⟩
+  · rw [Move32Site.SourceFaceAbsent] at habsent
+    push_neg at habsent
+    exact Or.inr ⟨t, htd, hte, htrealized, htthree, habsent⟩
 
 end Poincare
