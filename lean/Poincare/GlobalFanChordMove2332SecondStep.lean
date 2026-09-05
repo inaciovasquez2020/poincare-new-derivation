@@ -44,4 +44,72 @@ theorem Move23Site.replace_ac_edgeIncidence_three_of_incidence_four
   simpa [List.filter_cons, Move23Site.newTet₀, Move23Site.newTet₁,
     Move23Site.newTet₂, Tet.verts, hd, Ne.symm] using congrArg Nat.succ htwo
 
+/-- After the first legal `3-2` on `(m.a,m.b)`, the other shared-face edge
+`(m.a,m.c)` keeps incidence three, provided it started with incidence four
+before the original legal `2-3`.  The first `3-2` local target and source
+tetrahedra do not meet that edge because `m.c` is absent from its source face. -/
+theorem Move23Site.first_move32_preserves_ac_edgeIncidence_three
+    {K : Triangulation} (m : Move23Site) (s : Move32Site)
+    (hcore : ClosedTriangulationCore K)
+    (hlegal : m.LegalIn K)
+    (hinc4ac :
+      (K.tets.filter (fun tau =>
+        m.a ∈ tau.verts ∧ m.c ∈ tau.verts)).length = 4)
+    (hsd : s.d = m.a)
+    (hse : s.e = m.b)
+    (hslegal : s.LegalIn (m.replace K))
+    (hnotc : m.c ∉ [s.a, s.b, s.c]) :
+    ((s.replace (m.replace K)).tets.filter (fun tau =>
+      m.a ∈ tau.verts ∧ m.c ∈ tau.verts)).length = 3 := by
+  have hcore' : ClosedTriangulationCore (m.replace K) :=
+    hcore.move23Site_replace_closedCore m hlegal
+  have hthree :=
+    m.replace_ac_edgeIncidence_three_of_incidence_four hcore hlegal hinc4ac
+  let p : Tet → Prop := fun tau =>
+    m.a ∈ tau.verts ∧ m.c ∈ tau.verts
+  have hinvariant :
+      ∀ tau sigma,
+        SameTetVertices tau sigma →
+        (p tau ↔ p sigma) := by
+    intro tau sigma hsame
+    constructor
+    · intro h
+      exact ⟨(hsame m.a).1 h.1, (hsame m.c).1 h.2⟩
+    · intro h
+      exact ⟨(hsame m.a).2 h.1, (hsame m.c).2 h.2⟩
+  have hsplit :=
+    hcore'.move32Site_unchanged_filter_length_add_local_eq
+      s hslegal p hinvariant
+  have hm := m.distinct
+  have hfive := hcore'.move32Site_distinct s hslegal.1
+  simp at hm hfive hnotc
+  have ht0 : ¬ p s.targetTet₀ := by
+    simp [p, Move32Site.targetTet₀, Tet.verts, hsd, hse]
+    aesop
+  have ht1 : ¬ p s.targetTet₁ := by
+    simp [p, Move32Site.targetTet₁, Tet.verts, hsd, hse]
+    aesop
+  have ht2 : ¬ p s.targetTet₂ := by
+    simp [p, Move32Site.targetTet₂, Tet.verts, hsd, hse]
+    aesop
+  have hu :
+      ((s.unchangedTets (m.replace K)).filter p).length = 3 := by
+    have hlocal :
+        ([s.targetTet₀, s.targetTet₁, s.targetTet₂].filter p).length = 0 := by
+      simp [ht0, ht1, ht2]
+    rw [hlocal] at hsplit
+    dsimp [p] at hsplit
+    rw [hthree] at hsplit
+    omega
+  have hs0 : ¬ p s.sourceTet₀ := by
+    simp [p, Move32Site.sourceTet₀, Tet.verts, hsd, hse]
+    aesop
+  have hs1 : ¬ p s.sourceTet₁ := by
+    simp [p, Move32Site.sourceTet₁, Tet.verts, hsd, hse]
+    aesop
+  rw [s.replace_tets_eq]
+  change
+    ((s.sourceTet₀ :: s.sourceTet₁ :: s.unchangedTets (m.replace K)).filter p).length = 3
+  simp [List.filter_cons, hs0, hs1, hu]
+
 end Poincare
