@@ -181,4 +181,115 @@ theorem Move23Site.targetTet₂_representative_mem_unchanged_of_sourceFace_align
     mem_eraseFirstSameTet_of_mem_of_not_same hafterLeft hnotRight
   simpa [Move23Site.unchangedTets] using hunchanged
 
+/-- A legal Move23 whose source face is the source face of a realized Move32
+site cannot be an incidence-four escape on `(b,c)`.  In the no-degree-four
+branch the represented `targetTet₂` and its two distinct closed-face partners
+all survive the Move23 source erasures, so three unchanged tetrahedra already
+contain `(b,c)`; adding the two Move23 source tetrahedra forces incidence at
+least five. -/
+theorem Move23Site.five_le_bc_edgeIncidence_of_sourceFace_alignment_of_no_degree_four
+    {K : Triangulation} (m : Move23Site) (s : Move32Site)
+    (hcore : ClosedTriangulationCore K)
+    (hlinks : ∀ v ∈ vertexSupport K, VertexLinkConnected K v)
+    (hNoFour : ∀ v ∈ vertexSupport K, vertexDegree K v ≠ 4)
+    (hrealized : s.RealizedIn K)
+    (ha : m.a = s.a)
+    (hb : m.b = s.b)
+    (hc : m.c = s.c)
+    (hlegal : m.LegalIn K) :
+    5 ≤ (K.tets.filter (fun tau =>
+      m.b ∈ tau.verts ∧ m.c ∈ tau.verts)).length := by
+  classical
+  obtain ⟨tau, rhoD, rhoE,
+      htauK, hsame,
+      hrhoDK, hnotD, hbD, hcD, hdD,
+      hrhoEK, hnotE, hbE, hcE, heE⟩ :=
+    s.exists_targetTet₂_bc_face_partners hcore hrealized
+  have htauUnchanged : tau ∈ m.unchangedTets K :=
+    m.targetTet₂_representative_mem_unchanged_of_sourceFace_alignment
+      s hcore hrealized ha htauK hsame
+  obtain ⟨hDleft, hDright⟩ :=
+    m.targetTet₂_bc_d_partner_not_move23_sources_of_sourceFace_alignment
+      s hcore hlinks hNoFour hrealized ha hb hc hlegal hdD
+  obtain ⟨hEleft, hEright⟩ :=
+    m.targetTet₂_bc_e_partner_not_move23_sources_of_sourceFace_alignment
+      s hcore hlinks hNoFour hrealized ha hb hc hlegal heE
+  have hDAfterLeft :
+      rhoD ∈ eraseFirstSameTet m.leftTet K.tets :=
+    mem_eraseFirstSameTet_of_mem_of_not_same hrhoDK hDleft
+  have hDUnchanged : rhoD ∈ m.unchangedTets K := by
+    have h := mem_eraseFirstSameTet_of_mem_of_not_same hDAfterLeft hDright
+    simpa [Move23Site.unchangedTets] using h
+  have hEAfterLeft :
+      rhoE ∈ eraseFirstSameTet m.leftTet K.tets :=
+    mem_eraseFirstSameTet_of_mem_of_not_same hrhoEK hEleft
+  have hEUnchanged : rhoE ∈ m.unchangedTets K := by
+    have h := mem_eraseFirstSameTet_of_mem_of_not_same hEAfterLeft hEright
+    simpa [Move23Site.unchangedTets] using h
+  have hbTau : m.b ∈ tau.verts := by
+    rw [hb]
+    exact (hsame s.b).2 (by simp [Move32Site.targetTet₂, Tet.verts])
+  have hcTau : m.c ∈ tau.verts := by
+    rw [hc]
+    exact (hsame s.c).2 (by simp [Move32Site.targetTet₂, Tet.verts])
+  have hbD' : m.b ∈ rhoD.verts := by simpa [hb] using hbD
+  have hcD' : m.c ∈ rhoD.verts := by simpa [hc] using hcD
+  have hbE' : m.b ∈ rhoE.verts := by simpa [hb] using hbE
+  have hcE' : m.c ∈ rhoE.verts := by simpa [hc] using hcE
+  let U := (m.unchangedTets K).filter (fun zeta =>
+    m.b ∈ zeta.verts ∧ m.c ∈ zeta.verts)
+  have htauU : tau ∈ U := by
+    simp [U, htauUnchanged, hbTau, hcTau]
+  have hDU : rhoD ∈ U := by
+    simp [U, hDUnchanged, hbD', hcD']
+  have hEU : rhoE ∈ U := by
+    simp [U, hEUnchanged, hbE', hcE']
+  have htauD : tau ≠ rhoD := by
+    intro heq
+    subst rhoD
+    exact hnotD (sameTetVertices_refl tau)
+  have htauE : tau ≠ rhoE := by
+    intro heq
+    subst rhoE
+    exact hnotE (sameTetVertices_refl tau)
+  have hDE : rhoD ≠ rhoE :=
+    s.targetTet₂_bc_face_partners_ne hcore hrealized hsame
+      hrhoDK hnotD hbD hcD hdD heE
+  let W : Finset Tet := {tau, rhoD, rhoE}
+  have hWcard : W.card = 3 := by
+    simp [W, htauD, htauE, hDE, Ne.symm]
+  have hWsub : W ⊆ U.toFinset := by
+    intro z hz
+    simp only [W, Finset.mem_insert, Finset.mem_singleton] at hz
+    rcases hz with rfl | rfl | rfl
+    · exact List.mem_toFinset.mpr htauU
+    · exact List.mem_toFinset.mpr hDU
+    · exact List.mem_toFinset.mpr hEU
+  have hUthree : 3 ≤ U.length := by
+    have hcardle : W.card ≤ U.toFinset.card := Finset.card_le_card hWsub
+    have htoFinset : U.toFinset.card ≤ U.length := List.toFinset_card_le U
+    rw [hWcard] at hcardle
+    omega
+  let p : Tet → Prop := fun zeta =>
+    m.b ∈ zeta.verts ∧ m.c ∈ zeta.verts
+  have hinvariant :
+      ∀ zeta theta,
+        SameTetVertices zeta theta →
+        (p zeta ↔ p theta) := by
+    intro zeta theta hsameZT
+    constructor
+    · intro h
+      exact ⟨(hsameZT m.b).1 h.1, (hsameZT m.c).1 h.2⟩
+    · intro h
+      exact ⟨(hsameZT m.b).2 h.1, (hsameZT m.c).2 h.2⟩
+  have hsplit :=
+    hcore.move23Site_unchanged_filter_length_add_local_eq
+      m hlegal p hinvariant
+  have hlocal : ([m.leftTet, m.rightTet].filter p).length = 2 := by
+    simp [p, Move23Site.leftTet, Move23Site.rightTet, Tet.verts]
+  rw [hlocal] at hsplit
+  dsimp [p] at hsplit
+  dsimp [U] at hUthree
+  omega
+
 end Poincare
