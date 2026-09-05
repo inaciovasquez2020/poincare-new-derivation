@@ -1,6 +1,6 @@
 import Poincare.GlobalMove32WitnessedFiniteRecurrenceReturn
 import Poincare.GlobalMove32ReentryReturnCrossingConfiguration
-import Poincare.GlobalMove32WitnessedReentryPerpetualBuilder
+import Poincare.GlobalMove32WitnessedReentryPerpetualNoMove23
 import Mathlib.Tactic
 
 namespace Poincare
@@ -72,17 +72,16 @@ theorem
   exact ⟨i, k, tau, rho, sigma, hgap, hbound, hconfig⟩
 
 /--
-If every represented source-face obstruction along the fail-closed branch
-excludes a matching legal Move23, strict topological `PhiSupport` descent,
-and a nonself complementary edge of incidence at least four, then the
-perpetual witnessed-reentry builder and finite recurrence theorem compose to
-produce a finite recurrent return crossing configuration.
+If strict topological `PhiSupport` descent and nonself complementary
+high-incidence escape are excluded, then the perpetual witnessed-reentry
+builder and finite recurrence theorem compose to produce a finite recurrent
+return crossing configuration.
 
-The three excluded exit families remain hypotheses; this theorem does not
+The two excluded exit families remain hypotheses; this theorem does not
 eliminate the resulting recurrent configuration.
 -/
 theorem
-    ClosedTriangulationCore.exists_finite_recurrent_return_crossing_configuration_of_no_other_sourceFace_outcome
+    ClosedTriangulationCore.exists_finite_recurrent_return_crossing_configuration_of_noDescent_noHigh
     {K : Triangulation}
     (hcore : ClosedTriangulationCore K)
     (hlinks :
@@ -92,18 +91,6 @@ theorem
     (hNoFour :
       ∀ u ∈ vertexSupport K,
         vertexDegree K u ≠ 4)
-    (hNoMove23 :
-      ∀ s : Move32Site,
-        s.RealizedIn K →
-        (∃ tau ∈ K.tets,
-          s.a ∈ tau.verts ∧
-          s.b ∈ tau.verts ∧
-          s.c ∈ tau.verts) →
-        ¬ ∃ m : Move23Site,
-          m.a = s.a ∧
-          m.b = s.b ∧
-          m.c = s.c ∧
-          m.LegalIn K)
     (hNoDescent :
       ¬ ∃ K',
         ClosedTriangulationCore K' ∧
@@ -170,8 +157,8 @@ theorem
          SameTetVertices sigma (sites i).targetTet₁ ∨
          SameTetVertices sigma (sites i).targetTet₂) := by
   obtain ⟨sites, hzero, hrealized, hthree, _hobstruction, hwitnessed⟩ :=
-    hcore.exists_perpetual_witnessedReentry_of_no_other_sourceFace_outcome
-      hlinks hconn hNoFour hNoMove23 hNoDescent hNoHigh
+    hcore.exists_perpetual_witnessedReentry_of_noDescent_noHigh
+      hlinks hconn hNoFour hNoDescent hNoHigh
       start hstartRealized hstartThree hstartObstruction
 
   obtain ⟨i, k, tau, rho, sigma, hconfig⟩ :=
