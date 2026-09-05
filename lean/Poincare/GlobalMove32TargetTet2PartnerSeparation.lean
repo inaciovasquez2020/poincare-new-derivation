@@ -142,4 +142,43 @@ theorem Move23Site.targetTet₂_bc_e_partner_not_move23_sources_of_sourceFace_al
   · intro hsame
     exact hseNotRight ((hsame s.e).1 heE)
 
+/-- Any represented `targetTet₂` survives the two Move23 source erasures when
+the Move23 source face is aligned with the Move32 source face. -/
+theorem Move23Site.targetTet₂_representative_mem_unchanged_of_sourceFace_alignment
+    {K : Triangulation} (m : Move23Site) (s : Move32Site)
+    (hcore : ClosedTriangulationCore K)
+    (hrealized : s.RealizedIn K)
+    (ha : m.a = s.a)
+    {tau : Tet}
+    (htauK : tau ∈ K.tets)
+    (hsame : SameTetVertices tau s.targetTet₂) :
+    tau ∈ m.unchangedTets K := by
+  have hfive := hcore.move32Site_distinct s hrealized
+  have hsaNot : s.a ∉ s.targetTet₂.verts := by
+    simp [Move32Site.targetTet₂, Tet.verts]
+    simp at hfive
+    aesop
+  have hnotLeft : ¬ SameTetVertices tau m.leftTet := by
+    intro hleft
+    have hmaTau : m.a ∈ tau.verts :=
+      (hleft m.a).2 (by simp [Move23Site.leftTet, Tet.verts])
+    have hsaTau : s.a ∈ tau.verts := by
+      simpa [ha] using hmaTau
+    exact hsaNot ((hsame s.a).1 hsaTau)
+  have hnotRight : ¬ SameTetVertices tau m.rightTet := by
+    intro hright
+    have hmaTau : m.a ∈ tau.verts :=
+      (hright m.a).2 (by simp [Move23Site.rightTet, Tet.verts])
+    have hsaTau : s.a ∈ tau.verts := by
+      simpa [ha] using hmaTau
+    exact hsaNot ((hsame s.a).1 hsaTau)
+  have hafterLeft :
+      tau ∈ eraseFirstSameTet m.leftTet K.tets :=
+    mem_eraseFirstSameTet_of_mem_of_not_same htauK hnotLeft
+  have hunchanged :
+      tau ∈ eraseFirstSameTet m.rightTet
+        (eraseFirstSameTet m.leftTet K.tets) :=
+    mem_eraseFirstSameTet_of_mem_of_not_same hafterLeft hnotRight
+  simpa [Move23Site.unchangedTets] using hunchanged
+
 end Poincare
