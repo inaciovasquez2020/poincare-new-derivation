@@ -256,4 +256,36 @@ theorem Move23Site.exists_move2332_descent_or_second_sourceFace_obstruction_of_a
         ⟨s, t, hsd, hse, hslegal,
           htd, hte, htrealized, htthree, hobstruction⟩
 
+/-- The honest three-manifold and tetrahedron-overlap-connectedness hypotheses
+survive the legal `2-3,3-2` prefix.  This removes the topological transport
+part of the second-source-face classification boundary. -/
+theorem Move23Site.first_move32_prefix_topological_package
+    {K : Triangulation} (m : Move23Site) (s : Move32Site)
+    (hcore : ClosedTriangulationCore K)
+    (hM :
+      TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K)
+    (hlegal : m.LegalIn K)
+    (hslegal : s.LegalIn (m.replace K)) :
+    TriangulationRealizationIsClosedConnectedTopologicalThreeManifold
+        (s.replace (m.replace K)) ∧
+      TetrahedronVertexOverlapConnected
+        (s.replace (m.replace K)) := by
+  have hcore1 : ClosedTriangulationCore (m.replace K) :=
+    hcore.move23Site_replace_closedCore m hlegal
+  have hcore2 : ClosedTriangulationCore (s.replace (m.replace K)) :=
+    hcore1.move32Site_replace_closedCore s hslegal
+  have hM1 :
+      TriangulationRealizationIsClosedConnectedTopologicalThreeManifold
+        (m.replace K) :=
+    triangulationRealizationIsClosedConnectedTopologicalThreeManifold_of_homeomorph
+      (hcore.move23GeometricCarrierHomeomorph m hlegal) hM
+  have hM2 :
+      TriangulationRealizationIsClosedConnectedTopologicalThreeManifold
+        (s.replace (m.replace K)) :=
+    triangulationRealizationIsClosedConnectedTopologicalThreeManifold_of_homeomorph
+      (hcore1.move32GeometricCarrierHomeomorph s hslegal) hM1
+  exact
+    ⟨hM2,
+      hcore2.tetrahedronVertexOverlapConnected_of_topologicalThreeManifold hM2⟩
+
 end Poincare
