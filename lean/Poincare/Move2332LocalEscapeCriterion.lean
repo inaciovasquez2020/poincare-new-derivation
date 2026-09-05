@@ -1,4 +1,5 @@
 import Poincare.Move2332CrossPolytopeEscapeTopology
+import Poincare.GlobalPhiSupportDegreeGap
 
 namespace Poincare
 
