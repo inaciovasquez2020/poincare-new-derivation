@@ -231,4 +231,59 @@ theorem Move23Site.replace_sharedFace_absent
     · exact hunchanged.2.2.1 hleft
     · exact hunchanged.2.2.2 hright
 
+/-- The third old shared-face vertex `m.c` cannot be one of the source-face
+vertices of an exact-three candidate on the post-move edge `(m.a,m.b)`.
+Otherwise a represented target tetrahedron of that candidate would contain the
+old shared face, which the legal `2-3` has removed. -/
+theorem Move23Site.move32_candidate_sourceFace_not_contains_oldThird
+    {K : Triangulation} (m : Move23Site)
+    (hcore : ClosedTriangulationCore K)
+    (hlegal : m.LegalIn K)
+    (s : Move32Site)
+    (hsd : s.d = m.a)
+    (hse : s.e = m.b)
+    (hrealized : s.RealizedIn (m.replace K)) :
+    m.c ∉ [s.a, s.b, s.c] := by
+  intro hc
+  rcases hrealized with
+    ⟨⟨tau0, htau0, h0⟩,
+      ⟨tau1, htau1, h1⟩,
+      ⟨tau2, htau2, h2⟩⟩
+  have habsent := m.replace_sharedFace_absent hcore hlegal
+  simp only [List.mem_cons, List.mem_singleton] at hc
+  rcases hc with hca | hcb | hcc
+  · apply habsent tau0 htau0
+    refine ⟨?_, ?_, ?_⟩
+    · have hd := (h0 s.d).2 (by
+        simp [Move32Site.targetTet₀, Tet.verts])
+      simpa [hsd] using hd
+    · have he := (h0 s.e).2 (by
+        simp [Move32Site.targetTet₀, Tet.verts])
+      simpa [hse] using he
+    · have ha := (h0 s.a).2 (by
+        simp [Move32Site.targetTet₀, Tet.verts])
+      simpa [hca] using ha
+  · apply habsent tau0 htau0
+    refine ⟨?_, ?_, ?_⟩
+    · have hd := (h0 s.d).2 (by
+        simp [Move32Site.targetTet₀, Tet.verts])
+      simpa [hsd] using hd
+    · have he := (h0 s.e).2 (by
+        simp [Move32Site.targetTet₀, Tet.verts])
+      simpa [hse] using he
+    · have hb := (h0 s.b).2 (by
+        simp [Move32Site.targetTet₀, Tet.verts])
+      simpa [hcb] using hb
+  · apply habsent tau1 htau1
+    refine ⟨?_, ?_, ?_⟩
+    · have hd := (h1 s.d).2 (by
+        simp [Move32Site.targetTet₁, Tet.verts])
+      simpa [hsd] using hd
+    · have he := (h1 s.e).2 (by
+        simp [Move32Site.targetTet₁, Tet.verts])
+      simpa [hse] using he
+    · have hc' := (h1 s.c).2 (by
+        simp [Move32Site.targetTet₁, Tet.verts])
+      simpa [hcc] using hc'
+
 end Poincare
