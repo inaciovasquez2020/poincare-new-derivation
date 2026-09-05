@@ -200,4 +200,35 @@ theorem Move23Site.move32_candidate_sourceFace_contains_newEdgeEndpoints
     simp only [List.mem_cons, List.mem_singleton]
     aesop
 
+/-- A legal `2-3` move removes the old shared face completely: no tetrahedron
+of the replacement triangulation contains all three old shared-face vertices.
+-/
+theorem Move23Site.replace_sharedFace_absent
+    {K : Triangulation} (m : Move23Site)
+    (hcore : ClosedTriangulationCore K)
+    (hlegal : m.LegalIn K) :
+    ∀ tau ∈ (m.replace K).tets,
+      ¬ (m.a ∈ tau.verts ∧ m.b ∈ tau.verts ∧ m.c ∈ tau.verts) := by
+  intro tau htau hface
+  rw [m.replace_tets_eq K] at htau
+  simp only [List.mem_cons] at htau
+  rcases htau with rfl | rfl | rfl | htau
+  · have hm := m.distinct
+    simp [Move23Site.newTet₀, Tet.verts] at hm hface
+    aesop
+  · have hm := m.distinct
+    simp [Move23Site.newTet₁, Tet.verts] at hm hface
+    aesop
+  · have hm := m.distinct
+    simp [Move23Site.newTet₂, Tet.verts] at hm hface
+    aesop
+  · have hunchanged :=
+      hcore.move23Site_mem_unchangedTets m hlegal htau
+    rcases
+        hcore.move23Site_same_source_of_contains_sharedFace
+          m hlegal hunchanged.1 hface.1 hface.2.1 hface.2.2 with
+      hleft | hright
+    · exact hunchanged.2.2.1 hleft
+    · exact hunchanged.2.2.2 hright
+
 end Poincare
