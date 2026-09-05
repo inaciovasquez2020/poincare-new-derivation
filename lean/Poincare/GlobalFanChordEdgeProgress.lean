@@ -299,4 +299,66 @@ theorem exists_recurrent_highFanEdgeState
     · intro n hjn hni
       exact hconsecutive n
 
+/-- The recurrent finite supported-edge state is an actual return of the
+unordered central edge: the endpoint labels agree either directly or after
+swapping.  This is the concrete circular-edge form of the recurrence theorem. -/
+theorem exists_recurrent_highFan_unorderedEdge
+    {K : Triangulation}
+    (states : Nat → HighFanState K)
+    (hstep :
+      ∀ n,
+        (states (n + 1)).v = (states n).transition.z0 ∧
+        (states (n + 1)).x = (states n).transition.z1)
+    (hconsecutive :
+      ∀ n,
+        (states (n + 1)).edgeState ≠
+          (states n).edgeState) :
+    ∃ i j,
+      i + 1 < j ∧
+      j ≤ Fintype.card (SupportedEdgeState K) ∧
+      (((states i).v = (states j).v ∧
+          (states i).x = (states j).x) ∨
+       ((states i).v = (states j).x ∧
+          (states i).x = (states j).v)) ∧
+      (∀ n,
+        i ≤ n →
+        n < j →
+        (states (n + 1)).v = (states n).transition.z0 ∧
+        (states (n + 1)).x = (states n).transition.z1) ∧
+      ∀ n,
+        i ≤ n →
+        n < j →
+        (states (n + 1)).edgeState ≠
+          (states n).edgeState := by
+  rcases
+      exists_recurrent_highFanEdgeState
+        states hstep hconsecutive with
+    ⟨i, j, hgap, hbound, hstate, hsegment, hchanges⟩
+
+  have hkey :
+      canonicalEdgeKey (states i).v (states i).x =
+        canonicalEdgeKey (states j).v (states j).x := by
+    calc
+      canonicalEdgeKey (states i).v (states i).x =
+          (states i).edgeState.key := by
+        symm
+        exact HighFanState.edgeState_key (states i)
+      _ = (states j).edgeState.key := by
+        exact
+          congrArg
+            (fun q : SupportedEdgeState K => q.key)
+            hstate
+      _ = canonicalEdgeKey (states j).v (states j).x := by
+        exact HighFanState.edgeState_key (states j)
+
+  have hedge :=
+    (canonicalEdgeKey_eq_iff
+      (states i).v (states i).x
+      (states j).v (states j).x
+      (states i).endpoints_ne
+      (states j).endpoints_ne).1 hkey
+
+  exact
+    ⟨i, j, hgap, hbound, hedge, hsegment, hchanges⟩
+
 end Poincare
