@@ -116,4 +116,31 @@ theorem exists_normalized_homeomorphic_triangulation_of_simplyConnected_global_P
   dsimp [P] at hstart
   exact hstart K rfl hcore hM hSC
 
+/-- Conditional Poincare package for the canonical triangulation realization:
+if the explicit simply-connected global `PhiSupport` descent hypothesis holds,
+then every closed-core realization that is an honest closed connected simply
+connected topological three-manifold is genuinely homeomorphic to `S³`. -/
+theorem conditional_poincare_of_simplyConnected_global_PhiSupport_descent
+    (hdescent : SimplyConnectedGlobalPhiSupportDescent)
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hM : TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K)
+    (hSC : TriangulationRealizationSimplyConnected K) :
+    TriangulationRealizationHomeomorphicToThreeSphere K := by
+  obtain ⟨K', hcore', hnorm', ⟨e⟩⟩ :=
+    exists_normalized_homeomorphic_triangulation_of_simplyConnected_global_PhiSupport_descent
+      hdescent hcore hM hSC
+  have hM' :
+      TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K' :=
+    triangulationRealizationIsClosedConnectedTopologicalThreeManifold_of_homeomorph
+      e hM
+  have hconn' : TetrahedronVertexOverlapConnected K' :=
+    hcore'.tetrahedronVertexOverlapConnected_of_topologicalThreeManifold hM'
+  obtain ⟨tau, htauK', htau⟩ :=
+    hcore'.exists_represented_nodup_tetrahedron hM'
+  obtain ⟨eS3⟩ :=
+    hcore'.realizationHomeomorphicToThreeSphere_of_normalized
+      hnorm' hconn' htauK' htau
+  exact ⟨e.trans eS3⟩
+
 end Poincare
