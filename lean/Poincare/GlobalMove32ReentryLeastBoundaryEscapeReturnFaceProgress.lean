@@ -22,18 +22,6 @@ theorem finite_squareGrid_least_boundary_escape_successor_new_or_anchorReturn_so
     (hNoFour : ∀ v ∈ vertexSupport K, vertexDegree K v ≠ 4)
     (p : WitnessedReentryPolygonalLoopCertificate K)
     (H : CarrierLoopNullHomotopyData K p.basepoint p.polygonalLoop)
-    (hNoMove23 :
-      ∀ s : Move32Site,
-        s.RealizedIn K →
-        (∃ tau ∈ K.tets,
-          s.a ∈ tau.verts ∧
-          s.b ∈ tau.verts ∧
-          s.c ∈ tau.verts) →
-        ¬ ∃ m : Move23Site,
-          m.a = s.a ∧
-          m.b = s.b ∧
-          m.c = s.c ∧
-          m.LegalIn K)
     (hNoDescent :
       ¬ ∃ K',
         ClosedTriangulationCore K' ∧
@@ -129,7 +117,7 @@ theorem finite_squareGrid_least_boundary_escape_successor_new_or_anchorReturn_so
   obtain ⟨j, k, s, s', hjPos, hkSucc, hkInside, hjOutside,
       hsd, hse, hsRealized, hsThree, hrel, hkeySAnchor, hkeyNext⟩ :=
     finite_squareGrid_least_boundary_escape_two_state_changes_of_no_other_sourceFace_outcome
-      hcore hlinks hconn hNoFour p H hNoMove23 hNoDescent hNoHigh
+      hcore hlinks hconn hNoFour p H hNoDescent hNoHigh
       N hN hD label hpositive
 
   have hanchorRealized : anchor.RealizedIn K := by
