@@ -191,4 +191,26 @@ theorem Move23Site.first_move2332_sharedEdge_count_two_of_incidence_four
   rw [hlocal] at hsplit
   omega
 
+/-- Incidence four on the original `(b,c)` edge becomes incidence exactly
+three after the legal `2 → 3`: the two unchanged edge tetrahedra survive and
+only `newTet₂` among the three inserted tetrahedra contains both endpoints. -/
+theorem Move23Site.replace_bc_edgeIncidence_three_of_incidence_four
+    {K : Triangulation} (m : Move23Site)
+    (hcore : ClosedTriangulationCore K)
+    (hlegal : m.LegalIn K)
+    (hinc4 :
+      (K.tets.filter (fun tau =>
+        m.b ∈ tau.verts ∧ m.c ∈ tau.verts)).length = 4) :
+    ((m.replace K).tets.filter (fun tau =>
+      m.b ∈ tau.verts ∧ m.c ∈ tau.verts)).length = 3 := by
+  have htwo :=
+    m.first_move2332_sharedEdge_count_two_of_incidence_four
+      hcore hlegal hinc4
+  have hd := m.distinct
+  simp only [List.nodup_cons, List.mem_cons, List.not_mem_nil,
+    or_false] at hd
+  rw [m.replace_tets_eq K]
+  simp [Move23Site.newTet₀, Move23Site.newTet₁, Move23Site.newTet₂,
+    Tet.verts, hd, htwo]
+
 end Poincare
