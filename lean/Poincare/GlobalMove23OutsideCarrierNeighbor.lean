@@ -1,4 +1,6 @@
 import Poincare.GlobalMove32CarrierPairRepresented
+import Poincare.GlobalMove32IncidenceThreeCandidate
+import Poincare.Move23ClosedCorePreservation
 import Poincare.Move32IndividualSourceNoDegreeFour
 
 namespace Poincare
@@ -211,5 +213,32 @@ theorem Move23Site.replace_bc_edgeIncidence_three_of_incidence_four
   simp at hd
   simpa [List.filter_cons, Move23Site.newTet₀, Move23Site.newTet₁,
     Move23Site.newTet₂, Tet.verts, hd, Ne.symm] using congrArg Nat.succ htwo
+
+/-- Incidence four on the original `(b,c)` edge therefore produces a realized
+exact-three Move32 candidate on that same edge after the legal `2 → 3`.
+This does not assert source-face absence or Move32 legality. -/
+theorem Move23Site.exists_first_move32_candidate_of_bc_incidence_four
+    {K : Triangulation} (m : Move23Site)
+    (hcore : ClosedTriangulationCore K)
+    (hlegal : m.LegalIn K)
+    (hinc4 :
+      (K.tets.filter (fun tau =>
+        m.b ∈ tau.verts ∧ m.c ∈ tau.verts)).length = 4) :
+    ∃ s₁ : Move32Site,
+      s₁.d = m.b ∧
+      s₁.e = m.c ∧
+      s₁.RealizedIn (m.replace K) ∧
+      s₁.SharedEdgeExactlyThree (m.replace K) := by
+  have hcore' : ClosedTriangulationCore (m.replace K) :=
+    hcore.move23Site_replace_closedCore m hlegal
+  have hthree :=
+    m.replace_bc_edgeIncidence_three_of_incidence_four hcore hlegal hinc4
+  have hbc : m.b ≠ m.c := by
+    have hd := m.distinct
+    simp at hd
+    aesop
+  exact
+    hcore'.exists_move32Site_realizedIn_of_edgeIncidence_three
+      m.b m.c hbc hthree
 
 end Poincare
