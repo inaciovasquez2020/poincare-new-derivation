@@ -116,4 +116,32 @@ theorem Move23Site.replace_ab_edgeIncidence_three_of_incidence_four
   simpa [List.filter_cons, Move23Site.newTet₀, Move23Site.newTet₁,
     Move23Site.newTet₂, Tet.verts, hd, Ne.symm] using congrArg Nat.succ htwo
 
+/-- Incidence four on the shared-face edge `(a,b)` therefore yields a realized
+exact-three `Move32Site` on that same edge after the legal `2-3`.  This is the
+first geometric object needed to turn the four-fan legal-move branch into a
+`2-3,3-2,3-2` descent block. -/
+theorem Move23Site.exists_move32_candidate_on_ab_after_incidence_four
+    {K : Triangulation} (m : Move23Site)
+    (hcore : ClosedTriangulationCore K)
+    (hlegal : m.LegalIn K)
+    (hinc4 :
+      (K.tets.filter (fun tau =>
+        m.a ∈ tau.verts ∧ m.b ∈ tau.verts)).length = 4) :
+    ∃ s : Move32Site,
+      s.d = m.a ∧
+      s.e = m.b ∧
+      s.RealizedIn (m.replace K) ∧
+      s.SharedEdgeExactlyThree (m.replace K) := by
+  have hcore' : ClosedTriangulationCore (m.replace K) :=
+    hcore.move23Site_replace_closedCore m hlegal
+  have hthree :=
+    m.replace_ab_edgeIncidence_three_of_incidence_four hcore hlegal hinc4
+  have hab : m.a ≠ m.b := by
+    have hd := m.distinct
+    simp at hd
+    aesop
+  exact
+    hcore'.exists_move32Site_realizedIn_of_edgeIncidence_three
+      m.a m.b hab hthree
+
 end Poincare
