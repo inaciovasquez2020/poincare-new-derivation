@@ -102,4 +102,44 @@ theorem Move23Site.targetTet₂_bc_d_partner_not_move23_sources_of_sourceFace_al
   · intro hsame
     exact hsdNotRight ((hsame s.d).1 hdD)
 
+/-- Under the same source-face alignment, the closed-core partner across
+`(b,c,e)` cannot be either legal Move23 source tetrahedron. -/
+theorem Move23Site.targetTet₂_bc_e_partner_not_move23_sources_of_sourceFace_alignment
+    {K : Triangulation} (m : Move23Site) (s : Move32Site)
+    (hcore : ClosedTriangulationCore K)
+    (hlinks : ∀ v ∈ vertexSupport K, VertexLinkConnected K v)
+    (hNoFour : ∀ v ∈ vertexSupport K, vertexDegree K v ≠ 4)
+    (hrealized : s.RealizedIn K)
+    (ha : m.a = s.a)
+    (hb : m.b = s.b)
+    (hc : m.c = s.c)
+    (hlegal : m.LegalIn K)
+    {rhoE : Tet}
+    (heE : s.e ∈ rhoE.verts) :
+    ¬ SameTetVertices rhoE m.leftTet ∧
+      ¬ SameTetVertices rhoE m.rightTet := by
+  obtain ⟨hmdOutside, hmeOutside⟩ :=
+    m.both_endpoints_outside_move32_carrier_of_sourceFace_of_no_degree_four
+      s hcore hlinks hNoFour hrealized ha hb hc hlegal
+  have hfive := hcore.move32Site_distinct s hrealized
+  have hseNotLeft : s.e ∉ m.leftTet.verts := by
+    have h := hfive
+    simp only [List.nodup_cons, List.mem_cons, List.not_mem_nil,
+      or_false] at h
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hmdOutside
+    simp [Move23Site.leftTet, Tet.verts, ha, hb, hc]
+    aesop
+  have hseNotRight : s.e ∉ m.rightTet.verts := by
+    have h := hfive
+    simp only [List.nodup_cons, List.mem_cons, List.not_mem_nil,
+      or_false] at h
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hmeOutside
+    simp [Move23Site.rightTet, Tet.verts, ha, hb, hc]
+    aesop
+  constructor
+  · intro hsame
+    exact hseNotLeft ((hsame s.e).1 heE)
+  · intro hsame
+    exact hseNotRight ((hsame s.e).1 heE)
+
 end Poincare
