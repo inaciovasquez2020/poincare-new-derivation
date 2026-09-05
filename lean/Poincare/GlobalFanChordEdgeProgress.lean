@@ -336,7 +336,7 @@ theorem
                    q ∈ gamma.verts))).length)
     (start : HighFanState K)
     (hNoCycle :
-      ¬ ∃ (states : Nat → HighFanState K) i j,
+      ¬ ∃ (states : Nat → HighFanState K) (i j : Nat),
         i + 1 < j ∧
         j ≤ Fintype.card (SupportedEdgeState K) ∧
         (states i).edgeState = (states j).edgeState ∧
