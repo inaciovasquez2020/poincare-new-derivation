@@ -133,9 +133,9 @@ theorem
 Fail-closed composition of the perpetual witnessed-reentry builder with the
 no-degree-four recurrent predecessor-face crossing theorem.
 
-Under the explicit exclusion of the other one-step outcomes, the starting
-source-face obstruction therefore forces a finite recurrent crossing whose
-predecessor source face has different unordered support from the earlier
+Under exclusion of strict descent and nonself high-incidence escape, the
+starting source-face obstruction therefore forces a finite recurrent crossing
+whose predecessor source face has different unordered support from the earlier
 anchor source face.
 -/
 theorem
@@ -149,18 +149,6 @@ theorem
     (hNoFour :
       ∀ u ∈ vertexSupport K,
         vertexDegree K u ≠ 4)
-    (hNoMove23 :
-      ∀ s : Move32Site,
-        s.RealizedIn K →
-        (∃ tau ∈ K.tets,
-          s.a ∈ tau.verts ∧
-          s.b ∈ tau.verts ∧
-          s.c ∈ tau.verts) →
-        ¬ ∃ m : Move23Site,
-          m.a = s.a ∧
-          m.b = s.b ∧
-          m.c = s.c ∧
-          m.LegalIn K)
     (hNoDescent :
       ¬ ∃ K',
         ClosedTriangulationCore K' ∧
@@ -230,11 +218,10 @@ theorem
             z ∈ [(sites k).a, (sites k).b, (sites k).c] ↔
             z ∈ [(sites i).a, (sites i).b, (sites i).c])) := by
   obtain ⟨sites, hzero, hrealized, hthree, _hobstruction, hwitnessed⟩ :=
-    hcore.exists_perpetual_witnessedReentry_of_no_other_sourceFace_outcome
+    hcore.exists_perpetual_witnessedReentry_of_noDescent_noHigh
       hlinks
       hconn
       hNoFour
-      hNoMove23
       hNoDescent
       hNoHigh
       start
