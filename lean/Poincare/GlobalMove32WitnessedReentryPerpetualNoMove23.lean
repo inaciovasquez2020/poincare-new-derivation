@@ -1,0 +1,6 @@
+import Poincare.GlobalMove32WitnessedReentryPerpetualBuilder
+import Poincare.GlobalMove32SourceFaceLegalMove23High
+
+namespace Poincare
+
+end Poincare
