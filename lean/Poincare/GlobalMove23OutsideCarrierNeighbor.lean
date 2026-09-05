@@ -157,4 +157,38 @@ theorem Move23Site.move2332_seven_labels_nodup_of_sourceFace_of_no_degree_four
     or_false] at hseven ⊢
   aesop
 
+/-- For a legal `2 → 3` site, incidence four of the original edge `(b,c)`
+is exactly enough to leave two unchanged tetrahedra on that edge.  This is
+the count required by the first `3 → 2` constructor in the move2332 seed. -/
+theorem Move23Site.first_move2332_sharedEdge_count_two_of_incidence_four
+    {K : Triangulation} (m : Move23Site)
+    (hcore : ClosedTriangulationCore K)
+    (hlegal : m.LegalIn K)
+    (hinc4 :
+      (K.tets.filter (fun tau =>
+        m.b ∈ tau.verts ∧ m.c ∈ tau.verts)).length = 4) :
+    ((m.unchangedTets K).filter (fun tau =>
+      m.b ∈ tau.verts ∧ m.c ∈ tau.verts)).length = 2 := by
+  let p : Tet → Prop := fun tau =>
+    m.b ∈ tau.verts ∧ m.c ∈ tau.verts
+  have hinvariant :
+      ∀ tau sigma,
+        SameTetVertices tau sigma →
+        (p tau ↔ p sigma) := by
+    intro tau sigma hsame
+    constructor
+    · intro h
+      exact ⟨(hsame m.b).1 h.1, (hsame m.c).1 h.2⟩
+    · intro h
+      exact ⟨(hsame m.b).2 h.1, (hsame m.c).2 h.2⟩
+  have hsplit :=
+    hcore.move23Site_unchanged_filter_length_add_local_eq
+      m hlegal p hinvariant
+  have hlocal :
+      ([m.leftTet, m.rightTet].filter p).length = 2 := by
+    simp [p, Move23Site.leftTet, Move23Site.rightTet, Tet.verts]
+  dsimp [p] at hsplit
+  rw [hlocal] at hsplit
+  omega
+
 end Poincare
