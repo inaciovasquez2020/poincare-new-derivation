@@ -1,4 +1,5 @@
 import Poincare.GlobalMove32CarrierPairRepresented
+import Poincare.Move32IndividualSourceNoDegreeFour
 
 namespace Poincare
 
