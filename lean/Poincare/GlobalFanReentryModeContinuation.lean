@@ -122,4 +122,25 @@ theorem Move23Site.move32_candidate_sourceFaceAbsent_on_ab_after_incidence_four
     have heTau : m.e ∈ tau.verts := hsourceMem m.e hends.2
     exact hlegal.2.2 tau hunchanged.1 ⟨hdTau, heTau⟩
 
+/-- A legal `2-3` move whose shared-face edge `(a,b)` has incidence four
+therefore has a legal `3-2` continuation on that same edge. -/
+theorem Move23Site.exists_legal_move32_on_ab_after_incidence_four
+    {K : Triangulation} (m : Move23Site)
+    (hcore : ClosedTriangulationCore K)
+    (hlegal : m.LegalIn K)
+    (hinc4 :
+      (K.tets.filter (fun tau =>
+        m.a ∈ tau.verts ∧ m.b ∈ tau.verts)).length = 4) :
+    ∃ s : Move32Site,
+      s.d = m.a ∧
+      s.e = m.b ∧
+      s.LegalIn (m.replace K) := by
+  obtain ⟨s, hsd, hse, hrealized, hthree⟩ :=
+    m.exists_move32_candidate_on_ab_after_incidence_four
+      hcore hlegal hinc4
+  have habsent :=
+    m.move32_candidate_sourceFaceAbsent_on_ab_after_incidence_four
+      hcore hlegal s hsd hse hrealized hthree
+  exact ⟨s, hsd, hse, hrealized, hthree, habsent⟩
+
 end Poincare
