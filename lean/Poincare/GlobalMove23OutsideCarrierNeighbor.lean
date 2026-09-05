@@ -132,4 +132,29 @@ theorem Move23Site.seven_labels_nodup_of_both_endpoints_outside_move32_carrier
     or_false] at hs hm ⊢
   aesop
 
+/-- The same no-degree-four source-face escape gives the seven labels in the
+exact order required by `Move2332InitialEscapeSeed`, with `x = s.d` and
+`y = s.e`. -/
+theorem Move23Site.move2332_seven_labels_nodup_of_sourceFace_of_no_degree_four
+    {K : Triangulation} (m : Move23Site) (s : Move32Site)
+    (hcore : ClosedTriangulationCore K)
+    (hlinks : ∀ v ∈ vertexSupport K, VertexLinkConnected K v)
+    (hNoFour : ∀ v ∈ vertexSupport K, vertexDegree K v ≠ 4)
+    (hrealized : s.RealizedIn K)
+    (ha : m.a = s.a)
+    (hb : m.b = s.b)
+    (hc : m.c = s.c)
+    (hlegal : m.LegalIn K) :
+    [m.a, m.b, m.c, m.d, m.e, s.d, s.e].Nodup := by
+  rcases
+      m.both_endpoints_outside_move32_carrier_of_sourceFace_of_no_degree_four
+        s hcore hlinks hNoFour hrealized ha hb hc hlegal with
+    ⟨hd, he⟩
+  have hseven :=
+    m.seven_labels_nodup_of_both_endpoints_outside_move32_carrier
+      s hcore hrealized hd he
+  simp only [List.nodup_cons, List.mem_cons, List.not_mem_nil,
+    or_false] at hseven ⊢
+  aesop
+
 end Poincare
