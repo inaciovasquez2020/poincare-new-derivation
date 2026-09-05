@@ -279,4 +279,50 @@ theorem Move23Site.exists_old_targetTet₂_in_unchanged_of_sourceFace_alignment
     mem_eraseFirstSameTet_of_mem_of_not_same hafterLeft hnotRight
   exact ⟨tau, by simpa [Move23Site.unchangedTets] using hunchanged, hsame⟩
 
+/-- The represented `targetTet₂` has a distinct closed-core partner across
+each of its two faces containing the source edge `(b,c)`. -/
+theorem Move32Site.exists_targetTet₂_bc_face_partners
+    {K : Triangulation} (s : Move32Site)
+    (hcore : ClosedTriangulationCore K)
+    (hrealized : s.RealizedIn K) :
+    ∃ tau rhoD rhoE,
+      tau ∈ K.tets ∧
+      SameTetVertices tau s.targetTet₂ ∧
+      rhoD ∈ K.tets ∧
+      ¬ SameTetVertices tau rhoD ∧
+      s.b ∈ rhoD.verts ∧
+      s.c ∈ rhoD.verts ∧
+      s.d ∈ rhoD.verts ∧
+      rhoE ∈ K.tets ∧
+      ¬ SameTetVertices tau rhoE ∧
+      s.b ∈ rhoE.verts ∧
+      s.c ∈ rhoE.verts ∧
+      s.e ∈ rhoE.verts := by
+  obtain ⟨tau, htauK, hsame⟩ := hrealized.2.2
+  have hfive := hcore.move32Site_distinct s hrealized
+  have hbTau : s.b ∈ tau.verts :=
+    (hsame s.b).2 (by simp [Move32Site.targetTet₂, Tet.verts])
+  have hcTau : s.c ∈ tau.verts :=
+    (hsame s.c).2 (by simp [Move32Site.targetTet₂, Tet.verts])
+  have hdTau : s.d ∈ tau.verts :=
+    (hsame s.d).2 (by simp [Move32Site.targetTet₂, Tet.verts])
+  have heTau : s.e ∈ tau.verts :=
+    (hsame s.e).2 (by simp [Move32Site.targetTet₂, Tet.verts])
+  have hbcd : [s.b, s.c, s.d].Nodup := by
+    have h := hfive
+    simp at h ⊢
+    aesop
+  have hbce : [s.b, s.c, s.e].Nodup := by
+    have h := hfive
+    simp at h ⊢
+    aesop
+  obtain ⟨rhoD, hrhoDK, hnotD, hbD, hcD, hdD⟩ :=
+    hcore.exists_other_tet_across_triangle hbcd htauK hbTau hcTau hdTau
+  obtain ⟨rhoE, hrhoEK, hnotE, hbE, hcE, heE⟩ :=
+    hcore.exists_other_tet_across_triangle hbce htauK hbTau hcTau heTau
+  exact
+    ⟨tau, rhoD, rhoE, htauK, hsame,
+      hrhoDK, hnotD, hbD, hcD, hdD,
+      hrhoEK, hnotE, hbE, hcE, heE⟩
+
 end Poincare
