@@ -1,5 +1,6 @@
 import Poincare.TriangulationTopologicalFourSimplexRealizationChange
 import Poincare.TriangulationTopologicalS3
+import Poincare.TriangulationTopologicalHomeomorphTransport
 
 namespace Poincare
 
