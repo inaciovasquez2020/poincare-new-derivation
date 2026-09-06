@@ -160,4 +160,24 @@ theorem VertexLinkStarConnected.vertexLinkPath
       (fun _ _ ih₁ ih₂ =>
         Relation.ReflTransGen.trans ih₁ ih₂)
 
+/-- If two represented link triangles share a vertex, local connectedness at
+that vertex upgrades the shared-vertex contact to a global edge-adjacency
+path. -/
+theorem VertexLinkLocallyConnected.vertexLinkPath_of_commonVertex
+    {K : Triangulation} {v x : Nat}
+    (hlocal : VertexLinkLocallyConnected K v)
+    {sigma rho : LinkTriangle}
+    (hsigma : sigma ∈ vertexLinkTriangles K v)
+    (hrho : rho ∈ vertexLinkTriangles K v)
+    (hxsigma : x ∈ sigma.verts)
+    (hxrho : x ∈ rho.verts) :
+    Relation.ReflTransGen (VertexLinkAdjacent K v) sigma rho := by
+  have hrep : VertexLinkVertexRepresented K v x :=
+    ⟨sigma, hsigma, hxsigma⟩
+  have hstar : VertexLinkStarConnected K v x :=
+    hlocal x hrep
+  exact hstar.vertexLinkPath
+    ((mem_vertexLinkStarTriangles_iff K v x sigma).2 ⟨hsigma, hxsigma⟩)
+    ((mem_vertexLinkStarTriangles_iff K v x rho).2 ⟨hrho, hxrho⟩)
+
 end Poincare
