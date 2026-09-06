@@ -138,4 +138,26 @@ theorem VertexLinkStarAdjacent.vertexLinkAdjacent
   rw [hpair, hlcard] at hcard_le
   exact hcard_le
 
+/-- A connected local star supplies a global edge-adjacency path between any
+two represented link triangles in that star. -/
+theorem VertexLinkStarConnected.vertexLinkPath
+    {K : Triangulation} {v x : Nat}
+    (hconnected : VertexLinkStarConnected K v x)
+    {sigma rho : LinkTriangle}
+    (hsigma : sigma ∈ vertexLinkStarTriangles K v x)
+    (hrho : rho ∈ vertexLinkStarTriangles K v x) :
+    Relation.ReflTransGen (VertexLinkAdjacent K v) sigma rho := by
+  have hpath := hconnected sigma hsigma rho hrho
+  exact
+    Relation.ReflTransGen.trans_induction_on
+      (motive := fun {a b} _ =>
+        Relation.ReflTransGen (VertexLinkAdjacent K v) a b)
+      hpath
+      (fun _ => Relation.ReflTransGen.refl)
+      (fun hstep =>
+        Relation.ReflTransGen.single
+          (VertexLinkStarAdjacent.vertexLinkAdjacent hstep))
+      (fun _ _ ih₁ ih₂ =>
+        Relation.ReflTransGen.trans ih₁ ih₂)
+
 end Poincare
