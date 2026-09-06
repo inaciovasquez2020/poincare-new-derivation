@@ -180,4 +180,139 @@ theorem VertexLinkLocallyConnected.vertexLinkPath_of_commonVertex
     ((mem_vertexLinkStarTriangles_iff K v x sigma).2 ⟨hsigma, hxsigma⟩)
     ((mem_vertexLinkStarTriangles_iff K v x rho).2 ⟨hrho, hxrho⟩)
 
+/-- Connectedness of the geometric vertex-link realization, together with
+connectedness of every represented vertex star, forces the repository's
+stronger edge-adjacency notion of combinatorial vertex-link connectedness. -/
+theorem VertexLinkLocallyConnected.vertexLinkConnected_of_geometric_isConnected
+    {K : Triangulation} {v : Nat}
+    (hlocal : VertexLinkLocallyConnected K v)
+    (hconn : IsConnected (triangulationTopologicalVertexLink K v)) :
+    VertexLinkConnected K v := by
+  classical
+  letI : Fintype {tau : LinkTriangle // tau ∈ vertexLinkTriangles K v} :=
+    Fintype.ofFinset (vertexLinkTriangles K v).toFinset (by
+      intro tau
+      exact List.mem_toFinset)
+  intro sigma hsigma rho hrho
+  by_contra hnpath
+  let face : LinkTriangle → Set (Nat → ℝ) := fun tau ↦
+    convexHull ℝ
+      (triangulationTopologicalGeometricVertex ''
+        (↑tau.verts.toFinset : Set Nat))
+  let reachable : LinkTriangle → Prop := fun tau ↦
+    Relation.ReflTransGen (VertexLinkAdjacent K v) sigma tau
+  let A : Set (Nat → ℝ) :=
+    ⋃ (tau : {t : LinkTriangle // t ∈ vertexLinkTriangles K v})
+      (_ : reachable tau.1), face tau.1
+  let B : Set (Nat → ℝ) :=
+    ⋃ (tau : {t : LinkTriangle // t ∈ vertexLinkTriangles K v})
+      (_ : ¬ reachable tau.1), face tau.1
+  have hface_inter (a b : LinkTriangle) :
+      face a ∩ face b =
+        convexHull ℝ
+          (triangulationTopologicalGeometricVertex ''
+            (↑(a.verts.toFinset ∩ b.verts.toFinset) : Set Nat)) := by
+    have hlin : LinearIndependent ℝ triangulationTopologicalGeometricVertex :=
+      Pi.linearIndependent_single_one Nat ℝ
+    have haff : AffineIndependent ℝ
+        ((↑) :
+          (↑(a.verts.toFinset.image triangulationTopologicalGeometricVertex ∪
+            b.verts.toFinset.image triangulationTopologicalGeometricVertex) :
+              Set (Nat → ℝ)) → Nat → ℝ) :=
+      hlin.affineIndependent.range.mono (by
+        intro z hz
+        change z ∈ a.verts.toFinset.image triangulationTopologicalGeometricVertex ∪
+          b.verts.toFinset.image triangulationTopologicalGeometricVertex at hz
+        rcases Finset.mem_union.mp hz with hz | hz
+        · obtain ⟨y, _, rfl⟩ := Finset.mem_image.mp hz
+          exact Set.mem_range_self _
+        · obtain ⟨y, _, rfl⟩ := Finset.mem_image.mp hz
+          exact Set.mem_range_self _)
+    dsimp [face]
+    rw [← Finset.coe_image, ← Finset.coe_image, ← Finset.coe_image]
+    rw [← haff.convexHull_inter']
+    congr 2
+    rw [← Finset.coe_inter]
+    exact congrArg (fun s : Finset (Nat → ℝ) => (↑s : Set (Nat → ℝ)))
+      (Finset.image_inter _ _ hlin.injective).symm
+  have hAclosed : IsClosed A := by
+    apply isClosed_iUnion_of_finite
+    intro tau
+    apply isClosed_iUnion_of_finite
+    intro _
+    exact (Set.toFinite _).isClosed_convexHull ℝ
+  have hBclosed : IsClosed B := by
+    apply isClosed_iUnion_of_finite
+    intro tau
+    apply isClosed_iUnion_of_finite
+    intro _
+    exact (Set.toFinite _).isClosed_convexHull ℝ
+  have hcover : triangulationTopologicalVertexLink K v ⊆ A ∪ B := by
+    intro p hp
+    obtain ⟨tau, htau, hpface⟩ :=
+      (mem_triangulationTopologicalVertexLink_iff K v p).1 hp
+    change p ∈ face tau at hpface
+    by_cases hr : reachable tau
+    · left
+      exact Set.mem_iUnion_of_mem ⟨tau, htau⟩
+        (Set.mem_iUnion_of_mem hr hpface)
+    · right
+      exact Set.mem_iUnion_of_mem ⟨tau, htau⟩
+        (Set.mem_iUnion_of_mem hr hpface)
+  have hdisj : A ∩ B = ∅ := by
+    apply Set.not_nonempty_iff_eq_empty.mp
+    rintro ⟨p, hpA, hpB⟩
+    simp only [A, B, Set.mem_iUnion] at hpA hpB
+    obtain ⟨tau, htauReach, hptau⟩ := hpA
+    obtain ⟨upsilon, hupsilonNot, hpupsilon⟩ := hpB
+    have hinter : p ∈ face tau.1 ∩ face upsilon.1 := ⟨hptau, hpupsilon⟩
+    rw [hface_inter tau.1 upsilon.1] at hinter
+    have hcommon :
+        (tau.1.verts.toFinset ∩ upsilon.1.verts.toFinset).Nonempty := by
+      by_contra hempty
+      rw [Finset.not_nonempty_iff_eq_empty.mp hempty] at hinter
+      simpa using hinter
+    obtain ⟨x, hx⟩ := hcommon
+    have hxparts := Finset.mem_inter.mp hx
+    have hxtau : x ∈ tau.1.verts := List.mem_toFinset.mp hxparts.1
+    have hxupsilon : x ∈ upsilon.1.verts := List.mem_toFinset.mp hxparts.2
+    have hcontact :
+        Relation.ReflTransGen (VertexLinkAdjacent K v) tau.1 upsilon.1 :=
+      hlocal.vertexLinkPath_of_commonVertex tau.2 upsilon.2 hxtau hxupsilon
+    exact hupsilonNot (Relation.ReflTransGen.trans htauReach hcontact)
+  have hone :=
+    (isPreconnected_iff_subset_of_disjoint_closed.mp hconn.isPreconnected)
+      A B hAclosed hBclosed hcover (by simpa [hdisj])
+  rcases hone with hsubA | hsubB
+  · have hpB : triangulationTopologicalGeometricVertex rho.v0 ∈ B := by
+      apply Set.mem_iUnion_of_mem ⟨rho, hrho⟩
+      apply Set.mem_iUnion_of_mem hnpath
+      apply subset_convexHull
+      exact ⟨rho.v0, by simp [LinkTriangle.verts], rfl⟩
+    have hplink : triangulationTopologicalGeometricVertex rho.v0 ∈
+        triangulationTopologicalVertexLink K v := by
+      apply (mem_triangulationTopologicalVertexLink_iff K v _).2
+      refine ⟨rho, hrho, ?_⟩
+      apply subset_convexHull
+      exact ⟨rho.v0, by simp [LinkTriangle.verts], rfl⟩
+    have hpA := hsubA hplink
+    have : triangulationTopologicalGeometricVertex rho.v0 ∈ A ∩ B := ⟨hpA, hpB⟩
+    rw [hdisj] at this
+    exact this
+  · have hpA : triangulationTopologicalGeometricVertex sigma.v0 ∈ A := by
+      apply Set.mem_iUnion_of_mem ⟨sigma, hsigma⟩
+      apply Set.mem_iUnion_of_mem Relation.ReflTransGen.refl
+      apply subset_convexHull
+      exact ⟨sigma.v0, by simp [LinkTriangle.verts], rfl⟩
+    have hplink : triangulationTopologicalGeometricVertex sigma.v0 ∈
+        triangulationTopologicalVertexLink K v := by
+      apply (mem_triangulationTopologicalVertexLink_iff K v _).2
+      refine ⟨sigma, hsigma, ?_⟩
+      apply subset_convexHull
+      exact ⟨sigma.v0, by simp [LinkTriangle.verts], rfl⟩
+    have hpB := hsubB hplink
+    have : triangulationTopologicalGeometricVertex sigma.v0 ∈ A ∩ B := ⟨hpA, hpB⟩
+    rw [hdisj] at this
+    exact this
+
 end Poincare
