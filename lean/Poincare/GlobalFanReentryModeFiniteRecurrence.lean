@@ -85,4 +85,39 @@ theorem exists_recurrent_fanReentryModeKey
     · intro n hjn hni
       exact hstep n
 
+/-- The recurrent mixed-mode interval also retains genuine edge progress on
+every fan-to-fan step.  In particular, whether the fan successor is the
+ordinary chord continuation or a reinjected high source edge, its unordered
+central edge differs from the old fan edge. -/
+theorem exists_recurrent_fanReentryModeKey_with_fanProgress
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (states : Nat → FanReentryModeState K)
+    (hstep :
+      ∀ n,
+        FanReentryModeStep K (states n) (states (n + 1))) :
+    ∃ i j,
+      i < j ∧
+      j ≤ Fintype.card (FanReentryModeKey K) ∧
+      (states i).finiteKey hcore = (states j).finiteKey hcore ∧
+      (∀ n,
+        i ≤ n →
+        n < j →
+        FanReentryModeStep K (states n) (states (n + 1))) ∧
+      ∀ n old next,
+        i ≤ n →
+        n < j →
+        states n = .fan old →
+        states (n + 1) = .fan next →
+        canonicalEdgeKey next.v next.x ≠
+          canonicalEdgeKey old.v old.x := by
+  obtain ⟨i, j, hij, hbound, hkey, hsegment⟩ :=
+    exists_recurrent_fanReentryModeKey hcore states hstep
+
+  refine ⟨i, j, hij, hbound, hkey, hsegment, ?_⟩
+  intro n old next hin hnj hold hnext
+  have hlink := hsegment n hin hnj
+  rw [hold, hnext] at hlink
+  exact hlink.fan_to_fan_canonicalEdgeKey_ne
+
 end Poincare
