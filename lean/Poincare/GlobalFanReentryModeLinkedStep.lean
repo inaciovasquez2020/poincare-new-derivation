@@ -75,4 +75,18 @@ inductive FanReentryModeStep (K : Triangulation) :
       FanReentryModeStep K
         (.reentry old) (.fan next)
 
+/-- Every linked fan-to-fan step changes the unordered central edge. -/
+theorem FanReentryModeStep.fan_to_fan_canonicalEdgeKey_ne
+    {K : Triangulation}
+    {old next : HighFanState K}
+    (hstep : FanReentryModeStep K (.fan old) (.fan next)) :
+    canonicalEdgeKey next.v next.x ≠
+      canonicalEdgeKey old.v old.x := by
+  cases hstep with
+  | fan_next old next hv hx =>
+      rw [hv, hx]
+      exact old.transition.canonicalEdgeKey_ne_old old.endpoints_ne
+  | fan_reinject old next s hsd hse hrealized hobstruction haway hnonself =>
+      exact haway
+
 end Poincare
