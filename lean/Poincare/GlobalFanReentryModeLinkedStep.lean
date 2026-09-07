@@ -32,8 +32,8 @@ inductive FanReentryModeStep (K : Triangulation) :
         (.reentry (witnessedReentryStateOfStep hstep))
 
   /-- A source-face high edge found while continuing a fan is reinjected as a
-  new high-fan state.  The edge is explicitly nonself relative to the
-  incidence-three chord site that exposed it. -/
+  new high-fan state.  The edge is explicitly away from the old fan edge and
+  nonself relative to the incidence-three chord site that exposed it. -/
   | fan_reinject
       (old next : HighFanState K)
       (s : Move32Site)
@@ -45,6 +45,9 @@ inductive FanReentryModeStep (K : Triangulation) :
           s.a ∈ tau.verts ∧
           s.b ∈ tau.verts ∧
           s.c ∈ tau.verts)
+      (haway :
+        canonicalEdgeKey next.v next.x ≠
+          canonicalEdgeKey old.v old.x)
       (hnonself :
         ¬ ((next.v = s.d ∧ next.x = s.e) ∨
            (next.v = s.e ∧ next.x = s.d))) :

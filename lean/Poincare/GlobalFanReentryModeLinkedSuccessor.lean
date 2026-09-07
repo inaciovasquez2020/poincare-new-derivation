@@ -1,5 +1,6 @@
 import Poincare.GlobalFanReentryModeLinkedStep
 import Poincare.GlobalHighEdgeToFanStateWithEndpoints
+import Poincare.GlobalMove32SourceFaceHighFanAvoidance
 import Poincare.GlobalDegreeFourDescent
 import Poincare.TriangulationTopologicalManifoldConnectedLinkClosedCore
 import Poincare.TriangulationTopologicalHonestConnectedness
@@ -56,37 +57,15 @@ theorem ClosedTriangulationCore.exists_fanReentryModeStep_of_noMove23_noDescent
       · exact (hNoDescent hdescent).elim
       · obtain ⟨s, hsd, hse, hrealized, hthree, hsource⟩ := hobstruction
         rcases
-            hcore.exists_descent_or_nonself_complementEdge_high_or_witnessedReentry_of_move32_sourceFace_obstruction
-              hlinks hconn hNoFour s hrealized hsource with
-          hdescent | hhigh | hreentry
-        · exact (hNoDescent hdescent).elim
-        · obtain ⟨p, r, sigma, hpr, hsigma, hp, hr, hnonself, hinc⟩ := hhigh
-          have hinc' :
-              4 ≤ (K.tets.filter
-                (fun gamma => p ∈ gamma.verts ∧ r ∈ gamma.verts)).length := by
-            simpa using hinc
-          rcases
-              hcore.exists_legal_move23_or_highFanState_on_edge_of_edgeIncidence_four_le
-                hM hpr hsigma hp hr hinc' with
-            hmove23 | hstate
-          · exact (hNoMove23 hmove23).elim
-          · obtain ⟨next, hv, hx⟩ := hstate
-            have hnonself' :
-                ¬ ((next.v = s.d ∧ next.x = s.e) ∨
-                   (next.v = s.e ∧ next.x = s.d)) := by
-              intro hself
-              rw [hv, hx] at hself
-              exact hnonself hself
-            exact
-              ⟨FanReentryModeState.fan next,
-                FanReentryModeStep.fan_reinject
-                  old next s hsd hse hrealized hsource hnonself'⟩
-        · obtain ⟨s', hstep⟩ := hreentry
+            hcore.exists_legal_move23_or_highFanState_away_from_edge_of_move32_sourceFace_obstruction_of_no_degree_four
+              hM hlinks hNoFour s hrealized hsource old.v old.x old.endpoints_ne with
+          hmove23 | hstate
+        · exact (hNoMove23 hmove23).elim
+        · obtain ⟨next, haway, hnonself⟩ := hstate
           exact
-            ⟨FanReentryModeState.reentry
-                (witnessedReentryStateOfStep hstep),
-              FanReentryModeStep.fan_reentry
-                old s s' hsd hse hrealized hthree hstep⟩
+            ⟨FanReentryModeState.fan next,
+              FanReentryModeStep.fan_reinject
+                old next s hsd hse hrealized hsource haway hnonself⟩
       · obtain ⟨T'⟩ := hnext
         let next : HighFanState K :=
           {
