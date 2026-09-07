@@ -70,7 +70,7 @@ theorem ClosedTriangulationCore.tetrahedronVertexOverlapConnected_of_topological
     have hcommon : (sigma.1.verts.toFinset ∩ upsilon.1.verts.toFinset).Nonempty := by
       by_contra hempty
       rw [Finset.not_nonempty_iff_eq_empty.mp hempty] at hinter
-      simpa using hinter
+      simp at hinter
     exact hupsilonNot (Relation.ReflTransGen.tail hsigmaReach ⟨hcommon, sigma.2⟩)
   rcases hM with ⟨_, _, _, _, hconnected⟩
   have hcarrier : IsConnected (triangulationTopologicalGeometricComplex K).space := by
@@ -85,7 +85,7 @@ theorem ClosedTriangulationCore.tetrahedronVertexOverlapConnected_of_topological
     rw [← hrange]
     simpa only [Set.image_univ] using himage
   have hone := (isPreconnected_iff_subset_of_disjoint_closed.mp hcarrier.isPreconnected)
-    A B hAclosed hBclosed hcover (by simpa [hdisj])
+    A B hAclosed hBclosed hcover (by simp [hdisj])
   rcases hone with hsubA | hsubB
   · have hpB : triangulationTopologicalGeometricVertex rho.v0 ∈ B := by
       apply Set.mem_iUnion_of_mem ⟨rho, hrho⟩
