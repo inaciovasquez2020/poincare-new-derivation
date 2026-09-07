@@ -6,7 +6,8 @@ namespace Poincare
 
 /-- An obstructed realized `Move32Site` in the no-degree-four branch has a
 high source-face edge whose canonical unordered-edge key differs from any
-prescribed distinct old edge.
+prescribed distinct old edge.  The selected edge is also nonself relative to
+the site's incidence-three shared edge `(d,e)`.
 
 Only two of the three certified high source edges are needed: `a-b` and
 `a-c` have different canonical keys because the realized site has five
@@ -36,6 +37,8 @@ theorem
       p ∈ theta.verts ∧
       q ∈ theta.verts ∧
       canonicalEdgeKey p q ≠ canonicalEdgeKey v x ∧
+      ¬ ((p = s.d ∧ q = s.e) ∨
+         (p = s.e ∧ q = s.d)) ∧
       4 ≤
         (K.tets.filter
           (fun gamma =>
@@ -58,6 +61,20 @@ theorem
     aesop
 
   have hbc : s.b ≠ s.c := by
+    have h := hfive
+    simp at h
+    aesop
+
+  have habNonself :
+      ¬ ((s.a = s.d ∧ s.b = s.e) ∨
+         (s.a = s.e ∧ s.b = s.d)) := by
+    have h := hfive
+    simp at h
+    aesop
+
+  have hacNonself :
+      ¬ ((s.a = s.d ∧ s.c = s.e) ∨
+         (s.a = s.e ∧ s.c = s.d)) := by
     have h := hfive
     simp at h
     aesop
@@ -90,6 +107,7 @@ theorem
         haTheta,
         hcTheta,
         ?_,
+        hacNonself,
         hhigh.2.1⟩
     intro hacOld
     apply hab_ne_hac
@@ -102,6 +120,7 @@ theorem
         haTheta,
         hbTheta,
         habOld,
+        habNonself,
         hhigh.1⟩
 
 end Poincare
