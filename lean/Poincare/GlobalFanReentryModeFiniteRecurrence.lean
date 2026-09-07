@@ -120,4 +120,88 @@ theorem exists_recurrent_fanReentryModeKey_with_fanProgress
   rw [hold, hnext] at hlink
   exact hlink.fan_to_fan_canonicalEdgeKey_ne
 
+/-- A recurrent mixed-mode key has exactly two structural forms.  If the
+recurrent mode is a fan, the repeated unordered fan edge cannot be an
+immediate successor, so the return is genuinely nonconsecutive.  Otherwise
+the recurrent endpoints are both witnessed-reentry states.
+
+This isolates the remaining cycle obstruction into a nonconsecutive fan return
+or a recurrent reentry return; it does not exclude either branch. -/
+theorem exists_recurrent_fanReentryModeKey_classified
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (states : Nat → FanReentryModeState K)
+    (hstep :
+      ∀ n,
+        FanReentryModeStep K (states n) (states (n + 1))) :
+    ∃ i j,
+      i < j ∧
+      j ≤ Fintype.card (FanReentryModeKey K) ∧
+      (states i).finiteKey hcore = (states j).finiteKey hcore ∧
+      (∀ n,
+        i ≤ n →
+        n < j →
+        FanReentryModeStep K (states n) (states (n + 1))) ∧
+      ((∃ old next : HighFanState K,
+          states i = .fan old ∧
+          states j = .fan next ∧
+          i + 1 < j ∧
+          canonicalEdgeKey old.v old.x =
+            canonicalEdgeKey next.v next.x) ∨
+        ∃ old next : WitnessedReentryState K,
+          states i = .reentry old ∧
+          states j = .reentry next) := by
+  obtain ⟨i, j, hij, hbound, hkey, hsegment, hfanProgress⟩ :=
+    exists_recurrent_fanReentryModeKey_with_fanProgress
+      hcore states hstep
+
+  refine ⟨i, j, hij, hbound, hkey, hsegment, ?_⟩
+
+  cases hi : states i with
+  | fan old =>
+      cases hj : states j with
+      | fan next =>
+          have hstate : old.edgeState = next.edgeState := by
+            simpa [hi, hj] using hkey
+
+          have hcanon :
+              canonicalEdgeKey old.v old.x =
+                canonicalEdgeKey next.v next.x := by
+            have h :=
+              congrArg
+                (fun q : SupportedEdgeState K => q.key)
+                hstate
+            simpa using h
+
+          have hgap : i + 1 < j := by
+            by_contra hnot
+            have hsucc : j = i + 1 := by
+              omega
+            subst j
+            have hneq :=
+              hfanProgress
+                i old next
+                (Nat.le_refl i)
+                (by omega)
+                hi hj
+            exact hneq hcanon.symm
+
+          exact
+            Or.inl ⟨old, next, hi, hj, hgap, hcanon⟩
+
+      | reentry next =>
+          have hfalse : False := by
+            simpa [hi, hj, FanReentryModeState.finiteKey] using hkey
+          exact hfalse.elim
+
+  | reentry old =>
+      cases hj : states j with
+      | fan next =>
+          have hfalse : False := by
+            simpa [hi, hj, FanReentryModeState.finiteKey] using hkey
+          exact hfalse.elim
+
+      | reentry next =>
+          exact Or.inr ⟨old, next, hi, hj⟩
+
 end Poincare
