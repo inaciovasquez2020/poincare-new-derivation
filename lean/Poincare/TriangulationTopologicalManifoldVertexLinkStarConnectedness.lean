@@ -271,7 +271,7 @@ theorem VertexLinkLocallyConnected.vertexLinkConnected_of_geometric_isConnected
         (tau.1.verts.toFinset ∩ upsilon.1.verts.toFinset).Nonempty := by
       by_contra hempty
       rw [Finset.not_nonempty_iff_eq_empty.mp hempty] at hinter
-      simpa using hinter
+      simp at hinter
     obtain ⟨x, hx⟩ := hcommon
     have hxparts := Finset.mem_inter.mp hx
     have hxtau : x ∈ tau.1.verts := List.mem_toFinset.mp hxparts.1
@@ -282,7 +282,7 @@ theorem VertexLinkLocallyConnected.vertexLinkConnected_of_geometric_isConnected
     exact hupsilonNot (Relation.ReflTransGen.trans htauReach hcontact)
   have hone :=
     (isPreconnected_iff_subset_of_disjoint_closed.mp hconn.isPreconnected)
-      A B hAclosed hBclosed hcover (by simpa [hdisj])
+      A B hAclosed hBclosed hcover (by simp [hdisj])
   rcases hone with hsubA | hsubB
   · have hpB : triangulationTopologicalGeometricVertex rho.v0 ∈ B := by
       apply Set.mem_iUnion_of_mem ⟨rho, hrho⟩
