@@ -257,7 +257,7 @@ theorem Move23Site.five_le_bc_edgeIncidence_of_sourceFace_alignment_of_no_degree
       hrhoDK hnotD hbD hcD hdD heE
   let W : Finset Tet := {tau, rhoD, rhoE}
   have hWcard : W.card = 3 := by
-    simp [W, htauD, htauE, hDE, Ne.symm]
+    simp [W, htauD, htauE, hDE]
   have hWsub : W ⊆ U.toFinset := by
     intro z hz
     simp only [W, Finset.mem_insert, Finset.mem_singleton] at hz
