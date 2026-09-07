@@ -1,22 +1,14 @@
-import Poincare.GlobalMove32ReentryLeastBoundaryEscapeIncidenceThreeFork
-import Poincare.GlobalMove32WitnessedSourceFaceReentry
+import Poincare.GlobalMove32ReentryLeastBoundaryEscapeReentry
 import Poincare.GlobalMove32SourceFaceLegalMove23High
 
 namespace Poincare
 namespace CarrierLoopNullHomotopyData
 
-/--
-Under the same fail-closed hypotheses used by the perpetual witnessed-reentry
-builder, the least left-boundary escape cannot terminate in descent or a
-nonself high-incidence edge.  The certified source-face classification already
-absorbs aligned legal Move23 output into that high-incidence branch.  Hence the
-exact-incidence-three Move32 candidate carried by the first-exit edge is forced
-into witnessed source-face reentry.
-
-The theorem retains the least-exit indices and identifies the new Move32 shared
-edge with the actual predecessor/escape boundary labels.
--/
-theorem finite_squareGrid_least_boundary_escape_witnessedReentry_of_no_other_sourceFace_outcome
+/-- After absorbing the aligned legal-Move23 source-face branch into nonself
+high-edge escape, the least-boundary exact-three candidate is forced into
+witnessed reentry assuming only no strict descent and no nonself high-edge
+escape. -/
+theorem finite_squareGrid_least_boundary_escape_witnessedReentry_of_noDescent_noHigh
     {K : Triangulation}
     (hcore : ClosedTriangulationCore K)
     (hlinks : ∀ v ∈ vertexSupport K, VertexLinkConnected K v)

@@ -1,20 +1,13 @@
 import Poincare.GlobalMove32ReentryPolygonalLoopFailClosed
-import Poincare.GlobalMove32ReentryPolygonalLoopNullHomotopy
+import Poincare.GlobalMove32WitnessedReentryPerpetualNoMove23
 
 namespace Poincare
 
-/--
-Under explicit exclusion of strict topological `PhiSupport` descent and
-nonself complementary high-incidence escape, the initial exact-three Move32
-source-face obstruction produces the existing ordered recurrence-driven
-polygonal-loop certificate together with the full relative null-homotopy
-square supplied by simple connectivity.
-
-This is a composition theorem only.  It does not assert that the recurrent
-polygonal loop is homotopically nontrivial or that its null-homotopy forces a
-combinatorial contradiction.
--/
-theorem ClosedTriangulationCore.exists_polygonalLoop_nullHomotopyData_of_no_other_sourceFace_outcome
+/-- After absorbing the aligned legal-Move23 source-face branch into nonself
+high-edge escape, an exact-three obstructed start produces the recurrence-driven
+polygonal-loop certificate assuming only no strict descent and no nonself
+high-edge escape. -/
+theorem ClosedTriangulationCore.exists_polygonalLoopCertificate_of_noDescent_noHigh
     {K : Triangulation}
     (hcore : ClosedTriangulationCore K)
     (hlinks :
@@ -60,14 +53,11 @@ theorem ClosedTriangulationCore.exists_polygonalLoop_nullHomotopyData_of_no_othe
         start.a ∈ tau.verts ∧
         start.b ∈ tau.verts ∧
         start.c ∈ tau.verts) :
-    ∃ p : WitnessedReentryPolygonalLoopCertificate K,
-      Nonempty
-        (CarrierLoopNullHomotopyData K p.basepoint p.polygonalLoop) := by
-  obtain ⟨p⟩ :=
-    hcore.exists_polygonalLoopCertificate_of_no_other_sourceFace_outcome
+    Nonempty (WitnessedReentryPolygonalLoopCertificate K) := by
+  obtain ⟨sites, _hzero, hrealized, hthree, _hobstruction, hwitnessed⟩ :=
+    hcore.exists_perpetual_witnessedReentry_of_noDescent_noHigh
       hlinks
       hconn
-      hSC
       hNoFour
       hNoDescent
       hNoHigh
@@ -76,6 +66,37 @@ theorem ClosedTriangulationCore.exists_polygonalLoop_nullHomotopyData_of_no_othe
       hstartThree
       hstartObstruction
 
-  exact ⟨p, p.exists_nullHomotopyData hSC⟩
+  obtain ⟨c, hsites⟩ :=
+    hcore.exists_wholeCarrierLoop_of_witnessedReentry_recurrent_crossing_with_sites_eq
+      hlinks
+      hconn
+      hSC
+      hNoFour
+      sites
+      hrealized
+      hthree
+      hwitnessed
+
+  have hrealizedC : ∀ n, (c.sites n).RealizedIn K := by
+    intro n
+    simpa [hsites] using hrealized n
+
+  have hthreeC : ∀ n, (c.sites n).SharedEdgeExactlyThree K := by
+    intro n
+    simpa [hsites] using hthree n
+
+  have hwitnessedC :
+      ∀ n,
+        Move32SourceFaceWitnessedReentry
+          K (c.sites n) (c.sites (n + 1)) := by
+    intro n
+    simpa [hsites] using hwitnessed n
+
+  exact
+    hcore.exists_polygonalLoopCertificate_of_witnessedReentry_recurrent_crossing
+      c
+      hrealizedC
+      hthreeC
+      hwitnessedC
 
 end Poincare

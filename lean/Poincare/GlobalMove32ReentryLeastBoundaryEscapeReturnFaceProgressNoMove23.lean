@@ -1,22 +1,12 @@
-import Poincare.GlobalMove32ReentryLeastBoundaryEscapeIncidenceThreeFork
-import Poincare.GlobalMove32WitnessedSourceFaceReentry
-import Poincare.GlobalMove32SourceFaceLegalMove23High
+import Poincare.GlobalMove32ReentryLeastBoundaryEscapeReturnFaceProgress
+import Poincare.GlobalMove32SourceFaceNoMove23OfNoHigh
 
 namespace Poincare
 namespace CarrierLoopNullHomotopyData
 
-/--
-Under the same fail-closed hypotheses used by the perpetual witnessed-reentry
-builder, the least left-boundary escape cannot terminate in descent or a
-nonself high-incidence edge.  The certified source-face classification already
-absorbs aligned legal Move23 output into that high-incidence branch.  Hence the
-exact-incidence-three Move32 candidate carried by the first-exit edge is forced
-into witnessed source-face reentry.
-
-The theorem retains the least-exit indices and identifies the new Move32 shared
-edge with the actual predecessor/escape boundary labels.
--/
-theorem finite_squareGrid_least_boundary_escape_witnessedReentry_of_no_other_sourceFace_outcome
+/-- The sharpened least-boundary return-face alternative needs no independent
+aligned-Move23 exclusion: `hNoHigh` supplies it. -/
+theorem finite_squareGrid_least_boundary_escape_successor_new_or_anchorReturn_sourceFace_ne_of_noDescent_noHigh
     {K : Triangulation}
     (hcore : ClosedTriangulationCore K)
     (hlinks : ∀ v ∈ vertexSupport K, VertexLinkConnected K v)
@@ -78,38 +68,41 @@ theorem finite_squareGrid_least_boundary_escape_witnessedReentry_of_no_other_sou
         s.e = label ⟨0, hD⟩ j ∧
         s.RealizedIn K ∧
         s.SharedEdgeExactlyThree K ∧
-        Move32SourceFaceWitnessedReentry K s s' := by
-  dsimp only
-
-  let m := p.crossing.predecessorIndex + 1 - p.crossing.anchorIndex
-  let D := N * 2 ^ (m + 1)
-  intro hD label hpositive
-
-  obtain ⟨j, k, hjPos, hkSucc, hkInside, hjOutside, hfork⟩ :=
-    finite_squareGrid_least_boundary_escape_incidenceThree_descent_or_sourceFace_probe
-      hcore hlinks hNoFour p H hNoHigh N hN hD label hpositive
-
-  rcases hfork with hdesc | hsource
-
-  · exact (hNoDescent hdesc).elim
-
-  · rcases hsource with
-      ⟨s, hsd, hse, hrealized, hthree, hobstruction⟩
-
-    rcases
-        hcore.exists_descent_or_nonself_complementEdge_high_or_witnessedReentry_of_move32_sourceFace_obstruction
-          hlinks hconn hNoFour s hrealized hobstruction with
-      hdesc | hhigh | hreentry
-
-    · exact (hNoDescent hdesc).elim
-
-    · exact (hNoHigh s hrealized hobstruction hhigh).elim
-
-    · rcases hreentry with ⟨s', hrel⟩
-      exact
-        ⟨j, k, s, s',
-          hjPos, hkSucc, hkInside, hjOutside,
-          hsd, hse, hrealized, hthree, hrel⟩
+        Move32SourceFaceWitnessedReentry K s s' ∧
+        canonicalEdgeKey s.d s.e ≠
+          canonicalEdgeKey
+            (p.crossing.sites p.crossing.anchorIndex).d
+            (p.crossing.sites p.crossing.anchorIndex).e ∧
+        canonicalEdgeKey s'.d s'.e ≠ canonicalEdgeKey s.d s.e ∧
+        (canonicalEdgeKey s'.d s'.e ≠
+            canonicalEdgeKey
+              (p.crossing.sites p.crossing.anchorIndex).d
+              (p.crossing.sites p.crossing.anchorIndex).e ∨
+          ((((s'.d = (p.crossing.sites p.crossing.anchorIndex).d ∧
+                s'.e = (p.crossing.sites p.crossing.anchorIndex).e) ∨
+              (s'.d = (p.crossing.sites p.crossing.anchorIndex).e ∧
+                s'.e = (p.crossing.sites p.crossing.anchorIndex).d)) ∧
+            ¬ (∀ z : Nat,
+              z ∈ [s.a, s.b, s.c] ↔
+              z ∈
+                [(p.crossing.sites p.crossing.anchorIndex).a,
+                  (p.crossing.sites p.crossing.anchorIndex).b,
+                  (p.crossing.sites p.crossing.anchorIndex).c])) ∧
+            ∃ sigma : Tet,
+              sigma ∈ K.tets ∧
+              (p.crossing.sites p.crossing.anchorIndex).d ∈ sigma.verts ∧
+              (p.crossing.sites p.crossing.anchorIndex).e ∈ sigma.verts ∧
+              (SameTetVertices sigma
+                  (p.crossing.sites p.crossing.anchorIndex).targetTet₀ ∨
+                SameTetVertices sigma
+                  (p.crossing.sites p.crossing.anchorIndex).targetTet₁ ∨
+                SameTetVertices sigma
+                  (p.crossing.sites p.crossing.anchorIndex).targetTet₂))) := by
+  have hNoMove23 :=
+    hcore.no_matching_legal_move23_of_noHigh hlinks hNoFour hNoHigh
+  exact
+    finite_squareGrid_least_boundary_escape_successor_new_or_anchorReturn_sourceFace_ne_probe
+      hcore hlinks hconn hNoFour p H hNoMove23 hNoDescent hNoHigh N hN
 
 end CarrierLoopNullHomotopyData
 end Poincare

@@ -1,19 +1,15 @@
-import Poincare.GlobalMove32ReentryLeastBoundaryEscapeReentry
-import Poincare.GlobalMove32SupportedEdgeState
+import Poincare.GlobalMove32ReentryLeastBoundaryEscapeReturnFaceProgressNoMove23
+import Poincare.GlobalMove32ReentryImmediateReturnCarrierEscape
 
 namespace Poincare
 namespace CarrierLoopNullHomotopyData
 
-/--
-Under the fail-closed hypotheses, the least boundary escape produces a shared
-edge whose canonical unordered-edge key differs from the recurrent anchor
-shared edge.  Its forced witnessed-reentry successor changes the canonical
-shared-edge key once more.
-
-This is a finite-state progress certificate only.  It does not yet prove that
-the resulting state can never recur later in the sequence.
--/
-theorem finite_squareGrid_least_boundary_escape_two_state_changes_of_no_other_sourceFace_outcome
+/-- In the no-descent/no-high least-boundary branch, an immediate return of
+the witnessed-reentry successor to the recurrent anchor edge forces genuine
+carrier escape: the predecessor shared-edge endpoint inside the anchor carrier
+is an anchor source vertex, and its source face contains a vertex outside the
+whole anchor five-vertex carrier. -/
+theorem finite_squareGrid_least_boundary_escape_successor_new_or_anchorReturn_carrierEscape_of_noDescent_noHigh
     {K : Triangulation}
     (hcore : ClosedTriangulationCore K)
     (hlinks : ∀ v ∈ vertexSupport K, VertexLinkConnected K v)
@@ -80,7 +76,26 @@ theorem finite_squareGrid_least_boundary_escape_two_state_changes_of_no_other_so
           canonicalEdgeKey
             (p.crossing.sites p.crossing.anchorIndex).d
             (p.crossing.sites p.crossing.anchorIndex).e ∧
-        canonicalEdgeKey s'.d s'.e ≠ canonicalEdgeKey s.d s.e := by
+        canonicalEdgeKey s'.d s'.e ≠ canonicalEdgeKey s.d s.e ∧
+        (canonicalEdgeKey s'.d s'.e ≠
+            canonicalEdgeKey
+              (p.crossing.sites p.crossing.anchorIndex).d
+              (p.crossing.sites p.crossing.anchorIndex).e ∨
+          (((s'.d = (p.crossing.sites p.crossing.anchorIndex).d ∧
+                s'.e = (p.crossing.sites p.crossing.anchorIndex).e) ∨
+              (s'.d = (p.crossing.sites p.crossing.anchorIndex).e ∧
+                s'.e = (p.crossing.sites p.crossing.anchorIndex).d)) ∧
+            (s.d = (p.crossing.sites p.crossing.anchorIndex).a ∨
+              s.d = (p.crossing.sites p.crossing.anchorIndex).b ∨
+              s.d = (p.crossing.sites p.crossing.anchorIndex).c) ∧
+            ∃ q : Nat,
+              q ∈ [s.a, s.b, s.c] ∧
+              q ∉
+                [(p.crossing.sites p.crossing.anchorIndex).a,
+                  (p.crossing.sites p.crossing.anchorIndex).b,
+                  (p.crossing.sites p.crossing.anchorIndex).c,
+                  (p.crossing.sites p.crossing.anchorIndex).d,
+                  (p.crossing.sites p.crossing.anchorIndex).e])) := by
   classical
   dsimp only
 
@@ -90,61 +105,37 @@ theorem finite_squareGrid_least_boundary_escape_two_state_changes_of_no_other_so
   intro hD label hpositive
 
   obtain ⟨j, k, s, s', hjPos, hkSucc, hkInside, hjOutside,
-      hsd, hse, hsRealized, hsThree, hrel⟩ :=
-    finite_squareGrid_least_boundary_escape_witnessedReentry_of_no_other_sourceFace_outcome
+      hsd, hse, hsRealized, hsThree, hrel, hkeySAnchor, hkeyNext, hfork⟩ :=
+    finite_squareGrid_least_boundary_escape_successor_new_or_anchorReturn_sourceFace_ne_of_noDescent_noHigh
       hcore hlinks hconn hNoFour p H hNoDescent hNoHigh
       N hN hD label hpositive
 
-  have hjOutside' :
-      label ⟨0, hD⟩ j ∉ [anchor.a, anchor.b, anchor.c, anchor.d, anchor.e] := by
-    simpa [anchor] using hjOutside
-
-  have hsEOutside : s.e ∉ [anchor.a, anchor.b, anchor.c, anchor.d, anchor.e] := by
-    rw [hse]
-    exact hjOutside'
-
-  have hnonAnchor :
-      ¬ ((s.d = anchor.d ∧ s.e = anchor.e) ∨
-         (s.d = anchor.e ∧ s.e = anchor.d)) := by
-    intro hself
-    apply hsEOutside
-    rcases hself with hde | hed
-    · rw [hde.2]
-      simp
-    · rw [hed.2]
-      simp
-
-  have hanchorRealized : anchor.RealizedIn K := by
-    simpa [anchor] using p.realized p.crossing.anchorIndex
-
-  have hsDistinct : s.d ≠ s.e :=
-    (hcore.move32_sharedEdge_supported s hsRealized).2.2
-
-  have hanchorDistinct : anchor.d ≠ anchor.e :=
-    (hcore.move32_sharedEdge_supported anchor hanchorRealized).2.2
-
-  have hkeyAnchor :
-      canonicalEdgeKey s.d s.e ≠ canonicalEdgeKey anchor.d anchor.e := by
-    intro hkey
-    exact hnonAnchor
-      ((canonicalEdgeKey_eq_iff
-        s.d s.e anchor.d anchor.e hsDistinct hanchorDistinct).1 hkey)
-
-  have hplain := hrel.toSourceFaceReentry
-  have hs'Realized : s'.RealizedIn K := hplain.1
-  have hs'Distinct : s'.d ≠ s'.e :=
-    (hcore.move32_sharedEdge_supported s' hs'Realized).2.2
-
-  have hkeyNext :
-      canonicalEdgeKey s'.d s'.e ≠ canonicalEdgeKey s.d s.e := by
-    intro hkey
-    exact hplain.2.2.2
-      ((canonicalEdgeKey_eq_iff
-        s'.d s'.e s.d s.e hs'Distinct hsDistinct).1 hkey)
-
   refine ⟨j, k, s, s', hjPos, hkSucc, hkInside, hjOutside,
-    hsd, hse, hsRealized, hsThree, hrel, ?_, hkeyNext⟩
-  simpa [anchor] using hkeyAnchor
+    hsd, hse, hsRealized, hsThree, hrel, hkeySAnchor, hkeyNext, ?_⟩
+
+  rcases hfork with hnew | hreturnData
+  · exact Or.inl hnew
+  · rcases hreturnData with
+      ⟨⟨hreturn, hsourceNe⟩, _sigma, _hsigmaK, _hdSigma, _heSigma, _htarget⟩
+
+    have hanchorRealized : anchor.RealizedIn K := by
+      simpa [anchor] using p.realized p.crossing.anchorIndex
+
+    have hsDInside :
+        s.d ∈ [anchor.a, anchor.b, anchor.c, anchor.d, anchor.e] := by
+      rw [hsd]
+      simpa [anchor] using hkInside
+
+    obtain ⟨hsDClass, q, hqSource, hqOutside⟩ :=
+      hcore.exists_anchorSource_endpoint_and_new_source_vertex_of_witnessedReentry_return_edge
+        hlinks hNoFour anchor s s' hanchorRealized hsRealized hrel
+        hreturn hsDInside hsourceNe
+
+    right
+    refine ⟨?_, ?_, q, hqSource, ?_⟩
+    · simpa [anchor] using hreturn
+    · simpa [anchor] using hsDClass
+    · simpa [anchor] using hqOutside
 
 end CarrierLoopNullHomotopyData
 end Poincare
