@@ -14,10 +14,7 @@ private theorem
   change
     v ∈ allVerts K ↔
       0 < (allVerts K).count v
-  simpa using
-    ((Multiset.count_pos
-      (a := v)
-      (s := (↑(allVerts K) : Multiset Nat))).symm)
+  simp
 
 /--
 In the no-degree-four branch of a closed core, both shared-edge endpoints
