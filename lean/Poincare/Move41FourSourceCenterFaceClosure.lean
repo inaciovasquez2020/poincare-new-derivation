@@ -45,32 +45,32 @@ theorem Move41Site.represented_sourceCluster_closed_under_center_face
   have h01 : tau₀ ≠ tau₁ := by
     intro h
     subst tau₁
-    simpa using hnodup
+    simp at hnodup
 
   have h02 : tau₀ ≠ tau₂ := by
     intro h
     subst tau₂
-    simpa using hnodup
+    simp at hnodup
 
   have h03 : tau₀ ≠ tau₃ := by
     intro h
     subst tau₃
-    simpa using hnodup
+    simp at hnodup
 
   have h12 : tau₁ ≠ tau₂ := by
     intro h
     subst tau₂
-    simpa using hnodup
+    simp at hnodup
 
   have h13 : tau₁ ≠ tau₃ := by
     intro h
     subst tau₃
-    simpa using hnodup
+    simp at hnodup
 
   have h23 : tau₂ ≠ tau₃ := by
     intro h
     subst tau₃
-    simpa using hnodup
+    simp at hnodup
 
   have liftFace
       {x y z u v w : Nat}
