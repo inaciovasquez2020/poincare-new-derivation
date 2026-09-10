@@ -111,7 +111,7 @@ private theorem AmbientEdgeCyclicFan.star_length_eq_three_of_triangle
         have hacv : a.1 ≠ c.1 := fun h => hacne (Subtype.ext h)
         have hbcv : b.1 ≠ c.1 := fun h => hbcne (Subtype.ext h)
         simp [habv, hacv, hbcv]) |>.2
-      (by intro t; simpa using hmem t)
+      (by intro t; simp [hmem t])
   simpa using hperm.length_eq
 
 /-- An adjacent fan pair either supports the legal `2-3` move, or its
