@@ -77,7 +77,7 @@ private theorem AmbientEdgeCyclicFan.star_length_eq_three_of_triangle
       have hlen := F.length_ge_three
       cases hw : F.walk with
       | nil => rw [hw] at hlen; simp at hlen
-      | cons h p => simpa using p.end_mem_support
+      | cons h p => simp
     have hqtail : q ∈ F.walk.support.tail := by
       have hcoverq := F.covers q
       rw [F.walk.mem_support_iff] at hcoverq
