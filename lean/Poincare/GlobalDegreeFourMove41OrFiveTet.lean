@@ -86,45 +86,44 @@ theorem
       Move41Site.sourceTet₀,
       Move41Site.sourceTet₁,
       Move41Site.sourceTet₂,
-      Move41Site.sourceTet₃,
-      Tet.verts] at hd ⊢
+      Move41Site.sourceTet₃] at hd ⊢
     refine
       ⟨⟨?_, ?_, ?_⟩, ⟨?_, ?_⟩, ?_⟩
     · intro h
       have hx :=
         (h s.c).1
-          (by simp [Move41Site.sourceTet₀, Tet.verts])
-      simp [Move41Site.sourceTet₁, Tet.verts] at hx
+          (by simp [Tet.verts])
+      simp [Tet.verts] at hx
       aesop
     · intro h
       have hx :=
         (h s.b).1
-          (by simp [Move41Site.sourceTet₀, Tet.verts])
-      simp [Move41Site.sourceTet₂, Tet.verts] at hx
+          (by simp [Tet.verts])
+      simp [Tet.verts] at hx
       aesop
     · intro h
       have hx :=
         (h s.a).1
-          (by simp [Move41Site.sourceTet₀, Tet.verts])
-      simp [Move41Site.sourceTet₃, Tet.verts] at hx
+          (by simp [Tet.verts])
+      simp [Tet.verts] at hx
       aesop
     · intro h
       have hx :=
         (h s.b).1
-          (by simp [Move41Site.sourceTet₁, Tet.verts])
-      simp [Move41Site.sourceTet₂, Tet.verts] at hx
+          (by simp [Tet.verts])
+      simp [Tet.verts] at hx
       aesop
     · intro h
       have hx :=
         (h s.a).1
-          (by simp [Move41Site.sourceTet₁, Tet.verts])
-      simp [Move41Site.sourceTet₃, Tet.verts] at hx
+          (by simp [Tet.verts])
+      simp [Tet.verts] at hx
       aesop
     · intro h
       have hx :=
         (h s.a).1
-          (by simp [Move41Site.sourceTet₂, Tet.verts])
-      simp [Move41Site.sourceTet₃, Tet.verts] at hx
+          (by simp [Tet.verts])
+      simp [Tet.verts] at hx
       aesop
 
   refine ⟨s, hse, ?_⟩
