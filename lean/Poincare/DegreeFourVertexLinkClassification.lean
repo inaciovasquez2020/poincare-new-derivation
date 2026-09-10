@@ -225,31 +225,31 @@ theorem ClosedTriangulationCore.exists_move41Site_centerSaturated_pairwise_of_ve
   refine ⟨s, hse, ?_, hsaturated⟩
   have hd := s.distinct
   simp [Move41Site.sourceTets, Move41Site.sourceTet₀, Move41Site.sourceTet₁,
-    Move41Site.sourceTet₂, Move41Site.sourceTet₃, Tet.verts] at hd ⊢
+    Move41Site.sourceTet₂, Move41Site.sourceTet₃] at hd ⊢
   refine ⟨⟨?_, ?_, ?_⟩, ⟨?_, ?_⟩, ?_⟩
   · intro h
-    have := (h s.c).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
-    simp [Move41Site.sourceTet₁, Tet.verts] at this
+    have := (h s.c).1 (by simp [Tet.verts])
+    simp [Tet.verts] at this
     aesop
   · intro h
-    have := (h s.b).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
-    simp [Move41Site.sourceTet₂, Tet.verts] at this
+    have := (h s.b).1 (by simp [Tet.verts])
+    simp [Tet.verts] at this
     aesop
   · intro h
-    have := (h s.a).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
-    simp [Move41Site.sourceTet₃, Tet.verts] at this
+    have := (h s.a).1 (by simp [Tet.verts])
+    simp [Tet.verts] at this
     aesop
   · intro h
-    have := (h s.b).1 (by simp [Move41Site.sourceTet₁, Tet.verts])
-    simp [Move41Site.sourceTet₂, Tet.verts] at this
+    have := (h s.b).1 (by simp [Tet.verts])
+    simp [Tet.verts] at this
     aesop
   · intro h
-    have := (h s.a).1 (by simp [Move41Site.sourceTet₁, Tet.verts])
-    simp [Move41Site.sourceTet₃, Tet.verts] at this
+    have := (h s.a).1 (by simp [Tet.verts])
+    simp [Tet.verts] at this
     aesop
   · intro h
-    have := (h s.a).1 (by simp [Move41Site.sourceTet₂, Tet.verts])
-    simp [Move41Site.sourceTet₃, Tet.verts] at this
+    have := (h s.a).1 (by simp [Tet.verts])
+    simp [Tet.verts] at this
     aesop
 
 /-- Every one of the four source vertex sets extracted from a degree-four
@@ -565,31 +565,31 @@ theorem ClosedTriangulationCore.exists_move41Site_legalIn_or_exists_target_of_ve
       s.sourceTets.Pairwise (fun tau sigma => ¬ SameTetVertices tau sigma) := by
     have hd := s.distinct
     simp [Move41Site.sourceTets, Move41Site.sourceTet₀, Move41Site.sourceTet₁,
-      Move41Site.sourceTet₂, Move41Site.sourceTet₃, Tet.verts] at hd ⊢
+      Move41Site.sourceTet₂, Move41Site.sourceTet₃] at hd ⊢
     refine ⟨⟨?_, ?_, ?_⟩, ⟨?_, ?_⟩, ?_⟩
     · intro h
-      have := (h s.c).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
-      simp [Move41Site.sourceTet₁, Tet.verts] at this
+      have := (h s.c).1 (by simp [Tet.verts])
+      simp [Tet.verts] at this
       aesop
     · intro h
-      have := (h s.b).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
-      simp [Move41Site.sourceTet₂, Tet.verts] at this
+      have := (h s.b).1 (by simp [Tet.verts])
+      simp [Tet.verts] at this
       aesop
     · intro h
-      have := (h s.a).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
-      simp [Move41Site.sourceTet₃, Tet.verts] at this
+      have := (h s.a).1 (by simp [Tet.verts])
+      simp [Tet.verts] at this
       aesop
     · intro h
-      have := (h s.b).1 (by simp [Move41Site.sourceTet₁, Tet.verts])
-      simp [Move41Site.sourceTet₂, Tet.verts] at this
+      have := (h s.b).1 (by simp [Tet.verts])
+      simp [Tet.verts] at this
       aesop
     · intro h
-      have := (h s.a).1 (by simp [Move41Site.sourceTet₁, Tet.verts])
-      simp [Move41Site.sourceTet₃, Tet.verts] at this
+      have := (h s.a).1 (by simp [Tet.verts])
+      simp [Tet.verts] at this
       aesop
     · intro h
-      have := (h s.a).1 (by simp [Move41Site.sourceTet₂, Tet.verts])
-      simp [Move41Site.sourceTet₃, Tet.verts] at this
+      have := (h s.a).1 (by simp [Tet.verts])
+      simp [Tet.verts] at this
       aesop
   exact ⟨s, hse,
     s.legalIn_or_exists_target hcore hsources hpairwise hsaturated⟩

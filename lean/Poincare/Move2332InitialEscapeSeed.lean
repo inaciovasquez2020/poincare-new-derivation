@@ -224,7 +224,7 @@ theorem Move2332InitialEscapeSeed.move32s_legal
       · simpa [s2, move2332SecondMove32] using hface2 tau htau
 
 theorem exists_move2332Block_PhiSupport_lt_of_initial_escape_seed
-    {K : Triangulation} (_hcore : ClosedTriangulationCore K)
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
     (m : Move23Site) (hseed : Move2332InitialEscapeSeed K m)
     (hcore1 : ClosedTriangulationCore (m.replace K))
     (hcore2 : ClosedTriangulationCore
@@ -240,74 +240,18 @@ theorem exists_move2332Block_PhiSupport_lt_of_initial_escape_seed
         PhiSupport K := by
   have h23 := hseed.move23_legal
   obtain ⟨hlegal1, hnoninverse, hlegal2⟩ := hseed.move32s_legal
-  have hdegree := hseed.degreeBudget
-  rcases m.replace_vertexDegree_site K h23 with ⟨ha, hb, hc, hd, he⟩
-  rcases hcore1.move32Site_replace_vertexDegree_site
-      (move2332FirstMove32 m hseed.x) hlegal1 with
-    ⟨hs1a, hs1b, hs1c, hs1d, hs1e⟩
-  rcases hcore2.move32Site_replace_vertexDegree_site
-      (move2332SecondMove32 m hseed.y) hlegal2 with
-    ⟨hs2a, hs2b, hs2c, hs2d, hs2e⟩
-  have hKa : vertexDegree
-      ((move2332FirstMove32 m hseed.x).replace (m.replace K)) m.a =
-      vertexDegree K m.a := by
-    have hdist := hseed.distinct
-    have hoff := hcore1.move32Site_replace_vertexDegree_offSite
-      (move2332FirstMove32 m hseed.x) hlegal1 (v := m.a)
-      (by simp [move2332FirstMove32] at hdist ⊢; aesop)
-      (by simp [move2332FirstMove32] at hdist ⊢; aesop)
-      (by simp [move2332FirstMove32] at hdist ⊢; aesop)
-      (by simp [move2332FirstMove32] at hdist ⊢; aesop)
-      (by simp [move2332FirstMove32] at hdist ⊢; aesop)
-    exact hoff.trans ha
-  have hd1 : vertexDegree (m.replace K) m.d = vertexDegree K m.d + 2 := hd
-  have he1 : vertexDegree (m.replace K) m.e = vertexDegree K m.e + 2 := he
-  have hb2 : vertexDegree
-      ((move2332FirstMove32 m hseed.x).replace (m.replace K)) m.b =
-      vertexDegree K m.b - 2 := by
-    have hs1d' : vertexDegree (m.replace K) m.b =
-        vertexDegree ((move2332FirstMove32 m hseed.x).replace
-          (m.replace K)) m.b + 2 := by
-      simpa [move2332FirstMove32] using hs1d
-    omega
-  have hc2deg : vertexDegree
-      ((move2332FirstMove32 m hseed.x).replace (m.replace K)) m.c =
-      vertexDegree K m.c - 2 := by
-    have hs1e' : vertexDegree (m.replace K) m.c =
-        vertexDegree ((move2332FirstMove32 m hseed.x).replace
-          (m.replace K)) m.c + 2 := by
-      simpa [move2332FirstMove32] using hs1e
-    omega
-  have ha3 : vertexDegree
+  have hcore3 : ClosedTriangulationCore
       ((move2332SecondMove32 m hseed.y).replace
-        ((move2332FirstMove32 m hseed.x).replace (m.replace K))) m.a =
-      vertexDegree K m.a - 2 := by
-    have hs2d' : vertexDegree
-        ((move2332FirstMove32 m hseed.x).replace (m.replace K)) m.a =
-        vertexDegree ((move2332SecondMove32 m hseed.y).replace
-          ((move2332FirstMove32 m hseed.x).replace (m.replace K))) m.a + 2 := by
-      simpa [move2332SecondMove32] using hs2d
-    omega
-  have hc3 : vertexDegree
-      ((move2332SecondMove32 m hseed.y).replace
-        ((move2332FirstMove32 m hseed.x).replace (m.replace K))) m.c =
-      vertexDegree K m.c - 4 := by
-    have hs2e' : vertexDegree
-        ((move2332FirstMove32 m hseed.x).replace (m.replace K)) m.c =
-        vertexDegree ((move2332SecondMove32 m hseed.y).replace
-          ((move2332FirstMove32 m hseed.x).replace (m.replace K))) m.c + 2 := by
-      simpa [move2332SecondMove32] using hs2e
-    omega
+        ((move2332FirstMove32 m hseed.x).replace (m.replace K))) :=
+    hcore2.move32Site_replace_closedCore
+      (move2332SecondMove32 m hseed.y) hlegal2
   refine ⟨move2332FirstMove32 m hseed.x, move2332SecondMove32 m hseed.y,
     rfl, rfl, h23, hlegal1, hnoninverse, hlegal2, ?_⟩
-  apply move2332Block_PhiSupport_lt_of_local_degree_conditions
-    m h23 (move2332FirstMove32 m hseed.x) hlegal1 hcore1
-      (move2332SecondMove32 m hseed.y) hlegal2 hcore2
-  simp only [vertexDefect]
-  simp only [move2332FirstMove32, move2332SecondMove32] at hb2 hc2deg hKa ha3 hc3
-  simp only [move2332FirstMove32, move2332SecondMove32]
-  rw [hd1, he1, hb2, hc2deg, hKa, ha3, hc3, hb, hc]
-  simpa [degreeDefectValue, targetDegree, add_assoc] using hdegree
+  have hminus4 := move2332Block_PhiSupport_add_four_eq
+    hcore m h23
+    (move2332FirstMove32 m hseed.x) hlegal1 hcore1
+    (move2332SecondMove32 m hseed.y) hlegal2 hcore2 hcore3
+  omega
 
 /-- An initial `2-3-3-2-3-2` escape seed determines a genuine closed-core,
 strictly descending, topology-preserving block without requiring callers to

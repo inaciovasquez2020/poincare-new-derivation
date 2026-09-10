@@ -327,7 +327,7 @@ approach parameter.
 -/
 theorem triangulationTopological_exists_uniform_radialCarrierPoint_mem_of_mem_nhds
     (K : Triangulation)
-    (hcore : ClosedTriangulationCore K)
+    (_hcore : ClosedTriangulationCore K)
     {v : Nat}
     (hv : v ∈ vertexSupport K)
     {U : Set (triangulationTopologicalGeometricCarrier K)}

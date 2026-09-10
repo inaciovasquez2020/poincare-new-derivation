@@ -1,11 +1,13 @@
 import Poincare.GlobalMove32ReentryPolygonalLoop
+import Poincare.GlobalMove32WitnessedReentryPerpetualNoMove23
 
 namespace Poincare
 
 /--
-Under the explicit exclusion of the other one-step source-face outcomes,
-the initial exact-three Move32 source-face obstruction produces the existing
-ordered recurrence-driven polygonal-loop certificate.
+Under explicit exclusion of strict topological `PhiSupport` descent and
+nonself complementary high-incidence escape, the initial exact-three Move32
+source-face obstruction produces the existing ordered recurrence-driven
+polygonal-loop certificate.
 
 This is a composition theorem only.  It introduces no new claim that the
 polygonal loop is homotopically nontrivial or that the recurrent branch is
@@ -22,18 +24,6 @@ theorem ClosedTriangulationCore.exists_polygonalLoopCertificate_of_no_other_sour
     (hNoFour :
       ∀ u ∈ vertexSupport K,
         vertexDegree K u ≠ 4)
-    (hNoMove23 :
-      ∀ s : Move32Site,
-        s.RealizedIn K →
-        (∃ tau ∈ K.tets,
-          s.a ∈ tau.verts ∧
-          s.b ∈ tau.verts ∧
-          s.c ∈ tau.verts) →
-        ¬ ∃ m : Move23Site,
-          m.a = s.a ∧
-          m.b = s.b ∧
-          m.c = s.c ∧
-          m.LegalIn K)
     (hNoDescent :
       ¬ ∃ K',
         ClosedTriangulationCore K' ∧
@@ -71,11 +61,10 @@ theorem ClosedTriangulationCore.exists_polygonalLoopCertificate_of_no_other_sour
         start.c ∈ tau.verts) :
     Nonempty (WitnessedReentryPolygonalLoopCertificate K) := by
   obtain ⟨sites, _hzero, hrealized, hthree, _hobstruction, hwitnessed⟩ :=
-    hcore.exists_perpetual_witnessedReentry_of_no_other_sourceFace_outcome
+    hcore.exists_perpetual_witnessedReentry_of_noDescent_noHigh
       hlinks
       hconn
       hNoFour
-      hNoMove23
       hNoDescent
       hNoHigh
       start

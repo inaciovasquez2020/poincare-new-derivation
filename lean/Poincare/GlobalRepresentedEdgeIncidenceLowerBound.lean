@@ -97,12 +97,9 @@ theorem
       S.card = 3 := by
     simp [
       S,
-      hrho1_ne_sigma,
-      hrho2_ne_sigma,
       hrho12,
       Ne.symm hrho1_ne_sigma,
-      Ne.symm hrho2_ne_sigma,
-      Ne.symm hrho12
+      Ne.symm hrho2_ne_sigma
     ]
 
   have hcard :

@@ -162,7 +162,7 @@ theorem vertexLinkMod2BoundaryOne_range_finrank_eq_card_sub_one
   by_cases hV : IsEmpty V
   · have hcard : Fintype.card V = 0 := Fintype.card_eq_zero
     change M.rank = Fintype.card V - 1
-    simp [Matrix.rank, hcard]
+    simp [Matrix.rank]
   · letI : Nonempty V := not_isEmpty_iff.mp hV
     let root : V := Classical.choice inferInstance
     let kerEquiv : LinearMap.ker M.transpose.mulVecLin ≃ₗ[ZMod 2] ZMod 2 :=
@@ -172,8 +172,7 @@ theorem vertexLinkMod2BoundaryOne_range_finrank_eq_card_sub_one
         invFun := fun c => ⟨fun _ => c, by
           apply LinearMap.mem_ker.mpr
           funext e
-          simp [M, vertexLinkMod2BoundaryOneMatrix, Matrix.mulVecLin_apply,
-            Matrix.mulVec, dotProduct]
+          simp [M]
           unfold Matrix.vecMul dotProduct vertexLinkMod2BoundaryOneMatrix
           change (∑ x : V,
             c * (if x.1 = e.1.lo ∨ x.1 = e.1.hi then 1 else 0)) = 0

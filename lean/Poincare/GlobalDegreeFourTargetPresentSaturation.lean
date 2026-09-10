@@ -15,7 +15,7 @@ theorem
     Move41Site.targetPresent_fiveTetCluster_global_of_vertexStarClosed
     {K : Triangulation}
     (hconn : TetrahedronVertexOverlapConnected K)
-    (s : Move41Site)
+    (_s : Move41Site)
     (C : Tet → Prop)
     (hseed :
       ∃ τ ∈ K.tets,
@@ -103,7 +103,7 @@ private theorem
         | cons b t =>
             exact
               ⟨a, b, t, by
-                simp [hl0, hl1]⟩
+                simp⟩
 
   have hab :
       a ≠ b := by
@@ -229,9 +229,7 @@ theorem
           v ∈ β.verts →
           C β := by
 
-  intro α hαK hCα
-  intro v hvα
-  intro β hβK hvβ
+  intro α hαK hCα v hvα β hβK hvβ
 
   have hvSupport :
       v ∈ vertexSupport K := by
@@ -294,7 +292,7 @@ theorem
 
       apply hvNotσ₀
 
-      simpa [
+      simp [
         LinkTriangle.verts,
         h
       ]
@@ -306,7 +304,7 @@ theorem
 
       apply hvNotσ₀
 
-      simpa [
+      simp [
         LinkTriangle.verts,
         h
       ]
@@ -402,8 +400,7 @@ theorem
         D σ →
         D ρ := by
 
-    intro σ ρ hadj hDσ
-    intro γ hγK hγLink
+    intro σ ρ hadj hDσ γ hγK hγLink
 
     obtain
       ⟨δ, hδK, hδLink⟩ :=
@@ -618,9 +615,7 @@ theorem
             z ∈ β.verts) →
           C β := by
 
-    intro α β x y z
-    intro _hαK hCα hβK
-    intro hxyz hαface hβface
+    intro α β x y z _hαK hCα hβK hxyz hαface hβface
 
     exact
       Move41Site.represented_fiveTetCluster_closed_under_common_face
