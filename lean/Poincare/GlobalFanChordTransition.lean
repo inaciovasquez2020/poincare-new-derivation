@@ -88,6 +88,9 @@ theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_transition
         z0_supported := hz0support, z1_supported := hz1support
         edgeState := supportedEdgeStateOfDistinct K z0 z1 hz0support hz1support hne
         edgeState_eq := rfl
+        sigma := sigma
+        rho := rho
+        adjacent := hadj
         witness := tau, witness_mem := htau, z0_mem := hz0, z1_mem := hz1
         escapes_old_edge := hoff
         incidence := Or.inr ⟨hinc,
