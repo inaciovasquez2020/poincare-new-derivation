@@ -324,7 +324,11 @@ noncomputable instance highFanLocationFintype
   letI : Finite (HighFanLocation K) := by
     apply Finite.of_injective
       (f := fun q =>
-        Sigma.mk q.v (Sigma.mk q.x (q.sigma, q.rho)))
+        (⟨q.v, ⟨q.x, (q.sigma, q.rho)⟩⟩ :
+          Σ v : SupportedVertexState K,
+          Σ x : SupportedVertexState K,
+            ({t : LinkTriangle // t ∈ vertexLinkStarTriangles K v x} ×
+              {t : LinkTriangle // t ∈ vertexLinkStarTriangles K v x})))
     intro a b h
     cases a with
     | mk av ax ane as ar aadj =>
