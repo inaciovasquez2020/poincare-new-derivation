@@ -21,8 +21,19 @@ theorem degenerateOneTet_is_S3 :
     S3 degenerateOneTet := by
   rfl
 
-theorem S3_does_not_imply_nonempty_valid_tetrahedral_model :
-    ∃ K : Triangulation, S3 K ∧ K.tets.length = 1 := by
-  exact ⟨degenerateOneTet, degenerateOneTet_is_S3, rfl⟩
+def tetHasDistinctVertices (τ : Tet) : Prop :=
+  τ.v0 ≠ τ.v1 ∧ τ.v0 ≠ τ.v2 ∧ τ.v0 ≠ τ.v3 ∧
+  τ.v1 ≠ τ.v2 ∧ τ.v1 ≠ τ.v3 ∧ τ.v2 ≠ τ.v3
+
+theorem degenerateOneTet_not_distinct :
+    ¬ tetHasDistinctVertices degenerateOneTet.tets.head! := by
+  simp [tetHasDistinctVertices, degenerateOneTet]
+
+theorem S3_does_not_imply_tetrahedral_vertex_distinctness :
+    ∃ K : Triangulation, S3 K ∧
+      ∃ τ ∈ K.tets, ¬ tetHasDistinctVertices τ := by
+  refine ⟨degenerateOneTet, degenerateOneTet_is_S3, degenerateOneTet.tets.head!, ?_, ?_⟩
+  · simp [degenerateOneTet]
+  · exact degenerateOneTet_not_distinct
 
 end Poincare
