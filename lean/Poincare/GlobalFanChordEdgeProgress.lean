@@ -300,3 +300,77 @@ theorem exists_recurrent_highFanEdgeState
       exact hconsecutive n
 
 end Poincare
+
+
+/-- A local high-fan transition location, retaining the oriented central edge
+and the actual adjacent link-star pair that realizes the transition. -/
+structure HighFanLocation (K : Triangulation) where
+  v : SupportedVertexState K
+  x : SupportedVertexState K
+  endpoints_ne : (v : Nat) ≠ (x : Nat)
+  sigma :
+    {t : LinkTriangle //
+      t ∈ vertexLinkStarTriangles K v x}
+  rho :
+    {t : LinkTriangle //
+      t ∈ vertexLinkStarTriangles K v x}
+  adjacent :
+    (vertexLinkStarGraph K v x).Adj sigma rho
+
+/-- The local location type is finite because both represented endpoints and
+each represented vertex-link star carrier are finite. -/
+noncomputable instance highFanLocationFintype
+    (K : Triangulation) :
+    Fintype (HighFanLocation K) := by
+  classical
+  letI :
+      ∀ (v x : SupportedVertexState K),
+        Fintype
+          {t : LinkTriangle //
+            t ∈ vertexLinkStarTriangles K v x} :=
+    fun v x =>
+      Fintype.ofFinite
+        {t : LinkTriangle //
+          t ∈ vertexLinkStarTriangles K v x}
+  infer_instance
+
+/-- Every high-fan state determines a unique retained local transition
+location. -/
+def HighFanState.location
+    {K : Triangulation}
+    (q : HighFanState K) :
+    HighFanLocation K :=
+  {
+    v :=
+      ⟨q.v, List.mem_toFinset.mpr q.v_supported⟩
+    x :=
+      ⟨q.x, List.mem_toFinset.mpr q.x_supported⟩
+    endpoints_ne := q.endpoints_ne
+    sigma := q.transition.sigma
+    rho := q.transition.rho
+    adjacent := q.transition.adjacent
+  }
+
+/-- Equality of retained local locations identifies the oriented central edge
+and the actual adjacent transition pair. -/
+theorem HighFanState.location_eq_iff
+    {K : Triangulation}
+    (q r : HighFanState K) :
+    q.location = r.location ↔
+      q.v = r.v ∧
+      q.x = r.x ∧
+      q.transition.sigma = r.transition.sigma ∧
+      q.transition.rho = r.transition.rho := by
+  constructor
+  · intro h
+    have hv := congrArg (fun s : HighFanLocation K => (s.v : Nat)) h
+    have hx := congrArg (fun s : HighFanLocation K => (s.x : Nat)) h
+    have hs := congrArg (fun s : HighFanLocation K => s.sigma) h
+    have hr := congrArg (fun s : HighFanLocation K => s.rho) h
+    exact ⟨hv, hx, hs, hr⟩
+  · rintro ⟨hv, hx, hs, hr⟩
+    cases q
+    cases r
+    simp_all [HighFanState.location]
+
+end Poincare
