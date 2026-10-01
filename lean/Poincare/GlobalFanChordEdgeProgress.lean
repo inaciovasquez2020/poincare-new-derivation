@@ -321,16 +321,26 @@ noncomputable instance highFanLocationFintype
     (K : Triangulation) :
     Fintype (HighFanLocation K) := by
   classical
-  letI :
-      ∀ (v x : SupportedVertexState K),
-        Fintype
-          {t : LinkTriangle //
-            t ∈ vertexLinkStarTriangles K v x} :=
-    fun v x =>
-      Fintype.ofFinite
-        {t : LinkTriangle //
-          t ∈ vertexLinkStarTriangles K v x}
-  infer_instance
+  letI : Finite (HighFanLocation K) := by
+    apply Finite.of_injective
+      (f := fun q =>
+        ((q.v, q.x), (q.sigma.1, q.rho.1)))
+    intro a b h
+    have hv : a.v = b.v := congrArg (fun p => p.1.1) h
+    have hx : a.x = b.x := congrArg (fun p => p.1.2) h
+    have hs : a.sigma.1 = b.sigma.1 := congrArg (fun p => p.2.1) h
+    have hr : a.rho.1 = b.rho.1 := congrArg (fun p => p.2.2) h
+    cases a with
+    | mk av ax ane as ar aadj =>
+      cases b with
+      | mk bv bx bne bs br badj =>
+        simp_all only [Subtype.mk.injEq]
+        cases hv
+        cases hx
+        cases hs
+        cases hr
+        rfl
+  exact Fintype.ofFinite (HighFanLocation K)
 
 /-- Every high-fan state determines a unique retained local transition
 location. -/
