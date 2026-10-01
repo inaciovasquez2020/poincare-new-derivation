@@ -144,3 +144,81 @@ theorem VCIBT_ne_zero
       hstate)
 
 end Poincare
+
+
+namespace Poincare
+
+/--
+A VCIBT return carries two independent progress facts at once: the return
+cannot preserve both carrier branches, and the witnessed reentry successor
+cannot preserve the preceding canonical shared-edge state.
+
+This is the precise finite transition package needed before attempting a
+global well-founded measure. It still does not assert that the resulting
+finite transition graph is acyclic.
+-/
+theorem VCIBT_reentry_progress
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hlinks :
+      ∀ v ∈ vertexSupport K,
+        VertexLinkConnected K v)
+    (hconn :
+      TetrahedronVertexOverlapConnected K)
+    (hNoFour :
+      ∀ v ∈ vertexSupport K,
+        vertexDegree K v ≠ 4)
+    (anchor prev ret : Move32Site)
+    (hanchorRealized : anchor.RealizedIn K)
+    (hanchorThree : anchor.SharedEdgeExactlyThree K)
+    (hprevRealized : prev.RealizedIn K)
+    (hretRealized : ret.RealizedIn K)
+    (hretThree : ret.SharedEdgeExactlyThree K)
+    (hstep :
+      Move32SourceFaceWitnessedReentry
+        K
+        prev
+        ret)
+    (hstate :
+      sharedSupportedEdgeState
+          hcore
+          anchor
+          hanchorRealized =
+        sharedSupportedEdgeState
+          hcore
+          ret
+          hretRealized) :
+    0 < VCIBT anchor prev ret ∧
+      sharedSupportedEdgeState
+          hcore
+          ret
+          hretRealized ≠
+        sharedSupportedEdgeState
+          hcore
+          prev
+          hprevRealized := by
+  constructor
+  · exact
+      vertexCyclicInvariantBranchesTwist_VCIBT
+        hcore
+        hlinks
+        hconn
+        hNoFour
+        anchor
+        prev
+        ret
+        hanchorRealized
+        hanchorThree
+        hprevRealized
+        hretRealized
+        hretThree
+        hstep
+        hstate
+  · exact
+      hcore.sharedSupportedEdgeState_ne_of_sourceFaceReentry
+        prev
+        ret
+        hprevRealized
+        hstep
+
+end Poincare
