@@ -19,7 +19,7 @@ def degenerateOneTet : Triangulation :=
 
 theorem degenerateOneTet_is_S3 :
     S3 degenerateOneTet := by
-  native_decide
+  rfl
 
 theorem S3_does_not_imply_nonempty_valid_tetrahedral_model :
     ∃ K : Triangulation, S3 K ∧ K.tets.length = 1 := by
