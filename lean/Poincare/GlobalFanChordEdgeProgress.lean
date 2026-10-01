@@ -299,8 +299,6 @@ theorem exists_recurrent_highFanEdgeState
     · intro n hjn hni
       exact hconsecutive n
 
-end Poincare
-
 
 /-- A local high-fan transition location, retaining the oriented central edge
 and the actual adjacent link-star pair that realizes the transition. -/
