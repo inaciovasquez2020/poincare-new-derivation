@@ -21,6 +21,9 @@ structure FanChordTransition (K : Triangulation) (v x : Nat) where
   edgeState : SupportedEdgeState K
   edgeState_eq : edgeState =
     supportedEdgeStateOfDistinct K z0 z1 z0_supported z1_supported endpoints_ne
+  sigma : {t : LinkTriangle // t ∈ vertexLinkStarTriangles K v x}
+  rho : {t : LinkTriangle // t ∈ vertexLinkStarTriangles K v x}
+  adjacent : (vertexLinkStarGraph K v x).Adj sigma rho
   witness : Tet
   witness_mem : witness ∈ K.tets
   z0_mem : z0 ∈ witness.verts
@@ -73,6 +76,9 @@ theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_transition
         z0_supported := hz0support, z1_supported := hz1support
         edgeState := supportedEdgeStateOfDistinct K z0 z1 hz0support hz1support hne
         edgeState_eq := rfl
+        sigma := sigma
+        rho := rho
+        adjacent := hadj
         witness := tau, witness_mem := htau, z0_mem := hz0, z1_mem := hz1
         escapes_old_edge := hoff, incidence := Or.inl hinc }⟩
     · have hrep : VertexLinkVertexRepresented K z0 z1 :=
