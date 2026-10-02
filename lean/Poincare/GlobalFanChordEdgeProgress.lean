@@ -385,8 +385,10 @@ theorem HighFanState.location_eq_iff
       | mk av ax ane as ar aadj =>
         cases b with
         | mk bv bx bne bs br badj =>
-          cases hav
-          cases hab
+          have hv' : av = bv := Subtype.ext hav
+          have hx' : ax = bx := Subtype.ext hab
+          cases hv'
+          cases hx'
           have hσ : as = bs := Subtype.ext has
           have hρ : ar = br := Subtype.ext har
           cases hσ
