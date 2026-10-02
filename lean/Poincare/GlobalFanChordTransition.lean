@@ -275,7 +275,7 @@ theorem FanChordTransition.same_location_different_transverse_impossible
     have hq' : q ∈ T0.sigma.1.verts := List.mem_toFinset.mp hq
     rcases hσexhaust q hq' with rfl | rfl | rfl
     · exact List.mem_toFinset.mpr hxρ
-    · exact List.mem_toFinset.mpr hcommon.2
+    · exact List.mem_toFinset.mpr hcommon.2.1
     · exact List.mem_toFinset.mpr hcommon.4
   have hScard : S.card = 3 := by
     simpa [S, LinkTriangle.verts] using
