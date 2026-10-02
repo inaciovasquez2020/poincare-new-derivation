@@ -175,8 +175,17 @@ theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_degree_four
         aesop
       exact (T0.leftTet_match w).2 hw'
   have hsource1 : SameTetVertices T0.rightTet s.sourceTet₁ := by
-    simpa [s, Move41Site.sourceTet₁, hz0, hz1, hy,
-      or_assoc, or_left_comm, or_comm] using T0.rightTet_match
+    intro w
+    constructor
+    · intro hw
+      have hw' := (T0.rightTet_match w).1 hw
+      simp [s, Move41Site.sourceTet₁, Tet.verts, hy, hz1] at hw' ⊢
+      aesop
+    · intro hw
+      have hw' : w ∈ (⟨v, x, T0.transverse, T0.z1⟩ : Tet).verts := by
+        simp [s, Move41Site.sourceTet₁, Tet.verts, hy, hz1] at hw ⊢
+        aesop
+      exact (T0.rightTet_match w).2 hw'
   have hsource2 : SameTetVertices T1.leftTet s.sourceTet₂ := by
     simpa [s, Move41Site.sourceTet₂, hreturn0, htrans,
       or_assoc, or_left_comm, or_comm] using T1.leftTet_match
