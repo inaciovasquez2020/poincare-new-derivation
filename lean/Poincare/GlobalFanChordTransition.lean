@@ -24,6 +24,13 @@ structure FanChordTransition (K : Triangulation) (v x : Nat) where
   sigma : {t : LinkTriangle // t ∈ vertexLinkStarTriangles K v x}
   rho : {t : LinkTriangle // t ∈ vertexLinkStarTriangles K v x}
   adjacent : (vertexLinkStarGraph K v x).Adj sigma rho
+  y : Nat
+  leftTet : Tet
+  leftTet_mem : leftTet ∈ K.tets
+  leftTet_eq : SameTetVertices leftTet ⟨v, x, y, z0⟩
+  rightTet : Tet
+  rightTet_mem : rightTet ∈ K.tets
+  rightTet_eq : SameTetVertices rightTet ⟨v, x, y, z1⟩
   witness : Tet
   witness_mem : witness ∈ K.tets
   z0_mem : z0 ∈ witness.verts
@@ -79,6 +86,15 @@ theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_transition
         sigma := sigma
         rho := rho
         adjacent := hadj
+        y := y
+        leftTet := F.tetAt sigma
+        leftTet_mem := F.tetAt_mem sigma
+        leftTet_eq := by
+          simpa [Move23Site.leftTet, ha, hb, hc, hd] using hleft
+        rightTet := F.tetAt rho
+        rightTet_mem := F.tetAt_mem rho
+        rightTet_eq := by
+          simpa [Move23Site.rightTet, ha, hb, hc, he] using hright
         witness := tau, witness_mem := htau, z0_mem := hz0, z1_mem := hz1
         escapes_old_edge := hoff, incidence := Or.inl hinc }⟩
     · have hrep : VertexLinkVertexRepresented K z0 z1 :=
@@ -91,6 +107,15 @@ theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_transition
         sigma := sigma
         rho := rho
         adjacent := hadj
+        y := y
+        leftTet := F.tetAt sigma
+        leftTet_mem := F.tetAt_mem sigma
+        leftTet_eq := by
+          simpa [Move23Site.leftTet, ha, hb, hc, hd] using hleft
+        rightTet := F.tetAt rho
+        rightTet_mem := F.tetAt_mem rho
+        rightTet_eq := by
+          simpa [Move23Site.rightTet, ha, hb, hc, he] using hright
         witness := tau, witness_mem := htau, z0_mem := hz0, z1_mem := hz1
         escapes_old_edge := hoff
         incidence := Or.inr ⟨hinc,
