@@ -299,4 +299,101 @@ theorem exists_recurrent_highFanEdgeState
     · intro n hjn hni
       exact hconsecutive n
 
+
+/-- A local high-fan transition location, retaining the oriented central edge
+and the actual adjacent link-star pair that realizes the transition. -/
+structure HighFanLocation (K : Triangulation) where
+  v : SupportedVertexState K
+  x : SupportedVertexState K
+  endpoints_ne : (v : Nat) ≠ (x : Nat)
+  sigma :
+    {t : LinkTriangle //
+      t ∈ vertexLinkStarTriangles K v x}
+  rho :
+    {t : LinkTriangle //
+      t ∈ vertexLinkStarTriangles K v x}
+  adjacent :
+    (vertexLinkStarGraph K v x).Adj sigma rho
+
+/-- The local location type is finite because both represented endpoints and
+each represented vertex-link star carrier are finite. -/
+noncomputable instance highFanLocationFintype
+    (K : Triangulation) :
+    Fintype (HighFanLocation K) := by
+  classical
+  letI : Finite (HighFanLocation K) := by
+    apply Finite.of_injective
+      (f := fun q =>
+        (⟨q.v, ⟨q.x, (q.sigma, q.rho)⟩⟩ :
+          Σ v : SupportedVertexState K,
+          Σ x : SupportedVertexState K,
+            ({t : LinkTriangle // t ∈ vertexLinkStarTriangles K v x} ×
+              {t : LinkTriangle // t ∈ vertexLinkStarTriangles K v x})))
+    intro a b h
+    cases a with
+    | mk av ax ane as ar aadj =>
+      cases b with
+      | mk bv bx bne bs br badj =>
+        rcases h with ⟨rfl, rfl⟩
+        rfl
+  exact Fintype.ofFinite (HighFanLocation K)
+
+/-- Every high-fan state determines a unique retained local transition
+location. -/
+def HighFanState.location
+    {K : Triangulation}
+    (q : HighFanState K) :
+    HighFanLocation K :=
+  {
+    v :=
+      ⟨q.v, List.mem_toFinset.mpr q.v_supported⟩
+    x :=
+      ⟨q.x, List.mem_toFinset.mpr q.x_supported⟩
+    endpoints_ne := q.endpoints_ne
+    sigma := q.transition.sigma
+    rho := q.transition.rho
+    adjacent := q.transition.adjacent
+  }
+
+/-- Equality of retained local locations identifies the oriented central edge
+and the actual adjacent transition pair. -/
+theorem HighFanState.location_eq_iff
+    {K : Triangulation}
+    (q r : HighFanState K) :
+    q.location = r.location ↔
+      q.v = r.v ∧
+      q.x = r.x ∧
+      q.transition.sigma.1 = r.transition.sigma.1 ∧
+      q.transition.rho.1 = r.transition.rho.1 := by
+  constructor
+  · intro h
+    have hv := congrArg (fun s : HighFanLocation K => (s.v : Nat)) h
+    have hx := congrArg (fun s : HighFanLocation K => (s.x : Nat)) h
+    have hs := congrArg (fun s : HighFanLocation K => s.sigma.1) h
+    have hr := congrArg (fun s : HighFanLocation K => s.rho.1) h
+    exact ⟨hv, hx, hs, hr⟩
+  · rintro ⟨hv, hx, hs, hr⟩
+    have location_ext :
+        ∀ (a b : HighFanLocation K),
+          (a.v : Nat) = (b.v : Nat) →
+          (a.x : Nat) = (b.x : Nat) →
+          a.sigma.1 = b.sigma.1 →
+          a.rho.1 = b.rho.1 →
+          a = b := by
+      intro a b hav hab has har
+      cases a with
+      | mk av ax ane as ar aadj =>
+        cases b with
+        | mk bv bx bne bs br badj =>
+          have hv' : av = bv := Subtype.ext hav
+          have hx' : ax = bx := Subtype.ext hab
+          cases hv'
+          cases hx'
+          have hσ : as = bs := Subtype.ext has
+          have hρ : ar = br := Subtype.ext har
+          cases hσ
+          cases hρ
+          rfl
+    exact location_ext q.location r.location hv hx hs hr
+
 end Poincare
