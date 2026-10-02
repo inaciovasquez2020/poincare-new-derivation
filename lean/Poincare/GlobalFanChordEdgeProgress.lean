@@ -381,6 +381,8 @@ theorem HighFanState.location_eq_iff
         cases hx
         have hσ : qt.sigma = rt.sigma := Subtype.ext hs
         have hρ : qt.rho = rt.rho := Subtype.ext hr
-        exact ⟨HEq.of_eq hσ, HEq.of_eq hρ⟩
+        cases hσ
+        cases hρ
+        rfl
 
 end Poincare
