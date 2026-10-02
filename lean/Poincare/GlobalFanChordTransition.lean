@@ -214,7 +214,7 @@ theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_degree_four
     rw [mem_vertexSupport_iff]
     simp only [allVerts, List.mem_flatMap]
     exact ⟨T0.leftTet, T0.leftTet_mem,
-      (hsource0 y).2 (by right; right; right; rfl)⟩
+      (hsource0 y).2 (by simp [s, Move41Site.sourceTet₀, Tet.verts])⟩
   exact hcore.move41Site_center_vertexDegree_eq_four_of_represented_sources_connectedLink
     s T0.leftTet_mem hsource0 T0.rightTet_mem hsource1
     T1.leftTet_mem hsource2 T1.rightTet_mem hsource3 (hlinks y hy)
