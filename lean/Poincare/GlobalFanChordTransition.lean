@@ -321,7 +321,11 @@ theorem FanChordTransition.same_location_different_transverse_impossible
         · rcases List.mem_cons.mp hb with rfl | hbTail
           · exact hsymm (hhead a haTail)
           · exact ih haTail hbTail hne
-  exact (hpair_mem (vertexLinkTriangles K v) hpair hσmem hρmem T0.adjacent.ne) hvertices
+  have hσρ : T0.sigma.1 ≠ T0.rho.1 := by
+    intro h
+    apply T0.adjacent.ne
+    exact Subtype.ext h
+  exact (hpair_mem (vertexLinkTriangles K v) hpair hσmem hρmem hσρ) hvertices
 
 /-- Same-transverse two-cycle gives the existing saturated four-source star. -/
 theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_degree_four
