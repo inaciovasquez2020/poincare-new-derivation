@@ -601,7 +601,12 @@ theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_impossible_noF
     (hT0 : T0.z0 = z0 ∧ T0.z1 = z1 ∧ T0.transverse = y)
     (hT1 : T1.z0 = v ∧ T1.z1 = x ∧ T1.transverse = y) :
     False := by
-  exact hNoFour y
+  have hy : y ∈ vertexSupport K := by
+    rw [mem_vertexSupport_iff]
+    exact List.mem_flatMap.2 ⟨T0.leftTet, T0.leftTet_mem,
+      (T0.leftTet_match y).2 (by
+        simp [hT0.2.2])⟩
+  exact hNoFour y hy
     (hcore.fanChord_twoCycle_same_transverse_degree_four
       hlinks T0 T1 hT0 hT1)
 
