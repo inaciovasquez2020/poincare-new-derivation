@@ -232,7 +232,9 @@ theorem FanChordTransition.same_location_different_transverse_impossible
     ((mem_vertexLinkStarTriangles_iff K v x T0.rho.1).1
       T0.rho.2).2
   have hxy0 : x ≠ T0.transverse := by
-    exact (List.nodup_cons.mp (List.nodup_cons.mp T0.distinct).2).1
+     have h := (List.nodup_cons.mp (List.nodup_cons.mp T0.distinct).2).1
+     simp at h
+     exact h.1
   have hxy1 : x ≠ T1.transverse := by
     intro h
     exact (List.nodup_cons.mp T1.distinct).2.1 h.symm
