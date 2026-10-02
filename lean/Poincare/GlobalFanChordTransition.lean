@@ -160,8 +160,8 @@ theorem FanChordTransition.same_location_different_transverse_common
   have hv0 : T0.transverse ≠ v := by
     intro h
     have hd := T0.distinct
-    subst v
-    simp [List.nodup_cons] at hd
+    rw [← h] at hd
+    simp at hd
     exact hd.2.2.1 rfl
   have hv1 : T1.transverse ≠ v := by
     intro h
