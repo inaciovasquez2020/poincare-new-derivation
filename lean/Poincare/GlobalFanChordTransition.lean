@@ -109,6 +109,7 @@ theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_transition
         sigma := sigma
         rho := rho
         adjacent := hadj
+        carrier_distinct := by simpa [ha, hb, hc, hd, he] using m.distinct
         y := y
         leftTet := F.tetAt sigma
         leftTet_mem := F.tetAt_mem sigma
