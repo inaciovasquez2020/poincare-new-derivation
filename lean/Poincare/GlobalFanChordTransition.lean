@@ -199,6 +199,100 @@ theorem FanChordTransition.same_location_different_transverse_common
   rw [← hρ] at hr1
   exact ⟨hs0, hr0, hs1, hr1⟩
 
+/-- Different transverse carriers cannot realize the same adjacent fan location.
+The two carriers would be three distinct common vertices of both link triangles,
+forcing equality of their vertex sets, contrary to the closed-core link
+triangulation. -/
+theorem FanChordTransition.same_location_different_transverse_impossible
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    {v x : Nat}
+    (T0 T1 : FanChordTransition K v x)
+    (hσ : T0.sigma.1 = T1.sigma.1)
+    (hρ : T0.rho.1 = T1.rho.1)
+    (hy : T0.transverse ≠ T1.transverse) :
+    False := by
+  have hcommon :=
+    T0.same_location_different_transverse_common T1 hσ hρ hy
+  have hσmem : T0.sigma.1 ∈ vertexLinkTriangles K v := by
+    exact
+      (mem_vertexLinkStarTriangles_iff K v x T0.sigma.1).1
+        T0.sigma.2 |>.1
+  have hρmem : T0.rho.1 ∈ vertexLinkTriangles K v := by
+    exact
+      (mem_vertexLinkStarTriangles_iff K v x T0.rho.1).1
+        T0.rho.2 |>.1
+  have hσnodup : T0.sigma.1.verts.Nodup :=
+    vertexLinkTriangles_triangle_nodup K hcore v T0.sigma.1 hσmem
+  have hρnodup : T0.rho.1.verts.Nodup :=
+    vertexLinkTriangles_triangle_nodup K hcore v T0.rho.1 hρmem
+  have hxσ : x ∈ T0.sigma.1.verts :=
+    ((mem_vertexLinkStarTriangles_iff K v x T0.sigma.1).1
+      T0.sigma.2).2
+  have hxρ : x ∈ T0.rho.1.verts :=
+    ((mem_vertexLinkStarTriangles_iff K v x T0.rho.1).1
+      T0.rho.2).2
+  have hxy0 : x ≠ T0.transverse := by
+    intro h
+    exact (List.nodup_cons.mp T0.distinct).2.1 h.symm
+  have hxy1 : x ≠ T1.transverse := by
+    intro h
+    exact (List.nodup_cons.mp T1.distinct).2.1 h.symm
+  have hyt : T0.transverse ≠ T1.transverse := hy
+  have hexhaust :
+      ∀ (σ : LinkTriangle) (a b c : Nat),
+        σ.verts.Nodup →
+        a ∈ σ.verts →
+        b ∈ σ.verts →
+        c ∈ σ.verts →
+        a ≠ b → a ≠ c → b ≠ c →
+        ∀ q, q ∈ σ.verts → q = a ∨ q = b ∨ q = c := by
+    intro σ a b c hnodup ha hb hc hab hac hbc q hq
+    rcases σ with ⟨s0, s1, s2⟩
+    simp [LinkTriangle.verts] at hnodup ha hb hc hq ⊢
+    aesop
+  have hσexhaust :
+      ∀ q, q ∈ T0.sigma.1.verts →
+        q = x ∨ q = T0.transverse ∨ q = T1.transverse := by
+    intro q hq
+    exact
+      hexhaust T0.sigma.1 x T0.transverse T1.transverse
+        hσnodup hxσ hcommon.1 hcommon.3 hxy0
+        (by exact fun h => hxy0 (h.symm.trans rfl))
+        hyt q hq
+  have hρexhaust :
+      ∀ q, q ∈ T0.rho.1.verts →
+        q = x ∨ q = T0.transverse ∨ q = T1.transverse := by
+    intro q hq
+    exact
+      hexhaust T0.rho.1 x T0.transverse T1.transverse
+        hρnodup hxρ hcommon.2 hcommon.4 hxy0
+        (by exact fun h => hxy0 (h.symm.trans rfl))
+        hyt q hq
+  let S : Finset Nat := T0.sigma.1.verts.toFinset
+  let R : Finset Nat := T0.rho.1.verts.toFinset
+  have hSR : S ⊆ R := by
+    intro q hq
+    have hq' : q ∈ T0.sigma.1.verts := List.mem_toFinset.mp hq
+    rcases hσexhaust q hq' with rfl | rfl | rfl
+    · exact List.mem_toFinset.mpr hxρ
+    · exact List.mem_toFinset.mpr hcommon.2
+    · exact List.mem_toFinset.mpr hcommon.4
+  have hScard : S.card = 3 := by
+    simpa [S, LinkTriangle.verts] using
+      List.toFinset_card_of_nodup hσnodup
+  have hRcard : R.card = 3 := by
+    simpa [R, LinkTriangle.verts] using
+      List.toFinset_card_of_nodup hρnodup
+  have hEq : S = R :=
+    Finset.eq_of_subset_of_card_le hSR (by omega)
+  have hvertices :
+      ∀ q, q ∈ T0.sigma.1.verts ↔ q ∈ T0.rho.1.verts := by
+    intro q
+    have hq := Finset.ext_iff.mp hEq q
+    simpa [S, R] using hq
+  have hpair := vertexLinkTriangles_pairwise_vertexSet_ne K hcore v
+  exact hpair hσmem hρmem T0.adjacent.ne hvertices
+
 /-- Same-transverse two-cycle gives the existing saturated four-source star. -/
 theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_degree_four
     {K : Triangulation}
