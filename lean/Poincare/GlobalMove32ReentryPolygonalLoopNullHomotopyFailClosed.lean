@@ -4,10 +4,11 @@ import Poincare.GlobalMove32ReentryPolygonalLoopNullHomotopy
 namespace Poincare
 
 /--
-Under the explicit exclusion of the other one-step source-face outcomes,
-the initial exact-three Move32 source-face obstruction produces the existing
-ordered recurrence-driven polygonal-loop certificate together with the full
-relative null-homotopy square supplied by simple connectivity.
+Under explicit exclusion of strict topological `PhiSupport` descent and
+nonself complementary high-incidence escape, the initial exact-three Move32
+source-face obstruction produces the existing ordered recurrence-driven
+polygonal-loop certificate together with the full relative null-homotopy
+square supplied by simple connectivity.
 
 This is a composition theorem only.  It does not assert that the recurrent
 polygonal loop is homotopically nontrivial or that its null-homotopy forces a
@@ -24,18 +25,6 @@ theorem ClosedTriangulationCore.exists_polygonalLoop_nullHomotopyData_of_no_othe
     (hNoFour :
       ∀ u ∈ vertexSupport K,
         vertexDegree K u ≠ 4)
-    (hNoMove23 :
-      ∀ s : Move32Site,
-        s.RealizedIn K →
-        (∃ tau ∈ K.tets,
-          s.a ∈ tau.verts ∧
-          s.b ∈ tau.verts ∧
-          s.c ∈ tau.verts) →
-        ¬ ∃ m : Move23Site,
-          m.a = s.a ∧
-          m.b = s.b ∧
-          m.c = s.c ∧
-          m.LegalIn K)
     (hNoDescent :
       ¬ ∃ K',
         ClosedTriangulationCore K' ∧
@@ -80,7 +69,6 @@ theorem ClosedTriangulationCore.exists_polygonalLoop_nullHomotopyData_of_no_othe
       hconn
       hSC
       hNoFour
-      hNoMove23
       hNoDescent
       hNoHigh
       start

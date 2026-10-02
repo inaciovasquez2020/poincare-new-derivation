@@ -16,9 +16,9 @@ private theorem
       ∀ σ : LinkTriangle,
         σ ∈ vertexLinkStarTriangles K v x ↔
           σ = σ₀ ∨ σ = σ₁ ∨ σ = σ₂)
-    (hne01 : σ₀ ≠ σ₁)
-    (hne02 : σ₀ ≠ σ₂)
-    (hne12 : σ₁ ≠ σ₂) :
+    (_hne01 : σ₀ ≠ σ₁)
+    (_hne02 : σ₀ ≠ σ₂)
+    (_hne12 : σ₁ ≠ σ₂) :
     VertexLinkStarAdjacent K v x σ₀ σ₁ ∧
       VertexLinkStarAdjacent K v x σ₀ σ₂ := by
 

@@ -26,11 +26,11 @@ theorem triangulationTopologicalGeometricEdgeMidpoint_mem_tetBody
   have hv' := triangulationTopologicalGeometricVertex_mem_tetBody hv
   have hw' := triangulationTopologicalGeometricVertex_mem_tetBody hw
   convert (convex_convexHull ℝ _).lineMap_mem hv' hw'
-    (show (2 : ℝ)⁻¹ ∈ Set.Icc (0 : ℝ) 1 by norm_num) using 1 <;>
-    ext j <;>
+    (show (2 : ℝ)⁻¹ ∈ Set.Icc (0 : ℝ) 1 by norm_num) using 1
+  all_goals
+    ext j
     simp [AffineMap.lineMap_apply,
-      triangulationTopologicalGeometricEdgeMidpoint_apply,
-      triangulationTopologicalGeometricVertex] <;>
+      triangulationTopologicalGeometricVertex]
     ring
 
 /-- A tetrahedron occurring in `K` has its whole geometric body in the carrier. -/

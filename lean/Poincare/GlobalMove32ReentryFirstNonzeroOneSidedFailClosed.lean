@@ -1,6 +1,7 @@
 import Poincare.GlobalMove32ReentryFirstNonzeroNoHigh
 import Poincare.GlobalMove32ReentryFirstNonzeroIncidenceThreeDescentFork
 import Poincare.GlobalMove32WitnessedSourceFaceReentry
+import Poincare.GlobalMove32SourceFaceLegalMove23High
 
 namespace Poincare
 
@@ -11,9 +12,9 @@ produces a witnessed source-face reentry.
 
 The high-incidence half is first eliminated by `hNoHigh`.  The remaining
 exact-incidence-three cross edge is converted to a realized exact-three Move32
-source-face obstruction.  The existing source-face classification then has its
-Move23, descent, and high-incidence outputs eliminated by the corresponding
-fail-closed hypotheses, leaving witnessed reentry.
+source-face obstruction.  The certified source-face classification already
+absorbs aligned legal Move23 output into the nonself high-incidence branch, so
+excluding descent and high incidence leaves witnessed reentry.
 
 This theorem resolves only the one-sided first-ear branch.  It does not
 eliminate cancellation or the two-sided target-transition branch.
@@ -29,18 +30,6 @@ theorem WitnessedReentryPolygonalLoopCertificate.exists_witnessedReentry_of_anch
       ∀ u ∈ vertexSupport K,
         vertexDegree K u ≠ 4)
     (p : WitnessedReentryPolygonalLoopCertificate K)
-    (hNoMove23 :
-      ∀ s : Move32Site,
-        s.RealizedIn K →
-        (∃ tau ∈ K.tets,
-          s.a ∈ tau.verts ∧
-          s.b ∈ tau.verts ∧
-          s.c ∈ tau.verts) →
-        ¬ ∃ q : Move23Site,
-          q.a = s.a ∧
-          q.b = s.b ∧
-          q.c = s.c ∧
-          q.LegalIn K)
     (hNoDescent :
       ¬ ∃ K',
         ClosedTriangulationCore K' ∧
@@ -118,11 +107,10 @@ theorem WitnessedReentryPolygonalLoopCertificate.exists_witnessedReentry_of_anch
   · exact (hNoDescent hdesc).elim
 
   · rcases
-        hcore.exists_legal_move23_or_descent_or_nonself_complementEdge_high_or_witnessedReentry_of_move32_sourceFace_obstruction
+        hcore.exists_descent_or_nonself_complementEdge_high_or_witnessedReentry_of_move32_sourceFace_obstruction
           hlinks hconn hNoFour s hsRealized hsObstruction with
-      hmove23 | hdesc | hhigh | hreentry
+      hdesc | hhigh | hreentry
 
-    · exact (hNoMove23 s hsRealized hsObstruction hmove23).elim
     · exact (hNoDescent hdesc).elim
     · exact (hNoHigh s hsRealized hsObstruction hhigh).elim
     · rcases hreentry with ⟨s', hrel⟩
