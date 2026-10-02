@@ -166,9 +166,7 @@ theorem FanChordTransition.same_location_different_transverse_common
   have hv1 : T1.transverse ≠ v := by
     intro h
     have hd := T1.distinct
-    subst v
-    simp [List.nodup_cons] at hd
-    exact hd.2.2.1 rfl
+    exact (List.nodup_cons.mp hd).1 (by simp [h])
   have hs0 :
       T0.transverse ∈ T0.sigma.1.verts := by
     exact
