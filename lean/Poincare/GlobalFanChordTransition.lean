@@ -4,6 +4,7 @@ import Poincare.GlobalMove32SupportedEdgeState
 import Poincare.GlobalMove32IncidenceThreeComposition
 import Poincare.GlobalMove32WitnessedSourceFaceReentry
 import Poincare.GlobalMove32SourceFaceHighCollapse
+import Poincare.Move41FourSourceConnectedLinkDegree
 import Mathlib.Tactic
 
 namespace Poincare
@@ -33,6 +34,14 @@ structure FanChordTransition (K : Triangulation) (v x : Nat) where
     (K.tets.filter (fun tau => z0 ∈ tau.verts ∧ z1 ∈ tau.verts)).length = 3 ∨
     (4 ≤ (K.tets.filter (fun tau => z0 ∈ tau.verts ∧ z1 ∈ tau.verts)).length ∧
       Nonempty (AmbientEdgeCyclicFan K z0 z1))
+  transverse : Nat
+  leftTet : Tet
+  rightTet : Tet
+  leftTet_mem : leftTet ∈ K.tets
+  rightTet_mem : rightTet ∈ K.tets
+  leftTet_match : SameTetVertices leftTet ⟨v, x, transverse, z0⟩
+  rightTet_match : SameTetVertices rightTet ⟨v, x, transverse, z1⟩
+  distinct : [v, x, transverse, z0, z1].Nodup
 
 /-- An obstructed adjacent `2-3` candidate either closes the old fan as an
 incidence-three triangle, or gives a finite supported chord state with a
@@ -80,7 +89,18 @@ theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_transition
         rho := rho
         adjacent := hadj
         witness := tau, witness_mem := htau, z0_mem := hz0, z1_mem := hz1
-        escapes_old_edge := hoff, incidence := Or.inl hinc }⟩
+        escapes_old_edge := hoff, incidence := Or.inl hinc
+        transverse := y
+        leftTet := F.tetAt sigma
+        rightTet := F.tetAt rho
+        leftTet_mem := F.tetAt_mem sigma
+        rightTet_mem := F.tetAt_mem rho
+        leftTet_match := by
+          simpa [Move23Site.leftTet, ha, hb, hc, hd] using hleft
+        rightTet_match := by
+          simpa [Move23Site.rightTet, ha, hb, hc, he] using hright
+        distinct := by
+          simpa [ha, hb, hc, hd, he] using m.distinct }⟩
     · have hrep : VertexLinkVertexRepresented K z0 z1 :=
         hcore.vertexLinkVertexRepresented_of_edgeIncidence_pos z0 z1 hne hpos
       exact ⟨{
@@ -94,7 +114,66 @@ theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_transition
         witness := tau, witness_mem := htau, z0_mem := hz0, z1_mem := hz1
         escapes_old_edge := hoff
         incidence := Or.inr ⟨hinc,
-          hcore.exists_ambientEdgeCyclicFan_of_topologicalThreeManifold hM hrep⟩ }⟩
+          hcore.exists_ambientEdgeCyclicFan_of_topologicalThreeManifold hM hrep⟩
+        transverse := y
+        leftTet := F.tetAt sigma
+        rightTet := F.tetAt rho
+        leftTet_mem := F.tetAt_mem sigma
+        rightTet_mem := F.tetAt_mem rho
+        leftTet_match := by
+          simpa [Move23Site.leftTet, ha, hb, hc, hd] using hleft
+        rightTet_match := by
+          simpa [Move23Site.rightTet, ha, hb, hc, he] using hright
+        distinct := by
+          simpa [ha, hb, hc, hd, he] using m.distinct }⟩
+
+
+/-- Retained complement-carrier data for a fan-chord transition. -/
+theorem FanChordTransition.complement_carrier_data
+    {K : Triangulation} {v x : Nat}
+    (T : FanChordTransition K v x) :
+    T.leftTet ∈ K.tets ∧
+    T.rightTet ∈ K.tets ∧
+    SameTetVertices T.leftTet ⟨v, x, T.transverse, T.z0⟩ ∧
+    SameTetVertices T.rightTet ⟨v, x, T.transverse, T.z1⟩ ∧
+    [v, x, T.transverse, T.z0, T.z1].Nodup := by
+  exact ⟨T.leftTet_mem, T.rightTet_mem, T.leftTet_match,
+    T.rightTet_match, T.distinct⟩
+
+/-- Same-transverse two-cycle gives the existing saturated four-source star. -/
+theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_degree_four
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hlinks :
+      ∀ v ∈ vertexSupport K,
+        VertexLinkConnected K v)
+    {v x z0 z1 y : Nat}
+    (T0 : FanChordTransition K v x)
+    (T1 : FanChordTransition K z0 z1)
+    (hT0 : T0.z0 = z0 ∧ T0.z1 = z1 ∧ T0.transverse = y)
+    (hT1 : T1.z0 = v ∧ T1.z1 = x ∧ T1.transverse = y) :
+    vertexDegree K y = 4 := by
+  rcases hT0 with ⟨rfl, rfl, rfl⟩
+  rcases hT1 with ⟨rfl, rfl, rfl⟩
+  let s : Move41Site :=
+    { a := v, b := x, c := T0.z0, d := T0.z1, e := y,
+      distinct := T0.distinct }
+  have hsource0 : SameTetVertices T0.leftTet s.sourceTet₀ := by
+    simpa [s, Move41Site.sourceTet₀] using T0.leftTet_match
+  have hsource1 : SameTetVertices T0.rightTet s.sourceTet₁ := by
+    simpa [s, Move41Site.sourceTet₁] using T0.rightTet_match
+  have hsource2 : SameTetVertices T1.leftTet s.sourceTet₂ := by
+    simpa [s, Move41Site.sourceTet₂] using T1.leftTet_match
+  have hsource3 : SameTetVertices T1.rightTet s.sourceTet₃ := by
+    simpa [s, Move41Site.sourceTet₃] using T1.rightTet_match
+  have hy : y ∈ vertexSupport K := by
+    rw [mem_vertexSupport_iff]
+    simp only [allVerts, List.mem_flatMap]
+    exact ⟨T0.leftTet, T0.leftTet_mem,
+      (hsource0 y).2 (by simp [Move41Site.sourceTet₀, Tet.verts])⟩
+  exact hcore.move41Site_center_vertexDegree_eq_four_of_represented_sources_connectedLink
+    s T0.leftTet_mem hsource0 T0.rightTet_mem hsource1
+    T1.leftTet_mem hsource2 T1.rightTet_mem hsource3 (hlinks y hy)
 
 /-- The high-incidence output of a fan-chord transition is immediately
 composable: choose an edge of its certified new fan and run the same local
