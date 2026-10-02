@@ -266,7 +266,7 @@ theorem FanChordTransition.same_location_different_transverse_impossible
     intro q hq
     exact
       hexhaust T0.rho.1 x T0.transverse T1.transverse
-        hρnodup hxρ hcommon.2 hcommon.2.2.2 hxy0
+        hρnodup hxρ hcommon.2.1 hcommon.2.2.2 hxy0
         (by exact fun h => hxy0 (h.symm.trans rfl))
         hyt q hq
   let S : Finset Nat := T0.sigma.1.verts.toFinset
