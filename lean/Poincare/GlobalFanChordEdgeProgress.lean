@@ -373,12 +373,14 @@ theorem HighFanState.location_eq_iff
     have hr := congrArg (fun s : HighFanLocation K => s.rho.1) h
     exact ⟨hv, hx, hs, hr⟩
   · rintro ⟨hv, hx, hs, hr⟩
-    cases q
-    cases r
-    cases hv
-    cases hx
-    have hσ : transition✝¹.sigma = transition✝.sigma := Subtype.ext hs
-    have hρ : transition✝¹.rho = transition✝.rho := Subtype.ext hr
-    exact ⟨HEq.of_eq hσ, HEq.of_eq hρ⟩
+    cases q with
+    | mk qv qx qvs qxs qne qt =>
+      cases r with
+      | mk rv rx rvs rxs rne rt =>
+        cases hv
+        cases hx
+        have hσ : qt.sigma = rt.sigma := Subtype.ext hs
+        have hρ : qt.rho = rt.rho := Subtype.ext hr
+        exact ⟨HEq.of_eq hσ, HEq.of_eq hρ⟩
 
 end Poincare
