@@ -24,8 +24,8 @@ structure FanChordTransition (K : Triangulation) (v x : Nat) where
   sigma : {t : LinkTriangle // t ∈ vertexLinkStarTriangles K v x}
   rho : {t : LinkTriangle // t ∈ vertexLinkStarTriangles K v x}
   adjacent : (vertexLinkStarGraph K v x).Adj sigma rho
-  carrier_distinct : [v, x, y, z0, z1].Nodup
   y : Nat
+  carrier_distinct : [v, x, y, z0, z1].Nodup
   leftTet : Tet
   leftTet_mem : leftTet ∈ K.tets
   leftTet_eq : SameTetVertices leftTet ⟨v, x, y, z0⟩
