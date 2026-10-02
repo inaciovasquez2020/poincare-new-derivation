@@ -158,7 +158,10 @@ theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_degree_four
   let s : Move41Site :=
     { a := v, b := x, c := z0, d := z1, e := y,
       distinct := by
-        simpa [hz0, hz1, hy] using T0.distinct }
+        have hd := T0.distinct
+        rw [hz0, hz1, hy] at hd
+        simp [List.nodup_cons] at hd ⊢
+        aesop }
   have hsource0 : SameTetVertices T0.leftTet s.sourceTet₀ := by
     simpa [s, Move41Site.sourceTet₀, hz0, hy,
       or_assoc, or_left_comm, or_comm] using T0.leftTet_match
