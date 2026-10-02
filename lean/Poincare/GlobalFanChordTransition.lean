@@ -258,7 +258,7 @@ theorem FanChordTransition.same_location_different_transverse_impossible
     intro q hq
     exact
       hexhaust T0.sigma.1 x T0.transverse T1.transverse
-        hσnodup hxσ hcommon.1 hcommon.3 hxy0
+        hσnodup hxσ hcommon.1 hcommon.2.2.1 hxy0
         (by exact fun h => hxy0 (h.symm.trans rfl))
         hyt q hq
   have hρexhaust :
