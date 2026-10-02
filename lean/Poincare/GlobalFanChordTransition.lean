@@ -291,8 +291,26 @@ theorem FanChordTransition.same_location_different_transverse_impossible
     have hq := Finset.ext_iff.mp hEq q
     simpa [S, R] using hq
   have hpair := vertexLinkTriangles_pairwise_vertexSet_ne K hcore v
-  have hneq := List.Pairwise.symmetric_of_mem
-    (fun h hs => h (fun q => (hs q).symm)) hpair hσmem hρmem T0.adjacent.ne
+  have hneq :
+      ¬ ∀ y : Nat, y ∈ T0.sigma.1.verts ↔ y ∈ T0.rho.1.verts := by
+    have hsymm : ∀ {a b : LinkTriangle},
+        (¬ ∀ y : Nat, y ∈ a.verts ↔ y ∈ b.verts) →
+        (¬ ∀ y : Nat, y ∈ b.verts ↔ y ∈ a.verts) := by
+      intro a b h hs
+      exact h (fun q => (hs q).symm)
+    induction hpair with
+    | nil =>
+        simp at hσmem
+    | @cons c l hhead htail ih =>
+        rcases List.mem_cons.mp hσmem with rfl | hσTail
+        · have hρTail : T0.rho.1 ∈ l := by
+            rcases List.mem_cons.mp hρmem with h | h
+            · exact (T0.adjacent.ne h.symm).elim
+            · exact h
+          exact hhead T0.rho.1 hρTail
+        · rcases List.mem_cons.mp hρmem with rfl | hρTail
+          · exact hsymm (hhead T0.sigma.1 hσTail)
+          · exact ih hσTail hρTail
   exact hneq hvertices
 
 /-- Same-transverse two-cycle gives the existing saturated four-source star. -/
