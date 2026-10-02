@@ -396,8 +396,6 @@ theorem HighFanState.location_eq_iff
           rfl
     exact location_ext q.location r.location hv hx hs hr
 
-end Poincare
-
 
 /-- A perpetual high-fan state sequence with genuine edge progress has a
 nonconsecutive recurrent retained local transition location.  The recurrence
@@ -558,3 +556,5 @@ theorem EXISTS_RECURRENT_LOCAL_FAN_CONFIGURATION
     · intro n hjn hni
       exact hconsecutive n
 
+
+end Poincare
