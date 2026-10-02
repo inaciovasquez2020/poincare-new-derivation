@@ -24,6 +24,7 @@ structure FanChordTransition (K : Triangulation) (v x : Nat) where
   sigma : {t : LinkTriangle // t ∈ vertexLinkStarTriangles K v x}
   rho : {t : LinkTriangle // t ∈ vertexLinkStarTriangles K v x}
   adjacent : (vertexLinkStarGraph K v x).Adj sigma rho
+  carrier_distinct : [v, x, y, z0, z1].Nodup
   y : Nat
   leftTet : Tet
   leftTet_mem : leftTet ∈ K.tets
@@ -86,6 +87,7 @@ theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_transition
         sigma := sigma
         rho := rho
         adjacent := hadj
+        carrier_distinct := by simpa [ha, hb, hc, hd, he] using m.distinct
         y := y
         leftTet := F.tetAt sigma
         leftTet_mem := F.tetAt_mem sigma
