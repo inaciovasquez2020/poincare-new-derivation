@@ -299,7 +299,6 @@ theorem exists_recurrent_highFanEdgeState
     · intro n hjn hni
       exact hconsecutive n
 
-
 /-- A local high-fan transition location, retaining the oriented central edge
 and the actual adjacent link-star pair that realizes the transition. -/
 structure HighFanLocation (K : Triangulation) where
@@ -396,7 +395,6 @@ theorem HighFanState.location_eq_iff
           rfl
     exact location_ext q.location r.location hv hx hs hr
 
-
 /-- A perpetual high-fan state sequence with genuine edge progress has a
 nonconsecutive recurrent retained local transition location.  The recurrence
 is finite-state only; it does not assert that the resulting return cycle is
@@ -452,7 +450,7 @@ theorem EXISTS_RECURRENT_LOCAL_FAN_CONFIGURATION
             canonicalEdgeKey
               (states n).v
               (states n).x := by
-          rw [hvx.1, hvx.2]
+          rw [hvx.1, hvx.2.1]
 
         _ =
             (states n).edgeState.key :=
@@ -555,6 +553,5 @@ theorem EXISTS_RECURRENT_LOCAL_FAN_CONFIGURATION
       exact hstep n
     · intro n hjn hni
       exact hconsecutive n
-
 
 end Poincare
