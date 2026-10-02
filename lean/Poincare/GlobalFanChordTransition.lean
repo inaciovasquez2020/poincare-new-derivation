@@ -172,28 +172,28 @@ theorem FanChordTransition.same_location_different_transverse_common
     exact
       (T0.leftTet.mem_linkTriangleAt?_iff
         v T0.transverse T0.sigma.1 T0.leftTet_link hv0).2
-        ((T0.leftTet_match T0.transverse).1
+        ((T0.leftTet_match T0.transverse).2
           (by simp [Tet.verts]))
   have hr0 :
       T0.transverse ∈ T0.rho.1.verts := by
     exact
       (T0.rightTet.mem_linkTriangleAt?_iff
         v T0.transverse T0.rho.1 T0.rightTet_link hv0).2
-        ((T0.rightTet_match T0.transverse).1
+        ((T0.rightTet_match T0.transverse).2
           (by simp [Tet.verts]))
   have hs1 :
       T1.transverse ∈ T1.sigma.1.verts := by
     exact
       (T1.leftTet.mem_linkTriangleAt?_iff
         v T1.transverse T1.sigma.1 T1.leftTet_link hv1).2
-        ((T1.leftTet_match T1.transverse).1
+        ((T1.leftTet_match T1.transverse).2
           (by simp [Tet.verts]))
   have hr1 :
       T1.transverse ∈ T1.rho.1.verts := by
     exact
       (T1.rightTet.mem_linkTriangleAt?_iff
         v T1.transverse T1.rho.1 T1.rightTet_link hv1).2
-        ((T1.rightTet_match T1.transverse).1
+        ((T1.rightTet_match T1.transverse).2
           (by simp [Tet.verts]))
   simpa [hσ, hρ] using ⟨hs0, hr0, hs1, hr1⟩
 
