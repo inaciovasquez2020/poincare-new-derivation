@@ -375,6 +375,10 @@ theorem HighFanState.location_eq_iff
   · rintro ⟨hv, hx, hs, hr⟩
     cases q
     cases r
-    simp_all [HighFanState.location]
+    cases hv
+    cases hx
+    have hσ : transition✝¹.sigma = transition✝.sigma := Subtype.ext hs
+    have hρ : transition✝¹.rho = transition✝.rho := Subtype.ext hr
+    exact ⟨HEq.of_eq hσ, HEq.of_eq hρ⟩
 
 end Poincare
