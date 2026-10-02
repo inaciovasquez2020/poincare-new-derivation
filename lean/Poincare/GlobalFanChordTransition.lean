@@ -159,10 +159,10 @@ theorem FanChordTransition.same_location_different_transverse_common
     T1.transverse ∈ T0.rho.1.verts := by
   have hv0 : T0.transverse ≠ v := by
     intro h
-    have hv : v ≠ T0.transverse := by
-      intro hvt
-      exact (List.nodup_cons.mp T0.distinct).1 (by simp [hvt])
-    exact hv h.symm
+    have hd := T0.distinct
+    have hv : v ∈ [x, T0.transverse, T0.z0, T0.z1] := by
+      simp [h]
+    exact (List.nodup_cons.mp hd).1 hv
   have hv1 : T1.transverse ≠ v := by
     intro h
     have hd := T1.distinct
