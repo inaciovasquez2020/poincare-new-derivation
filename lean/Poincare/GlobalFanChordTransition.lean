@@ -292,21 +292,26 @@ theorem FanChordTransition.same_location_different_transverse_impossible
     simpa [S, R] using hq
   have hpair := vertexLinkTriangles_pairwise_vertexSet_ne K hcore v
   have hpair_mem :
-      ∀ {a b : LinkTriangle},
-        a ∈ vertexLinkTriangles K v →
-        b ∈ vertexLinkTriangles K v →
-        a ≠ b →
-        ¬ ∀ y : Nat, y ∈ a.verts ↔ y ∈ b.verts := by
-    intro a b ha hb hne
-    have hsymm : ∀ {c d : LinkTriangle},
-        (¬ ∀ y : Nat, y ∈ c.verts ↔ y ∈ d.verts) →
-        (¬ ∀ y : Nat, y ∈ d.verts ↔ y ∈ c.verts) := by
-      intro c d h hs
-      exact h (fun q => (hs q).symm)
-    induction hpair with
+      ∀ (l : List LinkTriangle), l.Pairwise
+        (fun σ ρ =>
+          ¬ ∀ y : Nat, y ∈ σ.verts ↔ y ∈ ρ.verts) →
+        ∀ {a b : LinkTriangle},
+          a ∈ l →
+          b ∈ l →
+          a ≠ b →
+          ¬ ∀ y : Nat, y ∈ a.verts ↔ y ∈ b.verts := by
+    intro l hpair'
+    induction hpair' with
     | nil =>
+        intro a b ha hb hne
         simp at ha
     | @cons c l hhead htail ih =>
+        intro a b ha hb hne
+        have hsymm : ∀ {d e : LinkTriangle},
+            (¬ ∀ y : Nat, y ∈ d.verts ↔ y ∈ e.verts) →
+            (¬ ∀ y : Nat, y ∈ e.verts ↔ y ∈ d.verts) := by
+          intro d e h hs
+          exact h (fun q => (hs q).symm)
         rcases List.mem_cons.mp ha with rfl | haTail
         · have hbTail : b ∈ l := by
             rcases List.mem_cons.mp hb with h | h
@@ -315,8 +320,8 @@ theorem FanChordTransition.same_location_different_transverse_impossible
           exact hhead b hbTail
         · rcases List.mem_cons.mp hb with rfl | hbTail
           · exact hsymm (hhead a haTail)
-          · exact ih haTail hbTail
-  exact (hpair_mem hσmem hρmem T0.adjacent.ne) hvertices
+          · exact ih haTail hbTail hne
+  exact (hpair_mem (vertexLinkTriangles K v) hpair hσmem hρmem T0.adjacent.ne) hvertices
 
 /-- Same-transverse two-cycle gives the existing saturated four-source star. -/
 theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_degree_four
