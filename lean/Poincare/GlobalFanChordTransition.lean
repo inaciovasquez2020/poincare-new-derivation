@@ -153,19 +153,24 @@ theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_degree_four
     (hT0 : T0.z0 = z0 ∧ T0.z1 = z1 ∧ T0.transverse = y)
     (hT1 : T1.z0 = v ∧ T1.z1 = x ∧ T1.transverse = y) :
     vertexDegree K y = 4 := by
-  rcases hT0 with ⟨rfl, rfl, rfl⟩
-  rcases hT1 with ⟨rfl, rfl, rfl⟩
+  rcases hT0 with ⟨hz0, hz1, hy⟩
+  rcases hT1 with ⟨hreturn0, hreturn1, htrans⟩
   let s : Move41Site :=
-    { a := v, b := x, c := T0.z0, d := T0.z1, e := y,
-      distinct := T0.distinct }
+    { a := v, b := x, c := z0, d := z1, e := y,
+      distinct := by
+        simpa [hz0, hz1, hy] using T0.distinct }
   have hsource0 : SameTetVertices T0.leftTet s.sourceTet₀ := by
-    simpa [s, Move41Site.sourceTet₀] using T0.leftTet_match
+    simpa [s, Move41Site.sourceTet₀, hz0, hy,
+      or_assoc, or_left_comm, or_comm] using T0.leftTet_match
   have hsource1 : SameTetVertices T0.rightTet s.sourceTet₁ := by
-    simpa [s, Move41Site.sourceTet₁] using T0.rightTet_match
+    simpa [s, Move41Site.sourceTet₁, hz0, hz1, hy,
+      or_assoc, or_left_comm, or_comm] using T0.rightTet_match
   have hsource2 : SameTetVertices T1.leftTet s.sourceTet₂ := by
-    simpa [s, Move41Site.sourceTet₂] using T1.leftTet_match
+    simpa [s, Move41Site.sourceTet₂, hreturn0, htrans,
+      or_assoc, or_left_comm, or_comm] using T1.leftTet_match
   have hsource3 : SameTetVertices T1.rightTet s.sourceTet₃ := by
-    simpa [s, Move41Site.sourceTet₃] using T1.rightTet_match
+    simpa [s, Move41Site.sourceTet₃, hreturn1, htrans,
+      or_assoc, or_left_comm, or_comm] using T1.rightTet_match
   have hy : y ∈ vertexSupport K := by
     rw [mem_vertexSupport_iff]
     simp only [allVerts, List.mem_flatMap]
