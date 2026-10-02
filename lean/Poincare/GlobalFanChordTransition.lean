@@ -167,8 +167,8 @@ theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_degree_four
     constructor
     · intro hw
       have hw' := (T0.leftTet_match w).1 hw
-      simp [s, Move41Site.sourceTet₀, Tet.verts] at hw' ⊢
-      tauto
+      simp [s, Move41Site.sourceTet₀, Tet.verts, hy, hz0] at hw' ⊢
+      aesop
     · intro hw
       have hw' := by
         simpa [s, Move41Site.sourceTet₀, Tet.verts] using hw
