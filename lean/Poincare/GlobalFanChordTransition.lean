@@ -237,8 +237,8 @@ theorem FanChordTransition.same_location_different_transverse_impossible
      exact h.1
   have hxy1 : x ≠ T1.transverse := by
     intro h
-    have h := (List.nodup_cons.mp (List.nodup_cons.mp T1.distinct).2).1
-    exact h
+    have hnotmem := (List.nodup_cons.mp (List.nodup_cons.mp T1.distinct).2).1
+    exact hnotmem (by simp [h])
   have hyt : T0.transverse ≠ T1.transverse := hy
   have hexhaust :
       ∀ (σ : LinkTriangle) (a b c : Nat),
