@@ -146,6 +146,59 @@ theorem FanChordTransition.complement_carrier_data
   exact ⟨T.leftTet_mem, T.rightTet_mem, T.leftTet_match,
     T.rightTet_match, T.distinct⟩
 
+/-- If two transitions retain the same local fan location but choose different transverse carriers, both transverse vertices lie in both retained link triangles. This isolates the residual two-common-vertex case without asserting uniqueness. -/
+theorem FanChordTransition.same_location_different_transverse_common
+    {K : Triangulation} {v x : Nat}
+    (T0 T1 : FanChordTransition K v x)
+    (hσ : T0.sigma.1 = T1.sigma.1)
+    (hρ : T0.rho.1 = T1.rho.1)
+    (hy : T0.transverse ≠ T1.transverse) :
+    T0.transverse ∈ T0.sigma.1.verts ∧
+    T0.transverse ∈ T0.rho.1.verts ∧
+    T1.transverse ∈ T0.sigma.1.verts ∧
+    T1.transverse ∈ T0.rho.1.verts := by
+  have hv0 : T0.transverse ≠ v := by
+    intro h
+    have hd := T0.distinct
+    subst v
+    simp [List.nodup_cons] at hd
+    exact hd.2.2.1 rfl
+  have hv1 : T1.transverse ≠ v := by
+    intro h
+    have hd := T1.distinct
+    subst v
+    simp [List.nodup_cons] at hd
+    exact hd.2.2.1 rfl
+  have hs0 :
+      T0.transverse ∈ T0.sigma.1.verts := by
+    exact
+      (T0.leftTet.mem_linkTriangleAt?_iff
+        v T0.transverse T0.sigma.1 T0.leftTet_link hv0).2
+        ((T0.leftTet_match T0.transverse).1
+          (by simp [Tet.verts]))
+  have hr0 :
+      T0.transverse ∈ T0.rho.1.verts := by
+    exact
+      (T0.rightTet.mem_linkTriangleAt?_iff
+        v T0.transverse T0.rho.1 T0.rightTet_link hv0).2
+        ((T0.rightTet_match T0.transverse).1
+          (by simp [Tet.verts]))
+  have hs1 :
+      T1.transverse ∈ T1.sigma.1.verts := by
+    exact
+      (T1.leftTet.mem_linkTriangleAt?_iff
+        v T1.transverse T1.sigma.1 T1.leftTet_link hv1).2
+        ((T1.leftTet_match T1.transverse).1
+          (by simp [Tet.verts]))
+  have hr1 :
+      T1.transverse ∈ T1.rho.1.verts := by
+    exact
+      (T1.rightTet.mem_linkTriangleAt?_iff
+        v T1.transverse T1.rho.1 T1.rightTet_link hv1).2
+        ((T1.rightTet_match T1.transverse).1
+          (by simp [Tet.verts]))
+  simpa [hσ, hρ] using ⟨hs0, hr0, hs1, hr1⟩
+
 /-- Same-transverse two-cycle gives the existing saturated four-source star. -/
 theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_degree_four
     {K : Triangulation}
