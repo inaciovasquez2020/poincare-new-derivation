@@ -334,7 +334,8 @@ noncomputable instance highFanLocationFintype
     | mk av ax ane as ar aadj =>
       cases b with
       | mk bv bx bne bs br badj =>
-        simp_all
+        rcases h with ⟨rfl, rfl⟩
+        rfl
   exact Fintype.ofFinite (HighFanLocation K)
 
 /-- Every high-fan state determines a unique retained local transition
