@@ -291,27 +291,32 @@ theorem FanChordTransition.same_location_different_transverse_impossible
     have hq := Finset.ext_iff.mp hEq q
     simpa [S, R] using hq
   have hpair := vertexLinkTriangles_pairwise_vertexSet_ne K hcore v
-  have hneq :
-      ¬ ∀ y : Nat, y ∈ T0.sigma.1.verts ↔ y ∈ T0.rho.1.verts := by
-    have hsymm : ∀ {a b : LinkTriangle},
-        (¬ ∀ y : Nat, y ∈ a.verts ↔ y ∈ b.verts) →
-        (¬ ∀ y : Nat, y ∈ b.verts ↔ y ∈ a.verts) := by
-      intro a b h hs
+  have hpair_mem :
+      ∀ {a b : LinkTriangle},
+        a ∈ vertexLinkTriangles K v →
+        b ∈ vertexLinkTriangles K v →
+        a ≠ b →
+        ¬ ∀ y : Nat, y ∈ a.verts ↔ y ∈ b.verts := by
+    intro a b ha hb hne
+    have hsymm : ∀ {c d : LinkTriangle},
+        (¬ ∀ y : Nat, y ∈ c.verts ↔ y ∈ d.verts) →
+        (¬ ∀ y : Nat, y ∈ d.verts ↔ y ∈ c.verts) := by
+      intro c d h hs
       exact h (fun q => (hs q).symm)
     induction hpair with
     | nil =>
-        simp at hσmem
+        simp at ha
     | @cons c l hhead htail ih =>
-        rcases List.mem_cons.mp hσmem with rfl | hσTail
-        · have hρTail : T0.rho.1 ∈ l := by
-            rcases List.mem_cons.mp hρmem with h | h
-            · exact (T0.adjacent.ne h.symm).elim
+        rcases List.mem_cons.mp ha with rfl | haTail
+        · have hbTail : b ∈ l := by
+            rcases List.mem_cons.mp hb with h | h
+            · exact (hne h.symm).elim
             · exact h
-          exact hhead T0.rho.1 hρTail
-        · rcases List.mem_cons.mp hρmem with rfl | hρTail
-          · exact hsymm (hhead T0.sigma.1 hσTail)
-          · exact ih hσTail hρTail
-  exact hneq hvertices
+          exact hhead b hbTail
+        · rcases List.mem_cons.mp hb with rfl | hbTail
+          · exact hsymm (hhead a haTail)
+          · exact ih haTail hbTail
+  exact (hpair_mem hσmem hρmem T0.adjacent.ne) hvertices
 
 /-- Same-transverse two-cycle gives the existing saturated four-source star. -/
 theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_degree_four
