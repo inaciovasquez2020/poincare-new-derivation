@@ -109,4 +109,8 @@ theorem deltaPhiTwoToThreeFromLocal_perm
     signDeltaOneToFour 5 6 7 8 = Ordering.gt := by
   native_decide
 
+@[simp] theorem signDeltaTwoToThreeFromLocal_nonuniform :
+    signDeltaTwoToThree 5 6 7 6 8 = Ordering.gt := by
+  native_decide
+
 end Poincare
