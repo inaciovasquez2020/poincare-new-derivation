@@ -39,6 +39,8 @@ structure FanChordTransition (K : Triangulation) (v x : Nat) where
   rightTet : Tet
   leftTet_mem : leftTet ∈ K.tets
   rightTet_mem : rightTet ∈ K.tets
+  leftTet_link : leftTet.linkTriangleAt? v = some sigma.1
+  rightTet_link : rightTet.linkTriangleAt? v = some rho.1
   leftTet_match : SameTetVertices leftTet ⟨v, x, transverse, z0⟩
   rightTet_match : SameTetVertices rightTet ⟨v, x, transverse, z1⟩
   distinct : [v, x, transverse, z0, z1].Nodup
@@ -95,6 +97,8 @@ theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_transition
         rightTet := F.tetAt rho
         leftTet_mem := F.tetAt_mem sigma
         rightTet_mem := F.tetAt_mem rho
+        leftTet_link := F.tetAt_link sigma
+        rightTet_link := F.tetAt_link rho
         leftTet_match := by
           simpa [Move23Site.leftTet, ha, hb, hc, hd] using hleft
         rightTet_match := by
@@ -120,6 +124,8 @@ theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_transition
         rightTet := F.tetAt rho
         leftTet_mem := F.tetAt_mem sigma
         rightTet_mem := F.tetAt_mem rho
+        leftTet_link := F.tetAt_link sigma
+        rightTet_link := F.tetAt_link rho
         leftTet_match := by
           simpa [Move23Site.leftTet, ha, hb, hc, hd] using hleft
         rightTet_match := by
