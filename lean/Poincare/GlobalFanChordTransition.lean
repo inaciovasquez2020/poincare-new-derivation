@@ -583,4 +583,26 @@ theorem ClosedTriangulationCore.FanChordTransition.continue_noHigh
           hlinks hNoFour s hrealized hsource)).elim
   · exact Or.inr (Or.inr hnext)
 
+/-- A two-step return with the same transverse carrier is incompatible with
+the no-degree-four hypothesis. This is the bounded bridge from the recurrent
+edge-state cycle to the existing four-source obstruction. -/
+theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_impossible_noFour
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hlinks :
+      ∀ v ∈ vertexSupport K,
+        VertexLinkConnected K v)
+    (hNoFour :
+      ∀ v ∈ vertexSupport K,
+        vertexDegree K v ≠ 4)
+    {v x z0 z1 y : Nat}
+    (T0 : FanChordTransition K v x)
+    (T1 : FanChordTransition K z0 z1)
+    (hT0 : T0.z0 = z0 ∧ T0.z1 = z1 ∧ T0.transverse = y)
+    (hT1 : T1.z0 = v ∧ T1.z1 = x ∧ T1.transverse = y) :
+    False := by
+  exact hNoFour y
+    (hcore.fanChord_twoCycle_same_transverse_degree_four
+      hlinks T0 T1 hT0 hT1)
+
 end Poincare
