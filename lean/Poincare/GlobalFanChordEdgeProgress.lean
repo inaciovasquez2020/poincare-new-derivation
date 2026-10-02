@@ -363,14 +363,14 @@ theorem HighFanState.location_eq_iff
     q.location = r.location ↔
       q.v = r.v ∧
       q.x = r.x ∧
-      q.transition.sigma = r.transition.sigma ∧
-      q.transition.rho = r.transition.rho := by
+      q.transition.sigma.1 = r.transition.sigma.1 ∧
+      q.transition.rho.1 = r.transition.rho.1 := by
   constructor
   · intro h
     have hv := congrArg (fun s : HighFanLocation K => (s.v : Nat)) h
     have hx := congrArg (fun s : HighFanLocation K => (s.x : Nat)) h
-    have hs := congrArg (fun s : HighFanLocation K => s.sigma) h
-    have hr := congrArg (fun s : HighFanLocation K => s.rho) h
+    have hs := congrArg (fun s : HighFanLocation K => s.sigma.1) h
+    have hr := congrArg (fun s : HighFanLocation K => s.rho.1) h
     exact ⟨hv, hx, hs, hr⟩
   · rintro ⟨hv, hx, hs, hr⟩
     cases q
