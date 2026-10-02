@@ -299,7 +299,6 @@ theorem exists_recurrent_highFanEdgeState
     · intro n hjn hni
       exact hconsecutive n
 
-
 /-- A local high-fan transition location, retaining the oriented central edge
 and the actual adjacent link-star pair that realizes the transition. -/
 structure HighFanLocation (K : Triangulation) where
@@ -395,5 +394,164 @@ theorem HighFanState.location_eq_iff
           cases hρ
           rfl
     exact location_ext q.location r.location hv hx hs hr
+
+/-- A perpetual high-fan state sequence with genuine edge progress has a
+nonconsecutive recurrent retained local transition location.  The recurrence
+is finite-state only; it does not assert that the resulting return cycle is
+impossible. -/
+theorem EXISTS_RECURRENT_LOCAL_FAN_CONFIGURATION
+    {K : Triangulation}
+    (states : Nat → HighFanState K)
+    (hstep :
+      ∀ n,
+        (states (n + 1)).v = (states n).transition.z0 ∧
+        (states (n + 1)).x = (states n).transition.z1)
+    (hconsecutive :
+      ∀ n,
+        (states (n + 1)).edgeState ≠
+          (states n).edgeState) :
+    ∃ i j,
+      i + 1 < j ∧
+      j ≤ Fintype.card (HighFanLocation K) ∧
+      (states i).location = (states j).location ∧
+      (∀ n,
+        i ≤ n →
+        n < j →
+        (states (n + 1)).v = (states n).transition.z0 ∧
+        (states (n + 1)).x = (states n).transition.z1) ∧
+      ∀ n,
+        i ≤ n →
+        n < j →
+        (states (n + 1)).edgeState ≠
+          (states n).edgeState := by
+  classical
+
+  have hlocation_consecutive :
+      ∀ n,
+        (states (n + 1)).location ≠
+          (states n).location := by
+    intro n hloc
+    have hvx :=
+      (HighFanState.location_eq_iff
+        (states (n + 1))
+        (states n)).1 hloc
+
+    have hkey :
+        (states (n + 1)).edgeState.key =
+          (states n).edgeState.key := by
+      calc
+        (states (n + 1)).edgeState.key =
+            canonicalEdgeKey
+              (states (n + 1)).v
+              (states (n + 1)).x :=
+          HighFanState.edgeState_key (states (n + 1))
+
+        _ =
+            canonicalEdgeKey
+              (states n).v
+              (states n).x := by
+          rw [hvx.1, hvx.2.1]
+
+        _ =
+            (states n).edgeState.key :=
+          (HighFanState.edgeState_key (states n)).symm
+
+    have hedge_ext :
+        ∀ a b : SupportedEdgeState K,
+          a.key = b.key →
+          a = b := by
+      intro a b hab
+      apply Subtype.ext
+      apply Prod.ext
+      · apply Subtype.ext
+        exact congrArg Prod.fst hab
+      · apply Subtype.ext
+        exact congrArg Prod.snd hab
+
+    exact
+      (hconsecutive n)
+        (hedge_ext _ _ hkey)
+
+  let N : Nat :=
+    Fintype.card (HighFanLocation K)
+
+  let f : Nat → HighFanLocation K :=
+    fun n => (states n).location
+
+  let S : Finset Nat :=
+    Finset.range (N + 1)
+
+  let T : Finset (HighFanLocation K) :=
+    Finset.univ
+
+  have hcard : T.card < S.card := by
+    simpa [T, S, N]
+
+  have hmaps :
+      Set.MapsTo
+        f
+        (↑S : Set Nat)
+        (↑T : Set (HighFanLocation K)) := by
+    intro n hn
+    simp [T]
+
+  obtain
+      ⟨i, hiS,
+        j, hjS,
+        hij,
+        hfij⟩ :=
+    Finset.exists_ne_map_eq_of_card_lt_of_maps_to
+      (s := S)
+      (t := T)
+      hcard
+      hmaps
+
+  have hiBound : i ≤ N := by
+    have hiLt : i < N + 1 := by
+      simpa [S] using hiS
+    omega
+
+  have hjBound : j ≤ N := by
+    have hjLt : j < N + 1 := by
+      simpa [S] using hjS
+    omega
+
+  have hconsecutive' :
+      ∀ n,
+        f (n + 1) ≠ f n := by
+    intro n
+    simpa [f] using hlocation_consecutive n
+
+  rcases Nat.lt_or_gt_of_ne hij with hijlt | hjilt
+
+  · have hgap : i + 1 < j := by
+      by_contra hnot
+      have hsucc : j = i + 1 := by
+        omega
+      subst j
+      exact (hconsecutive' i) hfij.symm
+
+    refine ⟨i, j, hgap, ?_, ?_, ?_, ?_⟩
+    · simpa [N] using hjBound
+    · simpa [f] using hfij
+    · intro n hin hnj
+      exact hstep n
+    · intro n hin hnj
+      exact hconsecutive n
+
+  · have hgap : j + 1 < i := by
+      by_contra hnot
+      have hsucc : i = j + 1 := by
+        omega
+      subst i
+      exact (hconsecutive' j) hfij
+
+    refine ⟨j, i, hgap, ?_, ?_, ?_, ?_⟩
+    · simpa [N] using hiBound
+    · simpa [f] using hfij.symm
+    · intro n hjn hni
+      exact hstep n
+    · intro n hjn hni
+      exact hconsecutive n
 
 end Poincare
