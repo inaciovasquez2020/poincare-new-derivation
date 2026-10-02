@@ -195,7 +195,9 @@ theorem FanChordTransition.same_location_different_transverse_common
         v T1.transverse T1.rho.1 T1.rightTet_link hv1).2
         ((T1.rightTet_match T1.transverse).2
           (by simp [Tet.verts]))
-  simpa [hσ, hρ] using ⟨hs0, hr0, hs1, hr1⟩
+  rw [← hσ] at hs1
+  rw [← hρ] at hr1
+  exact ⟨hs0, hr0, hs1, hr1⟩
 
 /-- Same-transverse two-cycle gives the existing saturated four-source star. -/
 theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_degree_four
