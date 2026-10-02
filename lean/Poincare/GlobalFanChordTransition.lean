@@ -291,7 +291,9 @@ theorem FanChordTransition.same_location_different_transverse_impossible
     have hq := Finset.ext_iff.mp hEq q
     simpa [S, R] using hq
   have hpair := vertexLinkTriangles_pairwise_vertexSet_ne K hcore v
-  exact hpair hσmem hρmem T0.adjacent.ne hvertices
+  have hneq := List.Pairwise.symmetric_of_mem
+    (fun h hs => h (fun q => (hs q).symm)) hpair hσmem hρmem T0.adjacent.ne
+  exact hneq hvertices
 
 /-- Same-transverse two-cycle gives the existing saturated four-source star. -/
 theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_degree_four
