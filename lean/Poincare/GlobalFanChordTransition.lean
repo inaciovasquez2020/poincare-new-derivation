@@ -605,7 +605,7 @@ theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_impossible_noF
     rw [mem_vertexSupport_iff]
     exact List.mem_flatMap.2 ⟨T0.leftTet, T0.leftTet_mem,
       (T0.leftTet_match y).2 (by
-        simp [hT0.2.2])⟩
+        simp [hT0.2.2, Tet.verts])⟩
   exact hNoFour y hy
     (hcore.fanChord_twoCycle_same_transverse_degree_four
       hlinks T0 T1 hT0 hT1)
