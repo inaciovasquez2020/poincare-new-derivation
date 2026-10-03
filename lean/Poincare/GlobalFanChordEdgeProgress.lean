@@ -827,4 +827,80 @@ theorem FanChordTransition.same_location_same_transverse_same_chord
 
   exact ⟨hz0eq, hz1eq⟩
 
+/-- A repeated retained local location forces the same next central edge.
+The transverse carrier is unique at the repeated location, and the retained
+chord endpoints are therefore identical; hence the successor edge states
+coincide. This is the local shortening mechanism for a minimal recurrent
+high-fan cycle. -/
+theorem repeated_highFan_location_next_edgeState_eq
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (states : Nat → HighFanState K)
+    {i j : Nat}
+    (hstep :
+      ∀ n,
+        (states (n + 1)).v = (states n).transition.z0 ∧
+        (states (n + 1)).x = (states n).transition.z1)
+    (hloc : (states i).location = (states j).location) :
+    (states (i + 1)).edgeState = (states (j + 1)).edgeState := by
+  have hloc' :=
+    (HighFanState.location_eq_iff
+      (states i) (states j)).1 hloc
+  have htrans :=
+    FanChordTransition.same_location_transverse_eq
+      hcore
+      (states i).transition
+      (states j).transition
+      hloc'.2.2.1
+      hloc'.2.2.2
+  have hchord :=
+    FanChordTransition.same_location_same_transverse_same_chord
+      (states i).transition
+      (states j).transition
+      hcore
+      hloc'.2.2.1
+      hloc'.2.2.2
+      htrans
+  have hvnext :
+      (states (i + 1)).v = (states (j + 1)).v := by
+    calc
+      (states (i + 1)).v =
+          (states i).transition.z0 :=
+        (hstep i).1
+      _ = (states j).transition.z0 := hchord.1
+      _ = (states (j + 1)).v :=
+        (hstep j).1.symm
+  have hxnext :
+      (states (i + 1)).x = (states (j + 1)).x := by
+    calc
+      (states (i + 1)).x =
+          (states i).transition.z1 :=
+        (hstep i).2
+      _ = (states j).transition.z1 := hchord.2
+      _ = (states (j + 1)).x :=
+        (hstep j).2.symm
+  have hkey :
+      (states (i + 1)).edgeState.key =
+        (states (j + 1)).edgeState.key := by
+    calc
+      (states (i + 1)).edgeState.key =
+          canonicalEdgeKey
+            (states (i + 1)).v
+            (states (i + 1)).x :=
+        HighFanState.edgeState_key (states (i + 1))
+      _ =
+          canonicalEdgeKey
+            (states (j + 1)).v
+            (states (j + 1)).x := by
+        rw [hvnext, hxnext]
+      _ =
+          (states (j + 1)).edgeState.key :=
+        (HighFanState.edgeState_key (states (j + 1))).symm
+  apply Subtype.ext
+  apply Prod.ext
+  · apply Subtype.ext
+    exact congrArg Prod.fst hkey
+  · apply Subtype.ext
+    exact congrArg Prod.snd hkey
+
 end Poincare
