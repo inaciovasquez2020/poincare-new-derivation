@@ -848,8 +848,6 @@ theorem repeated_highFan_location_next_edgeState_eq
       (states i) (states j)).1 hloc
   have hv := hloc'.1
   have hx := hloc'.2.1
-  cases hv
-  cases hx
   have hσ := hloc'.2.2.1
   have hρ := hloc'.2.2.2
   have htrans :=
