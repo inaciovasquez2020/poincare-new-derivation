@@ -846,7 +846,12 @@ theorem repeated_highFan_location_next_edgeState_eq
   have hloc' :=
     (HighFanState.location_eq_iff
       (states i) (states j)).1 hloc
-  rcases hloc' with ⟨rfl, rfl, hσ, hρ⟩
+  have hv := hloc'.1
+  have hx := hloc'.2.1
+  cases hv
+  cases hx
+  have hσ := hloc'.2.2.1
+  have hρ := hloc'.2.2.2
   have htrans :=
     FanChordTransition.same_location_transverse_eq
       hcore
