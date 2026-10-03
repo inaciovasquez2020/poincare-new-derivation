@@ -753,27 +753,20 @@ theorem FanChordTransition.same_location_same_transverse_same_chord
     simpa [hσ] using hz
 
   have hx_trans : x ≠ T0.transverse := by
-    have h := (List.nodup_cons.mp T0.distinct).1
-    simp at h
-    exact h.1
+    intro h
+    simpa [h] using T0.distinct
   have hx_z0 : x ≠ T0.z0 := by
-    have h := (List.nodup_cons.mp T0.distinct).1
-    simp at h
-    exact h.2.1
+    intro h
+    simpa [h] using T0.distinct
   have htrans_z0 : T0.transverse ≠ T0.z0 := by
-    have h := (List.nodup_cons.mp (List.nodup_cons.mp T0.distinct).2).1
-    simp at h
-    exact h.1
+    intro h
+    simpa [h] using T0.distinct
   have hz0'_x : T1.z0 ≠ x := by
     intro h
-    have hn := (List.nodup_cons.mp T1.distinct).1
-    exact hn (by simp [h])
+    simpa [h] using T1.distinct
   have hz0'_trans : T1.z0 ≠ T0.transverse := by
     intro h
-    have hn :=
-      (List.nodup_cons.mp
-        (List.nodup_cons.mp T1.distinct).2).1
-    exact hn (by simp [h, htrans])
+    simpa [h, htrans] using T1.distinct
 
   have hz0eq : T0.z0 = T1.z0 := by
     rcases
@@ -781,8 +774,8 @@ theorem FanChordTransition.same_location_same_transverse_same_chord
           hσnodup hxσ htransσ hz0σ0
           hx_trans hx_z0 htrans_z0 T1.z0 hz0σ1 with
       h | h | h
-    · exact (hz0'_x h.symm).elim
-    · exact (hz0'_trans h.symm).elim
+    · exact (hz0'_x h).elim
+    · exact (hz0'_trans h).elim
     · exact h.symm
 
   have hz1ρ0 : T0.z1 ∈ T0.rho.1.verts := by
@@ -810,23 +803,17 @@ theorem FanChordTransition.same_location_same_transverse_same_chord
     simpa [hρ] using hz
 
   have hx_z1 : x ≠ T0.z1 := by
-    have h := (List.nodup_cons.mp T0.distinct).1
-    simp at h
-    exact h.2.2
+    intro h
+    simpa [h] using T0.distinct
   have htrans_z1 : T0.transverse ≠ T0.z1 := by
-    have h := (List.nodup_cons.mp (List.nodup_cons.mp T0.distinct).2).1
-    simp at h
-    exact h.2
+    intro h
+    simpa [h] using T0.distinct
   have hz1'_x : T1.z1 ≠ x := by
     intro h
-    have hn := (List.nodup_cons.mp T1.distinct).1
-    exact hn (by simp [h])
+    simpa [h] using T1.distinct
   have hz1'_trans : T1.z1 ≠ T0.transverse := by
     intro h
-    have hn :=
-      (List.nodup_cons.mp
-        (List.nodup_cons.mp T1.distinct).2).1
-    exact hn (by simp [h, htrans])
+    simpa [h, htrans] using T1.distinct
 
   have hz1eq : T0.z1 = T1.z1 := by
     rcases
@@ -834,8 +821,8 @@ theorem FanChordTransition.same_location_same_transverse_same_chord
           hρnodup hxρ htransρ hz1ρ0
           hx_trans hx_z1 htrans_z1 T1.z1 hz1ρ1 with
       h | h | h
-    · exact (hz1'_x h.symm).elim
-    · exact (hz1'_trans h.symm).elim
+    · exact (hz1'_x h).elim
+    · exact (hz1'_trans h).elim
     · exact h.symm
 
   exact ⟨hz0eq, hz1eq⟩
