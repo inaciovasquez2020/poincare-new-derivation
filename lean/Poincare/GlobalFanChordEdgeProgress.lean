@@ -896,11 +896,17 @@ theorem repeated_highFan_location_next_edgeState_eq
       _ =
           (states (j + 1)).edgeState.key :=
         (HighFanState.edgeState_key (states (j + 1))).symm
-  apply Subtype.ext
-  apply Prod.ext
-  · apply Subtype.ext
-    exact congrArg Prod.fst hkey
-  · apply Subtype.ext
-    exact congrArg Prod.snd hkey
+  have hedge_ext :
+      ∀ a b : SupportedEdgeState K,
+        a.key = b.key →
+        a = b := by
+    intro a b hab
+    apply Subtype.ext
+    apply Prod.ext
+    · apply Subtype.ext
+      exact congrArg Prod.fst hab
+    · apply Subtype.ext
+      exact congrArg Prod.snd hab
+  exact hedge_ext _ _ hkey
 
 end Poincare
