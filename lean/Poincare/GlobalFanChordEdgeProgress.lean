@@ -750,8 +750,7 @@ theorem FanChordTransition.same_location_same_transverse_same_chord
           v T1.z0 T1.sigma.1 T1.leftTet_link hv).2
           ((T1.leftTet_match T1.z0).2
             (by simp [Tet.verts]))
-    rw [← hσ]
-    exact hz
+    simpa [hσ] using hz
 
   have hx_trans : x ≠ T0.transverse := by
     have h := (List.nodup_cons.mp T0.distinct).1
@@ -808,8 +807,7 @@ theorem FanChordTransition.same_location_same_transverse_same_chord
           v T1.z1 T1.rho.1 T1.rightTet_link hv).2
           ((T1.rightTet_match T1.z1).2
             (by simp [Tet.verts]))
-    rw [← hρ]
-    exact hz
+    simpa [hρ] using hz
 
   have hx_z1 : x ≠ T0.z1 := by
     have h := (List.nodup_cons.mp T0.distinct).1
