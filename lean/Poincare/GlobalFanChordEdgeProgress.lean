@@ -663,4 +663,168 @@ theorem
   exact hNoCycle
     ⟨states, i, j, hgap, hbound, hreturn, hstepSegment, hconsecutiveSegment⟩
 
+
+/-- A repeated retained local fan location with the same transverse carrier
+also fixes both chord endpoints. -/
+theorem FanChordTransition.same_location_same_transverse_same_chord
+    {K : Triangulation} {v x : Nat}
+    (T0 T1 : FanChordTransition K v x)
+    (hcore : ClosedTriangulationCore K)
+    (hσ : T0.sigma.1 = T1.sigma.1)
+    (hρ : T0.rho.1 = T1.rho.1)
+    (htrans : T0.transverse = T1.transverse) :
+    T0.z0 = T1.z0 ∧ T0.z1 = T1.z1 := by
+  have hexhaust :
+      ∀ (σ : LinkTriangle) (a b c : Nat),
+        σ.verts.Nodup →
+        a ∈ σ.verts →
+        b ∈ σ.verts →
+        c ∈ σ.verts →
+        a ≠ b → a ≠ c → b ≠ c →
+        ∀ q, q ∈ σ.verts → q = a ∨ q = b ∨ q = c := by
+    intro σ a b c hnodup ha hb hc hab hac hbc q hq
+    rcases σ with ⟨s0, s1, s2⟩
+    simp [LinkTriangle.verts] at hnodup ha hb hc hq ⊢
+    aesop
+
+  have hσmem : T0.sigma.1 ∈ vertexLinkTriangles K v := by
+    exact
+      (mem_vertexLinkStarTriangles_iff K v x T0.sigma.1).1
+        T0.sigma.2 |>.1
+  have hρmem : T0.rho.1 ∈ vertexLinkTriangles K v := by
+    exact
+      (mem_vertexLinkStarTriangles_iff K v x T0.rho.1).1
+        T0.rho.2 |>.1
+  have hσnodup : T0.sigma.1.verts.Nodup :=
+    vertexLinkTriangles_triangle_nodup K hcore v T0.sigma.1 hσmem
+  have hρnodup : T0.rho.1.verts.Nodup :=
+    vertexLinkTriangles_triangle_nodup K hcore v T0.rho.1 hρmem
+
+  have hxσ : x ∈ T0.sigma.1.verts :=
+    ((mem_vertexLinkStarTriangles_iff K v x T0.sigma.1).1
+      T0.sigma.2).2
+  have hxρ : x ∈ T0.rho.1.verts :=
+    ((mem_vertexLinkStarTriangles_iff K v x T0.rho.1).1
+      T0.rho.2).2
+
+  have htransσ : T0.transverse ∈ T0.sigma.1.verts := by
+    have hv : T0.transverse ≠ v := by
+      intro h
+      have hd := T0.distinct
+      exact (List.nodup_cons.mp hd).1 (by simp [h])
+    exact
+      (T0.leftTet.mem_linkTriangleAt?_iff
+        v T0.transverse T0.sigma.1 T0.leftTet_link hv).2
+        ((T0.leftTet_match T0.transverse).2
+          (by simp [Tet.verts]))
+  have htransρ : T0.transverse ∈ T0.rho.1.verts := by
+    have hv : T0.transverse ≠ v := by
+      intro h
+      have hd := T0.distinct
+      exact (List.nodup_cons.mp hd).1 (by simp [h])
+    exact
+      (T0.rightTet.mem_linkTriangleAt?_iff
+        v T0.transverse T0.rho.1 T0.rightTet_link hv).2
+        ((T0.rightTet_match T0.transverse).2
+          (by simp [Tet.verts]))
+
+  have hz0σ0 : T0.z0 ∈ T0.sigma.1.verts := by
+    have hv : T0.z0 ≠ v := by
+      intro h
+      have hd := T0.distinct
+      exact (List.nodup_cons.mp hd).1 (by simp [h])
+    exact
+      (T0.leftTet.mem_linkTriangleAt?_iff
+        v T0.z0 T0.sigma.1 T0.leftTet_link hv).2
+        ((T0.leftTet_match T0.z0).2
+          (by simp [Tet.verts]))
+  have hz0σ1 : T1.z0 ∈ T0.sigma.1.verts := by
+    have hv : T1.z0 ≠ v := by
+      intro h
+      have hd := T1.distinct
+      exact (List.nodup_cons.mp hd).1 (by simp [h])
+    have hz :
+        T1.z0 ∈ T1.sigma.1.verts := by
+      exact
+        (T1.leftTet.mem_linkTriangleAt?_iff
+          v T1.z0 T1.sigma.1 T1.leftTet_link hv).2
+          ((T1.leftTet_match T1.z0).2
+            (by simp [Tet.verts]))
+    simpa [hσ] using hz
+
+  have hx_trans : x ≠ T0.transverse := by
+    intro h
+    simpa [h] using T0.distinct
+  have hx_z0 : x ≠ T0.z0 := by
+    intro h
+    simpa [h] using T0.distinct
+  have htrans_z0 : T0.transverse ≠ T0.z0 := by
+    intro h
+    simpa [h] using T0.distinct
+  have hz0'_x : T1.z0 ≠ x := by
+    intro h
+    simpa [h] using T1.distinct
+  have hz0'_trans : T1.z0 ≠ T0.transverse := by
+    intro h
+    simpa [h, htrans] using T1.distinct
+
+  have hz0eq : T0.z0 = T1.z0 := by
+    rcases
+        hexhaust T0.sigma.1 x T0.transverse T0.z0
+          hσnodup hxσ htransσ hz0σ0
+          hx_trans hx_z0 htrans_z0 T1.z0 hz0σ1 with
+      h | h | h
+    · exact (hz0'_x h).elim
+    · exact (hz0'_trans h).elim
+    · exact h.symm
+
+  have hz1ρ0 : T0.z1 ∈ T0.rho.1.verts := by
+    have hv : T0.z1 ≠ v := by
+      intro h
+      have hd := T0.distinct
+      exact (List.nodup_cons.mp hd).1 (by simp [h])
+    exact
+      (T0.rightTet.mem_linkTriangleAt?_iff
+        v T0.z1 T0.rho.1 T0.rightTet_link hv).2
+        ((T0.rightTet_match T0.z1).2
+          (by simp [Tet.verts]))
+  have hz1ρ1 : T1.z1 ∈ T0.rho.1.verts := by
+    have hv : T1.z1 ≠ v := by
+      intro h
+      have hd := T1.distinct
+      exact (List.nodup_cons.mp hd).1 (by simp [h])
+    have hz :
+        T1.z1 ∈ T1.rho.1.verts := by
+      exact
+        (T1.rightTet.mem_linkTriangleAt?_iff
+          v T1.z1 T1.rho.1 T1.rightTet_link hv).2
+          ((T1.rightTet_match T1.z1).2
+            (by simp [Tet.verts]))
+    simpa [hρ] using hz
+
+  have hx_z1 : x ≠ T0.z1 := by
+    intro h
+    simpa [h] using T0.distinct
+  have htrans_z1 : T0.transverse ≠ T0.z1 := by
+    intro h
+    simpa [h] using T0.distinct
+  have hz1'_x : T1.z1 ≠ x := by
+    intro h
+    simpa [h] using T1.distinct
+  have hz1'_trans : T1.z1 ≠ T0.transverse := by
+    intro h
+    simpa [h, htrans] using T1.distinct
+
+  have hz1eq : T0.z1 = T1.z1 := by
+    rcases
+        hexhaust T0.rho.1 x T0.transverse T0.z1
+          hρnodup hxρ htransρ hz1ρ0
+          hx_trans hx_z1 htrans_z1 T1.z1 hz1ρ1 with
+      h | h | h
+    · exact (hz1'_x h).elim
+    · exact (hz1'_trans h).elim
+    · exact h.symm
+
+  exact ⟨hz0eq, hz1eq⟩
+
 end Poincare
