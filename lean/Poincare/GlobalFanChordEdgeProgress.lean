@@ -554,6 +554,20 @@ theorem EXISTS_RECURRENT_LOCAL_FAN_CONFIGURATION
     · intro n hjn hni
       exact hconsecutive n
 
+/-- A repeated retained local fan location has a unique transverse
+carrier. -/
+theorem FanChordTransition.same_location_transverse_eq
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    {v x : Nat}
+    (T0 T1 : FanChordTransition K v x)
+    (hσ : T0.sigma.1 = T1.sigma.1)
+    (hρ : T0.rho.1 = T1.rho.1) :
+    T0.transverse = T1.transverse := by
+  by_contra hy
+  exact
+    T0.same_location_different_transverse_impossible
+      hcore T1 hσ hρ hy
+
 /-- On the no-high branch, ruling out exactly the finite recurrent high-fan
 segment certified above forces genuine global progress: either a legal `2-3`
 move or strict `PhiSupport` descent.  This isolates the remaining high-fan
