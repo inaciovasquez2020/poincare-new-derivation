@@ -37,8 +37,13 @@ theorem ClosedTriangulationCore.exists_distinct_common_face_tet
   have hfilterNodup : (K.tets.filter p).Nodup := hnodup.filter _
   have hneuw : u ≠ w := by
     intro huw'
-    subst w
-    exact hfilterNodup (by simpa [huw'])
+    have hu : u ∈ K.tets.filter p := by
+      rw [huw]
+      simp
+    have hw : w ∈ K.tets.filter p := by
+      rw [huw]
+      simp
+    exact hfilterNodup hu hw huw'
   have htauMem : tau ∈ K.tets.filter p := by
     simp [p, htauK, htauFace]
   rw [huw] at htauMem
