@@ -90,7 +90,7 @@ theorem ClosedTriangulationCore.exists_distinct_common_face_tet_with_complement
     Tet.exists_distinct_complement_vertices
       rho tau hrhoNodup htauNodup hface
       haRho hbRho hcRho htauFace.1 htauFace.2.1 htauFace.2.2
-      hne
+      hne'
   have hsame : SameTetVertices rho (⟨a, b, c, d⟩ : Tet) := by
     intro w
     constructor
