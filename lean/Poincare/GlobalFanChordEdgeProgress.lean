@@ -827,4 +827,132 @@ theorem FanChordTransition.same_location_same_transverse_same_chord
 
   exact ⟨hz0eq, hz1eq⟩
 
+/-- A repeated retained local location forces the same next central edge.
+The transverse carrier is unique at the repeated location, and the retained
+chord endpoints are therefore identical; hence the successor edge states
+coincide. This is the local shortening mechanism for a minimal recurrent
+high-fan cycle. -/
+theorem repeated_highFan_location_next_edgeState_eq
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (states : Nat → HighFanState K)
+    {i j : Nat}
+    (hstep :
+      ∀ n,
+        (states (n + 1)).v = (states n).transition.z0 ∧
+        (states (n + 1)).x = (states n).transition.z1)
+    (hloc : (states i).location = (states j).location) :
+    (states (i + 1)).edgeState = (states (j + 1)).edgeState := by
+  generalize hi : states i = qi
+  generalize hj : states j = qj
+  have hloc' : qi.location = qj.location := by
+    simpa [hi, hj] using hloc
+  cases qi with
+  | mk qiv qix qiv_supported qix_supported qine qitrans =>
+    cases qj with
+    | mk qjv qjx qjv_supported qjx_supported qjne qjtrans =>
+      have hloc'' :
+          ({ v := qiv
+             x := qix
+             v_supported := qiv_supported
+             x_supported := qix_supported
+             endpoints_ne := qine
+             transition := qitrans } : HighFanState K).location =
+          ({ v := qjv
+             x := qjx
+             v_supported := qjv_supported
+             x_supported := qjx_supported
+             endpoints_ne := qjne
+             transition := qjtrans } : HighFanState K).location := by
+        simpa using hloc'
+      have hparts :=
+        (HighFanState.location_eq_iff
+          ({ v := qiv
+             x := qix
+             v_supported := qiv_supported
+             x_supported := qix_supported
+             endpoints_ne := qine
+             transition := qitrans } : HighFanState K)
+          ({ v := qjv
+             x := qjx
+             v_supported := qjv_supported
+             x_supported := qjx_supported
+             endpoints_ne := qjne
+             transition := qjtrans } : HighFanState K)).1 hloc''
+      have hv := hparts.1
+      have hx := hparts.2.1
+      have hσ := hparts.2.2.1
+      have hρ := hparts.2.2.2
+      cases hv
+      cases hx
+      have htrans :=
+        FanChordTransition.same_location_transverse_eq
+          hcore
+          qitrans
+          qjtrans
+          hσ
+          hρ
+      have hchord :=
+        FanChordTransition.same_location_same_transverse_same_chord
+          qitrans
+          qjtrans
+          hcore
+          hσ
+          hρ
+          htrans
+      have hvnext :
+          (states (i + 1)).v = (states (j + 1)).v := by
+        calc
+          (states (i + 1)).v =
+              (states i).transition.z0 :=
+            (hstep i).1
+          _ = qitrans.z0 :=
+            congrArg (fun s : HighFanState K => s.transition.z0) hi
+          _ = qjtrans.z0 := hchord.1
+          _ = (states j).transition.z0 :=
+            congrArg (fun s : HighFanState K => s.transition.z0) hj.symm
+          _ = (states (j + 1)).v :=
+            (hstep j).1.symm
+      have hxnext :
+          (states (i + 1)).x = (states (j + 1)).x := by
+        calc
+          (states (i + 1)).x =
+              (states i).transition.z1 :=
+            (hstep i).2
+          _ = qitrans.z1 :=
+            congrArg (fun s : HighFanState K => s.transition.z1) hi
+          _ = qjtrans.z1 := hchord.2
+          _ = (states j).transition.z1 :=
+            congrArg (fun s : HighFanState K => s.transition.z1) hj.symm
+          _ = (states (j + 1)).x :=
+            (hstep j).2.symm
+      have hkey :
+          (states (i + 1)).edgeState.key =
+            (states (j + 1)).edgeState.key := by
+        calc
+          (states (i + 1)).edgeState.key =
+              canonicalEdgeKey
+                (states (i + 1)).v
+                (states (i + 1)).x :=
+            HighFanState.edgeState_key (states (i + 1))
+          _ =
+              canonicalEdgeKey
+                (states (j + 1)).v
+                (states (j + 1)).x := by
+            rw [hvnext, hxnext]
+          _ =
+              (states (j + 1)).edgeState.key :=
+            (HighFanState.edgeState_key (states (j + 1))).symm
+      have hedge_ext :
+          ∀ a b : SupportedEdgeState K,
+            a.key = b.key →
+            a = b := by
+        intro a b hab
+        apply Subtype.ext
+        apply Prod.ext
+        · apply Subtype.ext
+          exact congrArg Prod.fst hab
+        · apply Subtype.ext
+          exact congrArg Prod.snd hab
+      exact hedge_ext _ _ hkey
 end Poincare
