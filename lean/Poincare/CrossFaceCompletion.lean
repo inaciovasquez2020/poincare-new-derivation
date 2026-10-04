@@ -61,9 +61,10 @@ theorem ClosedTriangulationCore.exists_distinct_common_face_tet
         rw [huw]
         simp
       exact (List.mem_filter.mp hu).1
-    · have : u ∈ [u, w] := by simp
-      rw [← huw]
-      exact (List.mem_filter.mp this).2
+    · have hu' : u ∈ K.tets.filter p := by
+        rw [huw]
+        simp
+      simpa [p] using (List.mem_filter.mp hu').2
 
 
 /-- A represented triangular face has a second tetrahedron whose fourth
