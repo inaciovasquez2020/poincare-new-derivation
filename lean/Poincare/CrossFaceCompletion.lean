@@ -52,9 +52,10 @@ theorem ClosedTriangulationCore.exists_distinct_common_face_tet
         rw [huw]
         simp
       exact (List.mem_filter.mp hw).1
-    · have : w ∈ [tau, w] := by simp
-      rw [← huw]
-      exact (List.mem_filter.mp this).2
+    · have hw' : w ∈ K.tets.filter p := by
+        rw [huw]
+        simp
+      simpa [p] using (List.mem_filter.mp hw').2
   · refine ⟨u, ?_, Ne.symm hneuw, ?_⟩
     · have : u ∈ [u, w] := by simp
       rw [← huw]
