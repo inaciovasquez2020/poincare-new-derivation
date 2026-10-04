@@ -56,7 +56,7 @@ theorem ClosedTriangulationCore.exists_distinct_common_face_tet
         rw [huw]
         simp
       simpa [p] using (List.mem_filter.mp hw').2
-  · refine ⟨u, ?_, Ne.symm hneuw, ?_⟩
+  · refine ⟨u, ?_, hneuw, ?_⟩
     · have : u ∈ [u, w] := by simp
       rw [← huw]
       exact (List.mem_filter.mp this).1
