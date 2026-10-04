@@ -94,7 +94,9 @@ theorem ClosedTriangulationCore.exists_distinct_common_face_tet_with_complement
     exact hrhone (hcore.eq_of_mem_of_sameTetVertices (τ := tau) (ρ := rho) htauK hrhoK hs).symm
   have hne' : ¬ SameTetVertices rho tau := by
     intro hs
-    exact hne (sameTetVertices_symm hs)
+    exact hne (by
+      intro v
+      exact (hs v).symm)
   obtain ⟨d, hdRho, hdout, _, _, hcoverRho⟩ :=
     Tet.exists_distinct_complement_vertices
       rho tau hrhoNodup htauNodup hface
