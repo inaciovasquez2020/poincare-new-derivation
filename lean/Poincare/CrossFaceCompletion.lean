@@ -31,7 +31,9 @@ theorem ClosedTriangulationCore.exists_distinct_common_face_tet
     rw [List.nodup_iff_pairwise_ne]
     exact hcore.2.1.imp (fun {x y} hxy heq => by
       subst y
-      exact hxy (sameTetVertices_refl x))
+      exact hxy (by
+        intro z
+        constructor <;> intro hz <;> exact hz))
   have hfilterNodup : (K.tets.filter p).Nodup := hnodup.filter _
   have hneuw : u ≠ w := by
     intro huw'
