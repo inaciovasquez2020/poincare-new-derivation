@@ -1,4 +1,5 @@
 import Poincare.VertexLink
+import Poincare.Move23SimpleBistellarData
 
 namespace Poincare
 
