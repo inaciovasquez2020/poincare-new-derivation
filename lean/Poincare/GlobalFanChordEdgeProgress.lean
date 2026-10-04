@@ -906,9 +906,11 @@ theorem repeated_highFan_location_next_edgeState_eq
           (states (i + 1)).v =
               (states i).transition.z0 :=
             (hstep i).1
-          _ = qitrans.z0 := by simpa [hi]
+          _ = qitrans.z0 :=
+            congrArg (fun s : HighFanState K => s.transition.z0) hi
           _ = qjtrans.z0 := hchord.1
-          _ = (states j).transition.z0 := by simpa [hj]
+          _ = (states j).transition.z0 :=
+            congrArg (fun s : HighFanState K => s.transition.z0) hj.symm
           _ = (states (j + 1)).v :=
             (hstep j).1.symm
       have hxnext :
@@ -917,9 +919,11 @@ theorem repeated_highFan_location_next_edgeState_eq
           (states (i + 1)).x =
               (states i).transition.z1 :=
             (hstep i).2
-          _ = qitrans.z1 := by simpa [hi]
+          _ = qitrans.z1 :=
+            congrArg (fun s : HighFanState K => s.transition.z1) hi
           _ = qjtrans.z1 := hchord.2
-          _ = (states j).transition.z1 := by simpa [hj]
+          _ = (states j).transition.z1 :=
+            congrArg (fun s : HighFanState K => s.transition.z1) hj.symm
           _ = (states (j + 1)).x :=
             (hstep j).2.symm
       have hkey :
