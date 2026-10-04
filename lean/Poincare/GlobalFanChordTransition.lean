@@ -327,6 +327,18 @@ theorem FanChordTransition.same_location_different_transverse_impossible
     exact Subtype.ext h
   exact (hpair_mem (vertexLinkTriangles K v) hpair hσmem hρmem hσρ) hvertices
 
+/-- Distinct retained neighbors give distinct fan-chord transitions.
+The transition records its retained right link triangle, so equality of
+transitions forces equality of the retained neighbor. -/
+theorem FanChordTransition.distinct_of_rho_ne
+    {K : Triangulation} {v x : Nat}
+    (T0 T1 : FanChordTransition K v x)
+    (hρ : T0.rho.1 ≠ T1.rho.1) :
+    T0 ≠ T1 := by
+  intro hT
+  apply hρ
+  exact congrArg (fun T : FanChordTransition K v x => T.rho.1) hT
+
 /-- Same-transverse two-cycle gives the existing saturated four-source star. -/
 theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_degree_four
     {K : Triangulation}
