@@ -58,4 +58,49 @@ theorem ClosedTriangulationCore.exists_distinct_common_face_tet
       rw [← huw]
       exact (List.mem_filter.mp this).2
 
+
+/-- A represented triangular face has a second tetrahedron whose fourth
+vertex is exposed explicitly.  This is the normalized form needed for
+four-face completion case analysis. -/
+theorem ClosedTriangulationCore.exists_distinct_common_face_tet_with_complement
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    {a b c : Nat}
+    (hface : [a, b, c].Nodup)
+    {tau : Tet}
+    (htauK : tau ∈ K.tets)
+    (htauFace :
+      a ∈ tau.verts ∧ b ∈ tau.verts ∧ c ∈ tau.verts) :
+    ∃ rho ∈ K.tets, ∃ d : Nat,
+      rho ≠ tau ∧
+      d ∈ rho.verts ∧
+      d ∉ [a, b, c] ∧
+      SameTetVertices rho (⟨a, b, c, d⟩ : Tet) := by
+  obtain ⟨rho, hrhoK, hrhone, haRho, hbRho, hcRho⟩ :=
+    hcore.exists_distinct_common_face_tet hface htauK htauFace
+  have htauNodup : tau.verts.Nodup := hcore.1 tau htauK
+  have hrhoNodup : rho.verts.Nodup := hcore.1 rho hrhoK
+  have hne : ¬ SameTetVertices tau rho := by
+    intro hs
+    exact hrhone (hcore.eq_of_mem_of_sameTetVertices htauK hrhoK hs)
+  obtain ⟨d, hdRho, hdout, _, hcoverTau, hcoverRho⟩ :=
+    Tet.exists_distinct_complement_vertices
+      rho tau hrhoNodup htauNodup hface
+      haRho hbRho hcRho htauFace.1 htauFace.2.1 htauFace.2.2
+      hne
+  have hsame : SameTetVertices rho (⟨a, b, c, d⟩ : Tet) := by
+    intro w
+    constructor
+    · intro hw
+      rcases hcoverRho w hw with rfl | rfl | rfl | rfl <;>
+        simp [Tet.verts]
+    · intro hw
+      simp [Tet.verts] at hw
+      rcases hw with rfl | rfl | rfl | rfl
+      · exact haRho
+      · exact hbRho
+      · exact hcRho
+      · exact hdRho
+  exact ⟨rho, hrhoK, d, hrhone, hdRho, hdout, hsame⟩
+
 end Poincare
