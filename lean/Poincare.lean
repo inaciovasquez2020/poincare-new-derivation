@@ -91,6 +91,7 @@ import Poincare.MoveSemanticsBuild
 
 import Poincare.ZeroDefect
 import Poincare.VertexLink
+import Poincare.CrossFaceCompletion
 import Poincare.VertexLinkMod2Chain
 import Poincare.VertexLinkMod2BoundaryOneRank
 import Poincare.VertexLinkMod2BoundaryTwoRank
