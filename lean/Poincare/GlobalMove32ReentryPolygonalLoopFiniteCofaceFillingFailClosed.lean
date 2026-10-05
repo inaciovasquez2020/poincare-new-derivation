@@ -26,18 +26,6 @@ theorem ClosedTriangulationCore.exists_polygonalLoop_dyadic_squareGrid_coface_la
     (hNoFour :
       ∀ u ∈ vertexSupport K,
         vertexDegree K u ≠ 4)
-    (hNoMove23 :
-      ∀ s : Move32Site,
-        s.RealizedIn K →
-        (∃ tau ∈ K.tets,
-          s.a ∈ tau.verts ∧
-          s.b ∈ tau.verts ∧
-          s.c ∈ tau.verts) →
-        ¬ ∃ q : Move23Site,
-          q.a = s.a ∧
-          q.b = s.b ∧
-          q.c = s.c ∧
-          q.LegalIn K)
     (hNoDescent :
       ¬ ∃ K',
         ClosedTriangulationCore K' ∧
@@ -101,7 +89,6 @@ theorem ClosedTriangulationCore.exists_polygonalLoop_dyadic_squareGrid_coface_la
       hconn
       hSC
       hNoFour
-      hNoMove23
       hNoDescent
       hNoHigh
       start

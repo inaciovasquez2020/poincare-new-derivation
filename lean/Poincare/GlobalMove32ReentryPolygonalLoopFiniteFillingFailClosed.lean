@@ -3,11 +3,11 @@ import Poincare.GlobalMove32ReentryPolygonalLoopNullHomotopyFailClosed
 namespace Poincare
 
 /--
-Under the explicit exclusion of the other one-step source-face outcomes, the
-initial exact-three Move32 source-face obstruction produces the ordered
-recurrence-driven polygonal loop, a chosen relative null-homotopy, and a
-finite dyadically refined square grid whose every whole cell is carried by one
-represented open vertex star.
+Under explicit exclusion of strict topological `PhiSupport` descent and
+nonself complementary high-incidence escape, the initial exact-three Move32
+source-face obstruction produces the ordered recurrence-driven polygonal loop,
+a chosen relative null-homotopy, and a finite dyadically refined square grid
+whose every whole cell is carried by one represented open vertex star.
 
 This is the finite filling certificate already available from the existing
 null-homotopy machinery.  It does not assert that the star-labelled filling
@@ -24,18 +24,6 @@ theorem ClosedTriangulationCore.exists_polygonalLoop_dyadic_squareGrid_vertexSta
     (hNoFour :
       ∀ u ∈ vertexSupport K,
         vertexDegree K u ≠ 4)
-    (hNoMove23 :
-      ∀ s : Move32Site,
-        s.RealizedIn K →
-        (∃ tau ∈ K.tets,
-          s.a ∈ tau.verts ∧
-          s.b ∈ tau.verts ∧
-          s.c ∈ tau.verts) →
-        ¬ ∃ q : Move23Site,
-          q.a = s.a ∧
-          q.b = s.b ∧
-          q.c = s.c ∧
-          q.LegalIn K)
     (hNoDescent :
       ¬ ∃ K',
         ClosedTriangulationCore K' ∧
@@ -88,7 +76,6 @@ theorem ClosedTriangulationCore.exists_polygonalLoop_dyadic_squareGrid_vertexSta
       hconn
       hSC
       hNoFour
-      hNoMove23
       hNoDescent
       hNoHigh
       start

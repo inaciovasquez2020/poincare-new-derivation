@@ -12,10 +12,7 @@ private theorem mem_vertexSupport_iff_vertexDegree_pos_local
   change
     v ∈ allVerts K ↔
       0 < (allVerts K).count v
-  simpa using
-    ((Multiset.count_pos
-      (a := v)
-      (s := (↑(allVerts K) : Multiset Nat))).symm)
+  simp
 
 /--
 Every represented vertex of a closed triangulation core has ambient

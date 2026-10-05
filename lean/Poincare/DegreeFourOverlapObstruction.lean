@@ -27,11 +27,11 @@ theorem exists_overlapConnected_closedCore_degreeFour_not_PhiSupport_zero :
         · subst τ
           exact Relation.ReflTransGen.tail
             (Relation.ReflTransGen.single (show R wedgeB0 wedgeB1 from ⟨by
-              simp [R, wedgeB0, wedgeB1, Tet.verts], by
-              simp [R, twoBoundaryVertexWedge]⟩))
+              simp [wedgeB0, wedgeB1, Tet.verts], by
+              simp [twoBoundaryVertexWedge]⟩))
             (show R wedgeB1 wedgeA1 from ⟨by
-              simp [R, wedgeB1, wedgeA1, Tet.verts], by
-              simp [R, twoBoundaryVertexWedge]⟩)
+              simp [wedgeB1, wedgeA1, Tet.verts], by
+              simp [twoBoundaryVertexWedge]⟩)
         · apply Relation.ReflTransGen.single
           constructor
           · simp [twoBoundaryVertexWedge] at hτ
@@ -45,11 +45,11 @@ theorem exists_overlapConnected_closedCore_degreeFour_not_PhiSupport_zero :
         · subst ρ
           exact Relation.ReflTransGen.tail
             (Relation.ReflTransGen.single (show R wedgeA1 wedgeB1 from ⟨by
-              simp [R, wedgeA1, wedgeB1, Tet.verts], by
-              simp [R, twoBoundaryVertexWedge]⟩))
+              simp [wedgeA1, wedgeB1, Tet.verts], by
+              simp [twoBoundaryVertexWedge]⟩))
             (show R wedgeB1 wedgeB0 from ⟨by
-              simp [R, wedgeB1, wedgeB0, Tet.verts], by
-              simp [R, twoBoundaryVertexWedge]⟩)
+              simp [wedgeB1, wedgeB0, Tet.verts], by
+              simp [twoBoundaryVertexWedge]⟩)
         · apply Relation.ReflTransGen.single
           constructor
           · simp [twoBoundaryVertexWedge] at hρ
@@ -57,7 +57,7 @@ theorem exists_overlapConnected_closedCore_degreeFour_not_PhiSupport_zero :
               rfl | rfl | rfl | rfl | rfl <;>
               simp_all [wedgeA0, wedgeA1, wedgeA2, wedgeA3, wedgeA4,
                 wedgeB0, wedgeB1, wedgeB2, wedgeB3, wedgeB4, Tet.verts]
-          · simp [R, twoBoundaryVertexWedge]
+          · simp [twoBoundaryVertexWedge]
       exact toHub.trans fromHub
   · exact ⟨1, by decide, by decide⟩
   · decide
