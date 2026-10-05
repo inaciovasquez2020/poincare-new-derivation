@@ -25,7 +25,6 @@ theorem vertexLinkMod2BoundaryOne_apply_eq_incident_sum
   simp [
     vertexLinkMod2BoundaryOne,
     vertexLinkMod2BoundaryOneMatrix,
-    Matrix.mulVecLin_apply,
     Matrix.mulVec,
     dotProduct
   ]

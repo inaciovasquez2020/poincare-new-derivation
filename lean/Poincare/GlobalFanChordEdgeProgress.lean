@@ -299,6 +299,275 @@ theorem exists_recurrent_highFanEdgeState
     · intro n hjn hni
       exact hconsecutive n
 
+/-- A local high-fan transition location, retaining the oriented central edge
+and the actual adjacent link-star pair that realizes the transition. -/
+structure HighFanLocation (K : Triangulation) where
+  v : SupportedVertexState K
+  x : SupportedVertexState K
+  endpoints_ne : (v : Nat) ≠ (x : Nat)
+  sigma :
+    {t : LinkTriangle //
+      t ∈ vertexLinkStarTriangles K v x}
+  rho :
+    {t : LinkTriangle //
+      t ∈ vertexLinkStarTriangles K v x}
+  adjacent :
+    (vertexLinkStarGraph K v x).Adj sigma rho
+
+/-- The local location type is finite because both represented endpoints and
+each represented vertex-link star carrier are finite. -/
+noncomputable instance highFanLocationFintype
+    (K : Triangulation) :
+    Fintype (HighFanLocation K) := by
+  classical
+  letI : Finite (HighFanLocation K) := by
+    apply Finite.of_injective
+      (f := fun q =>
+        (⟨q.v, ⟨q.x, (q.sigma, q.rho)⟩⟩ :
+          Σ v : SupportedVertexState K,
+          Σ x : SupportedVertexState K,
+            ({t : LinkTriangle // t ∈ vertexLinkStarTriangles K v x} ×
+              {t : LinkTriangle // t ∈ vertexLinkStarTriangles K v x})))
+    intro a b h
+    cases a with
+    | mk av ax ane as ar aadj =>
+      cases b with
+      | mk bv bx bne bs br badj =>
+        rcases h with ⟨rfl, rfl⟩
+        rfl
+  exact Fintype.ofFinite (HighFanLocation K)
+
+/-- Every high-fan state determines a unique retained local transition
+location. -/
+def HighFanState.location
+    {K : Triangulation}
+    (q : HighFanState K) :
+    HighFanLocation K :=
+  {
+    v :=
+      ⟨q.v, List.mem_toFinset.mpr q.v_supported⟩
+    x :=
+      ⟨q.x, List.mem_toFinset.mpr q.x_supported⟩
+    endpoints_ne := q.endpoints_ne
+    sigma := q.transition.sigma
+    rho := q.transition.rho
+    adjacent := q.transition.adjacent
+  }
+
+/-- Equality of retained local locations identifies the oriented central edge
+and the actual adjacent transition pair. -/
+theorem HighFanState.location_eq_iff
+    {K : Triangulation}
+    (q r : HighFanState K) :
+    q.location = r.location ↔
+      q.v = r.v ∧
+      q.x = r.x ∧
+      q.transition.sigma.1 = r.transition.sigma.1 ∧
+      q.transition.rho.1 = r.transition.rho.1 := by
+  constructor
+  · intro h
+    have hv := congrArg (fun s : HighFanLocation K => (s.v : Nat)) h
+    have hx := congrArg (fun s : HighFanLocation K => (s.x : Nat)) h
+    have hs := congrArg (fun s : HighFanLocation K => s.sigma.1) h
+    have hr := congrArg (fun s : HighFanLocation K => s.rho.1) h
+    exact ⟨hv, hx, hs, hr⟩
+  · rintro ⟨hv, hx, hs, hr⟩
+    have location_ext :
+        ∀ (a b : HighFanLocation K),
+          (a.v : Nat) = (b.v : Nat) →
+          (a.x : Nat) = (b.x : Nat) →
+          a.sigma.1 = b.sigma.1 →
+          a.rho.1 = b.rho.1 →
+          a = b := by
+      intro a b hav hab has har
+      cases a with
+      | mk av ax ane as ar aadj =>
+        cases b with
+        | mk bv bx bne bs br badj =>
+          have hv' : av = bv := Subtype.ext hav
+          have hx' : ax = bx := Subtype.ext hab
+          cases hv'
+          cases hx'
+          have hσ : as = bs := Subtype.ext has
+          have hρ : ar = br := Subtype.ext har
+          cases hσ
+          cases hρ
+          rfl
+    exact location_ext q.location r.location hv hx hs hr
+
+/-- A perpetual high-fan state sequence with genuine edge progress has a
+nonconsecutive recurrent retained local transition location.  The recurrence
+is finite-state only; it does not assert that the resulting return cycle is
+impossible. -/
+theorem EXISTS_RECURRENT_LOCAL_FAN_CONFIGURATION
+    {K : Triangulation}
+    (states : Nat → HighFanState K)
+    (hstep :
+      ∀ n,
+        (states (n + 1)).v = (states n).transition.z0 ∧
+        (states (n + 1)).x = (states n).transition.z1)
+    (hconsecutive :
+      ∀ n,
+        (states (n + 1)).edgeState ≠
+          (states n).edgeState) :
+    ∃ i j,
+      i + 1 < j ∧
+      j ≤ Fintype.card (HighFanLocation K) ∧
+      (states i).location = (states j).location ∧
+      (∀ n,
+        i ≤ n →
+        n < j →
+        (states (n + 1)).v = (states n).transition.z0 ∧
+        (states (n + 1)).x = (states n).transition.z1) ∧
+      ∀ n,
+        i ≤ n →
+        n < j →
+        (states (n + 1)).edgeState ≠
+          (states n).edgeState := by
+  classical
+
+  have hlocation_consecutive :
+      ∀ n,
+        (states (n + 1)).location ≠
+          (states n).location := by
+    intro n hloc
+    have hvx :=
+      (HighFanState.location_eq_iff
+        (states (n + 1))
+        (states n)).1 hloc
+
+    have hkey :
+        (states (n + 1)).edgeState.key =
+          (states n).edgeState.key := by
+      calc
+        (states (n + 1)).edgeState.key =
+            canonicalEdgeKey
+              (states (n + 1)).v
+              (states (n + 1)).x :=
+          HighFanState.edgeState_key (states (n + 1))
+
+        _ =
+            canonicalEdgeKey
+              (states n).v
+              (states n).x := by
+          rw [hvx.1, hvx.2.1]
+
+        _ =
+            (states n).edgeState.key :=
+          (HighFanState.edgeState_key (states n)).symm
+
+    have hedge_ext :
+        ∀ a b : SupportedEdgeState K,
+          a.key = b.key →
+          a = b := by
+      intro a b hab
+      apply Subtype.ext
+      apply Prod.ext
+      · apply Subtype.ext
+        exact congrArg Prod.fst hab
+      · apply Subtype.ext
+        exact congrArg Prod.snd hab
+
+    exact
+      (hconsecutive n)
+        (hedge_ext _ _ hkey)
+
+  let N : Nat :=
+    Fintype.card (HighFanLocation K)
+
+  let f : Nat → HighFanLocation K :=
+    fun n => (states n).location
+
+  let S : Finset Nat :=
+    Finset.range (N + 1)
+
+  let T : Finset (HighFanLocation K) :=
+    Finset.univ
+
+  have hcard : T.card < S.card := by
+    simpa [T, S, N]
+
+  have hmaps :
+      Set.MapsTo
+        f
+        (↑S : Set Nat)
+        (↑T : Set (HighFanLocation K)) := by
+    intro n hn
+    simp [T]
+
+  obtain
+      ⟨i, hiS,
+        j, hjS,
+        hij,
+        hfij⟩ :=
+    Finset.exists_ne_map_eq_of_card_lt_of_maps_to
+      (s := S)
+      (t := T)
+      hcard
+      hmaps
+
+  have hiBound : i ≤ N := by
+    have hiLt : i < N + 1 := by
+      simpa [S] using hiS
+    omega
+
+  have hjBound : j ≤ N := by
+    have hjLt : j < N + 1 := by
+      simpa [S] using hjS
+    omega
+
+  have hconsecutive' :
+      ∀ n,
+        f (n + 1) ≠ f n := by
+    intro n
+    simpa [f] using hlocation_consecutive n
+
+  rcases Nat.lt_or_gt_of_ne hij with hijlt | hjilt
+
+  · have hgap : i + 1 < j := by
+      by_contra hnot
+      have hsucc : j = i + 1 := by
+        omega
+      subst j
+      exact (hconsecutive' i) hfij.symm
+
+    refine ⟨i, j, hgap, ?_, ?_, ?_, ?_⟩
+    · simpa [N] using hjBound
+    · simpa [f] using hfij
+    · intro n hin hnj
+      exact hstep n
+    · intro n hin hnj
+      exact hconsecutive n
+
+  · have hgap : j + 1 < i := by
+      by_contra hnot
+      have hsucc : i = j + 1 := by
+        omega
+      subst i
+      exact (hconsecutive' j) hfij
+
+    refine ⟨j, i, hgap, ?_, ?_, ?_, ?_⟩
+    · simpa [N] using hiBound
+    · simpa [f] using hfij.symm
+    · intro n hjn hni
+      exact hstep n
+    · intro n hjn hni
+      exact hconsecutive n
+
+/-- A repeated retained local fan location has a unique transverse
+carrier. -/
+theorem FanChordTransition.same_location_transverse_eq
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    {v x : Nat}
+    (T0 T1 : FanChordTransition K v x)
+    (hσ : T0.sigma.1 = T1.sigma.1)
+    (hρ : T0.rho.1 = T1.rho.1) :
+    T0.transverse = T1.transverse := by
+  by_contra hy
+  exact
+    T0.same_location_different_transverse_impossible
+      hcore T1 hσ hρ hy
+
 /-- On the no-high branch, ruling out exactly the finite recurrent high-fan
 segment certified above forces genuine global progress: either a legal `2-3`
 move or strict `PhiSupport` descent.  This isolates the remaining high-fan
@@ -394,4 +663,296 @@ theorem
   exact hNoCycle
     ⟨states, i, j, hgap, hbound, hreturn, hstepSegment, hconsecutiveSegment⟩
 
+
+/-- A repeated retained local fan location with the same transverse carrier
+also fixes both chord endpoints. -/
+theorem FanChordTransition.same_location_same_transverse_same_chord
+    {K : Triangulation} {v x : Nat}
+    (T0 T1 : FanChordTransition K v x)
+    (hcore : ClosedTriangulationCore K)
+    (hσ : T0.sigma.1 = T1.sigma.1)
+    (hρ : T0.rho.1 = T1.rho.1)
+    (htrans : T0.transverse = T1.transverse) :
+    T0.z0 = T1.z0 ∧ T0.z1 = T1.z1 := by
+  have hexhaust :
+      ∀ (σ : LinkTriangle) (a b c : Nat),
+        σ.verts.Nodup →
+        a ∈ σ.verts →
+        b ∈ σ.verts →
+        c ∈ σ.verts →
+        a ≠ b → a ≠ c → b ≠ c →
+        ∀ q, q ∈ σ.verts → q = a ∨ q = b ∨ q = c := by
+    intro σ a b c hnodup ha hb hc hab hac hbc q hq
+    rcases σ with ⟨s0, s1, s2⟩
+    simp [LinkTriangle.verts] at hnodup ha hb hc hq ⊢
+    aesop
+
+  have hσmem : T0.sigma.1 ∈ vertexLinkTriangles K v := by
+    exact
+      (mem_vertexLinkStarTriangles_iff K v x T0.sigma.1).1
+        T0.sigma.2 |>.1
+  have hρmem : T0.rho.1 ∈ vertexLinkTriangles K v := by
+    exact
+      (mem_vertexLinkStarTriangles_iff K v x T0.rho.1).1
+        T0.rho.2 |>.1
+  have hσnodup : T0.sigma.1.verts.Nodup :=
+    vertexLinkTriangles_triangle_nodup K hcore v T0.sigma.1 hσmem
+  have hρnodup : T0.rho.1.verts.Nodup :=
+    vertexLinkTriangles_triangle_nodup K hcore v T0.rho.1 hρmem
+
+  have hxσ : x ∈ T0.sigma.1.verts :=
+    ((mem_vertexLinkStarTriangles_iff K v x T0.sigma.1).1
+      T0.sigma.2).2
+  have hxρ : x ∈ T0.rho.1.verts :=
+    ((mem_vertexLinkStarTriangles_iff K v x T0.rho.1).1
+      T0.rho.2).2
+
+  have htransσ : T0.transverse ∈ T0.sigma.1.verts := by
+    have hv : T0.transverse ≠ v := by
+      intro h
+      have hd := T0.distinct
+      exact (List.nodup_cons.mp hd).1 (by simp [h])
+    exact
+      (T0.leftTet.mem_linkTriangleAt?_iff
+        v T0.transverse T0.sigma.1 T0.leftTet_link hv).2
+        ((T0.leftTet_match T0.transverse).2
+          (by simp [Tet.verts]))
+  have htransρ : T0.transverse ∈ T0.rho.1.verts := by
+    have hv : T0.transverse ≠ v := by
+      intro h
+      have hd := T0.distinct
+      exact (List.nodup_cons.mp hd).1 (by simp [h])
+    exact
+      (T0.rightTet.mem_linkTriangleAt?_iff
+        v T0.transverse T0.rho.1 T0.rightTet_link hv).2
+        ((T0.rightTet_match T0.transverse).2
+          (by simp [Tet.verts]))
+
+  have hz0σ0 : T0.z0 ∈ T0.sigma.1.verts := by
+    have hv : T0.z0 ≠ v := by
+      intro h
+      have hd := T0.distinct
+      exact (List.nodup_cons.mp hd).1 (by simp [h])
+    exact
+      (T0.leftTet.mem_linkTriangleAt?_iff
+        v T0.z0 T0.sigma.1 T0.leftTet_link hv).2
+        ((T0.leftTet_match T0.z0).2
+          (by simp [Tet.verts]))
+  have hz0σ1 : T1.z0 ∈ T0.sigma.1.verts := by
+    have hv : T1.z0 ≠ v := by
+      intro h
+      have hd := T1.distinct
+      exact (List.nodup_cons.mp hd).1 (by simp [h])
+    have hz :
+        T1.z0 ∈ T1.sigma.1.verts := by
+      exact
+        (T1.leftTet.mem_linkTriangleAt?_iff
+          v T1.z0 T1.sigma.1 T1.leftTet_link hv).2
+          ((T1.leftTet_match T1.z0).2
+            (by simp [Tet.verts]))
+    simpa [hσ] using hz
+
+  have hx_trans : x ≠ T0.transverse := by
+    intro h
+    simpa [h] using T0.distinct
+  have hx_z0 : x ≠ T0.z0 := by
+    intro h
+    simpa [h] using T0.distinct
+  have htrans_z0 : T0.transverse ≠ T0.z0 := by
+    intro h
+    simpa [h] using T0.distinct
+  have hz0'_x : T1.z0 ≠ x := by
+    intro h
+    simpa [h] using T1.distinct
+  have hz0'_trans : T1.z0 ≠ T0.transverse := by
+    intro h
+    simpa [h, htrans] using T1.distinct
+
+  have hz0eq : T0.z0 = T1.z0 := by
+    rcases
+        hexhaust T0.sigma.1 x T0.transverse T0.z0
+          hσnodup hxσ htransσ hz0σ0
+          hx_trans hx_z0 htrans_z0 T1.z0 hz0σ1 with
+      h | h | h
+    · exact (hz0'_x h).elim
+    · exact (hz0'_trans h).elim
+    · exact h.symm
+
+  have hz1ρ0 : T0.z1 ∈ T0.rho.1.verts := by
+    have hv : T0.z1 ≠ v := by
+      intro h
+      have hd := T0.distinct
+      exact (List.nodup_cons.mp hd).1 (by simp [h])
+    exact
+      (T0.rightTet.mem_linkTriangleAt?_iff
+        v T0.z1 T0.rho.1 T0.rightTet_link hv).2
+        ((T0.rightTet_match T0.z1).2
+          (by simp [Tet.verts]))
+  have hz1ρ1 : T1.z1 ∈ T0.rho.1.verts := by
+    have hv : T1.z1 ≠ v := by
+      intro h
+      have hd := T1.distinct
+      exact (List.nodup_cons.mp hd).1 (by simp [h])
+    have hz :
+        T1.z1 ∈ T1.rho.1.verts := by
+      exact
+        (T1.rightTet.mem_linkTriangleAt?_iff
+          v T1.z1 T1.rho.1 T1.rightTet_link hv).2
+          ((T1.rightTet_match T1.z1).2
+            (by simp [Tet.verts]))
+    simpa [hρ] using hz
+
+  have hx_z1 : x ≠ T0.z1 := by
+    intro h
+    simpa [h] using T0.distinct
+  have htrans_z1 : T0.transverse ≠ T0.z1 := by
+    intro h
+    simpa [h] using T0.distinct
+  have hz1'_x : T1.z1 ≠ x := by
+    intro h
+    simpa [h] using T1.distinct
+  have hz1'_trans : T1.z1 ≠ T0.transverse := by
+    intro h
+    simpa [h, htrans] using T1.distinct
+
+  have hz1eq : T0.z1 = T1.z1 := by
+    rcases
+        hexhaust T0.rho.1 x T0.transverse T0.z1
+          hρnodup hxρ htransρ hz1ρ0
+          hx_trans hx_z1 htrans_z1 T1.z1 hz1ρ1 with
+      h | h | h
+    · exact (hz1'_x h).elim
+    · exact (hz1'_trans h).elim
+    · exact h.symm
+
+  exact ⟨hz0eq, hz1eq⟩
+
+/-- A repeated retained local location forces the same next central edge.
+The transverse carrier is unique at the repeated location, and the retained
+chord endpoints are therefore identical; hence the successor edge states
+coincide. This is the local shortening mechanism for a minimal recurrent
+high-fan cycle. -/
+theorem repeated_highFan_location_next_edgeState_eq
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (states : Nat → HighFanState K)
+    {i j : Nat}
+    (hstep :
+      ∀ n,
+        (states (n + 1)).v = (states n).transition.z0 ∧
+        (states (n + 1)).x = (states n).transition.z1)
+    (hloc : (states i).location = (states j).location) :
+    (states (i + 1)).edgeState = (states (j + 1)).edgeState := by
+  generalize hi : states i = qi
+  generalize hj : states j = qj
+  have hloc' : qi.location = qj.location := by
+    simpa [hi, hj] using hloc
+  cases qi with
+  | mk qiv qix qiv_supported qix_supported qine qitrans =>
+    cases qj with
+    | mk qjv qjx qjv_supported qjx_supported qjne qjtrans =>
+      have hloc'' :
+          ({ v := qiv
+             x := qix
+             v_supported := qiv_supported
+             x_supported := qix_supported
+             endpoints_ne := qine
+             transition := qitrans } : HighFanState K).location =
+          ({ v := qjv
+             x := qjx
+             v_supported := qjv_supported
+             x_supported := qjx_supported
+             endpoints_ne := qjne
+             transition := qjtrans } : HighFanState K).location := by
+        simpa using hloc'
+      have hparts :=
+        (HighFanState.location_eq_iff
+          ({ v := qiv
+             x := qix
+             v_supported := qiv_supported
+             x_supported := qix_supported
+             endpoints_ne := qine
+             transition := qitrans } : HighFanState K)
+          ({ v := qjv
+             x := qjx
+             v_supported := qjv_supported
+             x_supported := qjx_supported
+             endpoints_ne := qjne
+             transition := qjtrans } : HighFanState K)).1 hloc''
+      have hv := hparts.1
+      have hx := hparts.2.1
+      have hσ := hparts.2.2.1
+      have hρ := hparts.2.2.2
+      cases hv
+      cases hx
+      have htrans :=
+        FanChordTransition.same_location_transverse_eq
+          hcore
+          qitrans
+          qjtrans
+          hσ
+          hρ
+      have hchord :=
+        FanChordTransition.same_location_same_transverse_same_chord
+          qitrans
+          qjtrans
+          hcore
+          hσ
+          hρ
+          htrans
+      have hvnext :
+          (states (i + 1)).v = (states (j + 1)).v := by
+        calc
+          (states (i + 1)).v =
+              (states i).transition.z0 :=
+            (hstep i).1
+          _ = qitrans.z0 :=
+            congrArg (fun s : HighFanState K => s.transition.z0) hi
+          _ = qjtrans.z0 := hchord.1
+          _ = (states j).transition.z0 :=
+            congrArg (fun s : HighFanState K => s.transition.z0) hj.symm
+          _ = (states (j + 1)).v :=
+            (hstep j).1.symm
+      have hxnext :
+          (states (i + 1)).x = (states (j + 1)).x := by
+        calc
+          (states (i + 1)).x =
+              (states i).transition.z1 :=
+            (hstep i).2
+          _ = qitrans.z1 :=
+            congrArg (fun s : HighFanState K => s.transition.z1) hi
+          _ = qjtrans.z1 := hchord.2
+          _ = (states j).transition.z1 :=
+            congrArg (fun s : HighFanState K => s.transition.z1) hj.symm
+          _ = (states (j + 1)).x :=
+            (hstep j).2.symm
+      have hkey :
+          (states (i + 1)).edgeState.key =
+            (states (j + 1)).edgeState.key := by
+        calc
+          (states (i + 1)).edgeState.key =
+              canonicalEdgeKey
+                (states (i + 1)).v
+                (states (i + 1)).x :=
+            HighFanState.edgeState_key (states (i + 1))
+          _ =
+              canonicalEdgeKey
+                (states (j + 1)).v
+                (states (j + 1)).x := by
+            rw [hvnext, hxnext]
+          _ =
+              (states (j + 1)).edgeState.key :=
+            (HighFanState.edgeState_key (states (j + 1))).symm
+      have hedge_ext :
+          ∀ a b : SupportedEdgeState K,
+            a.key = b.key →
+            a = b := by
+        intro a b hab
+        apply Subtype.ext
+        apply Prod.ext
+        · apply Subtype.ext
+          exact congrArg Prod.fst hab
+        · apply Subtype.ext
+          exact congrArg Prod.snd hab
+      exact hedge_ext _ _ hkey
 end Poincare

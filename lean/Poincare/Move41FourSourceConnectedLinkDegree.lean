@@ -23,31 +23,31 @@ theorem ClosedTriangulationCore.move41Site_center_vertexDegree_eq_four_of_repres
       m.sourceTets.Pairwise (fun tau sigma => ¬ SameTetVertices tau sigma) := by
     have hd := m.distinct
     simp [Move41Site.sourceTets, Move41Site.sourceTet₀, Move41Site.sourceTet₁,
-      Move41Site.sourceTet₂, Move41Site.sourceTet₃, Tet.verts] at hd ⊢
+      Move41Site.sourceTet₂, Move41Site.sourceTet₃] at hd ⊢
     refine ⟨⟨?_, ?_, ?_⟩, ⟨?_, ?_⟩, ?_⟩
     · intro h
-      have hx := (h m.c).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
-      simp [Move41Site.sourceTet₁, Tet.verts] at hx
+      have hx := (h m.c).1 (by simp [Tet.verts])
+      simp [Tet.verts] at hx
       aesop
     · intro h
-      have hx := (h m.b).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
-      simp [Move41Site.sourceTet₂, Tet.verts] at hx
+      have hx := (h m.b).1 (by simp [Tet.verts])
+      simp [Tet.verts] at hx
       aesop
     · intro h
-      have hx := (h m.a).1 (by simp [Move41Site.sourceTet₀, Tet.verts])
-      simp [Move41Site.sourceTet₃, Tet.verts] at hx
+      have hx := (h m.a).1 (by simp [Tet.verts])
+      simp [Tet.verts] at hx
       aesop
     · intro h
-      have hx := (h m.b).1 (by simp [Move41Site.sourceTet₁, Tet.verts])
-      simp [Move41Site.sourceTet₂, Tet.verts] at hx
+      have hx := (h m.b).1 (by simp [Tet.verts])
+      simp [Tet.verts] at hx
       aesop
     · intro h
-      have hx := (h m.a).1 (by simp [Move41Site.sourceTet₁, Tet.verts])
-      simp [Move41Site.sourceTet₃, Tet.verts] at hx
+      have hx := (h m.a).1 (by simp [Tet.verts])
+      simp [Tet.verts] at hx
       aesop
     · intro h
-      have hx := (h m.a).1 (by simp [Move41Site.sourceTet₂, Tet.verts])
-      simp [Move41Site.sourceTet₃, Tet.verts] at hx
+      have hx := (h m.a).1 (by simp [Tet.verts])
+      simp [Tet.verts] at hx
       aesop
 
   have hsourcePair := hpairwise

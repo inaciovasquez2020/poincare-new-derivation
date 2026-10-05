@@ -87,11 +87,11 @@ theorem vertexLinkMod2CycleSupportDegree_cast_eq_incident_sum
       zmod2_eq_one_of_ne_zero (f e) hne
     by_cases hinc :
         x.1 = e.1.lo ∨ x.1 = e.1.hi
-    · simp [hne, hinc, hone]
+    · simp [hinc, hone]
     · simp [hne, hinc]
   · have hz : f e = 0 := by
       exact not_ne_iff.mp hne
-    simp [hne, hz]
+    simp [hz]
 
 /--
 Every represented vertex has even degree in the finite support of an exact

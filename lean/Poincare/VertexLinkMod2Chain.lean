@@ -83,21 +83,17 @@ theorem LinkTriangle.incident_edges_filter_length
   rcases h with ⟨⟨hab, hac⟩, hbc⟩
   by_cases hxa : x = a
   · subst x
-    simp only [LinkTriangle.edges, List.filter_cons,
-      LinkEdge.decide_incident_ofDistinct, List.filter_nil]
-    simp [LinkTriangle.verts, hab, hac, hbc]
+    simp only [LinkTriangle.edges, List.filter_cons, List.filter_nil]
+    simp [LinkTriangle.verts, hab, hac]
   by_cases hxb : x = b
   · subst x
-    simp only [LinkTriangle.edges, List.filter_cons,
-      LinkEdge.decide_incident_ofDistinct, List.filter_nil]
-    simp [LinkTriangle.verts, hxa, hab, hac, hbc]
+    simp only [LinkTriangle.edges, List.filter_cons, List.filter_nil]
+    simp [LinkTriangle.verts, hxa, hbc]
   by_cases hxc : x = c
   · subst x
-    simp only [LinkTriangle.edges, List.filter_cons,
-      LinkEdge.decide_incident_ofDistinct, List.filter_nil]
-    simp [LinkTriangle.verts, hxa, hxb, hab, hac, hbc]
-  · simp only [LinkTriangle.edges, List.filter_cons,
-      LinkEdge.decide_incident_ofDistinct, List.filter_nil]
+    simp only [LinkTriangle.edges, List.filter_cons, List.filter_nil]
+    simp [LinkTriangle.verts, hxa, hxb]
+  · simp only [LinkTriangle.edges, List.filter_cons, List.filter_nil]
     simp [LinkTriangle.verts, hxa, hxb, hxc]
 
 theorem vertexLinkEdges_filter_inTriangle

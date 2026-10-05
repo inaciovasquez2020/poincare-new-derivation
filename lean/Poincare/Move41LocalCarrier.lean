@@ -380,25 +380,25 @@ theorem move41PiRadialMap_eq_self_of_center_eq_zero
     simp [move41PiRadialMap, he]
   by_cases hzb : z = b
   · subst z
-    have hab : b ≠ a := by simp_all [List.nodup_cons]
+    have hab : b ≠ a := by simp_all
     simp [move41PiRadialMap, hab, he]
   by_cases hzc : z = c
   · subst z
-    have hca : c ≠ a := by simp_all [List.nodup_cons]
-    have hcb : c ≠ b := by simp_all [List.nodup_cons]
+    have hca : c ≠ a := by simp_all
+    have hcb : c ≠ b := by simp_all
     simp [move41PiRadialMap, hca, hcb, he]
   by_cases hzd : z = d
   · subst z
-    have hda : d ≠ a := by simp_all [List.nodup_cons]
-    have hdb : d ≠ b := by simp_all [List.nodup_cons]
-    have hdc : d ≠ c := by simp_all [List.nodup_cons]
+    have hda : d ≠ a := by simp_all
+    have hdb : d ≠ b := by simp_all
+    have hdc : d ≠ c := by simp_all
     simp [move41PiRadialMap, hda, hdb, hdc, he]
   by_cases hze : z = e
   · subst z
-    have hea : e ≠ a := by simp_all [List.nodup_cons]
-    have heb : e ≠ b := by simp_all [List.nodup_cons]
-    have hec : e ≠ c := by simp_all [List.nodup_cons]
-    have hed : e ≠ d := by simp_all [List.nodup_cons]
+    have hea : e ≠ a := by simp_all
+    have heb : e ≠ b := by simp_all
+    have hec : e ≠ c := by simp_all
+    have hed : e ≠ d := by simp_all
     simp [move41PiRadialMap, hea, heb, hec, hed, he]
   simp [move41PiRadialMap, hza, hzb, hzc, hzd,
     hoff hza hzb hzc hzd hze]
@@ -463,19 +463,19 @@ theorem move41PiRadialInv_mem_source
       Ne.symm hbc, Ne.symm hbd, Ne.symm hbe, Ne.symm hcd,
       Ne.symm hce, Ne.symm hde]
     linarith
-  · simp only [move41PiRadialInv, m]
+  · simp only [move41PiRadialInv]
     rcases min_choice (min (q a) (q b)) (min (q c) (q d)) with hm | hm
     · rcases min_choice (q a) (q b) with hab | hab
       · have hma' : m = q a := hm.trans hab
         have hma'' : min (min (q a) (q b)) (min (q c) (q d)) = q a := hma'
         left
-        simp [move41PiRadialInv, hma'']
+        simp [hma'']
       · have hmb' : m = q b := hm.trans hab
         have hmb'' : min (min (q a) (q b)) (min (q c) (q d)) = q b := hmb'
         have hba : b ≠ a := by
           exact Ne.symm (by simp_all [List.nodup_cons] : a ≠ b)
         right; left
-        simp [move41PiRadialInv, hmb'', hba]
+        simp [hmb'', hba]
     · rcases min_choice (q c) (q d) with hcd | hcd
       · have hmc' : m = q c := hm.trans hcd
         have hmc'' : min (min (q a) (q b)) (min (q c) (q d)) = q c := hmc'
@@ -484,7 +484,7 @@ theorem move41PiRadialInv_mem_source
         have hcb : c ≠ b := by
           exact Ne.symm (by simp_all [List.nodup_cons] : b ≠ c)
         right; right; left
-        simp [move41PiRadialInv, hmc'', hca, hcb]
+        simp [hmc'', hca, hcb]
       · have hmd' : m = q d := hm.trans hcd
         have hmd'' : min (min (q a) (q b)) (min (q c) (q d)) = q d := hmd'
         have hda : d ≠ a := by
@@ -494,7 +494,7 @@ theorem move41PiRadialInv_mem_source
         have hdc : d ≠ c := by
           exact Ne.symm (by simp_all [List.nodup_cons] : c ≠ d)
         right; right; right
-        simp [move41PiRadialInv, hmd'', hda, hdb, hdc]
+        simp [hmd'', hda, hdb, hdc]
   · intro z hza hzb hzc hzd hze
     simp [move41PiRadialInv, hza, hzb, hzc, hzd, hze]
 
@@ -566,23 +566,22 @@ theorem move41PiRadialInv_radialMap
   simp only [move41PiRadialInv, hmin]
   by_cases hza : z = a
   · subst z
-    simp [move41PiRadialMap, hab, hac, had, hae]
+    simp [move41PiRadialMap]
   by_cases hzb : z = b
   · subst z
-    simp [move41PiRadialMap, hza, Ne.symm hab, hbc, hbd, hbe]
+    simp [move41PiRadialMap, hza]
   by_cases hzc : z = c
   · subst z
-    simp [move41PiRadialMap, hza, hzb, Ne.symm hac, Ne.symm hbc, hcd, hce]
+    simp [move41PiRadialMap, hza, hzb]
   by_cases hzd : z = d
   · subst z
-    simp [move41PiRadialMap, hza, hzb, hzc, Ne.symm had, Ne.symm hbd,
-      Ne.symm hcd, hde]
+    simp [move41PiRadialMap, hza, hzb, hzc]
   by_cases hze : z = e
   · subst z
     simp [Ne.symm hae, Ne.symm hbe, Ne.symm hce, Ne.symm hde]
     ring
   have hoff := move41PiSourceLocalCarrier_eq_zero_of_not_label hp hza hzb hzc hzd hze
-  simp [move41PiRadialMap, hza, hzb, hzc, hzd, hze, hoff]
+  simp [hza, hzb, hzc, hzd, hze, hoff]
 
 /-- The radial map recovers every point of the solid target tetrahedron after
 applying the explicit inverse formula. -/

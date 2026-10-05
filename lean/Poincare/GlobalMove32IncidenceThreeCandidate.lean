@@ -47,10 +47,7 @@ private theorem
       T,
       hxa,
       hxb,
-      hab,
-      Ne.symm hxa,
-      Ne.symm hxb,
-      Ne.symm hab
+      hab
     ]
 
   have hEq :
@@ -172,10 +169,7 @@ private theorem
       A,
       h01,
       h02,
-      h12,
-      Ne.symm h01,
-      Ne.symm h02,
-      Ne.symm h12
+      h12
     ]
 
   have hLcard :
@@ -415,7 +409,6 @@ private theorem
     simp [
       Tet.verts,
       hqv,
-      or_assoc,
       or_left_comm,
       or_comm
     ]

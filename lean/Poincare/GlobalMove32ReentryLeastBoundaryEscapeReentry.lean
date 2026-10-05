@@ -1,15 +1,17 @@
 import Poincare.GlobalMove32ReentryLeastBoundaryEscapeIncidenceThreeFork
 import Poincare.GlobalMove32WitnessedSourceFaceReentry
+import Poincare.GlobalMove32SourceFaceLegalMove23High
 
 namespace Poincare
 namespace CarrierLoopNullHomotopyData
 
 /--
 Under the same fail-closed hypotheses used by the perpetual witnessed-reentry
-builder, the least left-boundary escape cannot terminate in descent, a matching
-legal Move23, or a nonself high-incidence edge.  Hence the exact-incidence-three
-Move32 candidate carried by the first-exit edge is forced into witnessed
-source-face reentry.
+builder, the least left-boundary escape cannot terminate in descent or a
+nonself high-incidence edge.  The certified source-face classification already
+absorbs aligned legal Move23 output into that high-incidence branch.  Hence the
+exact-incidence-three Move32 candidate carried by the first-exit edge is forced
+into witnessed source-face reentry.
 
 The theorem retains the least-exit indices and identifies the new Move32 shared
 edge with the actual predecessor/escape boundary labels.
@@ -22,18 +24,6 @@ theorem finite_squareGrid_least_boundary_escape_witnessedReentry_of_no_other_sou
     (hNoFour : ∀ v ∈ vertexSupport K, vertexDegree K v ≠ 4)
     (p : WitnessedReentryPolygonalLoopCertificate K)
     (H : CarrierLoopNullHomotopyData K p.basepoint p.polygonalLoop)
-    (hNoMove23 :
-      ∀ s : Move32Site,
-        s.RealizedIn K →
-        (∃ tau ∈ K.tets,
-          s.a ∈ tau.verts ∧
-          s.b ∈ tau.verts ∧
-          s.c ∈ tau.verts) →
-        ¬ ∃ m : Move23Site,
-          m.a = s.a ∧
-          m.b = s.b ∧
-          m.c = s.c ∧
-          m.LegalIn K)
     (hNoDescent :
       ¬ ∃ K',
         ClosedTriangulationCore K' ∧
@@ -107,11 +97,9 @@ theorem finite_squareGrid_least_boundary_escape_witnessedReentry_of_no_other_sou
       ⟨s, hsd, hse, hrealized, hthree, hobstruction⟩
 
     rcases
-        hcore.exists_legal_move23_or_descent_or_nonself_complementEdge_high_or_witnessedReentry_of_move32_sourceFace_obstruction
+        hcore.exists_descent_or_nonself_complementEdge_high_or_witnessedReentry_of_move32_sourceFace_obstruction
           hlinks hconn hNoFour s hrealized hobstruction with
-      hmove23 | hdesc | hhigh | hreentry
-
-    · exact (hNoMove23 s hrealized hobstruction hmove23).elim
+      hdesc | hhigh | hreentry
 
     · exact (hNoDescent hdesc).elim
 
