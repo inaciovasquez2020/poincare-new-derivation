@@ -98,7 +98,7 @@ theorem ClosedTriangulationCore.exists_distinct_common_face_tet_with_complement
     exact hne (by
       intro v
       exact (hs v).symm)
-  obtain ⟨d, hdRho, hdout, _, _, _, _, hcoverRho⟩ :=
+  obtain ⟨d, _, hdRho, hdout, _, _, _, _, hcoverRho⟩ :=
     Tet.exists_distinct_complement_vertices
       rho tau hrhoNodup htauNodup hface
       haRho hbRho hcRho htauFace.1 htauFace.2.1 htauFace.2.2
