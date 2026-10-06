@@ -140,18 +140,24 @@ lemma iterate_step_hits_zero_boundary :
   rw [hpres, hphi] at hz
   omega
 
-lemma iterate_step_exact :
-  ∀ (K : Triangulation) (n : Nat),
+lemma iterate_step_exact_boundary :
+  ¬ (∀ (K : Triangulation) (n : Nat),
     n ≤ Phi K →
-    Phi (Nat.iterate step n K) = Phi K - n :=
-by
-  intro K n hn
-  by_cases hlt : n < Phi K
-  · exact iterate_step_strict_decrease K n hlt
-  · have hphi_le_n : Phi K ≤ n := Nat.le_of_not_gt hlt
-    have heq : n = Phi K := Nat.le_antisymm hn hphi_le_n
-    subst n
-    simpa using iterate_step_hits_zero K
+    Phi (Nat.iterate step n K) = Phi K - n) := by
+  intro h
+  let K : Triangulation := { tets := [{ v0 := 0, v1 := 1, v2 := 2, v3 := 3 }] }
+  have hphi : Phi K = 12 := by
+    native_decide
+  have hclaim := h K 1 (by omega)
+  have hphi_step : Function.comp Phi step = Phi := by
+    funext T
+    unfold step
+    rw [applyMove_spec_available T (selectMove T)]
+  have hiter := Function.iterate_invariant hphi_step 1
+  have hpres : Phi (Nat.iterate step 1 K) = Phi K := by
+    simpa [Function.comp_def] using congrFun hiter K
+  rw [hpres, hphi] at hclaim
+  omega
 
 lemma termination_exact :
   ∀ K : Triangulation,
