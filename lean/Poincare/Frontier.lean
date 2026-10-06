@@ -8,7 +8,6 @@ namespace Poincare
 #print applyMove
 #print selectMove
 #print applyMove_local_effect
-#print step_strict
 #print applyMove_defect_balance
 
 end Poincare
