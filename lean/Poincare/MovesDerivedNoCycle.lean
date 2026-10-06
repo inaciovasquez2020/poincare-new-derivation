@@ -8,8 +8,6 @@ theorem applyMove_spec_derived_nocycle :
     allVerts (applyMove K m) = allVerts K :=
   applyMove_spec_from_impl
 
-theorem selectMove_spec_derived_nocycle :
-  ∀ K : Triangulation, Phi K > 0 → Phi (applyMove K (selectMove K)) < Phi K :=
-  selectMove_spec_from_impl
+/-- BOUNDARY: strict descent is not available from the current identity-based implementation. -/
 
 end Poincare
