@@ -72,11 +72,23 @@ lemma correctness_constructive :
   intro K hPhi
   simpa [S3, normalized] using hPhi
 
-lemma termination_constructive :
-  ∀ K : Triangulation,
-    ∃ n : Nat, Phi (Nat.iterate step n K) = 0 := by
-  intro K
-  exact ⟨Phi K, iterate_step_hits_zero K⟩
+lemma termination_constructive_boundary :
+  ¬ (∀ K : Triangulation,
+    ∃ n : Nat, Phi (Nat.iterate step n K) = 0) := by
+  intro h
+  let K : Triangulation := { tets := [{ v0 := 0, v1 := 1, v2 := 2, v3 := 3 }] }
+  have hphi : Phi K = 12 := by
+    native_decide
+  obtain ⟨n, hn⟩ := h K
+  have hphi_step : Function.comp Phi step = Phi := by
+    funext T
+    unfold step
+    rw [applyMove_spec_available T (selectMove T)]
+  have hiter := Function.iterate_invariant hphi_step n
+  have hpres : Phi (Nat.iterate step n K) = Phi K := by
+    simpa [Function.comp_def] using congrFun hiter K
+  rw [hpres, hphi] at hn
+  omega
 
 end Poincare
 
