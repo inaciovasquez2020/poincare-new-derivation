@@ -5,11 +5,13 @@ import Poincare.GreedySelectorCorrect
 
 namespace Poincare
 
-theorem exists_strict_descent_move
-  (K : Triangulation)
-  (hPhi : Phi K > 0) :
-  ∃ m : PachnerMove, Phi (applyMoveImpl K m) < Phi K := by
-  refine ⟨selectMoveImplGreedy K, ?_⟩
-  exact greedy_selector_correct K hPhi
+/-
+BOUNDARY := ¬ ∀ (K : Triangulation),
+  Phi K > 0 →
+  ∃ m : PachnerMove, Phi (applyMoveImpl K m) < Phi K
+
+The current applyMoveImpl is the identity, so a strict descent move cannot
+be obtained from the present implementation.
+-/
 
 end Poincare
