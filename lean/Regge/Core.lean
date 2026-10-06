@@ -14,7 +14,6 @@ structure SimplicialComplex where
 
 structure TetraGeom where
   G : Matrix (Fin 3) (Fin 3) ℝ
-axiom FundamentalGroup : SimplicialComplex → Type
 
 def detG (σ : TetraGeom) : ℝ :=
   Matrix.det σ.G
