@@ -1,14 +1,15 @@
 import Poincare.Triangulation
 import Poincare.MovesImpl
 import Poincare.MovesImplGreedy
-import Poincare.GreedySelectorCorrect
 
 namespace Poincare
 
-theorem selectMoveImplGreedy_spec :
-  ∀ K : Triangulation, Phi K > 0 →
-    Phi (applyMoveImpl K (selectMoveImplGreedy K)) < Phi K := by
-  intro K hPhi
-  exact greedy_selector_correct K hPhi
+/-
+BOUNDARY := ¬ ∀ K : Triangulation, Phi K > 0 →
+  Phi (applyMoveImpl K (selectMoveImplGreedy K)) < Phi K
+
+The current applyMoveImpl is the identity, so this strict descent theorem
+cannot hold for positive Phi.
+-/
 
 end Poincare
