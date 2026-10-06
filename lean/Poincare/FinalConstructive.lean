@@ -96,31 +96,19 @@ lemma step_decreases_by_one_boundary :
   rw [hpres, hphi] at hdrop
   omega
 
-lemma iterate_step_strict_decrease :
-  ∀ (K : Triangulation) (n : Nat),
+lemma iterate_step_strict_decrease_boundary :
+  ¬ (∀ (K : Triangulation) (n : Nat),
     Phi K > n →
-    Phi (Nat.iterate step n K) = Phi K - n :=
-by
-  intro K n hn
-  induction n generalizing K with
-  | zero =>
-      simp
-  | succ n ih =>
-      have hprev : Phi K > n := Nat.lt_trans (Nat.lt_succ_self n) hn
-      have ih_eq : Phi (Nat.iterate step n K) = Phi K - n := ih K hprev
-      have hpos_iter : Phi (Nat.iterate step n K) > 0 := by
-        rw [ih_eq]
-        exact Nat.sub_pos_of_lt hprev
-      calc
-        Phi (Nat.iterate step (Nat.succ n) K)
-            = Phi (step (Nat.iterate step n K)) := by
-              rfl
-        _ = Phi (Nat.iterate step n K) - 1 :=
-              step_decreases_by_one (Nat.iterate step n K) hpos_iter
-        _ = Phi K - n - 1 := by
-              rw [ih_eq]
-        _ = Phi K - Nat.succ n := by
-              rw [Nat.sub_succ]
+    Phi (Nat.iterate step n K) = Phi K - n) := by
+  intro h
+  let K : Triangulation := { tets := [{ v0 := 0, v1 := 1, v2 := 2, v3 := 3 }] }
+  have hphi : Phi K = 12 := by native_decide
+  have hstep : Phi (step K) = Phi K := by
+    unfold step
+    rw [applyMove_spec_available K (selectMove K)]
+  have hclaim := h K 1 (by omega)
+  rw [Nat.iterate_succ, hstep, hphi] at hclaim
+  omega
 
 lemma iterate_step_hits_zero :
   ∀ K : Triangulation,
