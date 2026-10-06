@@ -86,8 +86,6 @@ import Poincare.LocalDelta
 import Poincare.LocalSphericalDescent
 import Poincare.PhiZeroCharacterizesS3
 import Poincare.NormalizationImpliesS3
-import Poincare.SolveStepBuild
-import Poincare.MoveSemanticsBuild
 
 import Poincare.ZeroDefect
 import Poincare.VertexLink
