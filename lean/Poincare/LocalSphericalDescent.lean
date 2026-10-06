@@ -36,14 +36,11 @@ BOUNDARY := ¬ ∀ (T : Triangulation) (v : Nat),
 
 The definition of moveAt currently uses the identity applyMoveImpl, so this
 strict descent statement is not available.
--/
 
-theorem local_spherical_descent_conditional :
-  ∀ T,
-    Phi T > 0 →
-    ∃ T', Phi T' < Phi T := by
-  intro T hPhi
-  obtain ⟨v, hvmem, hv⟩ := local_positive_vertex_exists T hPhi
-  exact ⟨moveAt T v, local_spherical_descent_step T v hvmem hv⟩
+BOUNDARY := ¬ ∀ T : Triangulation,
+  Phi T > 0 → ∃ T', Phi T' < Phi T
+
+A genuine legal Pachner move and a proved strict Phi descent are required.
+-/
 
 end Poincare
