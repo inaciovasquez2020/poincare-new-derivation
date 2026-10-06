@@ -80,11 +80,21 @@ lemma termination_constructive :
 
 end Poincare
 
-lemma step_decreases_by_one :
-  ∀ K : Triangulation,
+lemma step_decreases_by_one_boundary :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
-    Phi (step K) = Phi K - 1 :=
-by sorry
+    Phi (step K) = Phi K - 1) := by
+  intro h
+  let K : Triangulation := { tets := [{ v0 := 0, v1 := 1, v2 := 2, v3 := 3 }] }
+  have hphi : Phi K = 12 := by
+    native_decide
+  have hpos : Phi K > 0 := by omega
+  have hdrop := h K hpos
+  have hpres : Phi (step K) = Phi K := by
+    unfold step
+    rw [applyMove_spec_available K (selectMove K)]
+  rw [hpres, hphi] at hdrop
+  omega
 
 lemma iterate_step_strict_decrease :
   ∀ (K : Triangulation) (n : Nat),
