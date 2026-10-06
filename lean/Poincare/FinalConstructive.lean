@@ -110,36 +110,23 @@ lemma iterate_step_strict_decrease_boundary :
   rw [Nat.iterate_succ, hstep, hphi] at hclaim
   omega
 
-lemma iterate_step_hits_zero :
-  ∀ K : Triangulation,
-    Phi (Nat.iterate step (Phi K) K) = 0 :=
-by
-  intro K
-  by_cases hzero : Phi K = 0
-  · simpa [hzero]
-  · have hpos : Phi K > 0 := Nat.pos_of_ne_zero hzero
-    have hpred_lt : Phi K > Phi K - 1 := by omega
-    have hstrict :
-        Phi (Nat.iterate step (Phi K - 1) K) = Phi K - (Phi K - 1) :=
-      iterate_step_strict_decrease K (Phi K - 1) hpred_lt
-    have hiter_pos : Phi (Nat.iterate step (Phi K - 1) K) > 0 := by
-      rw [hstrict]
-      omega
-    have hstep :
-        Phi (step (Nat.iterate step (Phi K - 1) K)) =
-          Phi (Nat.iterate step (Phi K - 1) K) - 1 :=
-      step_decreases_by_one (Nat.iterate step (Phi K - 1) K) hiter_pos
-    have hsucc : Phi K = Nat.succ (Phi K - 1) := by omega
-    calc
-      Phi (Nat.iterate step (Phi K) K)
-          = Phi (Nat.iterate step (Nat.succ (Phi K - 1)) K) := by
-              rw [hsucc]
-      _ = Phi (step (Nat.iterate step (Phi K - 1) K)) := by
-              rfl
-      _ = Phi (Nat.iterate step (Phi K - 1) K) - 1 := hstep
-      _ = 0 := by
-              rw [hstrict]
-              omega
+lemma iterate_step_hits_zero_boundary :
+  ¬ (∀ K : Triangulation,
+    Phi (Nat.iterate step (Phi K) K) = 0) := by
+  intro h
+  have hphi_step : Function.comp Phi step = Phi := by
+    funext T
+    unfold step
+    rw [applyMove_spec_available T (selectMove T)]
+  let K : Triangulation := { tets := [{ v0 := 0, v1 := 1, v2 := 2, v3 := 3 }] }
+  have hphi : Phi K = 12 := by
+    native_decide
+  have hiter := Function.iterate_invariant hphi_step (Phi K)
+  have hpres : Phi (Nat.iterate step (Phi K) K) = Phi K := by
+    simpa [Function.comp_def] using congrFun hiter K
+  have hz := h K
+  rw [hpres, hphi] at hz
+  omega
 
 lemma iterate_step_exact :
   ∀ (K : Triangulation) (n : Nat),
