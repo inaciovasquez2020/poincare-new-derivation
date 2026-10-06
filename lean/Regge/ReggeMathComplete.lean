@@ -1,4 +1,5 @@
 import Regge.Core
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
 namespace Regge
 
