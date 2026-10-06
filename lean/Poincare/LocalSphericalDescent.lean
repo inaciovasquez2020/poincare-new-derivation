@@ -28,14 +28,15 @@ theorem local_positive_vertex_exists :
   have hPhi0 : Phi T = 0 := (Phi_zero_iff_local_zero T).2 hzero
   exact Nat.lt_irrefl 0 (hPhi0 ▸ hPhi)
 
-theorem local_spherical_descent_step :
-  ∀ (T : Triangulation) (v : Nat),
-    v ∈ allVerts T →
-    vertexDefect T v > 0 →
-    Phi (moveAt T v) < Phi T := by
-  intro T v hvmem hv
-  have hpos : Phi T > 0 := vertexDefect_pos_implies_Phi_pos T v hvmem hv
-  simpa [moveAt] using selectMoveImplGreedy_spec T hpos
+/-
+BOUNDARY := ¬ ∀ (T : Triangulation) (v : Nat),
+  v ∈ allVerts T →
+  vertexDefect T v > 0 →
+  Phi (moveAt T v) < Phi T
+
+The definition of moveAt currently uses the identity applyMoveImpl, so this
+strict descent statement is not available.
+-/
 
 theorem local_spherical_descent_conditional :
   ∀ T,
