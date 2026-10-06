@@ -159,18 +159,24 @@ lemma iterate_step_exact_boundary :
   rw [hpres, hphi] at hclaim
   omega
 
-lemma termination_exact :
-  ∀ K : Triangulation,
+lemma termination_exact_boundary :
+  ¬ (∀ K : Triangulation,
     Phi (Nat.iterate step (Phi K) K) = 0 ∧
-    ∀ n < Phi K, Phi (Nat.iterate step n K) > 0 := by
-  intro K
-  constructor
-  · exact iterate_step_hits_zero K
-  · intro n hn
-    have hle : n ≤ Phi K := Nat.le_of_lt hn
-    have hEq := iterate_step_exact K n hle
-    rw [hEq]
-    exact Nat.sub_pos_of_lt hn
+    ∀ n < Phi K, Phi (Nat.iterate step n K) > 0) := by
+  intro h
+  let K : Triangulation := { tets := [{ v0 := 0, v1 := 1, v2 := 2, v3 := 3 }] }
+  have hphi : Phi K = 12 := by
+    native_decide
+  have hzero := (h K).1
+  have hphi_step : Function.comp Phi step = Phi := by
+    funext T
+    unfold step
+    rw [applyMove_spec_available T (selectMove T)]
+  have hiter := Function.iterate_invariant hphi_step (Phi K)
+  have hpres : Phi (Nat.iterate step (Phi K) K) = Phi K := by
+    simpa [Function.comp_def] using congrFun hiter K
+  rw [hpres, hphi] at hzero
+  omega
 
 lemma full_constructive_recognition :
   ∀ K : Triangulation,
