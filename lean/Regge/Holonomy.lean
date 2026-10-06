@@ -1,4 +1,4 @@
-import Regge.Core
+import Regge.ReggeMathComplete
 
 namespace Regge
 
