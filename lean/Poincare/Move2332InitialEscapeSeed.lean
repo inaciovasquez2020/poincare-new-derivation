@@ -50,18 +50,6 @@ structure Move2332InitialEscapeSeed (K : Triangulation) (m : Move23Site) where
     m.a ∈ tau.verts ∧ m.c ∈ tau.verts)).length = 2
   secondSourceFaceAbsent : ∀ tau ∈ move2332FirstResidual K m x,
     ¬ (y ∈ tau.verts ∧ m.d ∈ tau.verts ∧ m.e ∈ tau.verts)
-  degreeBudget : degreeDefectValue (vertexDegree K m.d + 2) +
-        degreeDefectValue (vertexDegree K m.e + 2) +
-        degreeDefectValue (vertexDegree K m.b - 2) +
-        degreeDefectValue (vertexDegree K m.c - 2) +
-        degreeDefectValue (vertexDegree K m.a - 2) +
-        degreeDefectValue (vertexDegree K m.c - 4) <
-      degreeDefectValue (vertexDegree K m.d) +
-        degreeDefectValue (vertexDegree K m.e) +
-        degreeDefectValue (vertexDegree K m.b) +
-        degreeDefectValue (vertexDegree K m.c) +
-        degreeDefectValue (vertexDegree K m.a) +
-        degreeDefectValue (vertexDegree K m.c - 2)
 
 private theorem move2332FirstMove32_unchangedTets
     (K : Triangulation) (m : Move23Site) (x y : Nat)
@@ -170,7 +158,7 @@ theorem Move2332InitialEscapeSeed.move32s_legal
       ((move2332FirstMove32 m hseed.x).replace (m.replace K)) := by
   rcases hseed with
     ⟨x, y, hdistinct, hrealized, hshared, habsent,
-      ht0, ht1, hedge, hface, ht20, ht21, hedge2, hface2, hdegree⟩
+      ht0, ht1, hedge, hface, ht20, ht21, hedge2, hface2⟩
   have hlegal1 := move2332FirstMove32_legal_of_initial_data m x y hdistinct
     ht0 ht1 hedge hface
   refine ⟨hlegal1, ?_, ?_⟩
@@ -343,7 +331,6 @@ def crossPolytopeBoundary4_move2332InitialEscapeSeed :
       aesop
   secondSharedEdge := by decide
   secondSourceFaceAbsent := by decide
-  degreeBudget := by decide
 
 theorem crossPolytopeBoundary4_exists_move2332Block_PhiSupport_lt_of_initial_escape_seed :
     ∃ m32₁ m32₂ : Move32Site,
