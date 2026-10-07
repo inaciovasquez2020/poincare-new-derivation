@@ -82,7 +82,7 @@ theorem
       _hsigmaTau, _hsigmaRho,
       hreturnEdge, _hsigmaTarget⟩
 
-  have hs : Move32Site := sites k
+  let hs : Move32Site := sites k
   have hsRealized : hs.RealizedIn K := by
     simpa [hs] using hrealized k
   have haTau' : hs.a ∈ tau.verts := by simpa [hs] using haTau
