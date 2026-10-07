@@ -172,7 +172,7 @@ theorem ClosedTriangulationCore.exists_first_nonzero_anchor_firstEar_reducedFork
       · have hstep :
             Move32SourceFaceWitnessedReentry
               K s (p.crossing.sites (p.crossing.anchorIndex + 1)) := by
-          simpa [s] using
+          simpa [s, p.ordered_crossing] using
             p.ordered.consecutive_witnessed
               p.crossing.anchorIndex
               (by omega)
