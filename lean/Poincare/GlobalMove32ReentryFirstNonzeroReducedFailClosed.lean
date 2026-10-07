@@ -19,7 +19,7 @@ are retained.  The remaining alternatives are:
 No claim is made here that cancellation or the two-sided transition is
 impossible, and this theorem does not assert `Poincare.JIID`.
 -/
-theorem ClosedTriangulationCore.exists_first_nonzero_anchor_firstEar_reducedFork_of_no_other_sourceFace_outcome
+theorem ClosedTriangulationCore.conditional_first_nonzero_anchor_firstEar_obstruction_certificate
     {K : Triangulation}
     (hcore : ClosedTriangulationCore K)
     (hlinks :
