@@ -139,3 +139,60 @@ theorem
           hlinks hNoFour s hrealized hobstruction)).elim
 
 end Poincare
+
+/--
+Under the simultaneous exclusion of strict descent and nonself high-edge
+escape, no realized incidence-three Move32 site can exist in the no-degree-four
+branch.  The source-face obstruction alternative itself forces a nonself
+high-incidence source edge.
+-/
+theorem
+    ClosedTriangulationCore.not_exists_realized_move32_of_noDescent_noHigh
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hlinks :
+      ∀ v ∈ vertexSupport K,
+        VertexLinkConnected K v)
+    (hNoFour :
+      ∀ v ∈ vertexSupport K,
+        vertexDegree K v ≠ 4)
+    (hNoDescent :
+      ¬ ∃ K',
+        ClosedTriangulationCore K' ∧
+        PhiSupport K' < PhiSupport K ∧
+        Nonempty
+          (triangulationTopologicalGeometricCarrier K ≃ₜ
+            triangulationTopologicalGeometricCarrier K'))
+    (hNoHigh :
+      ∀ s : Move32Site,
+        s.RealizedIn K →
+        (∃ tau ∈ K.tets,
+          s.a ∈ tau.verts ∧
+          s.b ∈ tau.verts ∧
+          s.c ∈ tau.verts) →
+        ¬ ∃ x y sigma,
+          x ≠ y ∧
+          sigma ∈ K.tets ∧
+          x ∈ sigma.verts ∧
+          y ∈ sigma.verts ∧
+          ¬ ((x = s.d ∧ y = s.e) ∨
+             (x = s.e ∧ y = s.d)) ∧
+          4 ≤
+            (K.tets.filter
+              (fun gamma =>
+                decide
+                  (x ∈ gamma.verts ∧
+                   y ∈ gamma.verts))).length)
+    (s : Move32Site)
+    (hrealized : s.RealizedIn K)
+    (hthree : s.SharedEdgeExactlyThree K) :
+    False := by
+  rcases
+      hcore.exists_closedCore_homeomorphic_PhiSupport_lt_or_sourceFace_obstruction_of_move32_incidence_three
+        hNoFour s hrealized hthree with
+    hdescent | hobstruction
+  · exact hNoDescent hdescent
+  · exact
+      (hNoHigh s hrealized hobstruction
+        (hcore.exists_nonself_sourceEdge_high_of_move32_sourceFace_obstruction_of_no_degree_four
+          hlinks hNoFour s hrealized hobstruction)).elim
