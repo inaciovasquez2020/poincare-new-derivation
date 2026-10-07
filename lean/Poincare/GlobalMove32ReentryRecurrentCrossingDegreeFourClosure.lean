@@ -83,6 +83,16 @@ theorem
       hreturnEdge, _hsigmaTarget⟩
 
   have hs : Move32Site := sites k
+  have hsRealized : hs.RealizedIn K := by
+    simpa [hs] using hrealized k
+  have haTau' : hs.a ∈ tau.verts := by simpa [hs] using haTau
+  have hbTau' : hs.b ∈ tau.verts := by simpa [hs] using hbTau
+  have hcTau' : hs.c ∈ tau.verts := by simpa [hs] using hcTau
+  have hdTau' : hs.d ∈ tau.verts := by simpa [hs] using hdTau
+  have haRho' : hs.a ∈ rho.verts := by simpa [hs] using haRho
+  have hbRho' : hs.b ∈ rho.verts := by simpa [hs] using hbRho
+  have hcRho' : hs.c ∈ rho.verts := by simpa [hs] using hcRho
+  have heRho' : hs.e ∈ rho.verts := by simpa [hs] using heRho
 
   have habcd : [hs.a, hs.b, hs.c, hs.d].Nodup := by
     have h := hcore.move32Site_distinct hs (hrealized k)
@@ -150,7 +160,7 @@ theorem
         tau hs.a hs.b hs.c hs.d
         (hcore.1 tau htauK)
         habcd
-        haTau hbTau hcTau hdTau
+        haTau' hbTau' hcTau' hdTau'
 
   have hsource1 :
       ∃ t ∈ K.tets,
@@ -161,10 +171,10 @@ theorem
         rho hs.a hs.b hs.c hs.e
         (hcore.1 rho hrhoK)
         habce
-        haRho hbRho hcRho heRho
+        haRho' hbRho' hcRho' heRho'
 
   exact
     hcore.not_both_move32_sources_represented_of_no_degree_four
-      hlinks hconn hNoFour hs (hrealized k) hsource0 hsource1
+      hlinks hconn hNoFour hs hsRealized hsource0 hsource1
 
 end Poincare
