@@ -134,9 +134,70 @@ theorem ClosedTriangulationCore.exists_first_nonzero_anchor_firstEar_reducedFork
 
   · rcases hside with htwo | hone
 
-    · exact Or.inr (Or.inl
-        ⟨rho, hrho, hrhoNe, hlabel0Rho, hlabel1Rho,
-          htwo.1.1, htwo.1.2, htwo.2⟩)
+    · let s : Move32Site := p.crossing.sites p.crossing.anchorIndex
+      have hsRealized : s.RealizedIn K := by
+        simpa [s] using p.realized p.crossing.anchorIndex
+      have hfive : [s.a, s.b, s.c, s.d, s.e].Nodup :=
+        hcore.move32Site_distinct s hsRealized
+      have hbc : s.b ≠ s.c := by
+        simp at hfive
+        omega
+      have hbcPos :
+          0 <
+            (K.tets.filter
+              (fun sigma => s.b ∈ sigma.verts ∧ s.c ∈ sigma.verts)).length := by
+        apply List.length_pos_iff.mpr
+        rcases hsRealized.2.2 with ⟨sigma, hsigma, hsame⟩
+        have hbSigma : s.b ∈ sigma.verts :=
+          (hsame s.b).2 (by simp [Move32Site.targetTet₂, Tet.verts])
+        have hcSigma : s.c ∈ sigma.verts :=
+          (hsame s.c).2 (by simp [Move32Site.targetTet₂, Tet.verts])
+        exact ⟨sigma, hsigma, hbSigma, hcSigma⟩
+      rcases
+          hcore.edgeIncidence_eq_three_or_four_le_of_pos
+            s.b s.c hbc hbcPos with
+        hthree | hhigh
+      · obtain ⟨s', s'', _hsd, _hse, hsRealized', hsThree', hReentry⟩ :=
+          hcore.exists_witnessedReentry_of_edgeIncidence_three_of_noDescent_noHigh
+            hlinks
+            hconn
+            (fun v hv => hNoFour v hv)
+            hNoDescent
+            hNoHigh
+            s.b
+            s.c
+            hbc
+            hthree
+        exact Or.inr (Or.inr ⟨s', s'', hsRealized', hsThree', hReentry⟩)
+      · have hstep :
+            Move32SourceFaceWitnessedReentry
+              K s (p.crossing.sites (p.crossing.anchorIndex + 1)) := by
+          simpa [s] using
+            p.ordered.consecutive_witnessed
+              p.crossing.anchorIndex
+              (by omega)
+              (by omega)
+        have hsource :
+            ∃ tau ∈ K.tets,
+              s.a ∈ tau.verts ∧
+              s.b ∈ tau.verts ∧
+              s.c ∈ tau.verts :=
+          (hstep.toSourceFaceReentry).2.2.1
+        rcases hsRealized.2.2 with ⟨sigma, hsigma, hsame⟩
+        have hbSigma : s.b ∈ sigma.verts :=
+          (hsame s.b).2 (by simp [Move32Site.targetTet₂, Tet.verts])
+        have hcSigma : s.c ∈ sigma.verts :=
+          (hsame s.c).2 (by simp [Move32Site.targetTet₂, Tet.verts])
+        have hnonself :
+            ¬ ((s.b = s.d ∧ s.c = s.e) ∨
+              (s.b = s.e ∧ s.c = s.d)) := by
+          simp at hfive
+          omega
+        have hbad :=
+          hNoHigh s hsRealized hsource
+            ⟨s.b, s.c, sigma, hbc, hsigma, hbSigma, hcSigma,
+              hnonself, hhigh⟩
+        exact (hbad.elim)
 
     · rcases hone.2 with ⟨v, x, hcross, hvRho, hxRho, hinc⟩
 
