@@ -3,6 +3,8 @@ import Poincare.GlobalMove32BothSourcesNoDegreeFour
 
 namespace Poincare
 
+set_option maxHeartbeats 800000 in
+
 /--
 The finite recurrent crossing produced by perpetual witnessed reentry already
 contains both source tetrahedra of its predecessor Move32 site.
