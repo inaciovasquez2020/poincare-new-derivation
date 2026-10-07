@@ -1,4 +1,4 @@
-import Poincare.GlobalMove32PerpetualWitnessedReentryRecurrentCrossingNoMove23
+import Poincare.GlobalMove32PerpetualWitnessedReentryRecurrentCrossing
 import Poincare.GlobalMove32BothSourcesNoDegreeFour
 
 namespace Poincare
