@@ -95,4 +95,4 @@ The appropriate next work is independent verification, dependency auditing, and 
 
 ## Bottom line
 
-This repository contains a substantial formalized conditional research program for a new combinatorial route toward Poincaré. The local obstruction/descent framework has been materially strengthened, but the repository does **not** claim an unconditional solution of the Poincaré conjecture.
+This repository contains a substantial formalized conditional research program for a new combinatorial route toward Poincaré. The local obstruction/descent framework has been materially strengthened, but the repository does **not** claim an unconditional proof of the Poincaré conjecture.
