@@ -84,23 +84,84 @@ theorem
 
   have hs : Move32Site := sites k
 
+  have habcd : [hs.a, hs.b, hs.c, hs.d].Nodup := by
+    have h := hcore.move32Site_distinct hs (hrealized k)
+    simp at h ⊢
+    aesop
+
+  have habce : [hs.a, hs.b, hs.c, hs.e].Nodup := by
+    have h := hcore.move32Site_distinct hs (hrealized k)
+    simp at h ⊢
+    aesop
+
+  have sameTetVertices_of_four_distinct_mem :
+      ∀ (t : Tet) (a b c d : Nat),
+        t.verts.Nodup →
+        [a, b, c, d].Nodup →
+        a ∈ t.verts →
+        b ∈ t.verts →
+        c ∈ t.verts →
+        d ∈ t.verts →
+        SameTetVertices t ⟨a, b, c, d⟩ := by
+    intro t a b c d ht hlist ha hb hc hd
+    classical
+    let S : Finset Nat := t.verts.toFinset
+    let T : Finset Nat := [a, b, c, d].toFinset
+    have hsub : T ⊆ S := by
+      intro z hz
+      have hz' : z ∈ [a, b, c, d] := List.mem_toFinset.mp hz
+      simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at hz'
+      apply List.mem_toFinset.mpr
+      rcases hz' with rfl | rfl | rfl | rfl
+      · exact ha
+      · exact hb
+      · exact hc
+      · exact hd
+    have hScard : S.card = 4 := by
+      dsimp [S]
+      rw [List.toFinset_card_of_nodup ht]
+      simp [Tet.verts]
+    have hTcard : T.card = 4 := by
+      dsimp [T]
+      rw [List.toFinset_card_of_nodup hlist]
+      simp
+    have hEq : T = S :=
+      Finset.eq_of_subset_of_card_le hsub (by omega)
+    intro z
+    constructor
+    · intro hz
+      have hzS : z ∈ S := List.mem_toFinset.mpr hz
+      rw [← hEq] at hzS
+      have hzT : z ∈ [a, b, c, d] := List.mem_toFinset.mp hzS
+      simpa [Tet.verts] using hzT
+    · intro hz
+      have hzT : z ∈ [a, b, c, d] := by
+        simpa [Tet.verts] using hz
+      have hzFin : z ∈ T := List.mem_toFinset.mpr hzT
+      rw [hEq] at hzFin
+      exact List.mem_toFinset.mp hzFin
+
   have hsource0 :
       ∃ t ∈ K.tets,
         SameTetVertices t hs.sourceTet₀ := by
     refine ⟨tau, htauK, ?_⟩
-    intro z
-    simp only [Move32Site.sourceTet₀, Tet.verts,
-      List.mem_cons, List.mem_singleton] at *
-    aesop
+    simpa [Move32Site.sourceTet₀] using
+      sameTetVertices_of_four_distinct_mem
+        tau hs.a hs.b hs.c hs.d
+        (hcore.1 tau htauK)
+        habcd
+        haTau hbTau hcTau hdTau
 
   have hsource1 :
       ∃ t ∈ K.tets,
         SameTetVertices t hs.sourceTet₁ := by
     refine ⟨rho, hrhoK, ?_⟩
-    intro z
-    simp only [Move32Site.sourceTet₁, Tet.verts,
-      List.mem_cons, List.mem_singleton] at *
-    aesop
+    simpa [Move32Site.sourceTet₁] using
+      sameTetVertices_of_four_distinct_mem
+        rho hs.a hs.b hs.c hs.e
+        (hcore.1 rho hrhoK)
+        habce
+        haRho hbRho hcRho heRho
 
   exact
     hcore.not_both_move32_sources_represented_of_no_degree_four
