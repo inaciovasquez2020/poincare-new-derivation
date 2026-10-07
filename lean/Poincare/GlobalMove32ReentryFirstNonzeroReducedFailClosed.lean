@@ -219,13 +219,3 @@ theorem ClosedTriangulationCore.conditional_first_nonzero_anchor_firstEar_obstru
 
 end Poincare
 
-
-/--
-Conditional closure certificate for the current Move32 recurrent-return/filling
-frontier.  The formal development reduces the remaining argument to the
-explicit residual same-carrier/two-seed obstruction; no unconditional
-termination or Poincare closure is asserted here.
--/
-theorem conditional_recurrence_closure_certificate :
-    True := by
-  trivial
