@@ -310,21 +310,28 @@ s.\mathrm{LegalIn}(K)
 \]
 
 \begin{proof}
-The degree-four hypothesis constructs the Move41 site and labels its
-outer vertices.  The same degree hypothesis gives exact occurrence of
-each of the four source vertex sets.
+The degree-four classification first supplies a site with center $v$ and four
+distinct outer labels $a,b,c,d$.  The formal certificate
+\texttt{VertexLinkTetrahedralBoundaryCertificate} gives four represented
+link vertices, four represented link triangles, and the boundary-of-a-
+tetrahedron incidence pattern.  Thus the four source vertex sets have
+exactly the displayed forms in Section 4.
 
-The outer-vertex coverage then shows that every represented tetrahedron
-incident to the center is represented by one of the four source vertex
-sets.  The source configurations are pairwise distinct.
+The theorem
+\texttt{ClosedTriangulationCore.move41Site\_sourcesExactlyOnce\_of\_vertexDegree\_eq\_four}
+then proves that each source vertex set is represented exactly once.  The
+outer-label coverage of the represented link implies that every represented
+tetrahedron containing the center has one of those four source vertex sets;
+this is the center-saturation field of \texttt{Move41Site.LegalIn}.
 
-The formal Move41 classification gives two alternatives.  In the first,
-the site is legal.  In the second, the opposite target is represented.
-The target-present branch is then combined with the five-tetrahedron
-closure and connected-link propagation theorem, yielding the stated
-vertex-link coverage.
+The formal theorem \texttt{Move41Site.legalIn\_or\_exists\_target} now has
+exactly two cases.  If no represented tetrahedron has the target vertex set,
+the four source-occurrence certificates, pairwise distinctness, and
+center-saturation assemble a legal site.  If the target is represented, the
+target witness gives the five-tetrahedron configuration.  Its common-face
+closure is then combined with the connected-link propagation theorem,
+yielding the stated source coverage of the entire represented vertex link.
 \end{proof}
-
 \section{Relation to global descent}
 
 The theorem is a local structural result.  It does not imply that every
