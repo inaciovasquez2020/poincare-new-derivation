@@ -40,8 +40,8 @@ unordered endpoint pair.
 -/
 theorem canonicalEdgeKey_eq_iff
     (a b c d : Nat)
-    (hab : a ≠ b)
-    (hcd : c ≠ d) :
+    (_hab : a ≠ b)
+    (_hcd : c ≠ d) :
     canonicalEdgeKey a b =
         canonicalEdgeKey c d ↔
       ((a = c ∧ b = d) ∨
