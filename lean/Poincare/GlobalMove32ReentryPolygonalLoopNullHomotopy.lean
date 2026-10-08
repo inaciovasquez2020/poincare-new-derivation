@@ -158,7 +158,7 @@ theorem exists_uniform_vertexSupport_coordinate_positive_scale_probe
 
 /-- The standard equally-spaced parameter point `i / N`. -/
 noncomputable def squareGridParameter
-    (N : Nat) (hN : 0 < N) (i : Fin (N + 1)) :
+    (N : Nat) (_hN : 0 < N) (i : Fin (N + 1)) :
     unitInterval :=
   ⟨(i : ℝ) / N, by
     constructor
