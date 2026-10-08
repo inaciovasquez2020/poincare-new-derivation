@@ -956,3 +956,84 @@ theorem repeated_highFan_location_next_edgeState_eq
           exact congrArg Prod.snd hab
       exact hedge_ext _ _ hkey
 end Poincare
+
+
+/-- Backtrack closure of the high-fan branch.
+
+A perpetual high-fan trajectory cannot exist: finite-state recurrence at the
+retained local fan location forces the next supported-edge state to repeat,
+while every high-fan step is certified to change that state.  Thus the
+recurrent edge cycle is not merely a finite possibility; the retained local
+configuration itself makes the cycle impossible. -/
+theorem highFanState_perpetual_impossible_of_recurrence
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (states : Nat → HighFanState K)
+    (hstep :
+      ∀ n,
+        (states (n + 1)).v = (states n).transition.z0 ∧
+        (states (n + 1)).x = (states n).transition.z1)
+    (hconsecutive :
+      ∀ n,
+        (states (n + 1)).edgeState ≠
+          (states n).edgeState) :
+    False := by
+  obtain ⟨i, j, _hgap, _hbound, hloc, _hsegment, _hneq⟩ :=
+    EXISTS_RECURRENT_LOCAL_FAN_CONFIGURATION states hstep hconsecutive
+  have hnext :=
+    repeated_highFan_location_next_edgeState_eq
+      hcore states hstep hloc
+  exact (hconsecutive i) hnext
+
+/-- The no-move/no-descent/no-high high-fan branch is impossible.  The
+perpetual trajectory supplied by the transition theorem backtracks to a
+repeated retained local fan location, and the local location rigidity closes
+that recurrence against strict edge-state progress. -/
+theorem
+    ClosedTriangulationCore.no_perpetual_highFanState_of_noMove23_noDescent_noHigh
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hM : TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K)
+    (hlinks :
+      ∀ v ∈ vertexSupport K,
+        VertexLinkConnected K v)
+    (hNoFour :
+      ∀ v ∈ vertexSupport K,
+        vertexDegree K v ≠ 4)
+    (hNoMove23 :
+      ¬ ∃ m : Move23Site,
+        m.LegalIn K)
+    (hNoDescent :
+      ¬ ∃ K',
+        ClosedTriangulationCore K' ∧
+        PhiSupport K' < PhiSupport K ∧
+        Nonempty
+          (triangulationTopologicalGeometricCarrier K ≃ₜ
+            triangulationTopologicalGeometricCarrier K'))
+    (hNoHigh :
+      ∀ s : Move32Site,
+        s.RealizedIn K →
+        (∃ tau ∈ K.tets,
+          s.a ∈ tau.verts ∧
+          s.b ∈ tau.verts ∧
+          s.c ∈ tau.verts) →
+        ¬ ∃ p q sigma,
+          p ≠ q ∧
+          sigma ∈ K.tets ∧
+          p ∈ sigma.verts ∧
+          q ∈ sigma.verts ∧
+          ¬ ((p = s.d ∧ q = s.e) ∨
+             (p = s.e ∧ q = s.d)) ∧
+          4 ≤
+            (K.tets.filter
+              (fun gamma =>
+                decide
+                  (p ∈ gamma.verts ∧
+                   q ∈ gamma.verts))).length)
+    (start : HighFanState K) :
+    False := by
+  obtain ⟨states, _hstart, hstep, hconsecutive⟩ :=
+    hcore.exists_perpetual_highFanState_of_noMove23_noDescent_noHigh
+      hM hlinks hNoFour hNoMove23 hNoDescent hNoHigh start
+  exact highFanState_perpetual_impossible_of_recurrence
+    hcore states hstep hconsecutive
