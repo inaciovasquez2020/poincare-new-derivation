@@ -124,6 +124,15 @@ theorem ClosedTriangulationCore.not_perpetual_witnessedReentry_of_noDescent_noHi
     simp at hsourceDistinct
     aesop
 
+  have hsourceHighDecide :
+      4 ≤
+        (K.tets.filter
+          (fun gamma =>
+            decide
+              ((sites k).a ∈ gamma.verts ∧
+               (sites k).b ∈ gamma.verts))).length := by
+    simpa using hsourceHigh
+
   exact
     (hNoHigh (sites k) (hrealized k) hpredObstruction)
       (sites k).a
@@ -134,6 +143,6 @@ theorem ClosedTriangulationCore.not_perpetual_witnessedReentry_of_noDescent_noHi
       haTau
       hbTau
       hnonself
-      hsourceHigh
+      hsourceHighDecide
 
 end Poincare
