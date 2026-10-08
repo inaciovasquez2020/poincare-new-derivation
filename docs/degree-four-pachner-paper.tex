@@ -32,7 +32,7 @@ case, the four source tetrahedra and the target form the five facets of the
 boundary of a $4$-simplex, and the formal development proves the associated
 common-face closure and vertex-link saturation statements.
 
-The result is machine-checked in Lean 4.  The paper is deliberately local:
+The result is formalized and checked in Lean 4.  The paper is deliberately local:
 it does not prove a global strict descent theorem, a classification of all
 closed cores, or the Poincare conjecture.
 \end{abstract}
@@ -375,24 +375,18 @@ to vertex-star closure.
 
 The local theorem can be used as an input to a broader simplification or
 descent program, but this paper does not define or prove a global decreasing
-functional.  In particular, it does not prove
-\[
-  K\not\simeq S^3
-  \Longrightarrow
-  \exists K'\;[\Phi(K')<\Phi(K)]
-\]
-for any proposed functional $\Phi$, nor does it prove
-\[
-  \Phi(K)=0\Longrightarrow K\simeq S^3.
-\]
+functional.  No global strict descent theorem is claimed, and no terminal
+criterion is used to identify arbitrary closed cores with $S^3$.
+
 Consequently, no proof of the Poincare conjecture is claimed here.
 \section{Formal verification record}
 
 The repository is
 \url{https://github.com/inaciovasquez2020/poincare-new-derivation}.
 
-The manuscript is synchronized to repository main commit
-\texttt{\small dc517e7146538c69548301371e1d17fa1b8221e8}.
+The formal source snapshot used for the declaration-level cross-check is
+repository main commit
+\texttt{\small dbd7b07034bda6b5e7364eff94fe75af7deb75dd}.
 
 The repository's Lean toolchain is pinned by \texttt{\small lean-toolchain}; the
 current value is
@@ -406,7 +400,11 @@ The principal source modules are:
 
 The manuscript should be considered a mathematical description of those
 formal declarations, not a claim that the repository's entire research
-program is closed.
+program is closed.  The repository contains unrelated conditional and
+axiom-bearing surfaces; the present paper does not rely on those surfaces
+as stated results.  A submission package should still include an executable
+build and the output of \texttt{\small\#print axioms} for the principal
+ theorem so that the exact dependency set is independently auditable.
 
 \section{Conclusion}
 
