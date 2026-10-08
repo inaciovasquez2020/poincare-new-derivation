@@ -82,7 +82,7 @@ For a vertex $v$, the formal degree is
 
 \begin{definition}[Closed triangulation core]
 A \emph{closed triangulation core} is the repository predicate
-\texttt{ClosedTriangulationCore K}.  It requires:
+\texttt{\small ClosedTriangulationCore K}.  It requires:
 \begin{enumerate}[label=(\roman*)]
   \item every represented tetrahedron has four distinct vertices;
   \item no two represented tetrahedra have the same vertex set; and
@@ -100,13 +100,13 @@ the represented vertex link as an explicit hypothesis.
 For a vertex $v$, the represented vertex-link triangles are obtained from
 represented tetrahedra incident to $v$ by deleting $v$ from the tetrahedron's
 vertex list.  Two represented link triangles are adjacent when they share a
-link edge.  The predicate \texttt{VertexLinkConnected K v} says that every
+link edge.  The predicate \texttt{\small VertexLinkConnected K v} says that every
 pair of represented link triangles is joined by a finite path in this
 adjacency relation.
 
 \section{The $4\to1$ site}
 
-A \texttt{Move41Site} consists of five distinct vertex labels
+A \texttt{\small Move41Site} consists of five distinct vertex labels
 $a,b,c,d,e$.  The center is $e$ and the four source tetrahedra are
 \[
 \begin{aligned}
@@ -123,10 +123,10 @@ T=\{a,b,c,d\}.
 
 Two tetrahedra are identified for the purposes of the formal development
 when they have the same represented vertex set; this is the predicate
-\texttt{SameTetVertices}.
+\texttt{\small SameTetVertices}.
 
 \begin{definition}[Legal $4\to1$ site]
-For a site $s$ in a triangulation $K$, \texttt{Move41Site.LegalIn s K}
+For a site $s$ in a triangulation $K$, \texttt{\small Move41Site.LegalIn s K}
 requires the following four local conditions, in addition to the closed-core
 condition:
 \begin{enumerate}[label=(\roman*)]
@@ -141,12 +141,12 @@ condition:
 
 Thus "legal" is not being used informally.  In the formalization it means
 exactly the local incidence and non-repetition conditions encoded by the
-structure \texttt{Move41Site.LegalIn}.
+structure \texttt{\small Move41Site.LegalIn}.
 
 \section{Incidence-two forcing}
 
 \begin{lemma}[Incidence-two forcing]
-Let $K$ satisfy \texttt{ClosedTriangulationCore K}.  Let $\tau\ne\rho$
+Let $K$ satisfy \texttt{\small ClosedTriangulationCore K}.  Let $\tau\ne\rho$
 be represented tetrahedra containing the same represented nondegenerate
 triangular face.  If $\sigma$ is any represented tetrahedron containing
 that face, then
@@ -164,7 +164,7 @@ its possible members.
 
 The Lean declaration is
 \begin{center}
-\texttt{ClosedTriangulationCore.eq\_left\_or\_eq\_right\_of\_common\_face}.
+\texttt{\small ClosedTriangulationCore.eq\_left\_or\_eq\_right\_of\_common\_face}.
 \end{center}
 
 \section{The target-present cluster}
@@ -184,11 +184,11 @@ It further proves
 
 The corresponding Lean declarations are
 \begin{center}
-\texttt{Move41Site.exists\_represented\_fiveTetCluster\_of\_targetPresent},
+\texttt{\small Move41Site.exists\_represented\_fiveTetCluster\_of\_targetPresent},
 \end{center}
 and
 \begin{center}
-\texttt{Move41Site.exists\_represented\_fiveTetCluster\_nodup\_of\_targetPresent}.
+\texttt{\small Move41Site.exists\_represented\_fiveTetCluster\_nodup\_of\_targetPresent}.
 \end{center}
 
 \begin{proposition}[Finite common-face closure]
@@ -206,7 +206,7 @@ third represented tetrahedron across that face.
 
 The exact formal theorem is
 \begin{center}
-\texttt{Move41Site.represented\_fiveTetCluster\_closed\_under\_common\_face}.
+\texttt{\small Move41Site.represented\_fiveTetCluster\_closed\_under\_common\_face}.
 \end{center}
 
 \section{Propagation through connected vertex links}
@@ -231,14 +231,14 @@ inducing $\rho$ both contain the three-dimensional face
 The finite common-face closure theorem therefore transfers membership in
 $C$ across one adjacency step.  Hence $D$ is closed under link adjacency.
 
-Since \texttt{VertexLinkConnected K v} supplies a finite adjacency path
+Since \texttt{\small VertexLinkConnected K v} supplies a finite adjacency path
 from any seed link triangle to any other link triangle, induction along that
 path gives $D(\rho)$ for every represented link triangle $\rho$.
 
 This is the precise content of
-\texttt{ClosedTriangulationCore.tetrahedronCluster\_vertexStar\_closed\_of\_commonFace\_closed}.
+\texttt{\small ClosedTriangulationCore.tetrahedronCluster\_vertexStar\_closed\_of\_commonFace\_closed}.
 The concrete target-present cluster is instantiated by
-\texttt{Move41Site.represented\_fiveTetCluster\_vertexStarClosed\_of\_connectedLinks}.
+\texttt{\small Move41Site.represented\_fiveTetCluster\_vertexStarClosed\_of\_connectedLinks}.
 
 The latter theorem requires connectedness for every supported vertex link,
 because it is a theorem about the vertex star of every tetrahedron in the
@@ -264,13 +264,13 @@ The principal result of this paper is the following exact formal
 statement.
 
 \begin{theorem}[Degree-four legal-or-target-present dichotomy]
-Let $K$ satisfy \texttt{ClosedTriangulationCore K}.  Let $v$ satisfy
+Let $K$ satisfy \texttt{\small ClosedTriangulationCore K}.  Let $v$ satisfy
 \[
   \operatorname{vertexDegree}(K,v)=4
 \]
 and assume
-\texttt{VertexLinkConnected K v}.  Then there exists a
-\texttt{Move41Site} $s$ such that
+\texttt{\small VertexLinkConnected K v}.  Then there exists a
+\texttt{\small Move41Site} $s$ such that
 \[
   s.e=v
 \]
@@ -281,7 +281,7 @@ and either
 or both of the following hold:
 \begin{enumerate}[label=(\roman*)]
   \item there exists a represented tetrahedron $\tau$ with
-  \texttt{SameTetVertices $\tau$ $s.targetTet$};
+  \texttt{\small SameTetVertices $\tau$ $s.targetTet$};
   \item every represented vertex-link triangle at $v$ is represented by
   a tetrahedron whose vertex set is one of the four source tetrahedra of
   $s$.
@@ -290,7 +290,7 @@ or both of the following hold:
 
 The exact Lean declaration is
 \begin{center}
-\texttt{ClosedTriangulationCore.exists\_move41Site\_legalIn\_or\_targetPresent\_closes\_vertexLink}.
+\texttt{\small ClosedTriangulationCore.exists\_move41Site\_legalIn\_or\_targetPresent\_closes\_vertexLink}.
 \end{center}
 
 Its conclusion is, verbatim at the logical level,
@@ -312,19 +312,19 @@ s.\mathrm{LegalIn}(K)
 \begin{proof}
 The degree-four classification first supplies a site with center $v$ and four
 distinct outer labels $a,b,c,d$.  The formal certificate
-\texttt{VertexLinkTetrahedralBoundaryCertificate} gives four represented
+\texttt{\small VertexLinkTetrahedralBoundaryCertificate} gives four represented
 link vertices, four represented link triangles, and the boundary-of-a-
 tetrahedron incidence pattern.  Thus the four source vertex sets have
 exactly the displayed forms in Section 4.
 
 The theorem
-\texttt{ClosedTriangulationCore.move41Site\_sourcesExactlyOnce\_of\_vertexDegree\_eq\_four}
+\texttt{\small ClosedTriangulationCore.move41Site\_sourcesExactlyOnce\_of\_vertexDegree\_eq\_four}
 then proves that each source vertex set is represented exactly once.  The
 outer-label coverage of the represented link implies that every represented
 tetrahedron containing the center has one of those four source vertex sets;
-this is the center-saturation field of \texttt{Move41Site.LegalIn}.
+this is the center-saturation field of \texttt{\small Move41Site.LegalIn}.
 
-The formal theorem \texttt{Move41Site.legalIn\_or\_exists\_target} now has
+The formal theorem \texttt{\small Move41Site.legalIn\_or\_exists\_target} now has
 exactly two cases.  If no represented tetrahedron has the target vertex set,
 the four source-occurrence certificates, pairwise distinctness, and
 center-saturation assemble a legal site.  If the target is represented, the
@@ -392,16 +392,16 @@ The repository is
 \url{https://github.com/inaciovasquez2020/poincare-new-derivation}.
 
 The manuscript is synchronized to repository main commit
-\texttt{dc517e7146538c69548301371e1d17fa1b8221e8}.
+\texttt{\small dc517e7146538c69548301371e1d17fa1b8221e8}.
 
-The repository's Lean toolchain is pinned by \texttt{lean-toolchain}; the
+The repository's Lean toolchain is pinned by \texttt{\small lean-toolchain}; the
 current value is
-\texttt{leanprover/lean4:v4.30.0-rc1}.
+\texttt{\small leanprover/lean4:v4.30.0-rc1}.
 
 The principal source modules are:
 \begin{itemize}
-  \item \texttt{lean/Poincare/DegreeFourConnectedLinkClassification.lean};
-  \item \texttt{lean/Poincare/GlobalDegreeFourTargetPresentSaturation.lean}.
+  \item \texttt{\small lean/Poincare/DegreeFourConnectedLinkClassification.lean};
+  \item \texttt{\small lean/Poincare/GlobalDegreeFourTargetPresentSaturation.lean}.
 \end{itemize}
 
 The manuscript should be considered a mathematical description of those
@@ -418,5 +418,40 @@ saturation.
 
 This isolates a concrete, machine-checked local theorem from the larger
 global descent program while preserving the unresolved global boundary.
+
+\begin{thebibliography}{9}
+
+\bibitem{Pachner1991}
+U.~Pachner,
+\newblock P.L. homeomorphic manifolds are equivalent by elementary shellings,
+\newblock \emph{European Journal of Combinatorics} 12 (1991), 129--145.
+\newblock DOI: \url{https://doi.org/10.1016/S0195-6698(13)80080-7}.
+
+\bibitem{Lickorish1999}
+W.~B.~R. Lickorish,
+\newblock Simplicial moves on complexes and manifolds,
+\newblock \emph{Geometry \& Topology Monographs} 2 (1999), 299--320.
+\newblock \url{https://arxiv.org/abs/math/9911256}.
+
+\bibitem{Matveev2007}
+S.~V. Matveev,
+\newblock \emph{Algorithmic Topology and Classification of 3-Manifolds},
+\newblock 2nd ed., Algorithms and Computation in Mathematics 9,
+Springer, Berlin--Heidelberg, 2007.
+\newblock DOI: \url{https://doi.org/10.1007/978-3-540-45899-9}.
+
+\bibitem{Burton2013}
+B.~A. Burton,
+\newblock Computational topology with Regina: Algorithms, heuristics and implementations,
+\newblock \emph{Contemporary Mathematics} 597 (2013), 195--224.
+\newblock DOI: \url{https://doi.org/10.1090/conm/597/11877}.
+
+\bibitem{Regina2004}
+B.~A. Burton,
+\newblock Introducing Regina, the 3-manifold topology software,
+\newblock \emph{Experimental Mathematics} 13 (2004), 267--272.
+\newblock DOI: \url{https://doi.org/10.1080/10586458.2004.10504538}.
+
+\end{thebibliography}
 
 \end{document}
