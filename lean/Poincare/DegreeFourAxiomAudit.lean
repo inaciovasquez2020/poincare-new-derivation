@@ -1,0 +1,3 @@
+import Poincare.DegreeFourConnectedLinkClassification
+
+#print axioms Poincare.ClosedTriangulationCore.exists_move41Site_legalIn_or_targetPresent_closes_vertexLink
