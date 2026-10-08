@@ -117,7 +117,7 @@ theorem
           (by simpa [hxE] using hz)
 
   by_contra houtside
-  push_neg at houtside
+  push Not at houtside
 
   have hsubset :
       ∀ z : Nat,
