@@ -62,27 +62,47 @@ The result arose in a larger program motivated by constructive approaches to
 three-dimensional topology, but none of the arguments below uses the
 Poincare conjecture or a global descent claim.
 
-\section{Combinatorial setting}
+\section{Formal combinatorial setting}
 
-Let $K$ be a finite triangulation whose represented tetrahedra are
+The formal object called a \emph{triangulation} in the repository is a finite
+list of tetrahedra:
 \[
-  K.\mathrm{tets}.
+  K.\mathrm{tets} : \mathrm{List}(\mathrm{Tet}).
 \]
-A tetrahedron is written $\tau$, with vertex list $\tau.\mathrm{verts}$.
-For a vertex $v$, let $\operatorname{vertexDegree}(K,v)$ denote the
-represented tetrahedron degree used by the formal development.
+A tetrahedron is a four-tuple of natural-number vertex labels.  Thus the
+formal representation is list-based rather than an abstract simplicial
+complex with separately stored gluing maps.
 
-A \emph{closed triangulation core} is the predicate
-\texttt{ClosedTriangulationCore K}.  Its incidence component states that a
-represented nondegenerate triangular face occurs in exactly two represented
-tetrahedra.
-
-For a vertex $v$, the represented vertex-link triangles are
+For a vertex $v$, the formal degree is
 \[
-  \operatorname{vertexLinkTriangles}(K,v),
+  \operatorname{vertexDegree}(K,v)
+  =
+  \#\{\text{occurrences of }v\text{ in the represented tetrahedron list}\}.
 \]
-and \texttt{VertexLinkConnected K v} is the formal connectivity condition
-used below.
+
+\begin{definition}[Closed triangulation core]
+A \emph{closed triangulation core} is the repository predicate
+\texttt{ClosedTriangulationCore K}.  It requires:
+\begin{enumerate}[label=(\roman*)]
+  \item every represented tetrahedron has four distinct vertices;
+  \item no two represented tetrahedra have the same vertex set; and
+  \item every represented nondegenerate triangular face occurs in exactly
+        two represented tetrahedra.
+\end{enumerate}
+\end{definition}
+
+The third condition is the usual local incidence condition for a
+three-dimensional pseudomanifold.  By itself it does \emph{not} say that
+the realization is a manifold: vertex links are not assumed to be spheres
+or even connected.  The present theorem therefore keeps connectedness of
+the represented vertex link as an explicit hypothesis.
+
+For a vertex $v$, the represented vertex-link triangles are obtained from
+represented tetrahedra incident to $v$ by deleting $v$ from the tetrahedron's
+vertex list.  Two represented link triangles are adjacent when they share a
+link edge.  The predicate \texttt{VertexLinkConnected K v} says that every
+pair of represented link triangles is joined by a finite path in this
+adjacency relation.
 
 \section{The $4\to1$ site}
 
