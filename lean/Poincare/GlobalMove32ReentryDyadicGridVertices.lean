@@ -10,7 +10,7 @@ of the refined equally-spaced grid.  The grid index is the exact integer
 -/
 theorem orderedTransition_dyadic_breakpoint_refined_grid_vertex_probe
     (N m k : Nat)
-    (_hN : 0 < N)
+    (hN : 0 < N)
     (hk : k ≤ m) :
     ∃ i : Fin (N * 2 ^ m + 1),
       (squareGridParameter
