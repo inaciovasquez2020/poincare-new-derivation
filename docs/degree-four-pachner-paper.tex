@@ -106,25 +106,42 @@ adjacency relation.
 
 \section{The $4\to1$ site}
 
-A \texttt{Move41Site} $s$ has center $s.e$, four source tetrahedra
-\[
-  s.\mathrm{sourceTet}_0,\ldots,s.\mathrm{sourceTet}_3,
-\]
-and an opposite target tetrahedron $s.\mathrm{targetTet}$.
-
-Up to the site's vertex labels, the five model tetrahedra have the form
+A \texttt{Move41Site} consists of five distinct vertex labels
+$a,b,c,d,e$.  The center is $e$ and the four source tetrahedra are
 \[
 \begin{aligned}
 S_0&=\{a,b,c,e\},&
 S_1&=\{a,b,d,e\},\\
 S_2&=\{a,c,d,e\},&
-S_3&=\{b,c,d,e\},\\
-T&=\{a,b,c,d\}.
+S_3&=\{b,c,d,e\}.
 \end{aligned}
 \]
+The opposite target tetrahedron is
+\[
+T=\{a,b,c,d\}.
+\]
 
-The formal predicate \texttt{SameTetVertices $\tau$ $\sigma$} identifies
-tetrahedra with the same represented vertex set.
+Two tetrahedra are identified for the purposes of the formal development
+when they have the same represented vertex set; this is the predicate
+\texttt{SameTetVertices}.
+
+\begin{definition}[Legal $4\to1$ site]
+For a site $s$ in a triangulation $K$, \texttt{Move41Site.LegalIn s K}
+requires the following four local conditions, in addition to the closed-core
+condition:
+\begin{enumerate}[label=(\roman*)]
+  \item each of the four source vertex sets occurs exactly once;
+  \item the four source vertex sets are pairwise distinct;
+  \item every represented tetrahedron containing the center $e$ has one of
+        the four source vertex sets; and
+  \item no represented tetrahedron has the target vertex set
+        $\{a,b,c,d\}$.
+\end{enumerate}
+\end{definition}
+
+Thus "legal" is not being used informally.  In the formalization it means
+exactly the local incidence and non-repetition conditions encoded by the
+structure \texttt{Move41Site.LegalIn}.
 
 \section{Incidence-two forcing}
 
