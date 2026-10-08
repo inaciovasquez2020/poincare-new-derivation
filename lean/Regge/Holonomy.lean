@@ -24,7 +24,7 @@ axiom holonomy_injective
 
 theorem pi1_trivial_of_flat
   (T : SimplicialComplex)
-  (hflat : ∀ e, deficit T e = 0) :
+  (_hflat : ∀ e, deficit T e = 0) :
   Subsingleton (FundamentalGroup T) := by
   have hker : ∀ γ, ρ T γ = IdSO3 := by
     intro γ
