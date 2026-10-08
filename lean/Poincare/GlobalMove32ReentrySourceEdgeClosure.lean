@@ -135,14 +135,7 @@ theorem ClosedTriangulationCore.not_perpetual_witnessedReentry_of_noDescent_noHi
 
   exact
     (hNoHigh (sites k) (hrealized k) hpredObstruction)
-      (sites k).a
-      (sites k).b
-      tau
-      hab
-      htau
-      haTau
-      hbTau
-      hnonself
-      hsourceHighDecide
+      ⟨(sites k).a, (sites k).b, tau,
+        hab, htau, haTau, hbTau, hnonself, hsourceHighDecide⟩
 
 end Poincare
