@@ -69,23 +69,20 @@ theorem
   rintro ⟨sites, hzero, hrealized, hthree, hwitnessed⟩
 
   obtain ⟨i, k, tau, rho, sigma,
-    hgap, hbound,
-    htauK, hrhoK, hsigmaK,
-    hne,
-    haTau, hbTau, hcTau,
-    haRho, hbRho, hcRho,
-    hdTau, heRho,
-    hdSigma, heSigma,
-    heNotTau, hdNotRho,
-    hsTau, hsRho,
-    hconfig,
-    hpred⟩ :=
+    hgap, hbound, ⟨hconfig, hpred⟩⟩ :=
     hcore.exists_finite_recurrent_return_crossing_with_predecessor_sourceFace_ne_of_perpetual_witnessedReentry_of_no_degree_four
       hlinks hconn hNoFour
       sites hrealized hthree hwitnessed
 
   rcases hconfig with
-    ⟨hreturnEdge, htarget⟩
+    ⟨htauK, hrhoK, hsigmaK, hne,
+      haTau, hbTau, hcTau,
+      haRho, hbRho, hcRho,
+      hdTau, heRho,
+      hdSigma, heSigma,
+      heNotTau, hdNotRho,
+      hsTau, hsRho,
+      hreturnEdge, htarget⟩
 
   have hstate :
       sharedSupportedEdgeState hcore (sites i) (hrealized i) =
