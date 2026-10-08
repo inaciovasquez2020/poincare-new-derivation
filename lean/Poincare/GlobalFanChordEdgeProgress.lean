@@ -958,6 +958,8 @@ theorem repeated_highFan_location_next_edgeState_eq
 end Poincare
 
 
+namespace Poincare
+
 /-- Backtrack closure of the high-fan branch.
 
 A perpetual high-fan trajectory cannot exist: finite-state recurrence at the
@@ -1037,3 +1039,6 @@ theorem
       hM hlinks hNoFour hNoMove23 hNoDescent hNoHigh start
   exact highFanState_perpetual_impossible_of_recurrence
     hcore states hstep hconsecutive
+
+
+end Poincare
