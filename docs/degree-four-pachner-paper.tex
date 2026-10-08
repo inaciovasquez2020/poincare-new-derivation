@@ -1,0 +1,322 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\geometry{margin=1in}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{Degree-Four Pachner Sites and Target-Present Five-Tetrahedron Closure}
+\author{Inacio F. Vasquez\\Independent Researcher, United States}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We isolate a local structural result in a constructive program based on
+Pachner moves on closed triangulations.  For a degree-four vertex with
+connected represented vertex link, the formal development constructs a
+$4\to1$ site and proves a dichotomy: the site is legal, or its opposite
+target tetrahedron is represented.  In the latter branch, the represented
+target together with the four source tetrahedra forms a pairwise distinct
+five-tetrahedron configuration, and the configuration closes the
+represented vertex link.  The statements are formalized in Lean 4.
+
+The result is deliberately local.  It does not prove a global strict
+descent theorem and does not claim a proof of the Poincare conjecture.
+\end{abstract}
+
+\section{Introduction}
+
+A constructive approach to triangulated $3$-manifolds is to analyze local
+Pachner moves and seek a complexity-decreasing branch.  A recurring
+difficulty is the $4\to1$ configuration at a degree-four vertex: the
+candidate site may fail to be immediately legal because its opposite
+tetrahedron is already represented.
+
+This paper isolates the formal result that resolves that local branch into
+a precise alternative.  The result is useful independently of the
+remaining global descent problem.
+
+The formal development is hosted at
+\url{https://github.com/inaciovasquez2020/poincare-new-derivation}.
+
+\section{Combinatorial setting}
+
+Let $K$ be a finite triangulation whose represented tetrahedra are
+\[
+  K.\mathrm{tets}.
+\]
+A tetrahedron is written $\tau$, with vertex list $\tau.\mathrm{verts}$.
+For a vertex $v$, let $\operatorname{vertexDegree}(K,v)$ denote the
+represented tetrahedron degree used by the formal development.
+
+A \emph{closed triangulation core} is the predicate
+\texttt{ClosedTriangulationCore K}.  Its incidence component states that a
+represented nondegenerate triangular face occurs in exactly two represented
+tetrahedra.
+
+For a vertex $v$, the represented vertex-link triangles are
+\[
+  \operatorname{vertexLinkTriangles}(K,v),
+\]
+and \texttt{VertexLinkConnected K v} is the formal connectivity condition
+used below.
+
+\section{The $4\to1$ site}
+
+A \texttt{Move41Site} $s$ has center $s.e$, four source tetrahedra
+\[
+  s.\mathrm{sourceTet}_0,\ldots,s.\mathrm{sourceTet}_3,
+\]
+and an opposite target tetrahedron $s.\mathrm{targetTet}$.
+
+Up to the site's vertex labels, the five model tetrahedra have the form
+\[
+\begin{aligned}
+S_0&=\{a,b,c,e\},&
+S_1&=\{a,b,d,e\},\\
+S_2&=\{a,c,d,e\},&
+S_3&=\{b,c,d,e\},\\
+T&=\{a,b,c,d\}.
+\end{aligned}
+\]
+
+The formal predicate \texttt{SameTetVertices $\tau$ $\sigma$} identifies
+tetrahedra with the same represented vertex set.
+
+\section{Incidence-two forcing}
+
+\begin{lemma}[Incidence-two forcing]
+Let $K$ satisfy \texttt{ClosedTriangulationCore K}.  Let $\tau\ne\rho$
+be represented tetrahedra containing the same represented nondegenerate
+triangular face.  If $\sigma$ is any represented tetrahedron containing
+that face, then
+\[
+  \sigma=\tau\quad\text{or}\quad\sigma=\rho.
+\]
+\end{lemma}
+
+\begin{proof}
+The closed-core incidence condition says that the filtered list of
+represented tetrahedra containing the face has length exactly two.
+Since $\tau$ and $\rho$ are distinct members of that list, they exhaust
+its possible members.
+\end{proof}
+
+The Lean declaration is
+\begin{center}
+\texttt{ClosedTriangulationCore.eq\_left\_or\_eq\_right\_of\_common\_face}.
+\end{center}
+
+\section{The target-present cluster}
+
+Assume that all four source vertex sets occur exactly once in $K$ and that
+the target vertex set is represented.  The formal development constructs
+represented tetrahedra
+\[
+  \tau_0,\tau_1,\tau_2,\tau_3,\tau_T
+\]
+matching the four sources and the target.
+
+It further proves
+\[
+  [\tau_0,\tau_1,\tau_2,\tau_3,\tau_T].\mathrm{Nodup}.
+\]
+
+The corresponding Lean declarations are
+\begin{center}
+\texttt{Move41Site.exists\_represented\_fiveTetCluster\_of\_targetPresent},
+\end{center}
+and
+\begin{center}
+\texttt{Move41Site.exists\_represented\_fiveTetCluster\_nodup\_of\_targetPresent}.
+\end{center}
+
+\begin{proposition}[Finite common-face closure]
+For the represented target-present cluster above, every represented
+tetrahedron containing a nondegenerate triangular face of a cluster member
+is itself one of the five cluster members.
+\end{proposition}
+
+\begin{proof}
+Each triangular face of each model tetrahedron has its required partner
+among the other four model tetrahedra.  The incidence-two lemma then
+excludes a third represented tetrahedron across that face.
+\end{proof}
+
+The exact formal theorem is
+\begin{center}
+\texttt{Move41Site.represented\_fiveTetCluster\_closed\_under\_common\_face}.
+\end{center}
+
+\section{Propagation through connected vertex links}
+
+The local face-closure result propagates through a connected represented
+vertex link.
+
+\begin{lemma}[Link propagation]
+Let $v$ have a connected represented vertex link.  If a nonempty family of
+represented link triangles is closed under link adjacency, then it
+contains every represented link triangle.
+\end{lemma}
+
+\begin{proof}
+Connectivity gives a finite adjacency path from a chosen seed triangle to
+any represented link triangle.  Induction along that path transports the
+closure property.
+\end{proof}
+
+The formal declaration is
+\begin{center}
+\texttt{VertexLinkConnected.all\_of\_adjacent\_closed}.
+\end{center}
+
+Combining this propagation with common-face closure gives the formal
+vertex-star saturation theorem
+\begin{center}
+\texttt{ClosedTriangulationCore.tetrahedronCluster\_vertexStar\_closed\_of\_commonFace\_closed}.
+\end{center}
+
+For the concrete target-present cluster, the resulting theorem is
+\begin{center}
+\texttt{Move41Site.represented\_fiveTetCluster\_vertexStarClosed\_of\_connectedLinks}.
+\end{center}
+
+It assumes a closed core, connected supported vertex links, the five
+represented tetrahedra, their vertex-set identifications, and the
+five-element nodup certificate, and concludes that every represented
+tetrahedron in the vertex star of a cluster member is again one of the
+five cluster members.
+
+\section{Main theorem}
+
+The principal result of this paper is the following exact formal
+statement.
+
+\begin{theorem}[Degree-four legal-or-target-present dichotomy]
+Let $K$ satisfy \texttt{ClosedTriangulationCore K}.  Let $v$ satisfy
+\[
+  \operatorname{vertexDegree}(K,v)=4
+\]
+and assume
+\texttt{VertexLinkConnected K v}.  Then there exists a
+\texttt{Move41Site} $s$ such that
+\[
+  s.e=v
+\]
+and either
+\[
+  s.\mathrm{LegalIn}(K),
+\]
+or both of the following hold:
+\begin{enumerate}[label=(\roman*)]
+  \item there exists a represented tetrahedron $\tau$ with
+  \texttt{SameTetVertices $\tau$ $s.targetTet$};
+  \item every represented vertex-link triangle at $v$ is represented by
+  a tetrahedron whose vertex set is one of the four source tetrahedra of
+  $s$.
+\end{enumerate}
+\end{theorem}
+
+The exact Lean declaration is
+\begin{center}
+\texttt{ClosedTriangulationCore.exists\_move41Site\_legalIn\_or\_targetPresent\_closes\_vertexLink}.
+\end{center}
+
+Its conclusion is, verbatim at the logical level,
+\[
+\exists s:\mathrm{Move41Site},\quad
+s.e=v\ \land\left(
+s.\mathrm{LegalIn}(K)
+\ \lor\left[
+\begin{array}{l}
+\exists\tau\in K.\mathrm{tets},\mathrm{SameTetVertices}(\tau,s.\mathrm{targetTet})\\
+\land\
+\forall\sigma\in\operatorname{vertexLinkTriangles}(K,v),\exists\tau\in K.\mathrm{tets},\tau.\mathrm{linkTriangleAt?}\ v=\mathrm{some}\ \sigma\\
+\qquad\land\exists\mathrm{source}\in s.\mathrm{sourceTets},\mathrm{SameTetVertices}(\tau,\mathrm{source})
+\end{array}
+\right]
+\right).
+\]
+
+\begin{proof}
+The degree-four hypothesis constructs the Move41 site and labels its
+outer vertices.  The same degree hypothesis gives exact occurrence of
+each of the four source vertex sets.
+
+The outer-vertex coverage then shows that every represented tetrahedron
+incident to the center is represented by one of the four source vertex
+sets.  The source configurations are pairwise distinct.
+
+The formal Move41 classification gives two alternatives.  In the first,
+the site is legal.  In the second, the opposite target is represented.
+The target-present branch is then combined with the five-tetrahedron
+closure and connected-link propagation theorem, yielding the stated
+vertex-link coverage.
+\end{proof}
+
+\section{Relation to global descent}
+
+The theorem is a local structural result.  It does not imply that every
+nonterminal triangulation admits a globally strict decrease of a
+complexity functional.
+
+In particular, this paper does not prove
+\[
+  K\not\simeq S^3
+  \Longrightarrow
+  \exists K'\;[\Phi(K')<\Phi(K)]
+\]
+for an arbitrary triangulation $K$, nor does it prove
+\[
+  \Phi(K)=0\Longrightarrow K\simeq S^3.
+\]
+
+Consequently, no proof of the Poincare conjecture is claimed here.
+
+\section{Formal verification record}
+
+The repository is
+\url{https://github.com/inaciovasquez2020/poincare-new-derivation}.
+
+The manuscript is synchronized to repository main commit
+\texttt{dc517e7146538c69548301371e1d17fa1b8221e8}.
+
+The repository's Lean toolchain is pinned by \texttt{lean-toolchain}; the
+current value is
+\texttt{leanprover/lean4:v4.30.0-rc1}.
+
+The principal source modules are:
+\begin{itemize}
+  \item \texttt{lean/Poincare/DegreeFourConnectedLinkClassification.lean};
+  \item \texttt{lean/Poincare/GlobalDegreeFourTargetPresentSaturation.lean}.
+\end{itemize}
+
+The manuscript should be considered a mathematical description of those
+formal declarations, not a claim that the repository's entire research
+program is closed.
+
+\section{Conclusion}
+
+The degree-four branch has a precise local structure.  A degree-four
+vertex with connected represented link admits a Move41 site which is either
+legal or enters a represented-target branch.  The latter branch produces a
+five-tetrahedron configuration with exact incidence closure and vertex-link
+saturation.
+
+This isolates a concrete, machine-checked local theorem from the larger
+global descent program while preserving the unresolved global boundary.
+
+\end{document}
