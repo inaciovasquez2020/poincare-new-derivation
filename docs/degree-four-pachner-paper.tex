@@ -332,25 +332,60 @@ target witness gives the five-tetrahedron configuration.  Its common-face
 closure is then combined with the connected-link propagation theorem,
 yielding the stated source coverage of the entire represented vertex link.
 \end{proof}
-\section{Relation to global descent}
+\section{What is genuinely new here?}
 
-The theorem is a local structural result.  It does not imply that every
-nonterminal triangulation admits a globally strict decrease of a
-complexity functional.
+The existence of a $4\to1$ Pachner move is classical, and the abstract
+five-tetrahedron configuration is simply $\partial\Delta^4$.  The present
+paper therefore does not claim novelty for those facts.
 
-In particular, this paper does not prove
+The specific formal contribution is narrower: the repository gives a
+machine-checked chain from a degree-four represented vertex to an exact
+site-label certificate, exact uniqueness of the four source occurrences,
+the legal-or-target dichotomy, a pairwise-distinct five-tetrahedron witness
+in the target-present branch, common-face closure of that witness, and its
+propagation through the represented vertex-link adjacency relation.
+
+The distinction matters because the formal object is not assumed to be a
+simplicial manifold.  The theorem explicitly records the incidence and
+connectivity hypotheses needed at each stage rather than silently importing
+topological-manifold facts.
+
+\section{Relation to existing literature}
+
+The ambient move theory is classical.  Pachner established that finite
+collections of bistellar operations suffice to relate triangulations of
+piecewise-linear manifolds in the appropriate setting \cite{Pachner1991};
+Lickorish gives a detailed combinatorial treatment of simplicial moves and
+the Pachner theorem \cite{Lickorish1999}.  Standard algorithmic treatments
+of three-manifold triangulations and simplification include Matveev's
+monograph \cite{Matveev2007}.  Regina provides a mature computational
+implementation of triangulation manipulation and recognition algorithms,
+including local Pachner moves and $4\to1$ moves
+\cite{Burton2013,Regina2004}.
+
+Relative to that literature, the theorem here should be read as a
+formalization result about a particular finite incidence model, not as a
+replacement for the classical Pachner theory.  The local target-present
+obstruction is elementary once the definitions are unfolded.  What is
+potentially useful for formal methods is the explicit decomposition into
+small certificates and the machine-checked propagation from face incidence
+to vertex-star closure.
+
+\section{Global boundary}
+
+The local theorem can be used as an input to a broader simplification or
+descent program, but this paper does not define or prove a global decreasing
+functional.  In particular, it does not prove
 \[
   K\not\simeq S^3
   \Longrightarrow
   \exists K'\;[\Phi(K')<\Phi(K)]
 \]
-for an arbitrary triangulation $K$, nor does it prove
+for any proposed functional $\Phi$, nor does it prove
 \[
   \Phi(K)=0\Longrightarrow K\simeq S^3.
 \]
-
 Consequently, no proof of the Poincare conjecture is claimed here.
-
 \section{Formal verification record}
 
 The repository is
