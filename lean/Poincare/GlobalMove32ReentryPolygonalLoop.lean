@@ -119,7 +119,7 @@ theorem witnessedReentry_transitionArc
     have htwo : 2 * (u : ℝ) ≤ 1 / 2 := by
       linarith
     rw [Path.trans_apply]
-    split_ifs with houter
+    split_ifs
     · rw [Path.trans_apply]
       split_ifs with hinner
       · exact carrierSegmentInTet_mem K target htarget _ _ hm0 hpa0 _
@@ -183,7 +183,7 @@ theorem orderedTransitionPath_first_arc_initial_quarter_supported_probe
               have huHalf : (u : ℝ) ≤ 1 / 2 := by
                 linarith
               rw [orderedTransitionPath, Path.trans_apply]
-              split_ifs with hhalf
+              split_ifs
               · apply ih (Nat.succ m) (by omega) (by omega)
                 have hscaled := hu
                 change
@@ -253,7 +253,7 @@ theorem orderedTransitionPath_first_nonzero_refinement_supported_probe
           (1 / (((N * 2 ^ (m + 1) : Nat) : ℝ))) =
         (2 : ℝ) ^ (m - 1) /
           (((N * 2 ^ (m + 1) : Nat) : ℝ)) := by
-    simp only [div_eq_mul_inv, one_div, one_mul]
+    simp only [div_eq_mul_inv, one_mul]
 
   rw [hdiv]
   rw [div_le_iff₀ hDreal]
@@ -358,7 +358,7 @@ structure WitnessedReentryPolygonalLoopCertificate (K : Triangulation) where
 loop based at its shared-edge midpoint. -/
 theorem ClosedTriangulationCore.exists_polygonalLoopCertificate_of_witnessedReentry_recurrent_crossing
     {K : Triangulation}
-    (hcore : ClosedTriangulationCore K)
+    (_hcore : ClosedTriangulationCore K)
     (c : WitnessedReentryCrossingCertificate K)
     (hrealized : ∀ n, (c.sites n).RealizedIn K)
     (hthree : ∀ n, (c.sites n).SharedEdgeExactlyThree K)
