@@ -199,11 +199,9 @@ theorem exists_carrierLoopNullHomotopyData
   · intro t
     exact H.apply_one t
   · intro s
-    simpa using H.eq_fst s
-      (show (0 : unitInterval) ∈ ({0, 1} : Set unitInterval) by simp)
+    exact H.eq_fst s (by simp)
   · intro s
-    simpa using H.eq_fst s
-      (show (1 : unitInterval) ∈ ({0, 1} : Set unitInterval) by simp)
+    exact H.eq_fst s (by simp)
 
 theorem ClosedTriangulationCore.exists_wholeCarrierLoop_of_witnessedReentry_recurrent_crossing
     {K : Triangulation}
