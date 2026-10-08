@@ -230,7 +230,7 @@ theorem exists_recurrent_highFanEdgeState
     Finset.univ
 
   have hcard : T.card < S.card := by
-    simpa [T, S, N]
+    simp [T, S, N]
 
   have hmaps :
       Set.MapsTo
@@ -485,7 +485,7 @@ theorem EXISTS_RECURRENT_LOCAL_FAN_CONFIGURATION
     Finset.univ
 
   have hcard : T.card < S.card := by
-    simpa [T, S, N]
+    simp [T, S, N]
 
   have hmaps :
       Set.MapsTo
