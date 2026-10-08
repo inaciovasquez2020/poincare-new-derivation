@@ -1,6 +1,6 @@
 import Poincare.GlobalMove32PerpetualWitnessedReentryRecurrentCrossing
 import Poincare.GlobalMove32SourceFaceSourceEdgeHigh
-import Poincare.GlobalMove32SourceFaceHighCollapse
+import Poincare.GlobalMove32SourceFaceNoMove23OfNoHigh
 import Mathlib.Tactic
 
 namespace Poincare
