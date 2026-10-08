@@ -136,8 +136,7 @@ theorem finite_squareGrid_loopBoundary_anchor_firstEarEndpointFork_probe
         intro h
         exact he h.symm
       exfalso
-      simpa [triangulationTopologicalGeometricEdgeMidpoint_apply, hsd, hse]
-        using hlabel0Positive
+      simp [triangulationTopologicalGeometricEdgeMidpoint_apply, hsd, hse] at hlabel0Positive
 
   refine ⟨tau, htau, hlabel0Tau, ?_, hclass, ?_⟩
   · simpa [i0, j0, s] using hlabel0Endpoint
