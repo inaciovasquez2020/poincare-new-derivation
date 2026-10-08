@@ -65,55 +65,55 @@ theorem
       anchor.a ≠ anchor.b := by
     intro h
     rw [h] at hanchorFive
-    simpa using hanchorFive
+    simp at hanchorFive
 
   have hac :
       anchor.a ≠ anchor.c := by
     intro h
     rw [h] at hanchorFive
-    simpa using hanchorFive
+    simp at hanchorFive
 
   have hbc :
       anchor.b ≠ anchor.c := by
     intro h
     rw [h] at hanchorFive
-    simpa using hanchorFive
+    simp at hanchorFive
 
   have haD :
       anchor.a ≠ anchor.d := by
     intro h
     rw [h] at hanchorFive
-    simpa using hanchorFive
+    simp at hanchorFive
 
   have haE :
       anchor.a ≠ anchor.e := by
     intro h
     rw [h] at hanchorFive
-    simpa using hanchorFive
+    simp at hanchorFive
 
   have hbD :
       anchor.b ≠ anchor.d := by
     intro h
     rw [h] at hanchorFive
-    simpa using hanchorFive
+    simp at hanchorFive
 
   have hbE :
       anchor.b ≠ anchor.e := by
     intro h
     rw [h] at hanchorFive
-    simpa using hanchorFive
+    simp at hanchorFive
 
   have hcD :
       anchor.c ≠ anchor.d := by
     intro h
     rw [h] at hanchorFive
-    simpa using hanchorFive
+    simp at hanchorFive
 
   have hcE :
       anchor.c ≠ anchor.e := by
     intro h
     rw [h] at hanchorFive
-    simpa using hanchorFive
+    simp at hanchorFive
 
   have hanchorSource_ne_retEdge
       {z : Nat}
@@ -192,9 +192,8 @@ theorem
       simp only [
         Move32Site.targetTet₀,
         Tet.verts,
-        List.mem_cons,
-        List.mem_singleton
-      ] at hzTarget ⊢
+        List.mem_cons
+       ] at hzTarget ⊢
 
       aesop
 
@@ -205,9 +204,8 @@ theorem
       simp only [
         Move32Site.targetTet₁,
         Tet.verts,
-        List.mem_cons,
-        List.mem_singleton
-      ] at hzTarget ⊢
+        List.mem_cons
+       ] at hzTarget ⊢
 
       aesop
 
@@ -218,9 +216,8 @@ theorem
       simp only [
         Move32Site.targetTet₂,
         Tet.verts,
-        List.mem_cons,
-        List.mem_singleton
-      ] at hzTarget ⊢
+        List.mem_cons
+       ] at hzTarget ⊢
 
       aesop
 
