@@ -70,12 +70,7 @@ theorem ClosedTriangulationCore.not_perpetual_witnessedReentry_of_noDescent_noHi
       hlinks
       hconn
       hNoFour
-      (by
-        intro s hsRealized hsObstruction hmove23
-        exact
-          hNoHigh s hsRealized hsObstruction
-            (hcore.exists_nonself_complementEdge_high_of_move32_sourceFace_obstruction_of_no_degree_four
-              hlinks hNoFour s hsRealized hsObstruction))
+      (hcore.no_matching_legal_move23_of_noHigh hlinks hNoFour hNoHigh)
       hNoDescent
       hNoHigh
       start
