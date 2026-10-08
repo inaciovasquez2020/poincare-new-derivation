@@ -198,9 +198,10 @@ is itself one of the five cluster members.
 \end{proposition}
 
 \begin{proof}
-Each triangular face of each model tetrahedron has its required partner
-among the other four model tetrahedra.  The incidence-two lemma then
-excludes a third represented tetrahedron across that face.
+The abstract five-tetrahedron configuration is the boundary complex
+$\partial\Delta^4$, so every triangle has its unique partner among the
+other four facets.  The closed-core incidence-two condition then excludes a
+third represented tetrahedron across that face.
 \end{proof}
 
 The exact formal theorem is
@@ -210,42 +211,52 @@ The exact formal theorem is
 
 \section{Propagation through connected vertex links}
 
-The local face-closure result propagates through a connected represented
-vertex link.
+The key local-to-star step is a propagation argument.
 
-\begin{lemma}[Link propagation]
-Let $v$ have a connected represented vertex link.  If a nonempty family of
-represented link triangles is closed under link adjacency, then it
-contains every represented link triangle.
-\end{lemma}
+Let $C(\tau)$ mean that a represented tetrahedron $\tau$ belongs to the
+five-tetrahedron cluster.  For a represented link triangle $\sigma$ at
+$v$, define
+\[
+  D(\sigma)
+  \;\Longleftrightarrow\;
+  \text{every represented tetrahedron inducing }\sigma\text{ satisfies }C.
+\]
+Suppose $D(\sigma)$ holds and $\rho$ is adjacent to $\sigma$ in the
+represented vertex link.  The two link triangles share an edge, say with
+endpoints $x,y$.  A tetrahedron inducing $\sigma$ and a tetrahedron
+inducing $\rho$ both contain the three-dimensional face
+\[
+  \{v,x,y\}.
+\]
+The finite common-face closure theorem therefore transfers membership in
+$C$ across one adjacency step.  Hence $D$ is closed under link adjacency.
 
-\begin{proof}
-Connectivity gives a finite adjacency path from a chosen seed triangle to
-any represented link triangle.  Induction along that path transports the
-closure property.
-\end{proof}
+Since \texttt{VertexLinkConnected K v} supplies a finite adjacency path
+from any seed link triangle to any other link triangle, induction along that
+path gives $D(\rho)$ for every represented link triangle $\rho$.
 
-The formal declaration is
-\begin{center}
-\texttt{VertexLinkConnected.all\_of\_adjacent\_closed}.
-\end{center}
-
-Combining this propagation with common-face closure gives the formal
-vertex-star saturation theorem
-\begin{center}
+This is the precise content of
 \texttt{ClosedTriangulationCore.tetrahedronCluster\_vertexStar\_closed\_of\_commonFace\_closed}.
-\end{center}
-
-For the concrete target-present cluster, the resulting theorem is
-\begin{center}
+The concrete target-present cluster is instantiated by
 \texttt{Move41Site.represented\_fiveTetCluster\_vertexStarClosed\_of\_connectedLinks}.
-\end{center}
 
-It assumes a closed core, connected supported vertex links, the five
-represented tetrahedra, their vertex-set identifications, and the
-five-element nodup certificate, and concludes that every represented
-tetrahedron in the vertex star of a cluster member is again one of the
-five cluster members.
+The latter theorem requires connectedness for every supported vertex link,
+because it is a theorem about the vertex star of every tetrahedron in the
+five-tetrahedron cluster.  The main degree-four dichotomy itself only uses
+the single connected-link hypothesis at its center.
+
+\begin{remark}[Global consequence under additional hypotheses]
+The five-tetrahedron cluster is the boundary of a $4$-simplex, hence is a
+triangulation of $S^3$.  If, in addition, all supported vertex links are
+connected and the represented tetrahedron overlap graph is connected, the
+repository's existing global saturation bridge forces every represented
+tetrahedron into the five-element cluster.  Thus the target-present branch
+becomes a global $\partial\Delta^4$ configuration under those additional
+hypotheses.
+
+This is a conditional consequence of the formal local-to-global
+composition; it is not part of the main theorem's hypotheses.
+\end{remark}
 
 \section{Main theorem}
 
