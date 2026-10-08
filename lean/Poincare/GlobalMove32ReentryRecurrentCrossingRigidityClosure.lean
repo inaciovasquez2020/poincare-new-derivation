@@ -78,12 +78,14 @@ theorem
     hdSigma, heSigma,
     heNotTau, hdNotRho,
     hsTau, hsRho,
-    hreturnEdge,
-    htarget,
+    hconfig,
     hpred⟩ :=
     hcore.exists_finite_recurrent_return_crossing_with_predecessor_sourceFace_ne_of_perpetual_witnessedReentry_of_no_degree_four
       hlinks hconn hNoFour
       sites hrealized hthree hwitnessed
+
+  rcases hconfig with
+    ⟨hreturnEdge, htarget⟩
 
   have hstate :
       sharedSupportedEdgeState hcore (sites i) (hrealized i) =
