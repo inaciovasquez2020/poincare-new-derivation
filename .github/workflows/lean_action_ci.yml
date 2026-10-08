@@ -15,3 +15,5 @@ jobs:
       - uses: leanprover/lean-action@v1
         with:
           use-github-cache: true
+      - name: Principal theorem axiom audit
+        run: lake env lean lean/Poincare/DegreeFourAxiomAudit.lean
