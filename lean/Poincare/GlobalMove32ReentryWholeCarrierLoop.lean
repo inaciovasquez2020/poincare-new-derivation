@@ -199,9 +199,9 @@ theorem exists_carrierLoopNullHomotopyData
   · intro t
     exact H.apply_one t
   · intro s
-    exact H.eq_fst s (by simp)
+    exact H.source s
   · intro s
-    exact H.eq_fst s (by simp)
+    exact H.target s
 
 theorem ClosedTriangulationCore.exists_wholeCarrierLoop_of_witnessedReentry_recurrent_crossing
     {K : Triangulation}
