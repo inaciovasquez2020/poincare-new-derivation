@@ -24,33 +24,43 @@
 \maketitle
 
 \begin{abstract}
-We isolate a local structural result in a constructive program based on
-Pachner moves on closed triangulations.  For a degree-four vertex with
-connected represented vertex link, the formal development constructs a
-$4\to1$ site and proves a dichotomy: the site is legal, or its opposite
-target tetrahedron is represented.  In the latter branch, the represented
-target together with the four source tetrahedra forms a pairwise distinct
-five-tetrahedron configuration, and the configuration closes the
-represented vertex link.  The statements are formalized in Lean 4.
+We isolate a local structural theorem about finite tetrahedral
+pseudomanifold-style cores.  If a represented vertex has degree four, the
+formal development constructs a $4\to1$ Pachner site.  The site is either
+legal, or the opposite tetrahedron is already represented.  In the latter
+case, the four source tetrahedra and the target form the five facets of the
+boundary of a $4$-simplex, and the formal development proves the associated
+common-face closure and vertex-link saturation statements.
 
-The result is deliberately local.  It does not prove a global strict
-descent theorem and does not claim a proof of the Poincare conjecture.
+The result is machine-checked in Lean 4.  The paper is deliberately local:
+it does not prove a global strict descent theorem, a classification of all
+closed cores, or the Poincare conjecture.
 \end{abstract}
 
 \section{Introduction}
 
-A constructive approach to triangulated $3$-manifolds is to analyze local
-Pachner moves and seek a complexity-decreasing branch.  A recurring
-difficulty is the $4\to1$ configuration at a degree-four vertex: the
-candidate site may fail to be immediately legal because its opposite
-tetrahedron is already represented.
+Pachner moves are a standard local language for comparing triangulations of
+piecewise-linear manifolds \cite{Pachner1991,Lickorish1999}.  In dimension
+three, one of the four basic moves is the $4\to1$ move, which removes a
+degree-four vertex and replaces the four incident tetrahedra by one
+tetrahedron \cite{Burton2013,Regina2004}.
 
-This paper isolates the formal result that resolves that local branch into
-a precise alternative.  The result is useful independently of the
-remaining global descent problem.
+This paper isolates one local issue that arises when the candidate
+$4\to1$ site is tested in a finite tetrahedral representation.  The
+obstruction is simple to state: the opposite target tetrahedron may already
+be represented.  The formal development resolves this into an exact
+dichotomy and then proves a stronger structural consequence in the
+target-present branch.
 
-The formal development is hosted at
-\url{https://github.com/inaciovasquez2020/poincare-new-derivation}.
+The emphasis here is not a new version of Pachner's theorem.  Rather, the
+contribution is the formal assembly of several finite incidence arguments:
+degree-four link classification, exact occurrence of the four source vertex
+sets, the legal-or-target dichotomy, five-tetrahedron closure, and
+propagation through represented vertex links.
+
+The result arose in a larger program motivated by constructive approaches to
+three-dimensional topology, but none of the arguments below uses the
+Poincare conjecture or a global descent claim.
 
 \section{Combinatorial setting}
 
