@@ -81,8 +81,7 @@ theorem
       (hz : z ∈ [anchor.a, anchor.b, anchor.c]) :
       z ≠ anchor.d ∧ z ≠ anchor.e := by
     have h := hanchorFive
-    simp only [List.mem_cons, List.mem_singleton] at hz
-    simp at h
+    simp at h hz
     rcases hz with rfl | rfl | rfl <;> aesop
 
   have hsource_ne_ret_edges
@@ -135,7 +134,7 @@ theorem
           z ∈ [ret.a, ret.b, ret.c] := by
     intro z hz
     have hzne := hsource_ne_ret_edges hz
-    simp only [List.mem_cons, List.mem_singleton] at hz
+    simp at hz
     rcases hz with rfl | rfl | rfl
     · have hzT : anchor.a ∈ t0.verts :=
         (ht0 anchor.a).2 (by simp [Move32Site.targetTet₀, Tet.verts])
