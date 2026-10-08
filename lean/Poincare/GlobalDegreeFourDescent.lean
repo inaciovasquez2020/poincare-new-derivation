@@ -16,7 +16,7 @@ theorem ClosedTriangulationCore.exists_topology_preserving_PhiSupport_descent_of
     (hconn : TetrahedronVertexOverlapConnected K)
     (hphi : 0 < PhiSupport K)
     {v : Nat}
-    (hv : v ∈ vertexSupport K)
+    (_hv : v ∈ vertexSupport K)
     (hdegree : vertexDegree K v = 4) :
     ∃ K',
       ClosedTriangulationCore K' ∧
@@ -57,7 +57,7 @@ theorem ClosedTriangulationCore.exists_topology_preserving_PhiSupport_descent_or
   classical
   by_cases hNoFour : ∀ v ∈ vertexSupport K, vertexDegree K v ≠ 4
   · exact Or.inr hNoFour
-  · push_neg at hNoFour
+  · push Not at hNoFour
     obtain ⟨v, hv, hdegree⟩ := hNoFour
     exact Or.inl
       (hcore.exists_topology_preserving_PhiSupport_descent_of_degree_four
