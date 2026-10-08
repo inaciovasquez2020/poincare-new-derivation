@@ -91,7 +91,7 @@ theorem finite_squareGrid_first_nonzero_anchor_initialTarget_labels_probe
   have hzSecond : z.2 = u := by
     apply Subtype.ext
     dsimp [z, squareGridCellSource, squareGridParameter, j1]
-    simpa [huD]
+    simp [huD]
 
   have hzEq : z = ((0 : unitInterval), u) := by
     apply Prod.ext

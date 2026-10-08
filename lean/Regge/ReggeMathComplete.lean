@@ -9,15 +9,15 @@ noncomputable def dihedral_angle
 noncomputable def deficit (T : SimplicialComplex) (e : T.V × T.V) : ℝ :=
   2 * Real.pi - 0
 
-noncomputable def regge_action (T : SimplicialComplex) : ℝ :=
+noncomputable def regge_action (_T : SimplicialComplex) : ℝ :=
   0
 
 axiom schlafli_identity :
-  ∀ (T : SimplicialComplex),
+  ∀ (_T : SimplicialComplex),
   True
 
 axiom pachner_invariance :
-  ∀ (T T' : SimplicialComplex),
+  ∀ (_T _T' : SimplicialComplex),
   True
 
 axiom flat_implies_trivial_holonomy :

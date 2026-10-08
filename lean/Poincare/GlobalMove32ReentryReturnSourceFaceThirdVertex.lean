@@ -19,17 +19,17 @@ private theorem exists_third_vertex_of_three
   have hab : a ≠ b := by
     intro h
     subst b
-    simpa using hnodup
+    simp at hnodup
 
   have hac : a ≠ c := by
     intro h
     subst c
-    simpa using hnodup
+    simp at hnodup
 
   have hbc : b ≠ c := by
     intro h
     subst c
-    simpa using hnodup
+    simp at hnodup
 
   simp only [
     List.mem_cons,

@@ -42,7 +42,7 @@ theorem ClosedTriangulationCore.move41Site_outer_vertexDegree_ne_four
       (htauT : SameTetVertices tauT ⟨x, p, r, t⟩) :
       ∃ tau ∈ K.tets, SameTetVertices tau ⟨x, p, q, r⟩ := by
     have hd := hdist
-    simp [Tet.verts] at hd
+    simp at hd
     have hxp : x ∈ tauP.verts := (htauP x).2 (by simp [Tet.verts])
     have hpP : p ∈ tauP.verts := (htauP p).2 (by simp [Tet.verts])
     have hqP : q ∈ tauP.verts := (htauP q).2 (by simp [Tet.verts])

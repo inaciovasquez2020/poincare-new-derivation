@@ -134,7 +134,7 @@ theorem
 
   have hcard :
       T.card < S.card := by
-    simpa [T, S, N]
+    simp [T, S, N]
 
   have hmaps :
       Set.MapsTo

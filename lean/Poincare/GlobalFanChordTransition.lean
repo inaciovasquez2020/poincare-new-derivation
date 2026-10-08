@@ -152,7 +152,7 @@ theorem FanChordTransition.same_location_different_transverse_common
     (T0 T1 : FanChordTransition K v x)
     (hσ : T0.sigma.1 = T1.sigma.1)
     (hρ : T0.rho.1 = T1.rho.1)
-    (hy : T0.transverse ≠ T1.transverse) :
+    (_hy : T0.transverse ≠ T1.transverse) :
     T0.transverse ∈ T0.sigma.1.verts ∧
     T0.transverse ∈ T0.rho.1.verts ∧
     T1.transverse ∈ T0.sigma.1.verts ∧
