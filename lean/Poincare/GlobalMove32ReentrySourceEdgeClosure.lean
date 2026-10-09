@@ -184,63 +184,10 @@ theorem ClosedTriangulationCore.exists_descent_or_global_nonself_high_of_sourceF
               decide
                 (x ∈ gamma.verts ∧
                  y ∈ gamma.verts))).length) := by
-  classical
-  by_cases hdescent :
-      ∃ K',
-        ClosedTriangulationCore K' ∧
-        PhiSupport K' < PhiSupport K ∧
-        Nonempty
-          (triangulationTopologicalGeometricCarrier K ≃ₜ
-            triangulationTopologicalGeometricCarrier K')
-  · exact Or.inl hdescent
-  · by_cases hhigh :
-      ∃ s : Move32Site,
-        s.RealizedIn K ∧
-        (∃ tau ∈ K.tets,
-          s.a ∈ tau.verts ∧
-          s.b ∈ tau.verts ∧
-          s.c ∈ tau.verts) ∧
-        ∃ x y sigma,
-          x ≠ y ∧
-          sigma ∈ K.tets ∧
-          x ∈ sigma.verts ∧
-          y ∈ sigma.verts ∧
-          ¬ ((x = s.d ∧ y = s.e) ∨
-             (x = s.e ∧ y = s.d)) ∧
-          4 ≤
-            (K.tets.filter
-              (fun gamma =>
-                decide
-                  (x ∈ gamma.verts ∧
-                   y ∈ gamma.verts))).length
-    · exact Or.inr hhigh
-    · have hNoHigh :
-          ∀ s : Move32Site,
-            s.RealizedIn K →
-            (∃ tau ∈ K.tets,
-              s.a ∈ tau.verts ∧
-              s.b ∈ tau.verts ∧
-              s.c ∈ tau.verts) →
-            ¬ ∃ x y sigma,
-              x ≠ y ∧
-              sigma ∈ K.tets ∧
-              x ∈ sigma.verts ∧
-              y ∈ sigma.verts ∧
-              ¬ ((x = s.d ∧ y = s.e) ∨
-                 (x = s.e ∧ y = s.d)) ∧
-              4 ≤
-                (K.tets.filter
-                  (fun gamma =>
-                    decide
-                      (x ∈ gamma.verts ∧
-                       y ∈ gamma.verts))).length := by
-        intro s hs hob hedge
-        exact hhigh ⟨s, hs, hob, hedge⟩
-      exact False.elim
-        (hcore.not_perpetual_witnessedReentry_of_noDescent_noHigh_sourceEdge
-          hlinks hconn hNoFour
-          (fun h => hdescent h)
-          hNoHigh
-          start hstartRealized hstartThree hstartObstruction)
+  refine Or.inr ?_
+  exact
+    ⟨start, hstartRealized, hstartObstruction,
+      hcore.exists_nonself_sourceEdge_high_of_move32_sourceFace_obstruction_of_no_degree_four
+        hlinks hNoFour start hstartRealized hstartObstruction⟩
 
 end Poincare
