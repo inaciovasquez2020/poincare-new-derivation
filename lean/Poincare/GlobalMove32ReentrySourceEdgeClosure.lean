@@ -187,7 +187,7 @@ theorem ClosedTriangulationCore.exists_descent_or_global_nonself_high_of_sourceF
   refine Or.inr ?_
   exact
     ⟨start, hstartRealized, hstartObstruction,
-      hcore.exists_nonself_sourceEdge_high_of_move32_sourceFace_obstruction_of_no_degree_four
-        hlinks hNoFour start hstartRealized hstartObstruction⟩
+      Poincare.ClosedTriangulationCore.exists_nonself_sourceEdge_high_of_move32_sourceFace_obstruction_of_no_degree_four
+        hcore hlinks hNoFour start hstartRealized hstartObstruction⟩
 
 end Poincare
