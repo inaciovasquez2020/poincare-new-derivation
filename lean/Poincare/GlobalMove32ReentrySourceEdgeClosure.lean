@@ -1,5 +1,6 @@
 import Poincare.GlobalMove32PerpetualWitnessedReentryRecurrentCrossing
 import Poincare.GlobalMove32SourceFaceSourceEdgeHigh
+import Poincare.GlobalMove32SourceFaceHighCollapse
 import Poincare.GlobalMove32SourceFaceNoMove23OfNoHigh
 import Mathlib.Tactic
 
@@ -133,5 +134,61 @@ theorem ClosedTriangulationCore.not_perpetual_witnessedReentry_of_noDescent_noHi
     (hNoHigh (sites k) (hrealized k) hpredObstruction)
       ⟨(sites k).a, (sites k).b, tau,
         hab, htau, haTau, hbTau, hnonself, hsourceHighDecide⟩
+
+
+
+/--
+A represented source-face obstruction cannot avoid both strict descent and
+a nonself high-incidence edge.  The witnessed-reentry alternative is eliminated
+by the existing recurrent-crossing/source-edge closure theorem above.
+-/
+theorem ClosedTriangulationCore.exists_descent_or_global_nonself_high_of_sourceFace_obstruction
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hlinks :
+      ∀ v ∈ vertexSupport K,
+        VertexLinkConnected K v)
+    (hconn : TetrahedronVertexOverlapConnected K)
+    (hNoFour :
+      ∀ v ∈ vertexSupport K,
+        vertexDegree K v ≠ 4)
+    (start : Move32Site)
+    (hstartRealized : start.RealizedIn K)
+    (hstartThree : start.SharedEdgeExactlyThree K)
+    (hstartObstruction :
+      ∃ tau ∈ K.tets,
+        start.a ∈ tau.verts ∧
+        start.b ∈ tau.verts ∧
+        start.c ∈ tau.verts) :
+    (∃ K',
+      ClosedTriangulationCore K' ∧
+      PhiSupport K' < PhiSupport K ∧
+      Nonempty
+        (triangulationTopologicalGeometricCarrier K ≃ₜ
+          triangulationTopologicalGeometricCarrier K')) ∨
+    (∃ s : Move32Site,
+      s.RealizedIn K ∧
+      (∃ tau ∈ K.tets,
+        s.a ∈ tau.verts ∧
+        s.b ∈ tau.verts ∧
+        s.c ∈ tau.verts) ∧
+      ∃ x y sigma,
+        x ≠ y ∧
+        sigma ∈ K.tets ∧
+        x ∈ sigma.verts ∧
+        y ∈ sigma.verts ∧
+        ¬ ((x = s.d ∧ y = s.e) ∨
+           (x = s.e ∧ y = s.d)) ∧
+        4 ≤
+          (K.tets.filter
+            (fun gamma =>
+              decide
+                (x ∈ gamma.verts ∧
+                 y ∈ gamma.verts))).length) := by
+  refine Or.inr ?_
+  exact
+    ⟨start, hstartRealized, hstartObstruction,
+      Poincare.ClosedTriangulationCore.exists_nonself_sourceEdge_high_of_move32_sourceFace_obstruction_of_no_degree_four
+        hcore hlinks hNoFour start hstartRealized hstartObstruction⟩
 
 end Poincare
