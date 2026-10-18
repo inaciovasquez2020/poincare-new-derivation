@@ -81,10 +81,10 @@ theorem obstructing_face_two_link_contributions
       a ∈ υy.verts ∧ b ∈ υy.verts ∧ y ∈ υy.verts) := by
   constructor
   · exact exists_link_triangle_with_other_vertices_of_tet_mem
-      a b c x τ hτ haτ haτ hbτ hxτ hab hac hax
+      a b c x τ hτ haτ hbτ hcτ hxτ hab hac hax
   constructor
   · exact exists_link_triangle_with_other_vertices_of_tet_mem
-      a b c y ρ hρ haρ haρ hbρ hyρ hab hac hay
+      a b c y ρ hρ haρ hbρ hcρ hyρ hab hac hay
   constructor
   · exact exists_link_triangle_with_other_vertices_of_tet_mem
       b a c x τ hτ hbτ haτ hcτ hxτ hab.symm hbc hbx
