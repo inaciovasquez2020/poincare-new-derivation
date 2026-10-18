@@ -66,12 +66,19 @@ def main():
     assert len({a,b,c,d,e,x,y}) == 7, "obstruction/site vertices not distinct"
     xy = sum(x in t and y in t for t in tets)
     assert xy > 0 and not ((x==d and y==e) or (x==e and y==d)), "complement edge missing or self"
-    inc = { "a_x":sum(a in t and x in t for t in tets),
-            "b_x":sum(b in t and x in t for t in tets),
-            "c_x":sum(c in t and x in t for t in tets) }
+    inc = {"a_x":sum(a in t and x in t for t in tets),
+           "b_x":sum(b in t and x in t for t in tets),
+           "c_x":sum(c in t and x in t for t in tets)}
     assert inc == dta["edge_incidences_at_x"], "incidence receipt mismatch"
     assert all(n > 3 for n in inc.values()), "disjunction not falsified"
     assert dict(sorted(degree.items())) == {int(k):v for k,v in dta["vertex_degrees"].items()}, "degree receipt mismatch"
+
+    edge_set = {edge for t in tets for edge in edges(t)}
+    face_set = {f for t in tets for f in faces(t)}
+    fvector = {"vertices":len(support), "edges":len(edge_set), "triangles":len(face_set),
+               "tetrahedra":len(tets),
+               "euler_characteristic":len(support)-len(edge_set)+len(face_set)-len(tets)}
+    assert fvector == dta["f_vector"], "f-vector receipt mismatch"
 
     print(json.dumps({
       "status":"PASS",
@@ -82,6 +89,7 @@ def main():
       "opposite_vertices":sorted((x,y)),
       "xy_incidence":xy,
       "edge_incidences_at_x":inc,
+      "f_vector":fvector,
       "closed_core":True,
       "all_vertex_links_connected":True,
       "tetrahedron_vertex_overlap_connected":True,
