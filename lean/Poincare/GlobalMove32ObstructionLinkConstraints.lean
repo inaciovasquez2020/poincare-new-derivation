@@ -17,9 +17,9 @@ theorem exists_link_triangle_with_other_vertices_of_tet_mem
     (hp : p ∈ τ.verts)
     (hq : q ∈ τ.verts)
     (hr : r ∈ τ.verts)
-    (hvp : v ≠ p)
-    (hvq : v ≠ q)
-    (hvr : v ≠ r) :
+    (hpv : p ≠ v)
+    (hqv : q ≠ v)
+    (hrv : r ≠ v) :
     ∃ σ : LinkTriangle,
       σ ∈ vertexLinkTriangles K v ∧
       p ∈ σ.verts ∧
@@ -29,9 +29,9 @@ theorem exists_link_triangle_with_other_vertices_of_tet_mem
     exists_vertexLinkTriangle_of_tet_mem_of_vertex_mem
       K v τ hτ hv
   refine ⟨σ, hσ, ?_, ?_, ?_⟩
-  · exact (τ.mem_linkTriangleAt?_iff v p σ hExtract hvp).2 hp
-  · exact (τ.mem_linkTriangleAt?_iff v q σ hExtract hvq).2 hq
-  · exact (τ.mem_linkTriangleAt?_iff v r σ hExtract hvr).2 hr
+  · exact (τ.mem_linkTriangleAt?_iff v p σ hExtract hpv).2 hp
+  · exact (τ.mem_linkTriangleAt?_iff v q σ hExtract hqv).2 hq
+  · exact (τ.mem_linkTriangleAt?_iff v r σ hExtract hrv).2 hr
 
 /--
 The two tetrahedra incident to an obstructing face supply two link-triangle
@@ -81,20 +81,20 @@ theorem obstructing_face_two_link_contributions
       a ∈ υy.verts ∧ b ∈ υy.verts ∧ y ∈ υy.verts) := by
   constructor
   · exact exists_link_triangle_with_other_vertices_of_tet_mem
-      a b c x τ hτ haτ hbτ hcτ hxτ hab hac hax
+      a b c x τ hτ haτ hbτ hcτ hxτ hab.symm hac.symm hax.symm
   constructor
   · exact exists_link_triangle_with_other_vertices_of_tet_mem
-      a b c y ρ hρ haρ hbρ hcρ hyρ hab hac hay
+      a b c y ρ hρ haρ hbρ hcρ hyρ hab.symm hac.symm hay.symm
   constructor
   · exact exists_link_triangle_with_other_vertices_of_tet_mem
-      b a c x τ hτ hbτ haτ hcτ hxτ hab.symm hbc hbx
+      b a c x τ hτ hbτ haτ hcτ hxτ hab hbc.symm hbx.symm
   constructor
   · exact exists_link_triangle_with_other_vertices_of_tet_mem
-      b a c y ρ hρ hbρ haρ hcρ hyρ hab.symm hbc hby
+      b a c y ρ hρ hbρ haρ hcρ hyρ hab hbc.symm hby.symm
   constructor
   · exact exists_link_triangle_with_other_vertices_of_tet_mem
-      c a b x τ hτ hcτ haτ hbτ hxτ hac.symm hbc.symm hcx
+      c a b x τ hτ hcτ haτ hbτ hxτ hac hbc hcx.symm
   · exact exists_link_triangle_with_other_vertices_of_tet_mem
-      c a b y ρ hρ hcρ haρ hbρ hyρ hac.symm hbc.symm hcy
+      c a b y ρ hρ hcρ haρ hbρ hyρ hac hbc hcy.symm
 
 end Poincare
