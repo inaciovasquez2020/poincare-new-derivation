@@ -21,6 +21,7 @@
   },
   "edge_incidences_at_x": {"a_x":5, "b_x":4, "c_x":4},
   "vertex_degrees": {"0":12, "1":12, "2":8, "3":8, "4":8, "5":8, "6":10, "7":10},
+  "f_vector": {"vertices":8, "edges":26, "triangles":38, "tetrahedra":19, "euler_characteristic":1},
   "checks": {
     "closed_triangulation_core": true,
     "all_supported_vertex_degrees_not_four": true,
@@ -33,6 +34,6 @@
     "nonself_complement_edge": true,
     "all_three_target_incidences_strictly_greater_than_three": true
   },
-  "scope": "Counterexample to the implication using exactly the listed formal predicates: ClosedTriangulationCore, connected vertex links, tetrahedron vertex-overlap connectedness, no supported degree four, realized Move32 site, and the specified source-face/complement-edge obstruction. Does not claim satisfaction of any stronger, separately stated topological-realization or simple-connectivity hypothesis.",
+  "scope": "Counterexample to the implication using exactly the listed formal predicates: ClosedTriangulationCore, connected vertex links, tetrahedron vertex-overlap connectedness, no supported degree four, realized Move32 site, and the specified source-face/complement-edge obstruction. It is not established as a topological 3-manifold triangulation; its Euler characteristic is 1, so it must not be presented as a counterexample to any stronger theorem requiring an actual closed 3-manifold or simply connected realization.",
   "search_note": "A legal 2-3/3-2 Pachner search from crossPolytopeBoundary4 found no such witness through depth 4 (6,953 unique states). This bounded search is not an impossibility result."
 }
