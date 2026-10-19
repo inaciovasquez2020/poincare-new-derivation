@@ -65,7 +65,17 @@ theorem orderedTransitionPath_first_target_dyadic_probe
             · have hdouble : (u : ℝ) * 2 = (v : ℝ) := by
                 dsimp [u]
                 ring
-              rw [show (u : ℝ) * 2 = (v : ℝ) from hdouble]
+              have hdouble' : (2 : ℝ) * (u : ℝ) = (v : ℝ) := by
+                nlinarith [hdouble]
+              have hparam :
+                  (⟨2 * (u : ℝ), by
+                    constructor
+                    · have hu0 := u.property.1
+                      linarith
+                    · linarith [huHalf]⟩ : unitInterval) = v := by
+                apply Subtype.ext
+                exact hdouble'
+              rw [hparam]
               exact hpath
             · exact (hhalf huHalf).elim
 
