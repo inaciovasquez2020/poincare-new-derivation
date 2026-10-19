@@ -73,7 +73,7 @@ theorem orderedTransitionPath_first_target_dyadic_probe
                     · have hu0 := u.property.1
                       linarith
                     · linarith [huHalf]⟩ : unitInterval) = v := by
-                apply Subtype.ext
+                exact Subtype.ext hdouble'
               rw [hparam]
               exact hpath
             · exact (hhalf huHalf).elim
