@@ -1,3 +1,6 @@
 import Poincare.DegreeFourConnectedLinkClassification
+import Poincare.GlobalMove32ReentryLeastBoundaryEscapeIncidenceThreeFork
 
 #print axioms Poincare.ClosedTriangulationCore.exists_move41Site_legalIn_or_targetPresent_closes_vertexLink
+
+#print axioms Poincare.CarrierLoopNullHomotopyData.ClosedTriangulationCore.not_noDescent_of_noHigh_sourceFace_start
