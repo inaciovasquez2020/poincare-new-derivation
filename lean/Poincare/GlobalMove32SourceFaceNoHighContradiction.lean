@@ -16,7 +16,7 @@ theorem move32_sourceFace_obstruction_false_of_noHigh
     (hNoFour : ∀ v ∈ vertexSupport K, vertexDegree K v ≠ 4)
     (s : Move32Site)
     (hrealized : s.RealizedIn K)
-    (hobstruction :
+    (hsourceFace :
       ∃ tau ∈ K.tets,
         s.a ∈ tau.verts ∧
         s.b ∈ tau.verts ∧
@@ -43,10 +43,10 @@ theorem move32_sourceFace_obstruction_false_of_noHigh
                    y ∈ gamma.verts))).length) :
     False := by
   classical
-  obtain ⟨theta, htheta, haTheta, hbTheta, hcTheta⟩ := hobstruction
+  obtain ⟨theta, htheta, haTheta, hbTheta, hcTheta⟩ := hsourceFace
   have habHigh :=
     hcore.move32_all_sourceEdges_incidence_four_le_of_sourceFace_obstruction_of_no_degree_four
-      hlinks hNoFour s hrealized hobstruction
+      hlinks hNoFour s hrealized hsourceFace
   have hfive := hcore.move32Site_distinct s hrealized
   have hab : s.a ≠ s.b := by
     intro habEq
@@ -69,7 +69,7 @@ theorem move32_sourceFace_obstruction_false_of_noHigh
                s.b ∈ gamma.verts))).length := by
     simpa only [decide_eq_true_eq] using habHigh.1
   exact
-    (hNoHigh s hrealized hobstruction)
+    (hNoHigh s hrealized hsourceFace)
       ⟨s.a, s.b, theta, hab, htheta, haTheta, hbTheta,
         hnonself, hhighDecide⟩
 
