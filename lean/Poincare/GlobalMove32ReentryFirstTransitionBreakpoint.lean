@@ -62,7 +62,7 @@ theorem orderedTransitionPath_first_target_dyadic_probe
           · simpa using hu
           · rw [orderedTransitionPath, Path.trans_apply]
             split_ifs with hhalf
-            · simpa [u] using hpath
+            · convert hpath using 1 <;> apply Subtype.ext <;> dsimp [u] <;> ring
             · exact (hhalf huHalf).elim
 
 end Poincare
