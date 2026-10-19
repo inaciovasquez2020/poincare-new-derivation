@@ -44,7 +44,7 @@ theorem move32_sourceFace_obstruction_false_of_noHigh
     False := by
   classical
   have hsourceFaceKeep := hsourceFace
-  obtain ⟨theta, htheta, haTheta, hbTheta, hcTheta⟩ := hsourceFaceKeep
+  obtain ⟨theta, htheta, haTheta, hbTheta, hcTheta⟩ := hsourceFace
   have habHigh :=
     hcore.move32_all_sourceEdges_incidence_four_le_of_sourceFace_obstruction_of_no_degree_four
       hlinks hNoFour s hrealized hsourceFaceKeep
