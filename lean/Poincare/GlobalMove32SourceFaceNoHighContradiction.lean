@@ -50,8 +50,7 @@ theorem move32_sourceFace_obstruction_false_of_noHigh
   have hfive := hcore.move32Site_distinct s hrealized
   have hab : s.a ≠ s.b := by
     intro habEq
-    subst s.b
-    simp at hfive
+    simp [habEq] at hfive
   have hnonself :
       ¬ ((s.a = s.d ∧ s.b = s.e) ∨
          (s.a = s.e ∧ s.b = s.d)) := by
