@@ -2,6 +2,7 @@ import Poincare.GlobalMove32ReentryLeastBoundaryEscapeNoHigh
 import Poincare.GlobalMove32IncidenceThreeCandidate
 import Poincare.GlobalMove32IncidenceThreeSplit
 import Poincare.GlobalMove32SourceFaceNoHighContradiction
+import Poincare.GlobalMove32ReentryFirstNonzeroFailClosed
 
 namespace Poincare
 namespace CarrierLoopNullHomotopyData
@@ -213,6 +214,65 @@ theorem finite_squareGrid_least_boundary_escape_incidenceThree_descent_of_noHigh
   · exact ⟨j, k, hjPos, hkSucc, hkInside, hjOutside, hdesc⟩
   · exact (move32_sourceFace_obstruction_false_of_noHigh
       hcore hlinks hNoFour s hrealized hobstruction hNoHigh).elim
+
+
+/--
+The no-descent assumption is incompatible with the polygonal null-homotopy
+and fail-closed high-incidence exclusion: construct the positive-coordinate
+grid at the certificate's dependent dyadic scale, then apply the least-boundary
+first-exit descent theorem. This is a conditional contradiction theorem; it
+does not remove the need to justify these hypotheses in any global application.
+-/
+theorem ClosedTriangulationCore.not_noDescent_of_noHigh_sourceFace_start
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hlinks : ∀ v ∈ vertexSupport K, VertexLinkConnected K v)
+    (hconn : TetrahedronVertexOverlapConnected K)
+    (hSC : TriangulationRealizationSimplyConnected K)
+    (hNoFour : ∀ v ∈ vertexSupport K, vertexDegree K v ≠ 4)
+    (hNoDescent :
+      ¬ ∃ K',
+        ClosedTriangulationCore K' ∧
+        PhiSupport K' < PhiSupport K ∧
+        Nonempty
+          (triangulationTopologicalGeometricCarrier K ≃ₜ
+            triangulationTopologicalGeometricCarrier K'))
+    (hNoHigh :
+      ∀ s : Move32Site,
+        s.RealizedIn K →
+        (∃ tau ∈ K.tets,
+          s.a ∈ tau.verts ∧
+          s.b ∈ tau.verts ∧
+          s.c ∈ tau.verts) →
+        ¬ ∃ x y sigma,
+          x ≠ y ∧ sigma ∈ K.tets ∧
+          x ∈ sigma.verts ∧ y ∈ sigma.verts ∧
+          ¬ ((x = s.d ∧ y = s.e) ∨
+             (x = s.e ∧ y = s.d)) ∧
+          4 ≤ (K.tets.filter
+            (fun gamma => decide (x ∈ gamma.verts ∧ y ∈ gamma.verts))).length)
+    (start : Move32Site)
+    (hstartRealized : start.RealizedIn K)
+    (hstartThree : start.SharedEdgeExactlyThree K)
+    (hstartObstruction :
+      ∃ tau ∈ K.tets,
+        start.a ∈ tau.verts ∧
+        start.b ∈ tau.verts ∧
+        start.c ∈ tau.verts) :
+    False := by
+  obtain ⟨p, hH⟩ :=
+    hcore.exists_polygonalLoop_nullHomotopyData_of_no_other_sourceFace_outcome
+      hlinks hconn hSC hNoFour hNoDescent hNoHigh
+      start hstartRealized hstartThree hstartObstruction
+  obtain ⟨H⟩ := hH
+  obtain ⟨N, hN, hD, label, _, hpositive⟩ :=
+    H.exists_finite_squareGrid_dyadic_refinement_positiveCoordinate_labelling_probe
+      (p.crossing.predecessorIndex + 1 - p.crossing.anchorIndex + 1)
+  have hdescent :=
+    CarrierLoopNullHomotopyData.finite_squareGrid_least_boundary_escape_incidenceThree_descent_of_noHigh
+      hcore hlinks hNoFour p H hNoHigh N hN hD label hpositive
+  rcases hdescent with ⟨j, k, hj, hk, hinside, houtside, hstrictDescent⟩
+  exact hNoDescent hstrictDescent
 
 end CarrierLoopNullHomotopyData
 end Poincare
