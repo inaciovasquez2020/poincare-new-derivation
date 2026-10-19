@@ -39,3 +39,39 @@ The invariant must be derived from the retained transition geometry and the actu
 - **Proved at base:** finite recurrent edge endpoint reduction; finite repeated-local-location reduction; uniqueness of transverse carrier and chord endpoints at a repeated location; equality of successor edge states; the same-transverse two-step contradiction.
 - **Not proved:** a well-founded cycle-shortening invariant; cyclic rigidity for longer cycles with changing retained locations; a topology-compliant counterexample; global high-fan termination; `Poincare.JIID`; Poincare conjecture.
 - **Changes in this branch:** this frontier record only; no Lean theorem is asserted by this document.
+
+
+## Follow-up: the mixed-mode continuation has the same frontier
+
+Inspection of `GlobalFanReentryModeLinkedStep.lean`,
+`GlobalFanReentryModeFiniteRecurrence.lean`, and
+`GlobalFanReentryModeFailClosedRecurrence.lean` confirms that the repository
+already retains more lineage for the mixed fan/reentry process. Its finite-key
+recurrence theorem classifies the return as either a nonconsecutive repeated
+fan edge or a repeated witnessed-reentry key. The source comments explicitly
+stop at recurrence and do not exclude either cycle.
+
+This does not supply the missing cycle invariant. The finite key deliberately
+forgets local link triangles and witness data; even recurrence of a full
+`HighFanState` would only yield a periodic trajectory under a
+nondeterministic successor relation. Periodicity is not itself contradictory:
+the no-move/no-descent hypotheses produce an infinite obstruction trajectory,
+and an additional geometric theorem is needed to rule out its cycle.
+
+### Well-founded-measure audit
+
+- `PhiSupport` is a measure on the triangulation, which remains fixed along
+  this obstruction trajectory. It strictly decreases only when the separate
+  descent alternative is taken; under the no-descent branch it supplies no
+  decrease along successive states.
+- The canonical edge key and the mixed finite key are finite recurrence keys,
+  not strictly decreasing measures.
+- No source-level theorem found in the inspected continuation/recurrence files
+  makes the successor choice a function of the coarse key or proves a
+  strictly decreasing measure on retained transitions.
+- Therefore the minimal-cycle route remains conditional on a new invariant;
+  it cannot be completed by applying finite pigeonhole recurrence alone.
+
+**Updated conclusion:** the repository proves finite recurrence and local
+same-location rigidity. It does not yet prove cyclic rigidity, exclude the
+residual recurrent fan/reentry branches, or supply a compliant counterexample.
