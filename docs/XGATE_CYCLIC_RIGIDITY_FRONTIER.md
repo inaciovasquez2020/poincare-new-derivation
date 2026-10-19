@@ -75,3 +75,31 @@ and an additional geometric theorem is needed to rule out its cycle.
 **Updated conclusion:** the repository proves finite recurrence and local
 same-location rigidity. It does not yet prove cyclic rigidity, exclude the
 residual recurrent fan/reentry branches, or supply a compliant counterexample.
+
+
+## Follow-up: exact retained reentry data and the residual return
+
+The source definitions show that `WitnessedReentryState` retains a `Move32Site`,
+its realization proof, and its exact-three shared-edge proof. The
+`Move32SourceFaceWitnessedReentry` relation additionally retains two distinct
+tetrahedra sharing the old obstruction face, complementary vertices `x,y`,
+a tetrahedron containing the new edge, and the exact equalities
+`s'.d = x`, `s'.e = y`. Thus this branch does retain more geometric lineage
+than the finite key does.
+
+However, `FanReentryModeState.finiteKey` reduces a reentry state to only the
+canonical unordered pair `{site.d, site.e}`. Existing
+`sharedSupportedEdgeState_ne_of_sourceFaceReentry` proves adjacent keys differ;
+the finite recurrence theorem then gives a nonconsecutive repeated key. It does
+not prove the repeated full `Move32Site`s or the complementary tetrahedral
+witnesses are equal.
+
+The potentially useful invariant is therefore not simply edge recurrence. It
+must exploit how the complementary pair `(x,y)` is extracted from the old
+tetrahedra and how the next site’s obstruction face is selected. A precise
+candidate target is a return-rigidity theorem: for a closed witnessed-reentry
+cycle, show that a repeated canonical shared edge plus the retained step
+witnesses forces either (i) equality of full sites with a forbidden immediate
+self-edge, (ii) a degree-four vertex, or (iii) a legal Move23 / strict
+`PhiSupport` descent. The inspected definitions do not currently establish
+this disjunction. This is a proof target, not a theorem or verified conjecture.
