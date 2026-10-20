@@ -19,5 +19,8 @@ jobs:
         with:
           use-github-cache: false
 
+      - name: Build principal theorem module
+        run: lake build Poincare.GlobalMove32ReentryLeastBoundaryEscapeIncidenceThreeFork
+
       - name: Principal theorem axiom audit
         run: lake env lean lean/Poincare/DegreeFourAxiomAudit.lean

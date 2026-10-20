@@ -62,7 +62,19 @@ theorem orderedTransitionPath_first_target_dyadic_probe
           · simpa using hu
           · rw [orderedTransitionPath, Path.trans_apply]
             split_ifs with hhalf
-            · simpa [u] using hpath
-            · exact (hhalf huHalf).elim
+            · have hdouble : (u : ℝ) * 2 = (v : ℝ) := by
+                dsimp [u]
+                ring
+              have hdouble' : (2 : ℝ) * (u : ℝ) = (v : ℝ) := by
+                nlinarith [hdouble]
+              have hparam :
+                  (⟨2 * (u : ℝ), by
+                    constructor
+                    · have hu0 := u.property.1
+                      linarith
+                    · linarith [huHalf]⟩ : unitInterval) = v := by
+                exact Subtype.ext hdouble'
+              rw [hparam]
+              exact hpath
 
 end Poincare

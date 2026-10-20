@@ -67,13 +67,13 @@ theorem WitnessedReentryPolygonalLoopCertificate.first_transition_dyadic_anchorC
       intro hEq
       have hmem : t.d ∈ [s.a, s.b, s.c, s.d, s.e] := by
         simpa [hEq] using hz
-      exact (List.disjoint_left.mp hdisj t.d (by simp) hmem)
+      exact (List.disjoint_left.mp hdisj (by simp) hmem)
 
     have hze : z ≠ t.e := by
       intro hEq
       have hmem : t.e ∈ [s.a, s.b, s.c, s.d, s.e] := by
         simpa [hEq] using hz
-      exact (List.disjoint_left.mp hdisj t.e (by simp) hmem)
+      exact (List.disjoint_left.mp hdisj (by simp) hmem)
 
     rw [hloop]
     change triangulationTopologicalGeometricEdgeMidpoint t.d t.e z = 0
