@@ -1,4 +1,5 @@
 import Poincare.GlobalMove32ReentryLeastBoundaryEscapeIncidenceSplit
+import Poincare.GlobalMove32ReentryPolygonalLoopAnchorObstruction
 
 namespace Poincare
 namespace CarrierLoopNullHomotopyData
@@ -114,11 +115,7 @@ theorem finite_squareGrid_least_boundary_escape_edge_incidence_eq_three_of_noHig
         s.a ∈ tau.verts ∧
         s.b ∈ tau.verts ∧
         s.c ∈ tau.verts := by
-    obtain ⟨target, htarget, htargetVerts⟩ := hsRealized.1
-    exact ⟨target, htarget,
-      (htargetVerts s.a).2 (by simp [Move32Site.targetTet₀, Tet.verts]),
-      (htargetVerts s.b).2 (by simp [Move32Site.targetTet₀, Tet.verts]),
-      (htargetVerts s.c).2 (by simp [Move32Site.targetTet₀, Tet.verts])⟩
+    simpa [s] using p.anchor_sourceFace_obstruction
 
   have hnonself :
       ¬ ((v = s.d ∧ x = s.e) ∨
