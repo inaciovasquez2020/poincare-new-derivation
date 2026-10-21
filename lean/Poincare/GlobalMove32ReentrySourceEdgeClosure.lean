@@ -148,13 +148,13 @@ theorem ClosedTriangulationCore.exists_descent_or_global_nonself_high_of_sourceF
     (hlinks :
       ∀ v ∈ vertexSupport K,
         VertexLinkConnected K v)
-    (hconn : TetrahedronVertexOverlapConnected K)
+    (_hconn : TetrahedronVertexOverlapConnected K)
     (hNoFour :
       ∀ v ∈ vertexSupport K,
         vertexDegree K v ≠ 4)
     (start : Move32Site)
     (hstartRealized : start.RealizedIn K)
-    (hstartThree : start.SharedEdgeExactlyThree K)
+    (_hstartThree : start.SharedEdgeExactlyThree K)
     (hstartObstruction :
       ∃ tau ∈ K.tets,
         start.a ∈ tau.verts ∧

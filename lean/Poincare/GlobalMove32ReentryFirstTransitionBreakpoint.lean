@@ -61,7 +61,7 @@ theorem orderedTransitionPath_first_target_dyadic_probe
           refine ⟨u, ?_, ?_⟩
           · simpa using hu
           · rw [orderedTransitionPath, Path.trans_apply]
-            split_ifs with hhalf
+            split_ifs with _hhalf
             · have hdouble : (u : ℝ) * 2 = (v : ℝ) := by
                 dsimp [u]
                 ring
