@@ -252,12 +252,27 @@ lemma no_axioms_remaining_target :
   exact ⟨Phi K, hcorrect (Nat.iterate step (Phi K) K) (iterate_step_hits_zero K)⟩
 
 
-lemma pivotVertex_unique_max :
-  ∀ K : Triangulation,
+/-!
+A unique maximum is not guaranteed: the one-tetrahedron example has four
+vertices with equal defect. The selector's tie-breaking does not make the
+mathematical maximum unique.
+-/ 
+lemma pivotVertex_unique_max_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     ∃! v ∈ allVerts K,
-      vertexDefect K v = (allVerts K).foldl (fun m u => max m (vertexDefect K u)) 0 :=
-by sorry
+      vertexDefect K v = (allVerts K).foldl (fun m u => max m (vertexDefect K u)) 0) := by
+  intro h
+  let K : Triangulation := { tets := [{ v0 := 0, v1 := 1, v2 := 2, v3 := 3 }] }
+  have hPhi : Phi K > 0 := by native_decide
+  obtain ⟨v, hv, huniq⟩ := h K hPhi
+  have h0mem : 0 ∈ allVerts K := by native_decide
+  have h1mem : 1 ∈ allVerts K := by native_decide
+  have h0max : vertexDefect K 0 = (allVerts K).foldl (fun m u => max m (vertexDefect K u)) 0 := by native_decide
+  have h1max : vertexDefect K 1 = (allVerts K).foldl (fun m u => max m (vertexDefect K u)) 0 := by native_decide
+  have h0eq : 0 = v := huniq 0 ⟨h0mem, h0max⟩
+  have h1eq : 1 = v := huniq 1 ⟨h1mem, h1max⟩
+  omega
 
 lemma pivotVertex_is_getD_of_unique_max :
   ∀ K : Triangulation,
