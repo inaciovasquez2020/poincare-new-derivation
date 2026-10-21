@@ -277,14 +277,7 @@ lemma pivotVertex_unique_max_impossible :
   have h1eq : 1 = v := huniq 1 ⟨h1mem, h1max⟩
   omega
 
-lemma pivotVertex_is_getD_of_unique_max :
-  ∀ K : Triangulation,
-    Phi K > 0 →
-    let v := Option.getD (pivotVertex K) 0
-    v ∈ allVerts K ∧
-    ∀ u ∈ allVerts K, vertexDefect K u ≤ vertexDefect K v :=
-by sorry
-
+-- The pivot maximum property is intentionally not asserted here until proved.
 /-!
 The selected pivot's defect is preserved by the current identity move.
 This concrete counterexample rules out the claimed universal strict drop.
