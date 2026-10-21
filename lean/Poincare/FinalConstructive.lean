@@ -282,21 +282,38 @@ lemma pivotVertex_is_getD_of_unique_max :
     ∀ u ∈ allVerts K, vertexDefect K u ≤ vertexDefect K v :=
 by sorry
 
-lemma pivot_strict_drop_at_unique_max :
-  ∀ K : Triangulation,
+/-!
+The selected pivot's defect is preserved by the current identity move.
+This concrete counterexample rules out the claimed universal strict drop.
+-/ 
+lemma pivot_strict_drop_at_unique_max_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     let v := Option.getD (pivotVertex K) 0
-    vertexDefect (step K) v = vertexDefect K v - 1 :=
-by sorry
+    vertexDefect (step K) v = vertexDefect K v - 1) := by
+  intro h
+  let K : Triangulation := { tets := [{ v0 := 0, v1 := 1, v2 := 2, v3 := 3 }] }
+  have hPhi : Phi K > 0 := by native_decide
+  have hDrop := h K hPhi
+  have hv : Option.getD (pivotVertex K) 0 = 0 := by native_decide
+  have hPres : vertexDefect (step K) 0 = vertexDefect K 0 := by
+    unfold step vertexDefect vertexDegree
+    rw [applyMove_spec_available K (selectMove K)]
+  have hDef : vertexDefect K 0 = 3 := by native_decide
+  rw [hv, hPres, hDef] at hDrop
+  omega
 
 
-lemma applyMove_realizes_unit_drop :
-  ∀ K : Triangulation,
+lemma applyMove_realizes_unit_drop_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     let v := Option.getD (pivotVertex K) 0
     vertexDefect (step K) v = vertexDefect K v - 1 ∧
-    (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u) :=
-by sorry
+    (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)) := by
+  intro h
+  apply pivot_strict_drop_at_unique_max_impossible
+  intro K hPhi
+  exact (h K hPhi).1
 
 lemma axioms_eliminated_if_unit_drop :
   (∀ K : Triangulation,
