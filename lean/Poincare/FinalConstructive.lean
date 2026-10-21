@@ -200,25 +200,28 @@ lemma step_changes_exactly_one_vertex_impossible :
   intro h
   let K : Triangulation := { tets := [{ v0 := 0, v1 := 1, v2 := 2, v3 := 3 }] }
   have hPhi : Phi K > 0 := by native_decide
-  obtain ⟨v, hv, _huniq⟩ := h K hPhi
-  have hpres : vertexDefect (step K) v = vertexDefect K v := by
+  obtain ⟨v, _hv, huniq⟩ := h K hPhi
+  have hpres (u : Nat) : vertexDefect (step K) u = vertexDefect K u := by
     unfold step vertexDefect vertexDegree
     rw [applyMove_spec_available K (selectMove K)]
-  have hdef : vertexDefect K v > 0 := by
-    by_cases h0 : v = 0
-    · subst v
-      norm_num [vertexDefect, vertexDegree, K, allVerts, Tet.verts]
-    · by_cases h1 : v = 1
-      · subst v
-        norm_num [vertexDefect, vertexDegree, K, allVerts, Tet.verts]
-      · by_cases h2 : v = 2
-        · subst v
-          norm_num [vertexDefect, vertexDegree, K, allVerts, Tet.verts]
-        · by_cases h3 : v = 3
-          · subst v
-            norm_num [vertexDefect, vertexDegree, K, allVerts, Tet.verts]
-          · norm_num [vertexDefect, vertexDegree, K, allVerts, Tet.verts, h0, h1, h2, h3]
-  rw [hpres] at hv
+  have h4mem : 4 ∉ allVerts K := by native_decide
+  have h5mem : 5 ∉ allVerts K := by native_decide
+  have h4def : vertexDefect K 4 = 0 := by native_decide
+  have h5def : vertexDefect K 5 = 0 := by native_decide
+  have h4drop : vertexDefect (step K) 4 = vertexDefect K 4 - 1 := by
+    rw [hpres 4, h4def]
+    rfl
+  have h5drop : vertexDefect (step K) 5 = vertexDefect K 5 - 1 := by
+    rw [hpres 5, h5def]
+    rfl
+  have h4same : ∀ u ≠ 4, vertexDefect (step K) u = vertexDefect K u := by
+    intro u _hu
+    exact hpres u
+  have h5same : ∀ u ≠ 5, vertexDefect (step K) u = vertexDefect K u := by
+    intro u _hu
+    exact hpres u
+  have h4eq : 4 = v := huniq 4 ⟨h4drop, h4same⟩
+  have h5eq : 5 = v := huniq 5 ⟨h5drop, h5same⟩
   omega
 
 lemma step_locality_support :
