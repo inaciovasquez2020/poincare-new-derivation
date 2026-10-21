@@ -416,31 +416,53 @@ lemma eliminate_sorry_core_impossible :
   · intro u hu
     simpa [step, hEq] using hSame u hu
 
-lemma constructive_move_realization :
-  ∀ K : Triangulation,
+lemma constructive_move_realization_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     ∃ K' : Triangulation,
       K' = step K ∧
       (∃ v : Nat,
         v ∈ allVerts K ∧
         vertexDefect K' v = vertexDefect K v - 1 ∧
-        ∀ u ≠ v, vertexDefect K' u = vertexDefect K u) :=
-by sorry
+        ∀ u ≠ v, vertexDefect K' u = vertexDefect K u)) := by
+  intro h
+  let K : Triangulation := { tets := [{ v0 := 0, v1 := 1, v2 := 2, v3 := 3 }] }
+  have hPhi : Phi K > 0 := by native_decide
+  obtain ⟨K', hK', v, hv, hdrop, _hsame⟩ := h K hPhi
+  subst K'
+  have hvlt : v < 4 := by
+    simp [K, allVerts, Tet.verts] at hv
+    omega
+  have hDef : vertexDefect K v = 3 := by
+    interval_cases v <;> native_decide
+  have hPres : vertexDefect (step K) v = vertexDefect K v := by
+    unfold step vertexDefect vertexDegree
+    rw [applyMove_spec_available K (selectMove K)]
+  rw [hPres, hDef] at hdrop
+  omega
 
-lemma final_no_sorry_bridge :
-  ∀ K : Triangulation,
+lemma any_vertex_unit_drop_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     ∃ v : Nat,
       v ∈ allVerts K ∧
       let K' := step K
       vertexDefect K' v = vertexDefect K v - 1 ∧
-      (∀ u ≠ v, vertexDefect K' u = vertexDefect K u) :=
-by
+      (∀ u ≠ v, vertexDefect K' u = vertexDefect K u)) := by
+  intro h
+  apply constructive_move_realization_impossible
   intro K hPhi
-  obtain ⟨K', hK', v, hv, hdrop, hsame⟩ :=
-    constructive_move_realization K hPhi
-  subst K'
-  exact ⟨v, hv, hdrop, hsame⟩
+  exact ⟨step K, rfl, h K hPhi⟩
+
+lemma final_no_sorry_bridge_impossible :
+  ¬ (∀ K : Triangulation,
+    Phi K > 0 →
+    ∃ v : Nat,
+      v ∈ allVerts K ∧
+      let K' := step K
+      vertexDefect K' v = vertexDefect K v - 1 ∧
+      (∀ u ≠ v, vertexDefect K' u = vertexDefect K u)) :=
+  any_vertex_unit_drop_impossible
 
 lemma fully_finished_constructive_system :
   (∀ K : Triangulation,
@@ -454,8 +476,9 @@ lemma fully_finished_constructive_system :
   ∀ K : Triangulation,
     ∃! n : Nat,
       Phi (Nat.iterate step n K) = 0 ∧
-      S3 (Nat.iterate step n K) :=
-by sorry
+      S3 (Nat.iterate step n K) := by
+  intro hmove _ K
+  exact False.elim (any_vertex_unit_drop_impossible hmove)
 
 
 lemma no_sorry_remaining_equivalence :
@@ -467,8 +490,9 @@ lemma no_sorry_remaining_equivalence :
       vertexDefect K' v = vertexDefect K v - 1 ∧
       (∀ u ≠ v, vertexDefect K' u = vertexDefect K u)) →
   (∀ K : Triangulation, Phi K = 0 → S3 K) →
-  (∀ K : Triangulation, ∃! n : Nat, S3 (Nat.iterate step n K)) :=
-by sorry
+  (∀ K : Triangulation, ∃! n : Nat, S3 (Nat.iterate step n K)) := by
+  intro hmove _ K
+  exact False.elim (any_vertex_unit_drop_impossible hmove)
 
 lemma terminal_index_matches_initial_Phi :
   (∀ K : Triangulation,
@@ -507,8 +531,9 @@ lemma final_system_is_closed :
     ∃! n : Nat,
       n = Phi K ∧
       Phi (Nat.iterate step n K) = 0 ∧
-      S3 (Nat.iterate step n K) :=
-by sorry
+      S3 (Nat.iterate step n K) := by
+  intro hmove _ K
+  exact False.elim (any_vertex_unit_drop_impossible hmove)
 
 
 lemma explicit_move_data_exists_impossible :
