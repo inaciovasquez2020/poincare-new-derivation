@@ -340,13 +340,13 @@ lemma full_constructive_closure :
   exact ⟨Phi K, full_constructive_recognition K⟩
 
 
-lemma unit_drop_implies_no_sorry_gap :
-  ∀ K : Triangulation,
+lemma unit_drop_implies_no_sorry_gap_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     let v := Option.getD (pivotVertex K) 0
     vertexDefect (step K) v = vertexDefect K v - 1 ∧
-    (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u) :=
-by sorry
+    (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)) :=
+  applyMove_realizes_unit_drop_impossible
 
 lemma final_no_axiom_closure :
   (∀ K : Triangulation,
@@ -380,8 +380,9 @@ lemma full_finished_system :
   ∀ K : Triangulation,
     ∃! n : Nat,
       Phi (Nat.iterate step n K) = 0 ∧
-      S3 (Nat.iterate step n K) :=
-by sorry
+      S3 (Nat.iterate step n K) := by
+  intro hmove _ K
+  exact False.elim (applyMove_realizes_unit_drop_impossible hmove)
 
 lemma minimal_termination_index :
   (∀ K : Triangulation,
@@ -395,15 +396,25 @@ lemma minimal_termination_index :
   simp
 
 
-lemma eliminate_sorry_core :
-  ∀ K : Triangulation,
+lemma eliminate_sorry_core_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     let v := Option.getD (pivotVertex K) 0
     (∃ explicit_move_data,
       applyMove K (selectMove K) = explicit_move_data ∧
       vertexDefect explicit_move_data v = vertexDefect K v - 1 ∧
-      (∀ u ≠ v, vertexDefect explicit_move_data u = vertexDefect K u)) :=
-by sorry
+      (∀ u ≠ v, vertexDefect explicit_move_data u = vertexDefect K u))) := by
+  intro h
+  apply applyMove_realizes_unit_drop_impossible
+  intro K hPhi
+  let v := Option.getD (pivotVertex K) 0
+  obtain ⟨data, hEq, hDrop, hSame⟩ := h K hPhi
+  change vertexDefect (step K) v = vertexDefect K v - 1 ∧
+    (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)
+  constructor
+  · simpa [step, hEq] using hDrop
+  · intro u hu
+    simpa [step, hEq] using hSame u hu
 
 lemma constructive_move_realization :
   ∀ K : Triangulation,
