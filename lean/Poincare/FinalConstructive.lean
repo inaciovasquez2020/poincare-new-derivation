@@ -186,30 +186,52 @@ lemma full_constructive_recognition :
   exact iterate_step_hits_zero K
 
 
-lemma step_changes_exactly_one_vertex :
-  ∀ K : Triangulation,
+/-!
+The claimed one-vertex unit drop is incompatible with the current step
+semantics: the move preserves all vertex occurrences, so every vertex defect
+is preserved. Keep the contradiction explicit instead of hiding it in a proof hole.
+-/
+lemma step_changes_exactly_one_vertex_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     ∃! v : Nat,
       vertexDefect (step K) v = vertexDefect K v - 1 ∧
-      ∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u :=
-by sorry
+      ∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u) := by
+  intro h
+  let K : Triangulation := { tets := [{ v0 := 0, v1 := 1, v2 := 2, v3 := 3 }] }
+  have hPhi : Phi K > 0 := by native_decide
+  obtain ⟨v, hv, _huniq⟩ := h K hPhi
+  have hpres : vertexDefect (step K) v = vertexDefect K v := by
+    unfold step vertexDefect vertexDegree
+    rw [applyMove_spec_available K (selectMove K)]
+  have hdef : vertexDefect K v > 0 := by
+    by_cases h0 : v = 0
+    · subst v
+      norm_num [vertexDefect, vertexDegree, K, allVerts, Tet.verts]
+    · by_cases h1 : v = 1
+      · subst v
+        norm_num [vertexDefect, vertexDegree, K, allVerts, Tet.verts]
+      · by_cases h2 : v = 2
+        · subst v
+          norm_num [vertexDefect, vertexDegree, K, allVerts, Tet.verts]
+        · by_cases h3 : v = 3
+          · subst v
+            norm_num [vertexDefect, vertexDegree, K, allVerts, Tet.verts]
+          · norm_num [vertexDefect, vertexDegree, K, allVerts, Tet.verts, h0, h1, h2, h3]
+  rw [hpres] at hv
+  omega
 
 lemma step_locality_support :
   ∀ K : Triangulation,
     Phi K > 0 →
     ∃ S : Finset Nat,
       S.card = 1 ∧
-      ∀ u : Nat, u ∉ S → vertexDefect (step K) u = vertexDefect K u :=
-by
+      ∀ u : Nat, u ∉ S → vertexDefect (step K) u = vertexDefect K u := by
   intro K hPhi
-  obtain ⟨v, hv, _huniq⟩ := step_changes_exactly_one_vertex K hPhi
-  refine ⟨{v}, by simp, ?_⟩
+  refine ⟨{0}, by simp, ?_⟩
   intro u hu
-  have hne : u ≠ v := by
-    intro huv
-    apply hu
-    simp [huv]
-  exact hv.2 u hne
+  unfold step vertexDefect vertexDegree
+  rw [applyMove_spec_available K (selectMove K)]
 
 lemma exact_local_to_global_descent :
   ∀ K : Triangulation,
