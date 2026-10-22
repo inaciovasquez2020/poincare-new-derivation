@@ -59,8 +59,8 @@ def ExplicitMove32WitnessValid
   s'.RealizedIn K ∧ s'.SharedEdgeExactlyThree K ∧
   (∃ gamma ∈ K.tets, s'.a ∈ gamma.verts ∧ s'.b ∈ gamma.verts ∧ s'.c ∈ gamma.verts)
 
-/-- Finite state carrying both realized sites and every geometric witness. -/
-structure Move32WitnessState (K : Triangulation) where
+/-- Finite tuple of all state and witness data, before its incidence proof. -/
+structure Move32WitnessData (K : Triangulation) where
   source : FiniteRealizedMove32Site K
   target : FiniteRealizedMove32Site K
   tau : FiniteMove32TetIndex K
@@ -68,12 +68,18 @@ structure Move32WitnessState (K : Triangulation) where
   x : FiniteMove32Vertex K
   y : FiniteMove32Vertex K
   sigma : FiniteMove32TetIndex K
-  valid : ExplicitMove32WitnessValid K source.val.decode target.val.decode tau rho sigma x y
   deriving Fintype
+
+/-- Finite state carrying both realized sites and every geometric witness. -/
+def Move32WitnessState (K : Triangulation) :=
+  {d : Move32WitnessData K //
+    ExplicitMove32WitnessValid K d.source.val.decode d.target.val.decode
+      d.tau d.rho d.sigma d.x d.y}
 
 noncomputable instance move32WitnessStateFintype (K : Triangulation) :
     Fintype (Move32WitnessState K) := by
   classical
+  unfold Move32WitnessState
   infer_instance
 
 /-- The existing relation with explicit source realization. -/
@@ -90,9 +96,11 @@ theorem realizedSourceWitnessedReentry_implies_reentry
 /-- Any explicit witness state forgets to the repository's existential relation. -/
 theorem Move32WitnessState.toWitnessedReentry
     {K : Triangulation} (q : Move32WitnessState K) :
-    Move32SourceFaceWitnessedReentry K q.source.val.decode q.target.val.decode := by
-  rcases q with ⟨source, target, tau, rho, x, y, sigma, h⟩
+    Move32SourceFaceWitnessedReentry K
+      q.val.source.val.decode q.val.target.val.decode := by
+  rcases q with ⟨data, h⟩
   dsimp [ExplicitMove32WitnessValid] at h
-  exact ⟨tau.decode, rho.decode, x.1, y.1, sigma.decode, h⟩
+  exact ⟨data.tau.decode, data.rho.decode, data.x.1, data.y.1,
+    data.sigma.decode, h⟩
 
 end Poincare
