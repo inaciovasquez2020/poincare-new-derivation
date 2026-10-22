@@ -292,4 +292,21 @@ theorem finiteMove32Transition_iff_witnessedReentry
       Move32WitnessState.ofWitnessedReentry hrealized
     exact ⟨w, hs, ht⟩
 
+
+
+/-- A witnessed transition cannot be a self-loop: the non-self complementary
+edge condition excludes the source's own ordered or reversed endpoint pair.
+This is only irreflexivity; it does not rule out cycles of length at least two. -/
+theorem finiteMove32Transition_irrefl
+    {K : Triangulation} (s : FiniteRealizedMove32Site K) :
+    ¬ FiniteMove32Transition K s s := by
+  rintro ⟨w, hs, ht⟩
+  have hw := Move32WitnessState.toWitnessedReentry w
+  rcases hw with ⟨tau, rho, x, y, sigma, htau, hrho, hne,
+    haT, hbT, hcT, haR, hbR, hcR, hxT, hxABC, hyR, hyABC,
+    hxy, hsigma, hxG, hyG, hnonself, hsd, hse, hreal, hthree, hobstruction⟩
+  have hsd' : s.val.decode.d = x := by simpa [ht] using hsd
+  have hse' : s.val.decode.e = y := by simpa [ht] using hse
+  exact hnonself (Or.inl ⟨hsd'.symm, hse'.symm⟩)
+
 end Poincare
