@@ -224,13 +224,9 @@ theorem Move32WitnessState.ofWitnessedReentry
   let ri := FiniteMove32TetIndex.ofMem rho hrho
   let gi := FiniteMove32TetIndex.ofMem sigma hsigma
   let xv : FiniteMove32Vertex K :=
-    ⟨x, by
-      apply Finset.mem_toFinset.mpr
-      exact mem_vertexSupport_of_mem_tet htau hxT⟩
+    ⟨x, by simpa using mem_vertexSupport_of_mem_tet htau hxT⟩
   let yv : FiniteMove32Vertex K :=
-    ⟨y, by
-      apply Finset.mem_toFinset.mpr
-      exact mem_vertexSupport_of_mem_tet hrho hyR⟩
+    ⟨y, by simpa using mem_vertexSupport_of_mem_tet hrho hyR⟩
   let data : Move32WitnessData K := ⟨source, target, ti, ri, xv, yv, gi⟩
   have valid : ExplicitMove32WitnessValid K source.val.decode target.val.decode ti ri gi xv yv := by
     dsimp [ExplicitMove32WitnessValid, ti, ri, gi, xv, yv, source, target]
