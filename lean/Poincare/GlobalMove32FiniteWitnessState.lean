@@ -305,8 +305,10 @@ theorem finiteMove32Transition_irrefl
   rcases hw with ⟨tau, rho, x, y, sigma, htau, hrho, hne,
     haT, hbT, hcT, haR, hbR, hcR, hxT, hxABC, hyR, hyABC,
     hxy, hsigma, hxG, hyG, hnonself, hsd, hse, hreal, hthree, hobstruction⟩
-  have hsd' : s.val.decode.d = x := by simpa [ht] using hsd
-  have hse' : s.val.decode.e = y := by simpa [ht] using hse
+  have hsd' : w.val.source.val.decode.d = x := by
+    simpa [hs, ht] using hsd
+  have hse' : w.val.source.val.decode.e = y := by
+    simpa [hs, ht] using hse
   exact hnonself (Or.inl ⟨hsd'.symm, hse'.symm⟩)
 
 end Poincare
