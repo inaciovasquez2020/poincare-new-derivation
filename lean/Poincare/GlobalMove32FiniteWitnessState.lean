@@ -205,8 +205,10 @@ tetrahedron before establishing the complete incidence predicate. -/
 theorem Move32WitnessState.ofWitnessedReentry
     {K : Triangulation} {s s' : Move32Site}
     (h : RealizedSourceWitnessedReentry K s s') :
-    ∃ q : Move32WitnessState K,
-      q.val.source.val.decode = s ∧ q.val.target.val.decode = s' := by
+    ∃ q : Move32WitnessState K, ∃ tau rho x y sigma,
+      q.val.source.val.decode = s ∧ q.val.target.val.decode = s' ∧
+      q.val.tau.decode = tau ∧ q.val.rho.decode = rho ∧
+      q.val.x.1 = x ∧ q.val.y.1 = y ∧ q.val.sigma.decode = sigma := by
   classical
   rcases h with ⟨hs, hw⟩
   rcases hw with ⟨tau, rho, x, y, sigma, htau, hrho, hne, haT, hbT, hcT,
@@ -235,8 +237,13 @@ theorem Move32WitnessState.ofWitnessedReentry
       hyR, hyABC, hxy, hsigma, hxG, hyG, hnonself, hsd, hse, hreal,
       hthree, hobstruction⟩
   let q : Move32WitnessState K := ⟨data, valid⟩
-  refine ⟨q, ?_, ?_⟩
+  refine ⟨q, tau, rho, x, y, sigma, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · simp [q, data, source, Move32SiteCode.decode_ofRealized]
   · simp [q, data, target, Move32SiteCode.decode_ofRealized]
+  · simp [q, data, ti, FiniteMove32TetIndex.decode_ofMem]
+  · simp [q, data, ri, FiniteMove32TetIndex.decode_ofMem]
+  · simp [q, data, xv]
+  · simp [q, data, yv]
+  · simp [q, data, gi, FiniteMove32TetIndex.decode_ofMem]
 
 end Poincare
