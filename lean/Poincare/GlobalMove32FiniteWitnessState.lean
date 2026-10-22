@@ -202,7 +202,7 @@ theorem Move32WitnessState.toWitnessedReentry
 produces a finite state. The construction below chooses its finite indices from
 the original membership proofs and proves each index decodes to that exact
 tetrahedron before establishing the complete incidence predicate. -/
-noncomputable theorem Move32WitnessState.ofWitnessedReentry
+theorem Move32WitnessState.ofWitnessedReentry
     {K : Triangulation} {s s' : Move32Site}
     (h : RealizedSourceWitnessedReentry K s s') :
     ∃ q : Move32WitnessState K,
