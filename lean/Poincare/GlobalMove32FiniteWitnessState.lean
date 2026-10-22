@@ -265,4 +265,31 @@ theorem witnessedReentry_iff_exists_finite_state
     have hw := Move32WitnessState.toWitnessedReentry q
     exact ⟨by simpa [hs] using hsource, by simpa [hs, ht] using hw⟩
 
+
+/-- The finite transition relation is the projection of valid finite witness
+states onto their realized source and target site codes. -/
+def FiniteMove32Transition (K : Triangulation)
+    (source target : FiniteRealizedMove32Site K) : Prop :=
+  ∃ w : Move32WitnessState K,
+    w.val.source.val.decode = source.val.decode ∧
+    w.val.target.val.decode = target.val.decode
+
+/-- The projected finite transition relation is exact: it neither loses nor
+adds witnessed transitions between represented sites. -/
+theorem finiteMove32Transition_iff_witnessedReentry
+    {K : Triangulation} (source target : FiniteRealizedMove32Site K) :
+    FiniteMove32Transition K source target ↔
+      Move32SourceFaceWitnessedReentry K source.val.decode target.val.decode := by
+  constructor
+  · rintro ⟨w, hs, ht⟩
+    have hw := Move32WitnessState.toWitnessedReentry w
+    simpa [hs, ht] using hw
+  · intro h
+    have hrealized : RealizedSourceWitnessedReentry K
+        source.val.decode target.val.decode :=
+      ⟨source.property, h⟩
+    obtain ⟨w, _, _, _, _, _, hs, ht, _, _, _, _, _⟩ :=
+      Move32WitnessState.ofWitnessedReentry hrealized
+    exact ⟨w, hs, ht⟩
+
 end Poincare
