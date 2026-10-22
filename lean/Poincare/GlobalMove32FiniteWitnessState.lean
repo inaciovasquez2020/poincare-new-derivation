@@ -197,4 +197,59 @@ theorem Move32WitnessState.toWitnessedReentry
   exact ⟨data.tau.decode, data.rho.decode, data.x.1, data.y.1,
     data.sigma.decode, h⟩
 
+
+/-- Reverse encoding: every original witnessed reentry with a realized source
+produces a finite state retaining the exact tetrahedra and vertices from its
+existential witness tuple. -/
+noncomputable theorem Move32WitnessState.ofWitnessedReentry
+    {K : Triangulation} {s s' : Move32Site}
+    (h : RealizedSourceWitnessedReentry K s s') :
+    ∃ q : Move32WitnessState K,
+      q.val.source.val.decode = s ∧
+      q.val.target.val.decode = s' ∧
+      q.val.tau.decode = Classical.choose (by
+        rcases h.2 with ⟨tau, rho, x, y, sigma, htau, hrho, hne, haT, hbT, hcT,
+          haR, hbR, hcR, hxT, hxABC, hyR, hyABC, hxy, hsigma, hxG, hyG,
+          hnonself, hsd, hse, hreal, hthree, hobstruction⟩
+        exact ⟨tau, rho, x, y, sigma, htau, hrho, hne, haT, hbT, hcT,
+          haR, hbR, hcR, hxT, hxABC, hyR, hyABC, hxy, hsigma, hxG, hyG,
+          hnonself, hsd, hse, hreal, hthree, hobstruction⟩) := by
+  classical
+  rcases h with ⟨hs, hw⟩
+  rcases hw with ⟨tau, rho, x, y, sigma, htau, hrho, hne, haT, hbT, hcT,
+    haR, hbR, hcR, hxT, hxABC, hyR, hyABC, hxy, hsigma, hxG, hyG,
+    hnonself, hsd, hse, hreal, hthree, hobstruction⟩
+  let source : FiniteRealizedMove32Site K :=
+    ⟨Move32SiteCode.ofRealized s hs, by
+      rw [Move32SiteCode.decode_ofRealized]
+      exact hs⟩
+  let target : FiniteRealizedMove32Site K :=
+    ⟨Move32SiteCode.ofRealized s' hreal, by
+      rw [Move32SiteCode.decode_ofRealized]
+      exact hreal⟩
+  let ti := FiniteMove32TetIndex.ofMem tau htau
+  let ri := FiniteMove32TetIndex.ofMem rho hrho
+  let gi := FiniteMove32TetIndex.ofMem sigma hsigma
+  let xv : FiniteMove32Vertex K :=
+    ⟨x, by
+      apply Finset.mem_toFinset.mpr
+      exact mem_vertexSupport_of_mem_tet htau hxT⟩
+  let yv : FiniteMove32Vertex K :=
+    ⟨y, by
+      apply Finset.mem_toFinset.mpr
+      exact mem_vertexSupport_of_mem_tet hrho hyR⟩
+  let data : Move32WitnessData K := ⟨source, target, ti, ri, xv, yv, gi⟩
+  have valid : ExplicitMove32WitnessValid K source.val.decode target.val.decode ti ri gi xv yv := by
+    dsimp [ExplicitMove32WitnessValid, ti, ri, gi, xv, yv, source, target]
+    simp only [FiniteMove32TetIndex.decode_ofMem, Move32SiteCode.decode_ofRealized]
+    exact ⟨htau, hrho, hne, haT, hbT, hcT, haR, hbR, hcR, hxT, hxABC,
+      hyR, hyABC, hxy, hsigma, hxG, hyG, hnonself, hsd, hse, hreal,
+      hthree, hobstruction⟩
+  let q : Move32WitnessState K := ⟨data, valid⟩
+  refine ⟨q, ?_, ?_, ?_⟩
+  · simp [q, data, source, Move32SiteCode.decode_ofRealized]
+  · simp [q, data, target, Move32SiteCode.decode_ofRealized]
+  · simp [q, data, ti, FiniteMove32TetIndex.decode_ofMem]
+
+
 end Poincare
