@@ -68,12 +68,7 @@ structure Move32WitnessData (K : Triangulation) where
   x : FiniteMove32Vertex K
   y : FiniteMove32Vertex K
   sigma : FiniteMove32TetIndex K
-  deriving Finite
-
-noncomputable instance move32WitnessDataFintype (K : Triangulation) :
-    Fintype (Move32WitnessData K) := by
-  classical
-  exact Fintype.ofFinite (Move32WitnessData K)
+  deriving Fintype
 
 /-- Finite state carrying both realized sites and every geometric witness. -/
 def Move32WitnessState (K : Triangulation) :=
