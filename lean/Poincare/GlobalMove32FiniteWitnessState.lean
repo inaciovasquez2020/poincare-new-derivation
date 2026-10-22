@@ -106,6 +106,19 @@ abbrev FiniteMove32TetIndex (K : Triangulation) := Fin K.tets.length
 def FiniteMove32TetIndex.decode {K : Triangulation} (i : FiniteMove32TetIndex K) : Tet :=
   K.tets.get i
 
+/-- Encode an existing tetrahedron membership witness as a finite index. -/
+noncomputable def FiniteMove32TetIndex.ofMem
+    {K : Triangulation} (t : Tet) (ht : t ∈ K.tets) :
+    FiniteMove32TetIndex K :=
+  Classical.choose (exists_fin_get_eq_of_mem K.tets ht)
+
+/-- Decoding the encoded membership witness returns the original tetrahedron,
+not merely a tetrahedron with equivalent vertices. -/
+theorem FiniteMove32TetIndex.decode_ofMem
+    {K : Triangulation} (t : Tet) (ht : t ∈ K.tets) :
+    (FiniteMove32TetIndex.ofMem t ht).decode = t :=
+  Classical.choose_spec (exists_fin_get_eq_of_mem K.tets ht)
+
 /-- The full incidence predicate for a fixed explicit witness tuple. -/
 def ExplicitMove32WitnessValid
     (K : Triangulation) (s s' : Move32Site)
