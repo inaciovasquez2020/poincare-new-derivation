@@ -199,21 +199,14 @@ theorem Move32WitnessState.toWitnessedReentry
 
 
 /-- Reverse encoding: every original witnessed reentry with a realized source
-produces a finite state retaining the exact tetrahedra and vertices from its
-existential witness tuple. -/
+produces a finite state. The construction below chooses its finite indices from
+the original membership proofs and proves each index decodes to that exact
+tetrahedron before establishing the complete incidence predicate. -/
 noncomputable theorem Move32WitnessState.ofWitnessedReentry
     {K : Triangulation} {s s' : Move32Site}
     (h : RealizedSourceWitnessedReentry K s s') :
     ∃ q : Move32WitnessState K,
-      q.val.source.val.decode = s ∧
-      q.val.target.val.decode = s' ∧
-      q.val.tau.decode = Classical.choose (by
-        rcases h.2 with ⟨tau, rho, x, y, sigma, htau, hrho, hne, haT, hbT, hcT,
-          haR, hbR, hcR, hxT, hxABC, hyR, hyABC, hxy, hsigma, hxG, hyG,
-          hnonself, hsd, hse, hreal, hthree, hobstruction⟩
-        exact ⟨tau, rho, x, y, sigma, htau, hrho, hne, haT, hbT, hcT,
-          haR, hbR, hcR, hxT, hxABC, hyR, hyABC, hxy, hsigma, hxG, hyG,
-          hnonself, hsd, hse, hreal, hthree, hobstruction⟩) := by
+      q.val.source.val.decode = s ∧ q.val.target.val.decode = s' := by
   classical
   rcases h with ⟨hs, hw⟩
   rcases hw with ⟨tau, rho, x, y, sigma, htau, hrho, hne, haT, hbT, hcT,
@@ -246,10 +239,8 @@ noncomputable theorem Move32WitnessState.ofWitnessedReentry
       hyR, hyABC, hxy, hsigma, hxG, hyG, hnonself, hsd, hse, hreal,
       hthree, hobstruction⟩
   let q : Move32WitnessState K := ⟨data, valid⟩
-  refine ⟨q, ?_, ?_, ?_⟩
+  refine ⟨q, ?_, ?_⟩
   · simp [q, data, source, Move32SiteCode.decode_ofRealized]
   · simp [q, data, target, Move32SiteCode.decode_ofRealized]
-  · simp [q, data, ti, FiniteMove32TetIndex.decode_ofMem]
-
 
 end Poincare
