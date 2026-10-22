@@ -246,4 +246,23 @@ theorem Move32WitnessState.ofWitnessedReentry
   · simp [q, data, yv]
   · simp [q, data, gi, FiniteMove32TetIndex.decode_ofMem]
 
+
+/-- Exact finite-state characterization of the realized-source relation:
+there is a valid finite witness state decoding to the given sites exactly
+when the original witnessed reentry relation holds. -/
+theorem witnessedReentry_iff_exists_finite_state
+    {K : Triangulation} {s s' : Move32Site} :
+    RealizedSourceWitnessedReentry K s s' ↔
+      ∃ q : Move32WitnessState K,
+        q.val.source.val.decode = s ∧ q.val.target.val.decode = s' := by
+  constructor
+  · intro h
+    obtain ⟨q, tau, rho, x, y, sigma, hs, ht, hτ, hρ, hx, hy, hσ⟩ :=
+      Move32WitnessState.ofWitnessedReentry h
+    exact ⟨q, hs, ht⟩
+  · rintro ⟨q, hs, ht⟩
+    have hsource := q.val.source.property
+    have hw := Move32WitnessState.toWitnessedReentry q
+    exact ⟨by simpa [hs] using hsource, by simpa [hs, ht] using hw⟩
+
 end Poincare
