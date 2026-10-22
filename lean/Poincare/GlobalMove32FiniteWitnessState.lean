@@ -83,6 +83,22 @@ noncomputable instance finiteRealizedMove32SiteFintype (K : Triangulation) :
   unfold FiniteRealizedMove32Site
   infer_instance
 
+
+/-- A list member has a finite position whose lookup is that exact member. -/
+theorem exists_fin_get_eq_of_mem {α : Type} (l : List α) {a : α}
+    (ha : a ∈ l) : ∃ i : Fin l.length, l.get i = a := by
+  induction l with
+  | nil =>
+      simp at ha
+  | cons b bs ih =>
+      simp only [List.mem_cons] at ha
+      rcases ha with hba | hbs
+      · subst a
+        exact ⟨⟨0, by simp⟩, rfl⟩
+      · obtain ⟨i, hi⟩ := ih hbs
+        refine ⟨⟨i.val + 1, by simp⟩, ?_⟩
+        simpa using hi
+
 /-- Tetrahedron witnesses are represented by finite list positions, not by
 an unrestricted subtype of the ambient tetrahedron type. -/
 abbrev FiniteMove32TetIndex (K : Triangulation) := Fin K.tets.length
