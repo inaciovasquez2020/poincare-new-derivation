@@ -28,33 +28,51 @@ theorem mem_vertexSupport_of_mem_tet
   simp only [allVerts, List.mem_flatMap]
   exact ⟨t, ht, hv⟩
 
+/-- Each coordinate of a realized site occurs in the finite vertex support. -/
+theorem realized_a_mem_vertexSupport
+    {K : Triangulation} {s : Move32Site} (hs : s.RealizedIn K) :
+    s.a ∈ vertexSupport K := by
+  rcases hs with ⟨⟨t, ht, h⟩, _, _⟩
+  exact mem_vertexSupport_of_mem_tet ht ((h s.a).2 (by simp [Move32Site.targetTet₀, Tet.verts]))
+
+theorem realized_b_mem_vertexSupport
+    {K : Triangulation} {s : Move32Site} (hs : s.RealizedIn K) :
+    s.b ∈ vertexSupport K := by
+  rcases hs with ⟨⟨t, ht, h⟩, _, _⟩
+  exact mem_vertexSupport_of_mem_tet ht ((h s.b).2 (by simp [Move32Site.targetTet₀, Tet.verts]))
+
+theorem realized_c_mem_vertexSupport
+    {K : Triangulation} {s : Move32Site} (hs : s.RealizedIn K) :
+    s.c ∈ vertexSupport K := by
+  rcases hs with ⟨_, ⟨t, ht, h⟩, _⟩
+  exact mem_vertexSupport_of_mem_tet ht ((h s.c).2 (by simp [Move32Site.targetTet₁, Tet.verts]))
+
+theorem realized_d_mem_vertexSupport
+    {K : Triangulation} {s : Move32Site} (hs : s.RealizedIn K) :
+    s.d ∈ vertexSupport K := by
+  rcases hs with ⟨⟨t, ht, h⟩, _, _⟩
+  exact mem_vertexSupport_of_mem_tet ht ((h s.d).2 (by simp [Move32Site.targetTet₀, Tet.verts]))
+
+theorem realized_e_mem_vertexSupport
+    {K : Triangulation} {s : Move32Site} (hs : s.RealizedIn K) :
+    s.e ∈ vertexSupport K := by
+  rcases hs with ⟨⟨t, ht, h⟩, _, _⟩
+  exact mem_vertexSupport_of_mem_tet ht ((h s.e).2 (by simp [Move32Site.targetTet₀, Tet.verts]))
+
 /-- The finite coordinate code associated to a realized site. -/
 noncomputable def Move32SiteCode.ofRealized
     {K : Triangulation} (s : Move32Site) (hs : s.RealizedIn K) :
-    Move32SiteCode K := by
-  rcases hs with ⟨⟨t₀, ht₀, h₀⟩, ⟨t₁, ht₁, h₁⟩, _⟩
-  have ha : s.a ∈ vertexSupport K :=
-    mem_vertexSupport_of_mem_tet ht₀ ((h₀ s.a).2 (by simp [Move32Site.targetTet₀, Tet.verts]))
-  have hb : s.b ∈ vertexSupport K :=
-    mem_vertexSupport_of_mem_tet ht₀ ((h₀ s.b).2 (by simp [Move32Site.targetTet₀, Tet.verts]))
-  have hc : s.c ∈ vertexSupport K :=
-    mem_vertexSupport_of_mem_tet ht₁ ((h₁ s.c).2 (by simp [Move32Site.targetTet₁, Tet.verts]))
-  have hd : s.d ∈ vertexSupport K :=
-    mem_vertexSupport_of_mem_tet ht₀ ((h₀ s.d).2 (by simp [Move32Site.targetTet₀, Tet.verts]))
-  have he : s.e ∈ vertexSupport K :=
-    mem_vertexSupport_of_mem_tet ht₀ ((h₀ s.e).2 (by simp [Move32Site.targetTet₀, Tet.verts]))
-  exact ⟨⟨s.a, by simpa using ha⟩,
-    ⟨s.b, by simpa using hb⟩,
-    ⟨s.c, by simpa using hc⟩,
-    ⟨s.d, by simpa using hd⟩,
-    ⟨s.e, by simpa using he⟩⟩
+    Move32SiteCode K :=
+  ⟨⟨s.a, by simpa using realized_a_mem_vertexSupport hs⟩,
+    ⟨s.b, by simpa using realized_b_mem_vertexSupport hs⟩,
+    ⟨s.c, by simpa using realized_c_mem_vertexSupport hs⟩,
+    ⟨s.d, by simpa using realized_d_mem_vertexSupport hs⟩,
+    ⟨s.e, by simpa using realized_e_mem_vertexSupport hs⟩⟩
 
 @[simp] theorem Move32SiteCode.decode_ofRealized
     {K : Triangulation} (s : Move32Site) (hs : s.RealizedIn K) :
     (Move32SiteCode.ofRealized s hs).decode = s := by
-  cases s
-  rfl
-
+  cases s <;> simp [Move32SiteCode.ofRealized, Move32SiteCode.decode]
 /-- Finite codes restricted to sites explicitly realized in K. -/
 def FiniteRealizedMove32Site (K : Triangulation) :=
   {q : Move32SiteCode K // q.decode.RealizedIn K}
