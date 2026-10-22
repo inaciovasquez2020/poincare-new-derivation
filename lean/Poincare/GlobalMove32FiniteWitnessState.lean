@@ -8,15 +8,18 @@ abbrev FiniteMove32Vertex (K : Triangulation) :=
   ↥((vertexSupport K).toFinset)
 
 /-- The five site coordinates, all drawn from the represented vertex support. -/
-abbrev Move32SiteCode (K : Triangulation) :=
-  FiniteMove32Vertex K × FiniteMove32Vertex K ×
-    FiniteMove32Vertex K × FiniteMove32Vertex K ×
-    FiniteMove32Vertex K
+structure Move32SiteCode (K : Triangulation) where
+  a : FiniteMove32Vertex K
+  b : FiniteMove32Vertex K
+  c : FiniteMove32Vertex K
+  d : FiniteMove32Vertex K
+  e : FiniteMove32Vertex K
+  deriving Fintype
 
 /-- Decode finite coordinates into the existing, unmodified site definition. -/
 def Move32SiteCode.decode {K : Triangulation} (q : Move32SiteCode K) :
     Move32Site :=
-  ⟨q.1.1.1.1.1, q.1.1.1.1.2, q.1.1.1.2, q.1.1.2, q.1.2⟩
+  ⟨q.a.1, q.b.1, q.c.1, q.d.1, q.e.1⟩
 
 /-- Finite codes restricted to sites explicitly realized in K. -/
 def FiniteRealizedMove32Site (K : Triangulation) :=
@@ -41,12 +44,7 @@ structure Move32WitnessState (K : Triangulation) where
   x : FiniteMove32Vertex K
   y : FiniteMove32Vertex K
   sigma : FiniteMove32Tet K
-
-noncomputable instance move32WitnessStateFintype (K : Triangulation) :
-    Fintype (Move32WitnessState K) := by
-  classical
-  unfold Move32WitnessState
-  infer_instance
+  deriving Fintype
 
 /-- The existing witnessed relation, with its source-realization condition
 made explicit. This is a specification, not yet the finite-data
