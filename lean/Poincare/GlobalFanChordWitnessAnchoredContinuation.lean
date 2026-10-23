@@ -21,6 +21,7 @@ structure WitnessAnchoredFanStep
     (vertexLinkStarGraph K T.z0 T.z1).Adj witnessPos neighbor
   sharedThird : Nat
   sharedThird_ne : sharedThird ≠ T.z1
+  sharedThird_ne_center : sharedThird ≠ T.z0
   sharedThird_mem_witness : sharedThird ∈ T.witness.verts
   sharedThird_mem_neighbor : sharedThird ∈ (fan.tetAt neighbor).verts
   outcome :
@@ -67,8 +68,16 @@ theorem ClosedTriangulationCore.FanChordTransition.continue_high_anchored
       (vertexLinkStarGraph K T.z0 T.z1).Adj witnessPos neighbor := by
     apply (vertexLinkStarGraph_adj K T.z0 T.z1 witnessPos.1 rho1).2
     exact ⟨Ne.symm hne1, hadj1⟩
-  obtain ⟨y, hyx, hvw, hxw, hyw, hvn, hxn, hyn⟩ :=
-    F.adjacent_tets_share_face hadj
+  obtain ⟨y, hyNodup, hvw, hxw, hyw, hvn, hxn, hyn⟩ :=
+    hcore.ambientEdgeCyclicFan_adjacent_tets_share_face F hadj
+  have hyx : y ≠ T.z1 := by
+    intro heq
+    subst y
+    exact (List.nodup_cons.mp hyNodup).1 (by simp)
+  have hyv : y ≠ T.z0 := by
+    intro heq
+    subst y
+    exact (List.nodup_cons.mp hyNodup).1 (by simp)
   have hywitness : y ∈ T.witness.verts := by
     rw [← hwitness]
     exact hyw
@@ -82,6 +91,7 @@ theorem ClosedTriangulationCore.FanChordTransition.continue_high_anchored
     adjacent := hadj
     sharedThird := y
     sharedThird_ne := hyx
+    sharedThird_ne_center := hyv
     sharedThird_mem_witness := hywitness
     sharedThird_mem_neighbor := hyn
     outcome := houtcome
