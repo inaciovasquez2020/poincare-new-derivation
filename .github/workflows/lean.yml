@@ -19,6 +19,11 @@ jobs:
         with:
           use-github-cache: false
 
+      - name: Build finite witnessed-state module
+        run: lake build Poincare.GlobalMove32FiniteWitnessState
+      - name: Build witness-anchored continuation module
+        run: lake build Poincare.GlobalFanChordWitnessAnchoredContinuation
+
       - name: Build principal theorem module
         run: lake build Poincare.GlobalMove32ReentryLeastBoundaryEscapeIncidenceThreeFork
 

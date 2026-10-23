@@ -622,4 +622,181 @@ theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_impossible_noF
     (hcore.fanChord_twoCycle_same_transverse_degree_four
       hlinks T0 T1 hT0 hT1)
 
+
+/-- Stronger adjacent-fan classification retaining the exact adjacent link
+triangles and shared-face transverse vertex in the represented-chord branch.
+This is the lineage interface needed by witness-anchored continuation. -/
+theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_transition_lineage
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (hM : TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K)
+    {v x : Nat} (F : AmbientEdgeCyclicFan K v x)
+    {sigma rho} (hadj : (vertexLinkStarGraph K v x).Adj sigma rho) :
+    (∃ m : Move23Site, m.LegalIn K) ∨
+    (K.tets.filter (fun t => v ∈ t.verts ∧ x ∈ t.verts)).length = 3 ∨
+    ∃ y : Nat, ∃ T : FanChordTransition K v x,
+      T.sigma = sigma ∧ T.rho = rho ∧ T.transverse = y ∧
+      y ∈ (F.tetAt sigma).verts ∧ y ∈ (F.tetAt rho).verts := by
+  classical
+  obtain ⟨y, z0, z1, m, ha, hb, hc, hd, he, hleft, hright, hstatus⟩ :=
+    hcore.ambientEdgeCyclicFan_adjacent_chord_classification F hadj
+  rcases hstatus with hlegal | hthree | ⟨tau, htau, hz0, hz1, hoff⟩
+  · exact Or.inl ⟨m, hlegal⟩
+  · exact Or.inr (Or.inl hthree)
+  · right; right
+    have hfive : [v, x, y, z0, z1].Nodup := by
+      simpa [ha, hb, hc, hd, he] using m.distinct
+    have hne : z0 ≠ z1 := by
+      simp [List.nodup_cons] at hfive
+      tauto
+    have hz0support : z0 ∈ vertexSupport K := by
+      rw [mem_vertexSupport_iff]
+      exact List.mem_flatMap.2 ⟨tau, htau, hz0⟩
+    have hz1support : z1 ∈ vertexSupport K := by
+      rw [mem_vertexSupport_iff]
+      exact List.mem_flatMap.2 ⟨tau, htau, hz1⟩
+    have hpos : 0 < (K.tets.filter
+        (fun t => z0 ∈ t.verts ∧ z1 ∈ t.verts)).length := by
+      apply List.length_pos_iff.2
+      exact List.ne_nil_of_mem
+        (List.mem_filter.2 ⟨htau, by simp [hz0, hz1]⟩)
+    rcases hcore.edgeIncidence_eq_three_or_four_le_of_pos z0 z1 hne hpos with
+      hinc | hinc
+    · refine ⟨y, {
+        z0 := z0, z1 := z1, endpoints_ne := hne
+        z0_supported := hz0support, z1_supported := hz1support
+        edgeState := supportedEdgeStateOfDistinct K z0 z1 hz0support hz1support hne
+        edgeState_eq := rfl
+        sigma := sigma
+        rho := rho
+        adjacent := hadj
+        witness := tau, witness_mem := htau, z0_mem := hz0, z1_mem := hz1
+        escapes_old_edge := hoff, incidence := Or.inl hinc
+        transverse := y
+        leftTet := F.tetAt sigma
+        rightTet := F.tetAt rho
+        leftTet_mem := F.tetAt_mem sigma
+        rightTet_mem := F.tetAt_mem rho
+        leftTet_link := F.tetAt_link sigma
+        rightTet_link := F.tetAt_link rho
+        leftTet_match := by
+          simpa [Move23Site.leftTet, ha, hb, hc, hd] using hleft
+        rightTet_match := by
+          simpa [Move23Site.rightTet, ha, hb, hc, he] using hright
+        distinct := by
+          simpa [ha, hb, hc, hd, he] using m.distinct
+      }, rfl, rfl, rfl, ?_, ?_⟩
+      · exact (hleft y).2 (by simp [Move23Site.leftTet, ha, hb, hc, hd, Tet.verts])
+      · exact (hright y).2 (by simp [Move23Site.rightTet, ha, hb, hc, he, Tet.verts])
+    · have hrep : VertexLinkVertexRepresented K z0 z1 :=
+        hcore.vertexLinkVertexRepresented_of_edgeIncidence_pos z0 z1 hne hpos
+      refine ⟨y, {
+        z0 := z0, z1 := z1, endpoints_ne := hne
+        z0_supported := hz0support, z1_supported := hz1support
+        edgeState := supportedEdgeStateOfDistinct K z0 z1 hz0support hz1support hne
+        edgeState_eq := rfl
+        sigma := sigma
+        rho := rho
+        adjacent := hadj
+        witness := tau, witness_mem := htau, z0_mem := hz0, z1_mem := hz1
+        escapes_old_edge := hoff
+        incidence := Or.inr ⟨hinc,
+          hcore.exists_ambientEdgeCyclicFan_of_topologicalThreeManifold hM hrep⟩
+        transverse := y
+        leftTet := F.tetAt sigma
+        rightTet := F.tetAt rho
+        leftTet_mem := F.tetAt_mem sigma
+        rightTet_mem := F.tetAt_mem rho
+        leftTet_link := F.tetAt_link sigma
+        rightTet_link := F.tetAt_link rho
+        leftTet_match := by
+          simpa [Move23Site.leftTet, ha, hb, hc, hd] using hleft
+        rightTet_match := by
+          simpa [Move23Site.rightTet, ha, hb, hc, he] using hright
+        distinct := by
+          simpa [ha, hb, hc, hd, he] using m.distinct
+      }, rfl, rfl, rfl, ?_, ?_⟩
+      · exact (hleft y).2 (by simp [Move23Site.leftTet, ha, hb, hc, hd, Tet.verts])
+      · exact (hright y).2 (by simp [Move23Site.rightTet, ha, hb, hc, he, Tet.verts])
+
+
+/-- Triangle-level form of the local uniqueness obstruction.  It does not
+require the two transverse vertices to be packaged as transitions: two
+distinct link triangles cannot share an endpoint and two further distinct
+vertices under the closed-core pairwise vertex-set exclusion. -/
+theorem linkTriangles_three_common_vertices_impossible
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    {v : Nat} {sigma rho : LinkTriangle}
+    (hsigma : sigma ∈ vertexLinkTriangles K v)
+    (hrho : rho ∈ vertexLinkTriangles K v)
+    (hneq : sigma ≠ rho)
+    {x y0 y1 : Nat}
+    (hxσ : x ∈ sigma.verts) (hxρ : x ∈ rho.verts)
+    (hy0σ : y0 ∈ sigma.verts) (hy0ρ : y0 ∈ rho.verts)
+    (hy1σ : y1 ∈ sigma.verts) (hy1ρ : y1 ∈ rho.verts)
+    (hxy0 : x ≠ y0) (hxy1 : x ≠ y1) (hy01 : y0 ≠ y1) :
+    False := by
+  have hσnodup := vertexLinkTriangles_triangle_nodup K hcore v sigma hsigma
+  have hρnodup := vertexLinkTriangles_triangle_nodup K hcore v rho hrho
+  have hexhaust :
+      ∀ (τ : LinkTriangle) (a b c : Nat),
+        τ.verts.Nodup →
+        a ∈ τ.verts → b ∈ τ.verts → c ∈ τ.verts →
+        a ≠ b → a ≠ c → b ≠ c →
+        ∀ q, q ∈ τ.verts → q = a ∨ q = b ∨ q = c := by
+    intro τ a b c hnodup ha hb hc hab hac hbc q hq
+    rcases τ with ⟨s0, s1, s2⟩
+    simp [LinkTriangle.verts] at hnodup ha hb hc hq ⊢
+    aesop
+  have hσexhaust :
+      ∀ q, q ∈ sigma.verts → q = x ∨ q = y0 ∨ q = y1 := by
+    intro q hq
+    exact hexhaust sigma x y0 y1 hσnodup hxσ hy0σ hy1σ
+      hxy0 hxy1 hy01 q hq
+  let S : Finset Nat := sigma.verts.toFinset
+  let R : Finset Nat := rho.verts.toFinset
+  have hSR : S ⊆ R := by
+    intro q hq
+    have hq' : q ∈ sigma.verts := List.mem_toFinset.mp hq
+    rcases hσexhaust q hq' with rfl | rfl | rfl
+    · exact List.mem_toFinset.mpr hxρ
+    · exact List.mem_toFinset.mpr hy0ρ
+    · exact List.mem_toFinset.mpr hy1ρ
+  have hScard : S.card = 3 := by
+    simpa [S, LinkTriangle.verts] using List.toFinset_card_of_nodup hσnodup
+  have hRcard : R.card = 3 := by
+    simpa [R, LinkTriangle.verts] using List.toFinset_card_of_nodup hρnodup
+  have hEq : S = R := Finset.eq_of_subset_of_card_le hSR (by omega)
+  have hvertices : ∀ q, q ∈ sigma.verts ↔ q ∈ rho.verts := by
+    intro q
+    have hq := Finset.ext_iff.mp hEq q
+    simpa [S, R] using hq
+  have hpair := vertexLinkTriangles_pairwise_vertexSet_ne K hcore v
+  have hpair_mem :
+      ∀ (l : List LinkTriangle), l.Pairwise
+        (fun τ υ => ¬ ∀ q : Nat, q ∈ τ.verts ↔ q ∈ υ.verts) →
+      ∀ {a b : LinkTriangle}, a ∈ l → b ∈ l → a ≠ b →
+        ¬ ∀ q : Nat, q ∈ a.verts ↔ q ∈ b.verts := by
+    intro l hp
+    induction hp with
+    | nil =>
+        intro a b ha
+        simp at ha
+    | @cons c l hhead htail ih =>
+        intro a b ha hb hne
+        have hsymm : ∀ {d e : LinkTriangle},
+            (¬ ∀ q : Nat, q ∈ d.verts ↔ q ∈ e.verts) →
+            (¬ ∀ q : Nat, q ∈ e.verts ↔ q ∈ d.verts) := by
+          intro d e h hs
+          exact h (fun q => (hs q).symm)
+        rcases List.mem_cons.mp ha with rfl | ha'
+        · have hb' : b ∈ l := by
+            rcases List.mem_cons.mp hb with h | h
+            · exact (hne h.symm).elim
+            · exact h
+          exact hhead b hb'
+        · rcases List.mem_cons.mp hb with rfl | hb'
+          · exact hsymm (hhead a ha')
+          · exact ih ha' hb' hne
+  exact (hpair_mem (vertexLinkTriangles K v) hpair hsigma hrho hneq) hvertices
+
 end Poincare
