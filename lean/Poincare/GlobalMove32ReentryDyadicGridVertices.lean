@@ -308,7 +308,8 @@ of the finite labelling above and is the scale needed to place every recursive
 -/
 theorem exists_finite_squareGrid_dyadic_refinement_positiveCoordinate_labelling_probe
     {K : Triangulation}
-    {x : triangulationTopologicalGeometricCarrier K x loop}
+    {x : triangulationTopologicalGeometricCarrier K}
+    {loop : Path x x}
     (H : CarrierLoopNullHomotopyData K x loop)
     (m : Nat) :
     ∃ N : Nat, ∃ _ : 0 < N,
