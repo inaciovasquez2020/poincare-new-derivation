@@ -54,6 +54,18 @@ def test_invalid_complex_is_rejected_by_move_search():
     assert T.positive_32_moves() == []
     assert T.zero_32_moves() == []
 
+def test_candidate_rejected_when_result_overfills_face():
+    tetrahedra = [
+        [0, 1, 2, 3],
+        [0, 1, 3, 4],
+        [0, 1, 2, 4],
+        [5, 2, 3, 4],
+    ]
+    T = Triangulation(tetrahedra)
+    assert T.is_admissible()
+    assert T.candidate_32_moves() == []
+
+
 def test_explicit_single_tetrahedron_fixture_is_admissible():
     ball = Triangulation([[0, 1, 2, 3]])
     assert ball.is_admissible()
