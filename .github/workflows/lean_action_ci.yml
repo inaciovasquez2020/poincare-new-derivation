@@ -19,3 +19,15 @@ jobs:
         run: lake build Poincare.GlobalMove32ReentryLeastBoundaryEscapeIncidenceThreeFork
       - name: Principal theorem axiom audit
         run: lake env lean lean/Poincare/DegreeFourAxiomAudit.lean
+
+  pachner-python-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test runner
+        run: python -m pip install --upgrade pytest
+      - name: Run Pachner search tests
+        run: python -m pytest -q tests/test_pachner_search.py
