@@ -224,6 +224,8 @@ def random_lift_generator(base_tets, lift_size: int, seed: int) -> Triangulation
     base = [tuple(t) for t in base_tets]
     if not base or any(len(t) != 4 or len(set(t)) != 4 for t in base):
         raise ValueError("base_tets must be a non-empty list of non-degenerate tetrahedra")
+    if not Triangulation(base).is_admissible():
+        raise ValueError("base_tets must form an admissible complex")
     vertices = sorted({v for tet in base for v in tet})
     relabel = {v: i for i, v in enumerate(vertices)}
     base = [tuple(relabel[v] for v in tet) for tet in base]
