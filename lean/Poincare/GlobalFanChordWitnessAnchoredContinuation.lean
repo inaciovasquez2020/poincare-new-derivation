@@ -224,4 +224,24 @@ theorem WitnessAnchoredFanStep.returning_same_transverse_forces_degree_four
     ⟨rfl, rfl, hIncoming⟩
     ⟨hReturn0, hReturn1, hReturnTransverse⟩
 
+
+/-- The corresponding return configuration is impossible at a vertex whose
+degree is independently known not to be four.  This excludes only the stated
+same-transverse two-cycle configuration, not arbitrary longer cycles. -/
+theorem WitnessAnchoredFanStep.no_returning_same_transverse_cycle_of_degree_ne_four
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (hlinks :
+      ∀ v ∈ vertexSupport K,
+        VertexLinkConnected K v)
+    {v x : Nat} {T : FanChordTransition K v x}
+    (S : WitnessAnchoredFanStep K v x T)
+    {U : FanChordTransition K T.z0 T.z1}
+    (hIncoming : T.transverse = S.sharedThird)
+    (hReturn0 : U.z0 = v)
+    (hReturn1 : U.z1 = x)
+    (hReturnTransverse : U.transverse = S.sharedThird)
+    (hdegree : vertexDegree K S.sharedThird ≠ 4) : False := by
+  exact hdegree (S.returning_same_transverse_forces_degree_four
+    hcore hlinks hIncoming hReturn0 hReturn1 hReturnTransverse)
+
 end Poincare
