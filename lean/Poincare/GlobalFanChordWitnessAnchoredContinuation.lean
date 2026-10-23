@@ -27,7 +27,10 @@ structure WitnessAnchoredFanStep
     (∃ m : Move23Site, m.LegalIn K) \/
     (K.tets.filter
       (fun t => T.z0 ∈ t.verts ∧ T.z1 ∈ t.verts)).length = 3 \/
-    Nonempty (FanChordTransition K T.z0 T.z1)
+    ∃ U : FanChordTransition K T.z0 T.z1, ∃ y : Nat,
+      U.sigma = witnessPos ∧ U.rho = neighbor ∧ U.transverse = y ∧
+      y ∈ (fan.tetAt witnessPos).verts ∧
+      y ∈ (fan.tetAt neighbor).verts
 
 /-- In the high-incidence branch, continue from a fan neighbor of the exact
 incoming witness, rather than from an arbitrary adjacent pair.  The result
@@ -70,7 +73,7 @@ theorem ClosedTriangulationCore.FanChordTransition.continue_high_anchored
     rw [← hwitness]
     exact hyw
   have houtcome :=
-    hcore.ambientEdgeCyclicFan_adjacent_transition hM F hadj
+    hcore.ambientEdgeCyclicFan_adjacent_transition_lineage hM F hadj
   exact ⟨{
     fan := F
     witnessPos := witnessPos
