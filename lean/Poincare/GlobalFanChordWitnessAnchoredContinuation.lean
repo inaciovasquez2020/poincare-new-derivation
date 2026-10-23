@@ -199,4 +199,29 @@ theorem WitnessAnchoredFanStep.classifier_branch_successor_lineage
     hcore hσ hρ hy hyw hyn
   exact ⟨hσ, hρ, by rw [hy, hEq]⟩
 
+
+/-- Conditional anchored two-cycle obstruction.  If the incoming transition's
+transverse vertex is the retained shared-face vertex, and a classifier
+successor reverses the incoming endpoint pair with that same transverse
+vertex, the existing two-cycle theorem forces degree four.  These hypotheses
+are explicit: anchored lineage alone does not prove the return transition or
+the transverse identification. -/
+theorem WitnessAnchoredFanStep.returning_same_transverse_forces_degree_four
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (hlinks :
+      ∀ v ∈ vertexSupport K,
+        VertexLinkConnected K v)
+    {v x : Nat} {T : FanChordTransition K v x}
+    (S : WitnessAnchoredFanStep K v x T)
+    {U : FanChordTransition K T.z0 T.z1}
+    (hIncoming : T.transverse = S.sharedThird)
+    (hReturn0 : U.z0 = v)
+    (hReturn1 : U.z1 = x)
+    (hReturnTransverse : U.transverse = S.sharedThird) :
+    vertexDegree K S.sharedThird = 4 := by
+  exact hcore.fanChord_twoCycle_same_transverse_degree_four
+    hlinks T U
+    ⟨rfl, rfl, hIncoming⟩
+    ⟨hReturn0, hReturn1, hReturnTransverse⟩
+
 end Poincare
