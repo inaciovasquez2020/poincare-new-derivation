@@ -66,14 +66,14 @@ theorem ClosedTriangulationCore.FanChordTransition.continue_high_anchored
     ⟨rho1, hadj1.2.1⟩
   have hadj :
       (vertexLinkStarGraph K T.z0 T.z1).Adj witnessPos neighbor := by
-    apply (vertexLinkStarGraph_adj K T.z0 T.z1 witnessPos.1 rho1).2
+    apply (vertexLinkStarGraph_adj K T.z0 T.z1 witnessPos neighbor).2
     exact ⟨Ne.symm hne1, hadj1⟩
   obtain ⟨y, hyNodup, hvw, hxw, hyw, hvn, hxn, hyn⟩ :=
     hcore.ambientEdgeCyclicFan_adjacent_tets_share_face F hadj
   have hyx : y ≠ T.z1 := by
     intro heq
     subst y
-    exact (List.nodup_cons.mp hyNodup).1 (by simp)
+    exact (List.nodup_cons.mp (List.nodup_cons.mp hyNodup).2).1 (by simp)
   have hyv : y ≠ T.z0 := by
     intro heq
     subst y
@@ -165,12 +165,12 @@ theorem WitnessAnchoredFanStep.classifier_transverse_eq_sharedThird
       exact (List.nodup_cons.mp (List.nodup_cons.mp U.distinct).2).1
         (by simp [heq'])
     exact hne (by rw [hy, heq])
-  exact (hcore.linkTriangles_three_common_vertices_impossible
+  exact linkTriangles_three_common_vertices_impossible hcore
     hσmem hρmem (by
       intro heq
-      apply S.adjacent.ne
-      exact Subtype.ext (by simpa [hσ, hρ] using heq))
+      have hsub : S.witnessPos = S.neighbor := Subtype.ext heq
+      exact S.adjacent.ne hsub)
     hxσ hxρ hsharedσ hsharedρ hyσ hyρ hxy0 hxy1
-    (Ne.symm hne_y_shared)).elim
+    (Ne.symm hne_y_shared)
 
 end Poincare
