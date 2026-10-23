@@ -34,6 +34,57 @@ class Triangulation:
             tuple(sorted(t)) for t in tetrahedra
         ]
 
+    def admissibility_errors(self, reject_degree_four: bool = True) -> List[str]:
+        errors: List[str] = []
+        seen = set()
+        face_counts: Counter = Counter()
+        vertex_link_graphs: Dict[int, Dict[int, set]] = defaultdict(lambda: defaultdict(set))
+
+        for raw in self.tetrahedra:
+            if len(raw) != 4 or len(set(raw)) != 4:
+                errors.append(f"tetrahedron must contain four distinct vertices: {raw}")
+                continue
+            tet = tuple(sorted(raw))
+            if tet in seen:
+                errors.append(f"duplicate tetrahedron: {tet}")
+            seen.add(tet)
+            for face in combinations(tet, 3):
+                face_counts[face] += 1
+            for v in tet:
+                link_vertices = [x for x in tet if x != v]
+                graph = vertex_link_graphs[v]
+                for x in link_vertices:
+                    graph.setdefault(x, set())
+                for x, y in combinations(link_vertices, 2):
+                    graph[x].add(y)
+                    graph[y].add(x)
+
+        for face, count in face_counts.items():
+            if count > 2:
+                errors.append(f"face has {count} incident tetrahedra: {face}")
+
+        for vertex, graph in vertex_link_graphs.items():
+            if graph:
+                reached = set()
+                stack = [next(iter(graph))]
+                while stack:
+                    current = stack.pop()
+                    if current in reached:
+                        continue
+                    reached.add(current)
+                    stack.extend(graph[current] - reached)
+                if reached != set(graph):
+                    errors.append(f"disconnected vertex link at vertex {vertex}")
+
+        if reject_degree_four:
+            for vertex, degree in self.vertex_degrees().items():
+                if degree == 4:
+                    errors.append(f"degree-four vertex rejected: {vertex}")
+        return errors
+
+    def is_admissible(self, reject_degree_four: bool = True) -> bool:
+        return not self.admissibility_errors(reject_degree_four=reject_degree_four)
+
     def edge_to_tets(self) -> Dict[Tuple[int, int], List[Tuple]]:
         out: Dict[Tuple[int, int], List[Tuple]] = defaultdict(list)
         for t in self.tetrahedra:
@@ -77,6 +128,8 @@ class Triangulation:
         return sum(max(0, d - 2) for d in self._edge_degrees())
 
     def candidate_32_moves(self) -> List[Move32]:
+        if not self.is_admissible():
+            return []
         edge_map = self.edge_to_tets()
         vdeg = self.vertex_degrees()
         phi_self = self.phi()
@@ -156,7 +209,13 @@ class Triangulation:
         return Triangulation(new_tets)
 
     def apply_32(self, move: Move32) -> "Triangulation":
-        return self._apply_32_raw(move.edge, move.opposite_vertices)
+        if not self.is_admissible():
+            raise ValueError("cannot apply a Pachner move to an inadmissible complex")
+        result = self._apply_32_raw(move.edge, move.opposite_vertices)
+        errors = result.admissibility_errors()
+        if errors:
+            raise ValueError("Pachner move violates complex admissibility: " + "; ".join(errors))
+        return result
 
 
 def random_lift_generator(base_tets, lift_size: int, seed: int) -> Triangulation:
