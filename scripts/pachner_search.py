@@ -219,22 +219,23 @@ class Triangulation:
 
 
 def random_lift_generator(base_tets, lift_size: int, seed: int) -> Triangulation:
-    rng = random.Random(seed)
-    n = max(v for t in base_tets for v in t) + 1
-    new_tets: List[List[int]] = []
+    if lift_size < 1:
+        raise ValueError("lift_size must be positive")
+    base = [tuple(t) for t in base_tets]
+    if not base or any(len(t) != 4 or len(set(t)) != 4 for t in base):
+        raise ValueError("base_tets must be a non-empty list of non-degenerate tetrahedra")
+    vertices = sorted({v for tet in base for v in tet})
+    relabel = {v: i for i, v in enumerate(vertices)}
+    base = [tuple(relabel[v] for v in tet) for tet in base]
+    n = len(vertices)
+    copies: List[List[int]] = []
     for i in range(lift_size):
         offset = i * n
-        for t in base_tets:
-            new_tets.append([v + offset for v in t])
-    total_verts = n * lift_size
-    perm = list(range(total_verts))
-    indices = list(range(total_verts))
-    rng.shuffle(indices)
-    for idx in indices[:total_verts // 4]:
-        target = rng.randint(0, total_verts - 1)
-        perm[idx] = target
-    glued = [[perm[v] for v in t] for t in new_tets]
-    return Triangulation(glued)
+        copies.extend([[v + offset for v in tet] for tet in base])
+    rng = random.Random(seed)
+    permutation = list(range(n * lift_size))
+    rng.shuffle(permutation)
+    return Triangulation([[permutation[v] for v in tet] for tet in copies])
 
 
 def adversarial_family_chain(k: int) -> Triangulation:
