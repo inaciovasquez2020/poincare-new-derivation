@@ -74,7 +74,7 @@ theorem finite_squareGrid_least_boundary_escape_outside_anchorTargets_probe
       exact (hsame (label i0 j)).1 (by simpa [i0] using hjRho)
     apply hjOutside'
     simp only [Move32Site.targetTet₀, Tet.verts, List.mem_cons,
-      List.mem_singleton] at hmem ⊢
+      ] at hmem ⊢
     aesop
 
   have hnot1 : ¬ SameTetVertices rho s.targetTet₁ := by
