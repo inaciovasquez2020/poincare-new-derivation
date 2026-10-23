@@ -718,4 +718,85 @@ theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_transition_lineage
       · exact (hleft y).2 (by simp [Move23Site.leftTet, ha, hb, hc, hd, Tet.verts])
       · exact (hright y).2 (by simp [Move23Site.rightTet, ha, hb, hc, he, Tet.verts])
 
+
+/-- Triangle-level form of the local uniqueness obstruction.  It does not
+require the two transverse vertices to be packaged as transitions: two
+distinct link triangles cannot share an endpoint and two further distinct
+vertices under the closed-core pairwise vertex-set exclusion. -/
+theorem linkTriangles_three_common_vertices_impossible
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    {v : Nat} {sigma rho : LinkTriangle}
+    (hsigma : sigma ∈ vertexLinkTriangles K v)
+    (hrho : rho ∈ vertexLinkTriangles K v)
+    (hneq : sigma ≠ rho)
+    {x y0 y1 : Nat}
+    (hxσ : x ∈ sigma.verts) (hxρ : x ∈ rho.verts)
+    (hy0σ : y0 ∈ sigma.verts) (hy0ρ : y0 ∈ rho.verts)
+    (hy1σ : y1 ∈ sigma.verts) (hy1ρ : y1 ∈ rho.verts)
+    (hxy0 : x ≠ y0) (hxy1 : x ≠ y1) (hy01 : y0 ≠ y1) :
+    False := by
+  have hσnodup := vertexLinkTriangles_triangle_nodup K hcore v sigma hsigma
+  have hρnodup := vertexLinkTriangles_triangle_nodup K hcore v rho hrho
+  have hexhaust :
+      ∀ (τ : LinkTriangle) (a b c : Nat),
+        τ.verts.Nodup →
+        a ∈ τ.verts → b ∈ τ.verts → c ∈ τ.verts →
+        a ≠ b → a ≠ c → b ≠ c →
+        ∀ q, q ∈ τ.verts → q = a ∨ q = b ∨ q = c := by
+    intro τ a b c hnodup ha hb hc hab hac hbc q hq
+    rcases τ with ⟨s0, s1, s2⟩
+    simp [LinkTriangle.verts] at hnodup ha hb hc hq ⊢
+    aesop
+  have hσexhaust :
+      ∀ q, q ∈ sigma.verts → q = x ∨ q = y0 ∨ q = y1 := by
+    intro q hq
+    exact hexhaust sigma x y0 y1 hσnodup hxσ hy0σ hy1σ
+      hxy0 hxy1 hy01 q hq
+  let S : Finset Nat := sigma.verts.toFinset
+  let R : Finset Nat := rho.verts.toFinset
+  have hSR : S ⊆ R := by
+    intro q hq
+    have hq' : q ∈ sigma.verts := List.mem_toFinset.mp hq
+    rcases hσexhaust q hq' with rfl | rfl | rfl
+    · exact List.mem_toFinset.mpr hxρ
+    · exact List.mem_toFinset.mpr hy0ρ
+    · exact List.mem_toFinset.mpr hy1ρ
+  have hScard : S.card = 3 := by
+    simpa [S, LinkTriangle.verts] using List.toFinset_card_of_nodup hσnodup
+  have hRcard : R.card = 3 := by
+    simpa [R, LinkTriangle.verts] using List.toFinset_card_of_nodup hρnodup
+  have hEq : S = R := Finset.eq_of_subset_of_card_le hSR (by omega)
+  have hvertices : ∀ q, q ∈ sigma.verts ↔ q ∈ rho.verts := by
+    intro q
+    have hq := Finset.ext_iff.mp hEq q
+    simpa [S, R] using hq
+  have hpair := vertexLinkTriangles_pairwise_vertexSet_ne K hcore v
+  have hpair_mem :
+      ∀ (l : List LinkTriangle), l.Pairwise
+        (fun τ υ => ¬ ∀ q : Nat, q ∈ τ.verts ↔ q ∈ υ.verts) →
+      ∀ {a b : LinkTriangle}, a ∈ l → b ∈ l → a ≠ b →
+        ¬ ∀ q : Nat, q ∈ a.verts ↔ q ∈ b.verts := by
+    intro l hp
+    induction hp with
+    | nil =>
+        intro a b ha
+        simp at ha
+    | @cons c l hhead htail ih =>
+        intro a b ha hb hne
+        have hsymm : ∀ {d e : LinkTriangle},
+            (¬ ∀ q : Nat, q ∈ d.verts ↔ q ∈ e.verts) →
+            (¬ ∀ q : Nat, q ∈ e.verts ↔ q ∈ d.verts) := by
+          intro d e h hs
+          exact h (fun q => (hs q).symm)
+        rcases List.mem_cons.mp ha with rfl | ha'
+        · have hb' : b ∈ l := by
+            rcases List.mem_cons.mp hb with h | h
+            · exact (hne h.symm).elim
+            · exact h
+          exact hhead b hb'
+        · rcases List.mem_cons.mp hb with rfl | hb'
+          · exact hsymm (hhead a ha')
+          · exact ih ha' hb' hne
+  exact (hpair_mem (vertexLinkTriangles K v) hpair hsigma hrho hneq) hvertices
+
 end Poincare
