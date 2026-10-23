@@ -622,4 +622,100 @@ theorem ClosedTriangulationCore.fanChord_twoCycle_same_transverse_impossible_noF
     (hcore.fanChord_twoCycle_same_transverse_degree_four
       hlinks T0 T1 hT0 hT1)
 
+
+/-- Stronger adjacent-fan classification retaining the exact adjacent link
+triangles and shared-face transverse vertex in the represented-chord branch.
+This is the lineage interface needed by witness-anchored continuation. -/
+theorem ClosedTriangulationCore.ambientEdgeCyclicFan_adjacent_transition_lineage
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (hM : TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K)
+    {v x : Nat} (F : AmbientEdgeCyclicFan K v x)
+    {sigma rho} (hadj : (vertexLinkStarGraph K v x).Adj sigma rho) :
+    (∃ m : Move23Site, m.LegalIn K) ∨
+    (K.tets.filter (fun t => v ∈ t.verts ∧ x ∈ t.verts)).length = 3 ∨
+    ∃ y : Nat, ∃ T : FanChordTransition K v x,
+      T.sigma = sigma ∧ T.rho = rho ∧ T.transverse = y ∧
+      y ∈ (F.tetAt sigma).verts ∧ y ∈ (F.tetAt rho).verts := by
+  classical
+  obtain ⟨y, z0, z1, m, ha, hb, hc, hd, he, hleft, hright, hstatus⟩ :=
+    hcore.ambientEdgeCyclicFan_adjacent_chord_classification F hadj
+  rcases hstatus with hlegal | hthree | ⟨tau, htau, hz0, hz1, hoff⟩
+  · exact Or.inl ⟨m, hlegal⟩
+  · exact Or.inr (Or.inl hthree)
+  · right; right
+    have hfive : [v, x, y, z0, z1].Nodup := by
+      simpa [ha, hb, hc, hd, he] using m.distinct
+    have hne : z0 ≠ z1 := by
+      simp [List.nodup_cons] at hfive
+      tauto
+    have hz0support : z0 ∈ vertexSupport K := by
+      rw [mem_vertexSupport_iff]
+      exact List.mem_flatMap.2 ⟨tau, htau, hz0⟩
+    have hz1support : z1 ∈ vertexSupport K := by
+      rw [mem_vertexSupport_iff]
+      exact List.mem_flatMap.2 ⟨tau, htau, hz1⟩
+    have hpos : 0 < (K.tets.filter
+        (fun t => z0 ∈ t.verts ∧ z1 ∈ t.verts)).length := by
+      apply List.length_pos_iff.2
+      exact List.ne_nil_of_mem
+        (List.mem_filter.2 ⟨htau, by simp [hz0, hz1]⟩)
+    rcases hcore.edgeIncidence_eq_three_or_four_le_of_pos z0 z1 hne hpos with
+      hinc | hinc
+    · refine ⟨y, {
+        z0 := z0, z1 := z1, endpoints_ne := hne
+        z0_supported := hz0support, z1_supported := hz1support
+        edgeState := supportedEdgeStateOfDistinct K z0 z1 hz0support hz1support hne
+        edgeState_eq := rfl
+        sigma := sigma
+        rho := rho
+        adjacent := hadj
+        witness := tau, witness_mem := htau, z0_mem := hz0, z1_mem := hz1
+        escapes_old_edge := hoff, incidence := Or.inl hinc
+        transverse := y
+        leftTet := F.tetAt sigma
+        rightTet := F.tetAt rho
+        leftTet_mem := F.tetAt_mem sigma
+        rightTet_mem := F.tetAt_mem rho
+        leftTet_link := F.tetAt_link sigma
+        rightTet_link := F.tetAt_link rho
+        leftTet_match := by
+          simpa [Move23Site.leftTet, ha, hb, hc, hd] using hleft
+        rightTet_match := by
+          simpa [Move23Site.rightTet, ha, hb, hc, he] using hright
+        distinct := by
+          simpa [ha, hb, hc, hd, he] using m.distinct
+      }, rfl, rfl, rfl, ?_, ?_⟩
+      · exact (hleft y).2 (by simp [Move23Site.leftTet, ha, hb, hc, hd, Tet.verts])
+      · exact (hright y).2 (by simp [Move23Site.rightTet, ha, hb, hc, he, Tet.verts])
+    · have hrep : VertexLinkVertexRepresented K z0 z1 :=
+        hcore.vertexLinkVertexRepresented_of_edgeIncidence_pos z0 z1 hne hpos
+      refine ⟨y, {
+        z0 := z0, z1 := z1, endpoints_ne := hne
+        z0_supported := hz0support, z1_supported := hz1support
+        edgeState := supportedEdgeStateOfDistinct K z0 z1 hz0support hz1support hne
+        edgeState_eq := rfl
+        sigma := sigma
+        rho := rho
+        adjacent := hadj
+        witness := tau, witness_mem := htau, z0_mem := hz0, z1_mem := hz1
+        escapes_old_edge := hoff
+        incidence := Or.inr ⟨hinc,
+          hcore.exists_ambientEdgeCyclicFan_of_topologicalThreeManifold hM hrep⟩
+        transverse := y
+        leftTet := F.tetAt sigma
+        rightTet := F.tetAt rho
+        leftTet_mem := F.tetAt_mem sigma
+        rightTet_mem := F.tetAt_mem rho
+        leftTet_link := F.tetAt_link sigma
+        rightTet_link := F.tetAt_link rho
+        leftTet_match := by
+          simpa [Move23Site.leftTet, ha, hb, hc, hd] using hleft
+        rightTet_match := by
+          simpa [Move23Site.rightTet, ha, hb, hc, he] using hright
+        distinct := by
+          simpa [ha, hb, hc, hd, he] using m.distinct
+      }, rfl, rfl, rfl, ?_, ?_⟩
+      · exact (hleft y).2 (by simp [Move23Site.leftTet, ha, hb, hc, hd, Tet.verts])
+      · exact (hright y).2 (by simp [Move23Site.rightTet, ha, hb, hc, he, Tet.verts])
+
 end Poincare
