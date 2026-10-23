@@ -177,4 +177,26 @@ theorem WitnessAnchoredFanStep.classifier_transverse_eq_sharedThird
     hxσ hxρ hsharedσ hsharedρ hyσ hyρ hxy0 hxy1
     (Ne.symm hne_y_shared)
 
+
+/-- The classifier branch exposes an exact successor transition whose
+transverse vertex is the shared-face vertex retained by the incoming anchored
+step. This is the precise local lineage statement; it does not assert that a
+successor step exists or that the resulting transition graph is acyclic. -/
+theorem WitnessAnchoredFanStep.classifier_branch_successor_lineage
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    {v x : Nat} {T : FanChordTransition K v x}
+    (S : WitnessAnchoredFanStep K v x T)
+    {y : Nat} {U : FanChordTransition K T.z0 T.z1}
+    (hσ : U.sigma = S.witnessPos)
+    (hρ : U.rho = S.neighbor)
+    (hy : U.transverse = y)
+    (hyw : y ∈ (S.fan.tetAt S.witnessPos).verts)
+    (hyn : y ∈ (S.fan.tetAt S.neighbor).verts) :
+    U.sigma = S.witnessPos ∧
+      U.rho = S.neighbor ∧
+      U.transverse = S.sharedThird := by
+  have hEq := S.classifier_transverse_eq_sharedThird
+    hcore hσ hρ hy hyw hyn
+  exact ⟨hσ, hρ, by rw [hy, hEq]⟩
+
 end Poincare
