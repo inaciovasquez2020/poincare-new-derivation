@@ -164,6 +164,8 @@ class Triangulation:
                 continue
 
             T2 = self._apply_32_raw(edge, (a, b, c))
+            if not T2.is_admissible():
+                continue
             delta1 = phi_self - T2.phi()
             delta2 = phi2_self - T2.phi2()
 
