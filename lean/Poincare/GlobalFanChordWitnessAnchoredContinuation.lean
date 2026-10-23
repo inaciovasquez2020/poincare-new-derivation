@@ -97,4 +97,80 @@ theorem ClosedTriangulationCore.FanChordTransition.continue_high_anchored
     outcome := houtcome
   }⟩
 
+
+/-- In the classifier branch, the classifier's transverse vertex is the
+same common-face vertex already retained by the anchored step.  The proof is
+local: both vertices belong to both adjacent link triangles, and three
+distinct common vertices are forbidden by the closed-core link condition. -/
+theorem WitnessAnchoredFanStep.classifier_transverse_eq_sharedThird
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    {v x : Nat} {T : FanChordTransition K v x}
+    (S : WitnessAnchoredFanStep K v x T)
+    {y : Nat} {U : FanChordTransition K T.z0 T.z1}
+    (hσ : U.sigma = S.witnessPos)
+    (hρ : U.rho = S.neighbor)
+    (hy : U.transverse = y)
+    (hyw : y ∈ (S.fan.tetAt S.witnessPos).verts)
+    (hyn : y ∈ (S.fan.tetAt S.neighbor).verts) :
+    y = S.sharedThird := by
+  by_contra hne_y_shared
+  have hσmem : S.witnessPos.1 ∈ vertexLinkTriangles K T.z0 :=
+    ((mem_vertexLinkStarTriangles_iff K T.z0 T.z1
+      S.witnessPos.1).1 S.witnessPos.2).1
+  have hρmem : S.neighbor.1 ∈ vertexLinkTriangles K T.z0 :=
+    ((mem_vertexLinkStarTriangles_iff K T.z0 T.z1
+      S.neighbor.1).1 S.neighbor.2).1
+  have hxσ : T.z1 ∈ S.witnessPos.1.verts :=
+    ((mem_vertexLinkStarTriangles_iff K T.z0 T.z1
+      S.witnessPos.1).1 S.witnessPos.2).2
+  have hxρ : T.z1 ∈ S.neighbor.1.verts :=
+    ((mem_vertexLinkStarTriangles_iff K T.z0 T.z1
+      S.neighbor.1).1 S.neighbor.2).2
+  have hsharedσ : S.sharedThird ∈ S.witnessPos.1.verts := by
+    have htet : S.sharedThird ∈ (S.fan.tetAt S.witnessPos).verts := by
+      rw [S.witness_eq]
+      exact S.sharedThird_mem_witness
+    exact (S.fan.tetAt S.witnessPos).mem_linkTriangleAt?_iff
+      T.z0 S.sharedThird S.witnessPos.1 (S.fan.tetAt_link S.witnessPos)
+      S.sharedThird_ne_center |>.2 htet
+  have hsharedρ : S.sharedThird ∈ S.neighbor.1.verts :=
+    (S.fan.tetAt S.neighbor).mem_linkTriangleAt?_iff
+      T.z0 S.sharedThird S.neighbor.1 (S.fan.tetAt_link S.neighbor)
+      S.sharedThird_ne_center |>.2 S.sharedThird_mem_neighbor
+  have hyσ : y ∈ S.witnessPos.1.verts := by
+    have hne : U.transverse ≠ T.z0 := by
+      intro heq
+      exact (List.nodup_cons.mp U.distinct).1 (by simp [heq])
+    have hmem : U.transverse ∈ U.sigma.1.verts :=
+      (U.leftTet.mem_linkTriangleAt?_iff T.z0 U.transverse U.sigma.1
+        U.leftTet_link hne).2
+        ((U.leftTet_match U.transverse).2 (by simp [Tet.verts]))
+    rw [← congrArg Subtype.val hσ, ← hy]
+    exact hmem
+  have hyρ : y ∈ S.neighbor.1.verts := by
+    have hne : U.transverse ≠ T.z0 := by
+      intro heq
+      exact (List.nodup_cons.mp U.distinct).1 (by simp [heq])
+    have hmem : U.transverse ∈ U.rho.1.verts :=
+      (U.rightTet.mem_linkTriangleAt?_iff T.z0 U.transverse U.rho.1
+        U.rightTet_link hne).2
+        ((U.rightTet_match U.transverse).2 (by simp [Tet.verts]))
+    rw [← congrArg Subtype.val hρ, ← hy]
+    exact hmem
+  have hxy0 : T.z1 ≠ S.sharedThird := Ne.symm S.sharedThird_ne
+  have hxy1 : T.z1 ≠ y := by
+    intro heq
+    have hne : U.transverse ≠ T.z1 := by
+      intro heq'
+      exact (List.nodup_cons.mp (List.nodup_cons.mp U.distinct).2).1
+        (by simp [heq'])
+    exact hne (by rw [hy, heq])
+  exact (hcore.linkTriangles_three_common_vertices_impossible
+    hσmem hρmem (by
+      intro heq
+      apply S.adjacent.ne
+      exact Subtype.ext (by simpa [hσ, hρ] using heq))
+    hxσ hxρ hsharedσ hsharedρ hyσ hyρ hxy0 hxy1
+    (Ne.symm hne_y_shared)).elim
+
 end Poincare
