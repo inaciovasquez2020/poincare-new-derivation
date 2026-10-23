@@ -167,7 +167,7 @@ theorem move23BipyramidSourceBody_eq_targetBody :
       have hc : 0 ≤ c - m := sub_nonneg.mpr (le_trans (min_le_right a (min b c)) (min_le_right b c))
       have hcomb : move23FiveCombination (a-m) (b-m) (c-m)
           ((3/2)*m) (e+(3/2)*m) = x := by
-        convert (move23_shift_source a b c 0 e m).trans ?_ using 1 <;> try ring
+        convert (move23_shift_source a b c 0 e m).trans ?_ using 1 <;> try ring_nf
         simpa [Fin.sum_univ_succ, move23FiveCombination, move23BipyramidABCE,
           a,b,c,e, add_assoc] using hwx
       have hsum : (a-m)+(b-m)+(c-m)+((3/2)*m)+(e+(3/2)*m)=1 := by
