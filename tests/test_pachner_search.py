@@ -33,7 +33,7 @@ def test_admissible_32_detection_and_step():
     ])
     assert actual == expected
 
-def test_positive_move_filter():
+def test_invalid_complex_is_rejected_by_move_search():
     tetrahedra = [
         [0, 1, 2, 3],
         [0, 1, 2, 4],
@@ -49,10 +49,22 @@ def test_positive_move_filter():
         [29, 2, 3, 4],
     ]
     T = Triangulation(tetrahedra)
-    pos = T.positive_32_moves()
-    zero = T.zero_32_moves()
-    assert all(m.delta1 > 0 for m in pos)
-    assert all(m.delta1 == 0 for m in zero)
+    assert not T.is_admissible()
+    assert T.candidate_32_moves() == []
+    assert T.positive_32_moves() == []
+    assert T.zero_32_moves() == []
+
+def test_face_incidence_and_degree_four_rejection():
+    overfull_face = Triangulation([
+        [0, 1, 2, 3], [0, 1, 2, 4], [0, 1, 2, 5]
+    ])
+    assert any("face has 3 incident tetrahedra" in e for e in overfull_face.admissibility_errors())
+
+    degree_four = Triangulation([
+        [0, 1, 2, 3], [0, 4, 5, 6], [0, 7, 8, 9], [0, 10, 11, 12]
+    ])
+    assert any("degree-four vertex rejected: 0" in e for e in degree_four.admissibility_errors())
+
 
 def test_cli_scan_and_zero_witness():
     tetrahedra = [
