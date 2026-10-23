@@ -14,9 +14,9 @@ def test_admissible_32_detection_and_step():
         [0, 1, 2, 3],
         [0, 1, 2, 4],
         [0, 1, 3, 4],
-        [5, 2, 3, 4],
     ]
     T = Triangulation(tetrahedra)
+    assert T.is_admissible()
     cands = T.candidate_32_moves()
     assert len(cands) == 1
     c = cands[0]
@@ -27,11 +27,11 @@ def test_admissible_32_detection_and_step():
 
     actual = canon(T2.tetrahedra)
     expected = canon([
-        (5, 2, 3, 4),
         (0, 2, 3, 4),
         (1, 2, 3, 4),
     ])
     assert actual == expected
+    assert T2.is_admissible()
 
 def test_invalid_complex_is_rejected_by_move_search():
     tetrahedra = [
@@ -53,6 +53,12 @@ def test_invalid_complex_is_rejected_by_move_search():
     assert T.candidate_32_moves() == []
     assert T.positive_32_moves() == []
     assert T.zero_32_moves() == []
+
+def test_explicit_single_tetrahedron_fixture_is_admissible():
+    ball = Triangulation([[0, 1, 2, 3]])
+    assert ball.is_admissible()
+    assert ball.vertex_degrees() == {0: 1, 1: 1, 2: 1, 3: 1}
+
 
 def test_face_incidence_and_degree_four_rejection():
     overfull_face = Triangulation([
@@ -111,6 +117,7 @@ def test_phi4_entropy_spectrum_random_lift_and_adversarial():
         [0, 1, 3, 4],
     ]
     T = random_lift_generator(base, 3, 7)
+    assert T.is_admissible()
     assert isinstance(T.phi4(), int)
     assert T.phi4() >= 0
     assert isinstance(T.entropy(), float)
