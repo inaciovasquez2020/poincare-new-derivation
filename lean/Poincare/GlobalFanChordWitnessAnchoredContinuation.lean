@@ -27,7 +27,7 @@ structure WitnessAnchoredFanStep
     (∃ m : Move23Site, m.LegalIn K) \/
     (K.tets.filter
       (fun t => T.z0 ∈ t.verts ∧ T.z1 ∈ t.verts)).length = 3 \/
-    ∃ U : FanChordTransition K T.z0 T.z1, ∃ y : Nat,
+    ∃ y : Nat, ∃ U : FanChordTransition K T.z0 T.z1,
       U.sigma = witnessPos ∧ U.rho = neighbor ∧ U.transverse = y ∧
       y ∈ (fan.tetAt witnessPos).verts ∧
       y ∈ (fan.tetAt neighbor).verts
