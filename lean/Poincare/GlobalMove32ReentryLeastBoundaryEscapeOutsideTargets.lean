@@ -89,8 +89,7 @@ theorem finite_squareGrid_least_boundary_escape_outside_anchorTargets_probe
     have hmem : label i0 j ∈ s.targetTet₂.verts := by
       exact (hsame (label i0 j)).1 (by simpa [i0] using hjRho)
     apply hjOutside'
-    simp only [Move32Site.targetTet₂, Tet.verts, List.mem_cons,
-      List.mem_singleton] at hmem ⊢
+    simp only [Move32Site.targetTet₂, Tet.verts, List.mem_cons] at hmem ⊢
     aesop
 
   refine ⟨j, k, rho, hjPos, hkSucc, hkInside, hjOutside,
