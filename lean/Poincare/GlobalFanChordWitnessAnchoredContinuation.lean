@@ -71,7 +71,7 @@ theorem ClosedTriangulationCore.FanChordTransition.continue_high_anchored
   have hadj :
       (vertexLinkStarGraph K T.z0 T.z1).Adj witnessPos neighbor := by
     apply (vertexLinkStarGraph_adj K T.z0 T.z1 witnessPos neighbor).2
-    exact ⟨hneSub, hadj1⟩
+    exact ⟨hneSub.symm, hadj1⟩
   obtain ⟨y, hyNodup, hvw, hxw, hyw, hvn, hxn, hyn⟩ :=
     hcore.ambientEdgeCyclicFan_adjacent_tets_share_face F hadj
   have hyx : y ≠ T.z1 := by
