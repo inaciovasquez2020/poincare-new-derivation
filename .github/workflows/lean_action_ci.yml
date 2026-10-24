@@ -15,6 +15,8 @@ jobs:
       - uses: leanprover/lean-action@v1
         with:
           use-github-cache: true
+      - name: Build recurrent source-face support equality lemma
+        run: lake build Poincare.GlobalMove32ReentryReturnSourceFaceSupportEquality
       - name: Build principal theorem module
         run: lake build Poincare.GlobalMove32ReentryLeastBoundaryEscapeIncidenceThreeFork
       - name: Principal theorem axiom audit
