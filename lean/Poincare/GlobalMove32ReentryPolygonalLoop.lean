@@ -30,8 +30,7 @@ theorem move32SharedEdgeMidpoint_eq_of_endpoints
   rcases h with h | h
   · rw [h.1, h.2]
   · rw [h.1, h.2]
-    simp only [move32SharedEdgeMidpoint,
-      triangulationTopologicalGeometricEdgeMidpoint]
+    simp only [triangulationTopologicalGeometricEdgeMidpoint]
     ac_rfl
 
 /-- A witnessed reentry step realized as the canonical three-segment trace

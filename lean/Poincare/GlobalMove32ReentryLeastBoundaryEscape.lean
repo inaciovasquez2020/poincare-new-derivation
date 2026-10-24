@@ -86,8 +86,7 @@ theorem finite_squareGrid_least_boundary_label_escape_probe
           (p.crossing.sites p.crossing.anchorIndex).c,
           (p.crossing.sites p.crossing.anchorIndex).d,
           (p.crossing.sites p.crossing.anchorIndex).e] := by
-    simp only [Move32Site.targetTet₀, Tet.verts, List.mem_cons,
-      List.mem_singleton] at hlabel0Target0 ⊢
+    simp only [Move32Site.targetTet₀, Tet.verts, List.mem_cons] at hlabel0Target0 ⊢
     aesop
 
   obtain ⟨jExit, _hjParam, hjExit⟩ :=
