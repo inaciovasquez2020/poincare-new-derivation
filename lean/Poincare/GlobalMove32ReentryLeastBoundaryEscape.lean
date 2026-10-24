@@ -170,7 +170,7 @@ theorem finite_squareGrid_least_boundary_label_escape_probe
     omega
 
   refine ⟨j, ?_, hnOutside', ?_, ?_⟩
-  · simp [j] using hnPos
+  · simpa [j] using hnPos
   · intro k hk
     have hk' : (k : Nat) < n := by
       simpa [j] using hk
