@@ -71,11 +71,11 @@ theorem ClosedTriangulationCore.sourceFace_support_eq_of_sharedSupportedEdgeStat
           (hstar tau0 htau0).2 (Or.inl hsame0)
         rcases hanchorStar with ha | hb | hc
         · have hqAnchor := (ha q).mp hqTau
-          simp [Move32Site.targetTet₀, Move32Site.targetTet₁, Move32Site.targetTet₂, Tet.verts] at hqAnchor ⊢ <;> tauto
+          simp [Move32Site.targetTet₀, Tet.verts] at hqAnchor ⊢ <;> tauto
         · have hqAnchor := (hb q).mp hqTau
-          simp [Move32Site.targetTet₀, Move32Site.targetTet₁, Move32Site.targetTet₂, Tet.verts] at hqAnchor ⊢ <;> tauto
+          simp [Move32Site.targetTet₁, Tet.verts] at hqAnchor ⊢ <;> tauto
         · have hqAnchor := (hc q).mp hqTau
-          simp [Move32Site.targetTet₀, Move32Site.targetTet₁, Move32Site.targetTet₂, Tet.verts] at hqAnchor ⊢ <;> tauto
+          simp [Move32Site.targetTet₂, Tet.verts] at hqAnchor ⊢ <;> tauto
       · have hqTau : q ∈ tau0.verts := by
           apply (hsame0 q).mpr
           simp [Move32Site.targetTet₀, Tet.verts, hqb]
@@ -86,11 +86,11 @@ theorem ClosedTriangulationCore.sourceFace_support_eq_of_sharedSupportedEdgeStat
           (hstar tau0 htau0).2 (Or.inl hsame0)
         rcases hanchorStar with ha | hb | hc
         · have hqAnchor := (ha q).mp hqTau
-          simp [Move32Site.targetTet₀, Move32Site.targetTet₁, Move32Site.targetTet₂, Tet.verts] at hqAnchor ⊢ <;> tauto
+          simp [Move32Site.targetTet₀, Tet.verts] at hqAnchor ⊢ <;> tauto
         · have hqAnchor := (hb q).mp hqTau
-          simp [Move32Site.targetTet₀, Move32Site.targetTet₁, Move32Site.targetTet₂, Tet.verts] at hqAnchor ⊢ <;> tauto
+          simp [Move32Site.targetTet₁, Tet.verts] at hqAnchor ⊢ <;> tauto
         · have hqAnchor := (hc q).mp hqTau
-          simp [Move32Site.targetTet₀, Move32Site.targetTet₁, Move32Site.targetTet₂, Tet.verts] at hqAnchor ⊢ <;> tauto
+          simp [Move32Site.targetTet₂, Tet.verts] at hqAnchor ⊢ <;> tauto
       · have hqTau : q ∈ tau1.verts := by
           apply (hsame1 q).mpr
           simp [Move32Site.targetTet₁, Tet.verts, hqc]
@@ -101,11 +101,11 @@ theorem ClosedTriangulationCore.sourceFace_support_eq_of_sharedSupportedEdgeStat
           (hstar tau1 htau1).2 (Or.inr (Or.inl hsame1))
         rcases hanchorStar with ha | hb | hc
         · have hqAnchor := (ha q).mp hqTau
-          simp [Move32Site.targetTet₀, Move32Site.targetTet₁, Move32Site.targetTet₂, Tet.verts] at hqAnchor ⊢ <;> tauto
+          simp [Move32Site.targetTet₀, Tet.verts] at hqAnchor ⊢ <;> tauto
         · have hqAnchor := (hb q).mp hqTau
-          simp [Move32Site.targetTet₀, Move32Site.targetTet₁, Move32Site.targetTet₂, Tet.verts] at hqAnchor ⊢ <;> tauto
+          simp [Move32Site.targetTet₁, Tet.verts] at hqAnchor ⊢ <;> tauto
         · have hqAnchor := (hc q).mp hqTau
-          simp [Move32Site.targetTet₀, Move32Site.targetTet₁, Move32Site.targetTet₂, Tet.verts] at hqAnchor ⊢ <;> tauto
+          simp [Move32Site.targetTet₂, Tet.verts] at hqAnchor ⊢ <;> tauto
     exact (hqOutside hqInAnchorCarrier).elim
 
 end Poincare
