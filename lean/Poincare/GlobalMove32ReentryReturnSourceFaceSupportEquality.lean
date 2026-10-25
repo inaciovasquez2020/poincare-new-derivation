@@ -1,5 +1,6 @@
 import Poincare.GlobalMove32ReentryReturnSourceFaceCarrierEscape
 import Poincare.GlobalMove32ReentryReturnTargetStarEquivalence
+import Poincare.GlobalMove32ReentryReturnFiveVertexCarrier
 import Mathlib.Tactic
 
 namespace Poincare
@@ -116,5 +117,49 @@ theorem ClosedTriangulationCore.sourceFace_support_eq_of_sharedSupportedEdgeStat
           simp [Move32Site.targetTet₂, Tet.verts] at hqAnchor
           rcases hqAnchor with h | h | h | h <;> simp [h]
     exact (hqOutside hqInAnchorCarrier).elim
+
+
+/--
+A witnessed recurrent return with an anchor-target tetrahedron in the
+corresponding target star has the same unordered five-vertex carrier as the
+anchor, provided its canonical supported-edge state recurs.
+
+This packages the source-face support result with the carrier reconstruction.
+It still does not identify the ordered Move32 sites or exclude a recurrent
+cycle.
+-/
+theorem ClosedTriangulationCore.fiveVertex_support_eq_of_recurrent_sourceFace_return
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (anchor ret : Move32Site)
+    (hanchorRealized : anchor.RealizedIn K)
+    (hanchorThree : anchor.SharedEdgeExactlyThree K)
+    (hretRealized : ret.RealizedIn K)
+    (hretThree : ret.SharedEdgeExactlyThree K)
+    (hstate :
+      sharedSupportedEdgeState hcore anchor hanchorRealized =
+        sharedSupportedEdgeState hcore ret hretRealized)
+    (hreturnEdge :
+      (ret.d = anchor.d ∧ ret.e = anchor.e) ∨
+      (ret.d = anchor.e ∧ ret.e = anchor.d))
+    {sigma : Tet}
+    (hsigmaK : sigma ∈ K.tets)
+    (hretD : ret.d ∈ sigma.verts)
+    (hretE : ret.e ∈ sigma.verts)
+    (hanchorTarget :
+      SameTetVertices sigma anchor.targetTet₀ ∨
+      SameTetVertices sigma anchor.targetTet₁ ∨
+      SameTetVertices sigma anchor.targetTet₂) :
+    ∀ z : Nat,
+      z ∈ [anchor.a, anchor.b, anchor.c, anchor.d, anchor.e] ↔
+      z ∈ [ret.a, ret.b, ret.c, ret.d, ret.e] := by
+  have hsource :=
+    hcore.sourceFace_support_eq_of_sharedSupportedEdgeState_eq
+      anchor ret hanchorRealized hanchorThree hretRealized hretThree
+      hstate hreturnEdge hsigmaK hretD hretE hanchorTarget
+  exact
+    hcore.fiveVertex_support_eq_of_sourceFace_support_eq_of_sharedSupportedEdgeState_eq
+      anchor ret hanchorRealized hretRealized hsource hstate
+
 
 end Poincare
