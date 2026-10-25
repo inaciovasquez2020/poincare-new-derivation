@@ -192,27 +192,24 @@ theorem ClosedTriangulationCore.exists_descent_or_global_nonself_high_of_sourceF
         hcore hlinks hNoFour start hstartRealized hstartObstruction⟩
 
 
-
 /--
-Under the no-high-incidence hypothesis, a represented source-face obstruction
-forces strict PhiSupport descent.  This composes the already-proved
-descent-or-high classification with the source-edge incidence obstruction;
-it does not claim unconditional descent or remove the no-high assumption.
+A represented source-face obstruction is incompatible with the global
+no-high-incidence hypothesis.  This is an obstruction-exclusion result, not a
+descent theorem: the source-edge incidence lemma forces a nonself edge of
+incidence at least four.
 -/
 theorem
-    ClosedTriangulationCore.exists_closedCore_homeomorphic_PhiSupport_lt_of_sourceFace_obstruction_of_noHigh
+    ClosedTriangulationCore.not_sourceFace_obstruction_of_noHigh_of_no_degree_four
     {K : Triangulation}
     (hcore : ClosedTriangulationCore K)
     (hlinks :
       ∀ v ∈ vertexSupport K,
         VertexLinkConnected K v)
-    (hconn : TetrahedronVertexOverlapConnected K)
     (hNoFour :
       ∀ v ∈ vertexSupport K,
         vertexDegree K v ≠ 4)
-    (start : Move32Site)
-    (hstartRealized : start.RealizedIn K)
-    (hstartThree : start.SharedEdgeExactlyThree K)
+    (s : Move32Site)
+    (hrealized : s.RealizedIn K)
     (hNoHigh :
       ∀ s : Move32Site,
         s.RealizedIn K →
@@ -232,24 +229,36 @@ theorem
               (fun gamma =>
                 decide
                   (x ∈ gamma.verts ∧
-                   y ∈ gamma.verts))).length)
-    (hstartObstruction :
-      ∃ tau ∈ K.tets,
-        start.a ∈ tau.verts ∧
-        start.b ∈ tau.verts ∧
-        start.c ∈ tau.verts) :
-    ∃ K',
-      ClosedTriangulationCore K' ∧
-      PhiSupport K' < PhiSupport K ∧
-      Nonempty
-        (triangulationTopologicalGeometricCarrier K ≃ₜ
-          triangulationTopologicalGeometricCarrier K') := by
-  rcases
-      hcore.exists_descent_or_global_nonself_high_of_sourceFace_obstruction
-        hlinks hconn hNoFour start hstartRealized hstartThree hstartObstruction with
-    hdescent | hhigh
-  · exact hdescent
-  · rcases hhigh with ⟨s, hsRealized, hsObstruction, hhighWitness⟩
-    exact (hNoHigh s hsRealized hsObstruction hhighWitness).elim
+                   y ∈ gamma.verts))).length) :
+    ¬ ∃ theta ∈ K.tets,
+      s.a ∈ theta.verts ∧
+      s.b ∈ theta.verts ∧
+      s.c ∈ theta.verts := by
+  intro hobstruction
+  obtain ⟨theta, hthetaK, haTheta, hbTheta, hcTheta⟩ := hobstruction
+  have hsourceHigh :=
+    hcore.move32_sourceEdge_ab_incidence_four_le_of_sourceFace_obstruction_of_no_degree_four
+      hlinks hNoFour s hrealized hobstruction
+  have hsourceDistinct := hcore.move32Site_distinct s hrealized
+  have hab : s.a ≠ s.b := by
+    simp at hsourceDistinct
+    aesop
+  have hnonself :
+      ¬ ((s.a = s.d ∧ s.b = s.e) ∨
+         (s.a = s.e ∧ s.b = s.d)) := by
+    simp at hsourceDistinct
+    aesop
+  have hsourceHighDecide :
+      4 ≤
+        (K.tets.filter
+          (fun gamma =>
+            decide
+              (s.a ∈ gamma.verts ∧
+               s.b ∈ gamma.verts))).length := by
+    simpa using hsourceHigh
+  exact
+    (hNoHigh s hrealized hobstruction)
+      ⟨s.a, s.b, theta, hab, hthetaK, haTheta, hbTheta, hnonself,
+        hsourceHighDecide⟩
 
 end Poincare
