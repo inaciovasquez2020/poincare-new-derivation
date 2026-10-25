@@ -191,4 +191,77 @@ theorem ClosedTriangulationCore.exists_descent_or_global_nonself_high_of_sourceF
       Poincare.ClosedTriangulationCore.exists_nonself_sourceEdge_high_of_move32_sourceFace_obstruction_of_no_degree_four
         hcore hlinks hNoFour start hstartRealized hstartObstruction⟩
 
+
+/--
+A represented source-face obstruction is incompatible with the global
+no-high-incidence hypothesis.  This is an obstruction-exclusion result, not a
+descent theorem: the source-edge incidence lemma forces a nonself edge of
+incidence at least four.
+-/
+theorem
+    ClosedTriangulationCore.not_sourceFace_obstruction_of_noHigh_of_no_degree_four
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hlinks :
+      ∀ v ∈ vertexSupport K,
+        VertexLinkConnected K v)
+    (hNoFour :
+      ∀ v ∈ vertexSupport K,
+        vertexDegree K v ≠ 4)
+    (s : Move32Site)
+    (hrealized : s.RealizedIn K)
+    (hNoHigh :
+      ∀ s : Move32Site,
+        s.RealizedIn K →
+        (∃ tau ∈ K.tets,
+          s.a ∈ tau.verts ∧
+          s.b ∈ tau.verts ∧
+          s.c ∈ tau.verts) →
+        ¬ ∃ x y sigma,
+          x ≠ y ∧
+          sigma ∈ K.tets ∧
+          x ∈ sigma.verts ∧
+          y ∈ sigma.verts ∧
+          ¬ ((x = s.d ∧ y = s.e) ∨
+             (x = s.e ∧ y = s.d)) ∧
+          4 ≤
+            (K.tets.filter
+              (fun gamma =>
+                decide
+                  (x ∈ gamma.verts ∧
+                   y ∈ gamma.verts))).length) :
+    ¬ ∃ theta ∈ K.tets,
+      s.a ∈ theta.verts ∧
+      s.b ∈ theta.verts ∧
+      s.c ∈ theta.verts := by
+  intro hobs
+  have hsourceHigh :=
+    hcore.move32_sourceEdge_ab_incidence_four_le_of_sourceFace_obstruction_of_no_degree_four
+      hlinks hNoFour s hrealized hobs
+  obtain ⟨theta, hthetaK, haTheta, hbTheta, hcTheta⟩ := hobs
+  have hobs' : ∃ theta ∈ K.tets,
+      s.a ∈ theta.verts ∧ s.b ∈ theta.verts ∧ s.c ∈ theta.verts :=
+    ⟨theta, hthetaK, haTheta, hbTheta, hcTheta⟩
+  have hsourceDistinct := hcore.move32Site_distinct s hrealized
+  have hab : s.a ≠ s.b := by
+    simp at hsourceDistinct
+    aesop
+  have hnonself :
+      ¬ ((s.a = s.d ∧ s.b = s.e) ∨
+         (s.a = s.e ∧ s.b = s.d)) := by
+    simp at hsourceDistinct
+    aesop
+  have hsourceHighDecide :
+      4 ≤
+        (K.tets.filter
+          (fun gamma =>
+            decide
+              (s.a ∈ gamma.verts ∧
+               s.b ∈ gamma.verts))).length := by
+    simpa using hsourceHigh
+  exact
+    (hNoHigh s hrealized hobs')
+      ⟨s.a, s.b, theta, hab, hthetaK, haTheta, hbTheta, hnonself,
+        hsourceHighDecide⟩
+
 end Poincare
