@@ -234,11 +234,11 @@ theorem
       s.a ∈ theta.verts ∧
       s.b ∈ theta.verts ∧
       s.c ∈ theta.verts := by
-  intro hobstruction
-  obtain ⟨theta, hthetaK, haTheta, hbTheta, hcTheta⟩ := hobstruction
+  intro hobs
+  obtain ⟨theta, hthetaK, haTheta, hbTheta, hcTheta⟩ := hobs
   have hsourceHigh :=
     hcore.move32_sourceEdge_ab_incidence_four_le_of_sourceFace_obstruction_of_no_degree_four
-      hlinks hNoFour s hrealized hobstruction
+      hlinks hNoFour s hrealized hobs
   have hsourceDistinct := hcore.move32Site_distinct s hrealized
   have hab : s.a ≠ s.b := by
     simp at hsourceDistinct
@@ -257,7 +257,7 @@ theorem
                s.b ∈ gamma.verts))).length := by
     simpa using hsourceHigh
   exact
-    (hNoHigh s hrealized hobstruction)
+    (hNoHigh s hrealized hobs)
       ⟨s.a, s.b, theta, hab, hthetaK, haTheta, hbTheta, hnonself,
         hsourceHighDecide⟩
 
