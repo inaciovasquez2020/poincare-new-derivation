@@ -19,6 +19,9 @@ jobs:
         with:
           use-github-cache: false
 
+      - name: Build recurrent source-face support equality lemma
+        run: lake build Poincare.GlobalMove32ReentryReturnSourceFaceSupportEquality
+
       - name: Build finite witnessed-state module
         run: lake build Poincare.GlobalMove32FiniteWitnessState
       - name: Build witness-anchored continuation module
