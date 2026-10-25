@@ -41,38 +41,28 @@ theorem ClosedTriangulationCore.sourceFace_support_eq_of_sharedSupportedEdgeStat
       z ∈ [anchor.a, anchor.b, anchor.c] ↔
       z ∈ [ret.a, ret.b, ret.c] := by
   classical
-
   have hstar :=
     hcore.targetStar_equiv_of_sharedSupportedEdgeState_eq
-      anchor ret
-      hanchorRealized hanchorThree
-      hretRealized hretThree hstate
-
+      anchor ret hanchorRealized hanchorThree hretRealized hretThree hstate
   obtain hsame | hescape :=
     hcore.sourceFace_support_eq_or_distinct_third_vertex_outside_anchor_carrier_of_return_target
-      anchor ret
-      hanchorRealized hretRealized hretThree
+      anchor ret hanchorRealized hretRealized hretThree
       hsigmaK hretD hretE hreturnEdge hanchorTarget
-
   · exact hsame
-
   · obtain
         ⟨u, v, p, q, huv, hpu, hpv, hqu, hqv,
           hpAnchor, hqRet, hanchorExact, hretExact, hpq, hqOutside⟩ :=
       hescape
-
     have hqCases : q = ret.a ∨ q = ret.b ∨ q = ret.c := by
       simpa using hqRet
-
     obtain ⟨⟨tau0, htau0, hsame0⟩,
       ⟨tau1, htau1, hsame1⟩,
       ⟨tau2, htau2, hsame2⟩⟩ := hretRealized
-
     have hqInAnchorCarrier :
         q ∈ [anchor.a, anchor.b, anchor.c, anchor.d, anchor.e] := by
       rcases hqCases with hqa | hqb | hqc
       · have hqTau : q ∈ tau0.verts := by
-          apply (hsame0 q).mp
+          apply (hsame0 q).mpr
           simp [Move32Site.targetTet₀, Tet.verts, hqa]
         have hanchorStar :
             SameTetVertices tau0 anchor.targetTet₀ ∨
@@ -81,13 +71,13 @@ theorem ClosedTriangulationCore.sourceFace_support_eq_of_sharedSupportedEdgeStat
           (hstar tau0 htau0).2 (Or.inl hsame0)
         rcases hanchorStar with ha | hb | hc
         · have hqAnchor := (ha q).mp hqTau
-          simpa [Move32Site.targetTet₀, Tet.verts] using hqAnchor
+          rcases hqAnchor with h | h | h | h <;> simp [h]
         · have hqAnchor := (hb q).mp hqTau
-          simpa [Move32Site.targetTet₁, Tet.verts] using hqAnchor
+          rcases hqAnchor with h | h | h | h <;> simp [h]
         · have hqAnchor := (hc q).mp hqTau
-          simpa [Move32Site.targetTet₂, Tet.verts] using hqAnchor
+          rcases hqAnchor with h | h | h | h <;> simp [h]
       · have hqTau : q ∈ tau0.verts := by
-          apply (hsame0 q).mp
+          apply (hsame0 q).mpr
           simp [Move32Site.targetTet₀, Tet.verts, hqb]
         have hanchorStar :
             SameTetVertices tau0 anchor.targetTet₀ ∨
@@ -96,13 +86,13 @@ theorem ClosedTriangulationCore.sourceFace_support_eq_of_sharedSupportedEdgeStat
           (hstar tau0 htau0).2 (Or.inl hsame0)
         rcases hanchorStar with ha | hb | hc
         · have hqAnchor := (ha q).mp hqTau
-          simpa [Move32Site.targetTet₀, Tet.verts] using hqAnchor
+          rcases hqAnchor with h | h | h | h <;> simp [h]
         · have hqAnchor := (hb q).mp hqTau
-          simpa [Move32Site.targetTet₁, Tet.verts] using hqAnchor
+          rcases hqAnchor with h | h | h | h <;> simp [h]
         · have hqAnchor := (hc q).mp hqTau
-          simpa [Move32Site.targetTet₂, Tet.verts] using hqAnchor
+          rcases hqAnchor with h | h | h | h <;> simp [h]
       · have hqTau : q ∈ tau1.verts := by
-          apply (hsame1 q).mp
+          apply (hsame1 q).mpr
           simp [Move32Site.targetTet₁, Tet.verts, hqc]
         have hanchorStar :
             SameTetVertices tau1 anchor.targetTet₀ ∨
@@ -111,12 +101,11 @@ theorem ClosedTriangulationCore.sourceFace_support_eq_of_sharedSupportedEdgeStat
           (hstar tau1 htau1).2 (Or.inr (Or.inl hsame1))
         rcases hanchorStar with ha | hb | hc
         · have hqAnchor := (ha q).mp hqTau
-          simpa [Move32Site.targetTet₀, Tet.verts] using hqAnchor
+          rcases hqAnchor with h | h | h | h <;> simp [h]
         · have hqAnchor := (hb q).mp hqTau
-          simpa [Move32Site.targetTet₁, Tet.verts] using hqAnchor
+          rcases hqAnchor with h | h | h | h <;> simp [h]
         · have hqAnchor := (hc q).mp hqTau
-          simpa [Move32Site.targetTet₂, Tet.verts] using hqAnchor
-
+          rcases hqAnchor with h | h | h | h <;> simp [h]
     exact (hqOutside hqInAnchorCarrier).elim
 
 end Poincare
