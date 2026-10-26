@@ -89,6 +89,7 @@ import Poincare.NormalizationImpliesS3
 
 import Poincare.ZeroDefect
 import Poincare.VertexLink
+import Poincare.GlobalMove32ObstructionLinkConstraints
 import Poincare.CrossFaceCompletion
 import Poincare.VertexLinkMod2Chain
 import Poincare.VertexLinkMod2BoundaryOneRank
