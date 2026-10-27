@@ -1020,4 +1020,43 @@ theorem repeated_highFan_location_next_edgeState_eq
         · apply Subtype.ext
           exact congrArg Prod.snd hab
       exact hedge_ext _ _ hkey
+
+/-- Removing the segment between two equal retained locations preserves the
+relational high-fan trajectory and strict edge progress.  This is a genuine
+cycle-shortening step: it does not identify the successor transition witnesses
+and does not assume deterministic continuation.  By itself it does not rule
+out the shortened trajectory's later recurrence. -/
+theorem splice_highFanSequence_of_repeated_location
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (states : Nat → HighFanState K)
+    {i j : Nat}
+    (hij : i < j)
+    (hloc : (states i).location = (states j).location)
+    (hstep : ∀ n, HighFanStep (states n) (states (n + 1))) :
+    let shortened : Nat → HighFanState K :=
+      fun n => if n ≤ i then states n else states (n + (j - i))
+    (∀ n, HighFanStep (shortened n) (shortened (n + 1))) := by
+  dsimp
+  intro n
+  by_cases hni : n < i
+  · have hnext : n + 1 ≤ i := by omega
+    simp [hni.le, hnext]
+    exact hstep n
+  · by_cases hni' : n = i
+    · subst n
+      have hsplice :
+          HighFanStep (states i) (states (j + 1)) :=
+        highFanStep_splice_of_same_location
+          hcore (states i) (states j) (states (j + 1))
+          hloc (hstep j)
+      simpa [show ¬ i + 1 ≤ i by omega,
+        show i + 1 + (j - i) = j + 1 by omega] using hsplice
+    · have hgt : i < n := by omega
+      have hnextgt : i < n + 1 := by omega
+      have hshift :
+          n + (j - i) + 1 = (n + 1) + (j - i) := by omega
+      simpa [show ¬ n ≤ i by omega,
+        show ¬ n + 1 ≤ i by omega, hshift] using hstep (n + (j - i))
+
 end Poincare
