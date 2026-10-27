@@ -827,6 +827,50 @@ theorem FanChordTransition.same_location_same_transverse_same_chord
 
   exact ⟨hz0eq, hz1eq⟩
 
+/-! A relational edge-progress step.  The relation deliberately records the
+ordered successor endpoints, rather than choosing a successor transition. -/
+
+/-- One high-fan step advances to the ordered chord endpoints and strictly
+changes the supported central edge. -/
+def HighFanStep {K : Triangulation}
+    (q r : HighFanState K) : Prop :=
+  r.v = q.transition.z0 ∧
+  r.x = q.transition.z1 ∧
+  r.edgeState ≠ q.edgeState
+
+/-- Equal retained locations permit splicing a relational high-fan step.
+The ordered chord-endpoint theorem transfers the successor vertices, while
+the canonical edge-state identity transfers strict edge progress. -/
+theorem highFanStep_splice_of_same_location
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (q r s : HighFanState K)
+    (hqr : q.location = r.location)
+    (hrs : HighFanStep r s) :
+    HighFanStep q s := by
+  rcases (HighFanState.location_eq_iff q r).1 hqr with
+    ⟨hv, hx, hσ, hρ⟩
+  have htrans :
+      q.transition.transverse = r.transition.transverse :=
+    FanChordTransition.same_location_transverse_eq
+      hcore q.transition r.transition hσ hρ
+  rcases
+      FanChordTransition.same_location_same_transverse_same_chord
+        q.transition r.transition hcore hσ hρ htrans with
+    ⟨hz0, hz1⟩
+  rcases hrs with ⟨hs0, hs1, hprogress⟩
+  refine ⟨?_, ?_, ?_⟩
+  · calc
+      s.v = r.transition.z0 := hs0
+      _ = q.transition.z0 := hz0.symm
+  · calc
+      s.x = r.transition.z1 := hs1
+      _ = q.transition.z1 := hz1.symm
+  · intro hsq
+    apply hprogress
+    apply Subtype.ext
+    simpa [HighFanState.edgeState_key, hv, hx] using hsq
+
 /-- A repeated retained local location forces the same next central edge.
 The transverse carrier is unique at the repeated location, and the retained
 chord endpoints are therefore identical; hence the successor edge states
