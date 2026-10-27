@@ -126,6 +126,22 @@ inductive FanReentryModeStep (K : Triangulation) :
       FanReentryModeStep K
         (.reentry old) (.fan next)
 
+theorem FanReentryModeConstructiveStep.toFanReentryModeStep
+    {K : Triangulation}
+    {q q' : FanReentryModeState K}
+    (hstep : FanReentryModeConstructiveStep K q q') :
+    FanReentryModeStep K q q' := by
+  cases hstep with
+  | fan_next old next hv hx =>
+      exact FanReentryModeStep.fan_next old next hv hx
+  | fan_reinject old next s hsd hse hrealized hobstruction haway hnonself =>
+      exact FanReentryModeStep.fan_reinject
+        old next s hsd hse hrealized hobstruction haway hnonself
+  | reentry_next old s' hstep =>
+      exact FanReentryModeStep.reentry_next old s' hstep
+  | reentry_fan old next hnonself =>
+      exact FanReentryModeStep.reentry_fan old next hnonself
+
 /-- Every linked fan-to-fan step changes the unordered central edge. -/
 theorem FanReentryModeStep.fan_to_fan_canonicalEdgeKey_ne
     {K : Triangulation}
