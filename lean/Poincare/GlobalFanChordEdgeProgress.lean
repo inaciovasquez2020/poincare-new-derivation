@@ -876,7 +876,7 @@ theorem highFanStep_splice_of_same_location
           ({ v := qv, x := qx, v_supported := qvs,
              x_supported := qxs, endpoints_ne := qne,
              transition := qt } : HighFanState K).edgeState =
-          ({ v := rv, x := rx, v_supported := rvs,
+          ({ v := qv, x := qx, v_supported := rvs,
              x_supported := rxs, endpoints_ne := rne,
              transition := rt } : HighFanState K).edgeState := by
         apply Subtype.ext
