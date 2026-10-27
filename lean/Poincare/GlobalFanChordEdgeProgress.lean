@@ -850,6 +850,8 @@ theorem highFanStep_splice_of_same_location
     HighFanStep q s := by
   rcases (HighFanState.location_eq_iff q r).1 hqr with
     ⟨hv, hx, hσ, hρ⟩
+  cases hv
+  cases hx
   have htrans :
       q.transition.transverse = r.transition.transverse :=
     FanChordTransition.same_location_transverse_eq
@@ -859,6 +861,9 @@ theorem highFanStep_splice_of_same_location
         q.transition r.transition hcore hσ hρ htrans with
     ⟨hz0, hz1⟩
   rcases hrs with ⟨hs0, hs1, hprogress⟩
+  have hedge : q.edgeState = r.edgeState := by
+    apply Subtype.ext
+    simp [HighFanState.edgeState_key]
   refine ⟨?_, ?_, ?_⟩
   · calc
       s.v = r.transition.z0 := hs0
@@ -868,8 +873,7 @@ theorem highFanStep_splice_of_same_location
       _ = q.transition.z1 := hz1.symm
   · intro hsq
     apply hprogress
-    apply Subtype.ext
-    simpa [HighFanState.edgeState_key, hv, hx] using hsq
+    exact hsq.trans hedge
 
 /-- A repeated retained local location forces the same next central edge.
 The transverse carrier is unique at the repeated location, and the retained
