@@ -27,7 +27,7 @@ theorem ClosedTriangulationCore.exists_perpetual_fanReentryMode_trajectory_of_no
   have hnext :
       ∀ q : FanReentryModeState K,
         ∃ q' : FanReentryModeState K,
-          FanReentryModeStep K q q' := by
+          FanReentryModeConstructiveStep K q q' := by
     intro q
     exact
       hcore.exists_fanReentryModeStep_of_noMove23_noDescent
@@ -38,7 +38,7 @@ theorem ClosedTriangulationCore.exists_perpetual_fanReentryMode_trajectory_of_no
 
   have hstep :
       ∀ q : FanReentryModeState K,
-        FanReentryModeStep K q (step q) := by
+        FanReentryModeConstructiveStep K q (step q) := by
     intro q
     exact Classical.choose_spec (hnext q)
 
@@ -48,6 +48,7 @@ theorem ClosedTriangulationCore.exists_perpetual_fanReentryMode_trajectory_of_no
   refine ⟨states, ?_, ?_⟩
   · simp [states]
   · intro n
-    simpa [states] using hstep (states n)
+    simpa [states] using
+      FanReentryModeConstructiveStep.toFanReentryModeStep (hstep (states n))
 
 end Poincare
