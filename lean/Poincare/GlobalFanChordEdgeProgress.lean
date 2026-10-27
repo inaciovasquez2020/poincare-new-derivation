@@ -879,8 +879,9 @@ theorem highFanStep_splice_of_same_location
           ({ v := qv, x := qx, v_supported := rvs,
              x_supported := rxs, endpoints_ne := rne,
              transition := rt } : HighFanState K).edgeState := by
-        apply Subtype.ext
-        simp [HighFanState.edgeState_key]
+        unfold HighFanState.edgeState supportedEdgeStateOfDistinct
+        dsimp
+        split_ifs <;> rfl
       refine ⟨?_, ?_, ?_⟩
       · calc
           s.v = rt.z0 := hs0
