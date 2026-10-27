@@ -1,4 +1,5 @@
 import Poincare.GlobalMove32IncidenceThreeComposition
+import Poincare.GlobalMove32SourceFaceNoHighContradiction
 import Poincare.GlobalMove32SourceFaceLegalMove23High
 
 namespace Poincare
@@ -66,18 +67,10 @@ theorem
   · exact (hNoDescent hdesc).elim
 
   · rcases hsource with
-      ⟨s, hsd, hse, hrealized, hthreeS, hobstruction⟩
+      ⟨s, _hsd, _hse, hrealized, _hthreeS, hobstruction⟩
 
-    rcases
-        hcore.exists_descent_or_nonself_complementEdge_high_or_witnessedReentry_of_move32_sourceFace_obstruction
-          hlinks hconn hNoFour s hrealized hobstruction with
-      hdesc | hhigh | hreentry
-
-    · exact (hNoDescent hdesc).elim
-
-    · exact (hNoHigh s hrealized hobstruction hhigh).elim
-
-    · rcases hreentry with ⟨s', hrel⟩
-      exact ⟨s, s', hsd, hse, hrealized, hthreeS, hrel⟩
+    exact
+      (move32_sourceFace_obstruction_false_of_noHigh
+        hcore hlinks hNoFour s hrealized hobstruction hNoHigh).elim
 
 end Poincare
