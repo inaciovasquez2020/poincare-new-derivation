@@ -850,8 +850,8 @@ theorem highFanStep_splice_of_same_location
     HighFanStep q s := by
   rcases (HighFanState.location_eq_iff q r).1 hqr with
     ⟨hv, hx, hσ, hρ⟩
-  cases hv
-  cases hx
+  cases hv.symm
+  cases hx.symm
   have htrans :
       q.transition.transverse = r.transition.transverse :=
     FanChordTransition.same_location_transverse_eq
