@@ -75,9 +75,23 @@ theorem
     (canonicalEdgeKey_eq_iff ret.d ret.e anchor.d anchor.e
       hretDistinct hanchorDistinct).1 hkey.symm
 
+  have hretDSigma : ret.d ∈ sigma.verts := by
+    rcases hreturnEdge with hdirect | hreverse
+    · rw [hdirect.1]
+      exact hdSigma
+    · rw [hreverse.1]
+      exact heSigma
+
+  have hretESigma : ret.e ∈ sigma.verts := by
+    rcases hreturnEdge with hdirect | hreverse
+    · rw [hdirect.2]
+      exact heSigma
+    · rw [hreverse.2]
+      exact hdSigma
+
   exact
     hcore.sourceFace_support_eq_or_distinct_third_vertex_outside_anchor_carrier_of_return_target
       anchor ret hanchorRealized hretRealized hretThree
-      hsigmaK hdSigma heSigma hreturnEdge hanchorTarget
+      hsigmaK hretDSigma hretESigma hreturnEdge hanchorTarget
 
 end Poincare
