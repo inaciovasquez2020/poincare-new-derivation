@@ -2,6 +2,57 @@ import Poincare.GlobalFanReentryModeFiniteKey
 
 namespace Poincare
 
+
+/-- The four transition constructors used by the constructive successor
+theorem. Unlike `FanReentryModeStep`, this relation excludes the direct
+`fan_reentry` transition, so trajectories selected through this relation
+retain the successor theorem's actual transition lineage. -/
+inductive FanReentryModeConstructiveStep (K : Triangulation) :
+    FanReentryModeState K → FanReentryModeState K → Prop where
+  | fan_next
+      (old next : HighFanState K)
+      (hv : next.v = old.transition.z0)
+      (hx : next.x = old.transition.z1) :
+      FanReentryModeConstructiveStep K
+        (.fan old) (.fan next)
+
+  | fan_reinject
+      (old next : HighFanState K)
+      (s : Move32Site)
+      (hsd : s.d = old.transition.z0)
+      (hse : s.e = old.transition.z1)
+      (hrealized : s.RealizedIn K)
+      (hobstruction :
+        ∃ tau ∈ K.tets,
+          s.a ∈ tau.verts ∧
+          s.b ∈ tau.verts ∧
+          s.c ∈ tau.verts)
+      (haway :
+        canonicalEdgeKey next.v next.x ≠
+          canonicalEdgeKey old.v old.x)
+      (hnonself :
+        ¬ ((next.v = s.d ∧ next.x = s.e) ∨
+           (next.v = s.e ∧ next.x = s.d))) :
+      FanReentryModeConstructiveStep K
+        (.fan old) (.fan next)
+
+  | reentry_next
+      (old : WitnessedReentryState K)
+      (s' : Move32Site)
+      (hstep : Move32SourceFaceWitnessedReentry K old.site s') :
+      FanReentryModeConstructiveStep K
+        (.reentry old)
+        (.reentry (witnessedReentryStateOfStep hstep))
+
+  | reentry_fan
+      (old : WitnessedReentryState K)
+      (next : HighFanState K)
+      (hnonself :
+        ¬ ((next.v = old.site.d ∧ next.x = old.site.e) ∨
+           (next.v = old.site.e ∧ next.x = old.site.d))) :
+      FanReentryModeConstructiveStep K
+        (.reentry old) (.fan next)
+
 /-- A lineage-preserving one-step relation for the mixed fan/reentry dynamics.
 
 The existing coarse continuation theorem returns only `Nonempty
