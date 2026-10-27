@@ -109,16 +109,20 @@ theorem WitnessedReentryPolygonalLoopCertificate.anchor_crossEdge_incidence_eq_t
       ¬ ((v = s.d ∧ x = s.e) ∨
          (v = s.e ∧ x = s.d)) := by
     rcases hcross with h | h | h | h
-    · subst v
+    · rcases h with ⟨hv, hx⟩
+      subst v
       subst x
       simp [s, hbD, hbE]
-    · subst v
+    · rcases h with ⟨hv, hx⟩
+      subst v
       subst x
       simp [s, hbD, hbE]
-    · subst v
+    · rcases h with ⟨hv, hx⟩
+      subst v
       subst x
       simp [s, haD, haE]
-    · subst v
+    · rcases h with ⟨hv, hx⟩
+      subst v
       subst x
       simp [s, haD, haE]
 

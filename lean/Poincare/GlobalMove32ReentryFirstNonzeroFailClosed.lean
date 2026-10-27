@@ -64,7 +64,7 @@ theorem ClosedTriangulationCore.exists_first_nonzero_anchor_firstEar_exhaustiveF
         start.c ∈ tau.verts) :
     ∃ p : WitnessedReentryPolygonalLoopCertificate K,
       ∃ H : CarrierLoopNullHomotopyData K p.basepoint p.polygonalLoop,
-        ∃ N : Nat, ∃ hN : 0 < N,
+        ∃ N : Nat, ∃ _hN : 0 < N,
           let m := p.crossing.predecessorIndex + 1 - p.crossing.anchorIndex
           let D := N * 2 ^ (m + 1)
           ∃ hD : 0 < D,

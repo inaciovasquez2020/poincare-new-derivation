@@ -1,5 +1,7 @@
 import Poincare.GlobalMove32ReentryFirstNonzeroFailClosed
+import Poincare.GlobalMove32IncidenceThreeWitnessedReentryNoOtherOutcome
 import Poincare.GlobalMove32ReentryFirstNonzeroOneSidedFailClosed
+import Poincare.GlobalMove32ReentryPolygonalLoopAnchorObstruction
 
 namespace Poincare
 
@@ -67,7 +69,7 @@ theorem ClosedTriangulationCore.conditional_first_nonzero_anchor_firstEar_obstru
         start.c ∈ tau.verts) :
     ∃ p : WitnessedReentryPolygonalLoopCertificate K,
       ∃ H : CarrierLoopNullHomotopyData K p.basepoint p.polygonalLoop,
-        ∃ N : Nat, ∃ hN : 0 < N,
+        ∃ N : Nat, ∃ _hN : 0 < N,
           let m := p.crossing.predecessorIndex + 1 - p.crossing.anchorIndex
           let D := N * 2 ^ (m + 1)
           ∃ hD : 0 < D,
@@ -152,7 +154,9 @@ theorem ClosedTriangulationCore.conditional_first_nonzero_anchor_firstEar_obstru
           (hsame s.b).2 (by simp [Move32Site.targetTet₂, Tet.verts])
         have hcSigma : s.c ∈ sigma.verts :=
           (hsame s.c).2 (by simp [Move32Site.targetTet₂, Tet.verts])
-        exact ⟨sigma, hsigma, hbSigma, hcSigma⟩
+        apply List.ne_nil_of_mem (a := sigma)
+        exact List.mem_filter.mpr
+          ⟨hsigma, by simp [hbSigma, hcSigma]⟩
       rcases
           hcore.edgeIncidence_eq_three_or_four_le_of_pos
             s.b s.c hbc hbcPos with
@@ -172,17 +176,23 @@ theorem ClosedTriangulationCore.conditional_first_nonzero_anchor_firstEar_obstru
       · have hstep :
             Move32SourceFaceWitnessedReentry
               K s (p.crossing.sites (p.crossing.anchorIndex + 1)) := by
-          simpa [s, p.ordered_crossing] using
+          have hstepTrace :=
             p.ordered.consecutive_witnessed
               p.crossing.anchorIndex
-              (by omega)
-              (by omega)
+              (by rw [p.ordered_crossing])
+              (by
+                rw [p.ordered_crossing]
+                have hg := p.crossing.gap
+                omega)
+          rw [p.ordered.traceAt_eq_site, p.ordered.traceAt_eq_site] at hstepTrace
+          rw [p.ordered_crossing] at hstepTrace
+          simpa [s] using hstepTrace
         have hsource :
             ∃ tau ∈ K.tets,
               s.a ∈ tau.verts ∧
               s.b ∈ tau.verts ∧
-              s.c ∈ tau.verts :=
-          (hstep.toSourceFaceReentry).2.2.1
+              s.c ∈ tau.verts := by
+          simpa [s] using p.anchor_sourceFace_obstruction
         rcases hsRealized.2.2 with ⟨sigma, hsigma, hsame⟩
         have hbSigma : s.b ∈ sigma.verts :=
           (hsame s.b).2 (by simp [Move32Site.targetTet₂, Tet.verts])

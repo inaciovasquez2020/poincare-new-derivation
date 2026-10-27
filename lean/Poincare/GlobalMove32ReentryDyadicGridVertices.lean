@@ -312,7 +312,7 @@ theorem exists_finite_squareGrid_dyadic_refinement_positiveCoordinate_labelling_
     {loop : Path x x}
     (H : CarrierLoopNullHomotopyData K x loop)
     (m : Nat) :
-    ∃ N : Nat, ∃ hN : 0 < N,
+    ∃ N : Nat, ∃ _hN : 0 < N,
       ∃ hD : 0 < N * 2 ^ m,
         ∃ label : Fin (N * 2 ^ m) → Fin (N * 2 ^ m) → Nat,
           (∀ i j : Fin (N * 2 ^ m),
@@ -374,7 +374,7 @@ theorem exists_finite_squareGrid_dyadic_refinement_neighbor_tet_compatible_label
     {loop : Path x x}
     (H : CarrierLoopNullHomotopyData K x loop)
     (m : Nat) :
-    ∃ N : Nat, ∃ hN : 0 < N,
+    ∃ N : Nat, ∃ _hN : 0 < N,
       ∃ hD : 0 < N * 2 ^ m,
         ∃ label : Fin (N * 2 ^ m) → Fin (N * 2 ^ m) → Nat,
           (∀ i j : Fin (N * 2 ^ m),
