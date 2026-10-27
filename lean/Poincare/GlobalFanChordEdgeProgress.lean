@@ -881,7 +881,6 @@ theorem highFanStep_splice_of_same_location
              transition := rt } : HighFanState K).edgeState := by
         unfold HighFanState.edgeState supportedEdgeStateOfDistinct
         dsimp
-        split_ifs <;> rfl
       refine ⟨?_, ?_, ?_⟩
       · calc
           s.v = rt.z0 := hs0
