@@ -27,7 +27,7 @@ theorem ClosedTriangulationCore.exists_fanReentryModeStep_of_noMove23_noDescent
             triangulationTopologicalGeometricCarrier K'))
     (q : FanReentryModeState K) :
     ∃ q' : FanReentryModeState K,
-      FanReentryModeStep K q q' := by
+      FanReentryModeConstructiveStep K q q' := by
   have hconnected : ConnectedLinkClosedCore K :=
     connectedLinkClosedCore_of_topologicalThreeManifold K hcore hM
   have hlinks :
@@ -64,7 +64,7 @@ theorem ClosedTriangulationCore.exists_fanReentryModeStep_of_noMove23_noDescent
         · obtain ⟨next, haway, hnonself⟩ := hstate
           exact
             ⟨FanReentryModeState.fan next,
-              FanReentryModeStep.fan_reinject
+              FanReentryModeConstructiveStep.fan_reinject
                 old next s hsd hse hrealized hsource haway hnonself⟩
       · obtain ⟨T'⟩ := hnext
         let next : HighFanState K :=
@@ -78,7 +78,7 @@ theorem ClosedTriangulationCore.exists_fanReentryModeStep_of_noMove23_noDescent
           }
         exact
           ⟨FanReentryModeState.fan next,
-            FanReentryModeStep.fan_next old next rfl rfl⟩
+            FanReentryModeConstructiveStep.fan_next old next rfl rfl⟩
 
   | reentry old =>
       rcases
@@ -106,11 +106,11 @@ theorem ClosedTriangulationCore.exists_fanReentryModeStep_of_noMove23_noDescent
             exact hnonself hself
           exact
             ⟨FanReentryModeState.fan next,
-              FanReentryModeStep.reentry_fan old next hnonself'⟩
+              FanReentryModeConstructiveStep.reentry_fan old next hnonself'⟩
       · obtain ⟨s', hstep⟩ := hreentry
         exact
           ⟨FanReentryModeState.reentry
               (witnessedReentryStateOfStep hstep),
-            FanReentryModeStep.reentry_next old s' hstep⟩
+            FanReentryModeConstructiveStep.reentry_next old s' hstep⟩
 
 end Poincare
