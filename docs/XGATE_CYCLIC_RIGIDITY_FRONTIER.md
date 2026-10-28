@@ -109,3 +109,42 @@ witnesses forces either (i) equality of full sites with a forbidden immediate
 self-edge, (ii) a degree-four vertex, or (iii) a legal Move23 / strict
 `PhiSupport` descent. The inspected definitions do not currently establish
 this disjunction. This is a proof target, not a theorem or verified conjecture.
+
+## Bounded follow-up: two-seed escape audit (2026-10-28)
+
+The two-seed route was inspected against the existing exact-incidence and
+return-target lemmas.
+
+- `exists_two_return_escape_witnessedReentry_seeds_of_noDescent_noHigh`
+  derives two distinct cross-edge seeds `(q, anchor.d)` and
+  `(q, anchor.e)`, each with incidence exactly three and each forced into a
+  further witnessed source-face reentry under the no-descent/no-high-edge
+  assumptions.
+- `return_escape_crossEdges_incidence_three_of_noHigh` justifies the exact
+  incidence-three step from the represented tetrahedra and the no-high-edge
+  hypothesis.
+- `exists_returnSigma_same_anchor_target_of_witnessedReentry_of_sharedSupportedEdgeState_eq`
+  constrains the tetrahedron retained by a return to one of the anchor's three
+  target tetrahedra, up to `SameTetVertices`.
+- `anchor_return_carrier_support_ne_or_predecessor_return_carrier_support_ne_of_witnessedReentry_return_state_of_no_degree_four`
+  shows that a repeated supported-edge state cannot preserve both relevant
+  five-vertex carrier supports.
+
+**Outcome of the bounded attempt:** these results do not combine into a
+contradiction. The two-seed theorem creates more witnessed reentries; the
+target-compatibility theorem constrains a return witness but does not make it
+impossible; carrier-support change is local and does not provide a globally
+decreasing quantity. The chain can therefore be iterated without violating any
+of these conclusions.
+
+The missing lemma is now narrower but still substantial: derive from the
+actual tetrahedral incidence/link geometry that the two cross-edge reentry
+branches cannot both persist through a recurrent changing-carrier cycle, or
+construct a topology-compliant counterexample to that proposed implication.
+It must yield a legal move/descent, a prohibited high-incidence edge, or an
+explicit contradiction from the stated geometric hypotheses. No such lemma
+was found or proved in this bounded attempt.
+
+**Decision:** stop expanding this branch for now. Do not merge it as a
+Poincare/JIID proof. Resume only with a new geometric invariant, a counterexample,
+or an independently checkable argument that closes this exact gap.
