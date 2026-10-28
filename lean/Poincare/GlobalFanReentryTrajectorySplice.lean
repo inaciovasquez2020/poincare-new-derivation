@@ -31,7 +31,9 @@ theorem trajectorySplice_preserves_step
     · have hEq : n + 1 = j := by omega
       have hJoin : states (n + 1) = states i := by
         rw [hEq, ← hreturn]
-      simpa [trajectorySplice, hn, hnext, hEq, hJoin] using hstep n
+      have hstepJoin : R (states n) (states i) := by
+        simpa [hEq] using (hJoin ▸ hstep n)
+      simpa [trajectorySplice, hn, hnext, hEq] using hstepJoin
   · have hnge : j ≤ n := by omega
     have hnext : ¬ n + 1 < j := by omega
     have hidx : i + ((n + 1) - j) = (i + (n - j)) + 1 := by omega
