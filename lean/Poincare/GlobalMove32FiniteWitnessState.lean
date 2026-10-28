@@ -311,4 +311,28 @@ theorem finiteMove32Transition_irrefl
     simpa [hs, ht] using hse
   exact hnonself (Or.inl ⟨hsd'.symm, hse'.symm⟩)
 
+
+/-- Lift every edge of a finite closed site cycle to an explicit witness
+state. The cycle is represented by its vertices indexed by `Fin (n + 1)`;
+the last vertex closes to the first, and each of the first `n` edges is a
+`FiniteMove32Transition`. The selected witness for each edge retains exact
+decoded source and target endpoints. This is a lifting statement only: it
+does not assert equality of adjacent full witness tuples or exclude cycles. -/
+theorem finiteMove32Transition_lift_closed_cycle
+    {K : Triangulation} {n : Nat}
+    (sites : Fin (n + 1) → FiniteRealizedMove32Site K)
+    (hEdges : ∀ i : Fin n,
+      FiniteMove32Transition K (sites i.castSucc) (sites i.succ))
+    (hClosed : sites (Fin.last n) = sites 0) :
+    ∃ witnesses : Fin n → Move32WitnessState K,
+      ∀ i : Fin n,
+        witnesses i |>.val.source.val.decode = (sites i.castSucc).val.decode ∧
+        witnesses i |>.val.target.val.decode = (sites i.succ).val.decode := by
+  classical
+  let witnesses : Fin n → Move32WitnessState K :=
+    fun i => Classical.choose (hEdges i)
+  refine ⟨witnesses, ?_⟩
+  intro i
+  exact Classical.choose_spec (hEdges i)
+
 end Poincare
