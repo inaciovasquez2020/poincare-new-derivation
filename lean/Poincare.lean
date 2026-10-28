@@ -1,3 +1,4 @@
+import Poincare.GlobalMove32ReentryHolonomyConditional
 import Poincare.GlobalFanReentryTrajectorySplice
 import Regge.Regge
 import Poincare.Triangulation
