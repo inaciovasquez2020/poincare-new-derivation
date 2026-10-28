@@ -57,17 +57,28 @@ theorem concrete_holonomy_bridge
     False := by
   exact hConcreteNonIdentity (hRigidity hManifold)
 
-/-- A verified cycle's transport is identity when every edge transport is
-identity. This is a basic adapter sanity theorem, not a geometric result. -/
+/-- Every verified path has identity transport if each certified edge does.
+This is a basic adapter sanity theorem, not a geometric result. -/
+theorem pathTransport_eq_one_of_stepTransport_eq_one
+    (R : State → State → Prop)
+    (stepTransport : ∀ {a b : State}, R a b → G)
+    (hStep : ∀ {a b : State} (hab : R a b), stepTransport hab = 1)
+    {a b : State} (path : VerifiedPath R a b) :
+    pathTransport R stepTransport path = 1 := by
+  induction path with
+  | nil _ => simp [pathTransport]
+  | cons hab tail ih =>
+      simp [pathTransport, hStep hab, ih]
+
+/-- Hence a verified cycle has identity transport when every edge transport
+is identity. This is a basic adapter sanity theorem, not a geometric result. -/
 theorem cycleTransport_eq_one_of_stepTransport_eq_one
     (R : State → State → Prop)
     (stepTransport : ∀ {a b : State}, R a b → G)
     (hStep : ∀ {a b : State} (hab : R a b), stepTransport hab = 1)
     {a : State} (cycle : VerifiedCycle R a) :
     cycleTransport R stepTransport cycle = 1 := by
-  induction cycle with
-  | nil _ => simp [cycleTransport, pathTransport]
-  | cons hab tail ih =>
-      simp [cycleTransport, pathTransport, hStep hab, ih]
+  exact pathTransport_eq_one_of_stepTransport_eq_one
+    R stepTransport hStep cycle
 
 end Poincare.ConditionalHolonomyAdapter
