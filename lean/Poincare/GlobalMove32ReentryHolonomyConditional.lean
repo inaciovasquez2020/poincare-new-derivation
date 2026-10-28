@@ -56,13 +56,10 @@ theorem no_cycle_of_failure_bifurcation
 that still need proving; no premise follows merely from finiteness or a
 spherical link. -/
 theorem conditional_cycle_exclusion
-    (admissible regular highEdge degreeFour : State → Prop)
+    (admissible regular : State → Prop)
     (hFrustrated : Frustrated holonomy admissible)
     (hFlat : FlatOnRegular holonomy admissible regular)
     (hRegular : ∀ c, admissible c → regular c)
-    (hBifurcate : ∀ c, admissible c → highEdge c ∨ degreeFour c)
-    (hNoHigh : ∀ c, admissible c → ¬ highEdge c)
-    (hNoFour : ∀ c, admissible c → ¬ degreeFour c)
     (c : State) (hc : admissible c) : False := by
   exact no_cycle_of_frustration_and_rigidity
     holonomy admissible regular hFrustrated hFlat c hc (hRegular c hc)
