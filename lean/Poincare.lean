@@ -1,3 +1,4 @@
+import Poincare.GlobalFanReentryTrajectorySplice
 import Regge.Regge
 import Poincare.Triangulation
 import Poincare.SupportDegreeFour
