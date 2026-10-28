@@ -322,12 +322,12 @@ theorem finiteMove32Transition_lift_closed_cycle
     {K : Triangulation} {n : Nat}
     (sites : Fin (n + 1) → FiniteRealizedMove32Site K)
     (hEdges : ∀ i : Fin n,
-      FiniteMove32Transition K (sites i.castSucc) (sites i.succ))
-    (hClosed : sites (Fin.last n) = sites 0) :
+      FiniteMove32Transition K (sites (Fin.castSucc i)) (sites (Fin.succ i)))
+    (_hClosed : sites (Fin.last n) = sites 0) :
     ∃ witnesses : Fin n → Move32WitnessState K,
       ∀ i : Fin n,
-        witnesses i |>.val.source.val.decode = (sites i.castSucc).val.decode ∧
-        witnesses i |>.val.target.val.decode = (sites i.succ).val.decode := by
+        (witnesses i).val.source.val.decode = (sites (Fin.castSucc i)).val.decode ∧
+        (witnesses i).val.target.val.decode = (sites (Fin.succ i)).val.decode := by
   classical
   let witnesses : Fin n → Move32WitnessState K :=
     fun i => Classical.choose (hEdges i)
