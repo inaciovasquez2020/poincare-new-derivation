@@ -1,3 +1,4 @@
+import Poincare.GlobalFiniteKeyAbstractCountermodel
 import Poincare.GlobalFanReentryTrajectorySplice
 import Regge.Regge
 import Poincare.Triangulation
