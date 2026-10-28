@@ -148,3 +148,27 @@ was found or proved in this bounded attempt.
 **Decision:** stop expanding this branch for now. Do not merge it as a
 Poincare/JIID proof. Resume only with a new geometric invariant, a counterexample,
 or an independently checkable argument that closes this exact gap.
+
+
+## Dual-track follow-up: invariant route and countermodel route (2026-10-28)
+
+### Route A — attempt to derive a geometric invariant
+
+The current retained-state data supports three plausible sources of an invariant: (1) the ordered source-face triple, (2) the complementary pair `(x,y)` and the tetrahedron `sigma` witnessing the new shared edge, and (3) the incidence-three carrier support. The strongest already-proved local facts are that a repeated supported-edge state forces return-target compatibility, a two-sided carrier escape, and fresh endpoints disjoint from the predecessor five-vertex carrier.
+
+These facts still do not define a monotone quantity. Every Move32 site has five listed vertices, so carrier cardinality is constant; the two-sided escape only says that at least one of two carrier supports differs, not that a chosen cardinality or lexicographic rank strictly decreases. The whole-carrier crossing certificate is also not a usable global obstruction: its stored loop is explicitly `crossingPath.trans crossingPath.symm`, hence null-homotopic by path cancellation before any geometric crossing information is used. The topological loop route therefore breaks at construction of a nontrivial geometrically constrained loop; it has not produced one.
+
+The invariant route remains open unless the tetrahedral witnesses yield a new globally ordered object (for example, a proven strict descent in a well-founded order on actual carrier configurations) or a direct incidence contradiction. No such order has been derived from the current hypotheses.
+
+### Route B — formal abstract countermodel
+
+`Poincare.GlobalFiniteKeyAbstractCountermodel` formalizes a four-state deterministic cycle `a0 -> b0 -> a1 -> b1 -> a0`. Its Boolean key alternates `false, true, false, true`; every transition changes the key, but `a0` and `a1` have the same key and are distinct retained states. This proves that finite-key recurrence, even with deterministic continuation and no self-key transition, does not by itself imply equality of the full retained states.
+
+This is a countermodel to the *logical inference from coarse keys alone*, not a counterexample to the triangulation/manifold hypotheses. It identifies exactly why the recurrence argument cannot close the geometric theorem without an additional geometric invariant. The module is imported into `Poincare.lean` so the repository build must type-check it.
+
+### Result of running both routes
+
+- **Abstract inference:** broken by the formal four-state model.
+- **Topological loop shortcut:** broken because the current loop is a path followed immediately by its reverse.
+- **Geometric invariant:** still unresolved; local carrier escape has no established monotonicity, and no topology-compliant counterexample has been constructed.
+- **Closure status:** OPEN. No claim of `Poincare.JIID` or Poincare conjecture proof.
