@@ -45,7 +45,7 @@ theorem edgePinchCandidate_closedCore :
       rfl | rfl | rfl | rfl | rfl | rfl |
       rfl | rfl | rfl | rfl | rfl | rfl |
       rfl | rfl | rfl | rfl | rfl | rfl <;>
-      native_decide
+      decide
 
   constructor
 
