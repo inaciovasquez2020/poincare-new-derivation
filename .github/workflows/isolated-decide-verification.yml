@@ -1,0 +1,23 @@
+name: Isolated decide tactic verification
+
+on:
+  push:
+    branches:
+      - fix/fan-reentry-option-placement-20261029
+  workflow_dispatch:
+
+jobs:
+  verification:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install Lean without global axiom gate
+        uses: leanprover/lean-action@v1
+        with:
+          build: "false"
+          axiom-audit: "false"
+          use-github-cache: "false"
+      - name: Build module containing first-site decide replacement
+        run: lake build Poincare.VertexLinkLocalConnectednessCounterexample
+      - name: Separate principal theorem axiom audit
+        run: lake env lean lean/Poincare/DegreeFourAxiomAudit.lean
