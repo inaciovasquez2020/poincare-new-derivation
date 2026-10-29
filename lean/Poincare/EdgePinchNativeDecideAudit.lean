@@ -5,8 +5,8 @@ open Lean
 
 /-
 Isolated audit against the pre-edit source commit c8971611b28b1a78d4b5d886642472fa13f5ee66.
-The generated declaration type identifies the branch proposition; declaration ranges, when retained
-by Lean, identify the source span. This file is audit-only and does not modify the target proof.
+The generated declaration type identifies the branch proposition; the printed source-range
+representation records any retained source positions. This file is audit-only.
 -/
 
 #check Poincare.edgePinchCandidate_closedCore._native.native_decide.ax_1_426
@@ -23,4 +23,4 @@ run_cmd do
       logInfo m!"AUDIT_DECLARATION := {target}"
       logInfo m!"AUDIT_TYPE_EXPR := {info.type}"
       let ranges ← Lean.findDeclarationRanges? target
-      logInfo m!"AUDIT_SOURCE_RANGE := {ranges}"
+      logInfo m!"AUDIT_SOURCE_RANGE_REPR := {reprStr ranges}"
