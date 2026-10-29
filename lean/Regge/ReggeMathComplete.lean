@@ -6,7 +6,7 @@ namespace Regge
 noncomputable def dihedral_angle
   (T : SimplicialComplex) (_σ : Unit) (_e : T.V × T.V) : ℝ := 0
 
-noncomputable def deficit (T : SimplicialComplex) (e : T.V × T.V) : ℝ :=
+noncomputable def deficit (T : SimplicialComplex) (_e : T.V × T.V) : ℝ :=
   2 * Real.pi - 0
 
 noncomputable def regge_action (_T : SimplicialComplex) : ℝ :=
@@ -21,7 +21,7 @@ axiom pachner_invariance :
   True
 
 axiom flat_implies_trivial_holonomy :
-  ∀ (T : SimplicialComplex),
+  ∀ (_T : SimplicialComplex),
   True
 
 axiom trivial_holonomy_implies_simply_connected :
@@ -33,7 +33,7 @@ axiom simply_connected_implies_s3 :
   True
 
 theorem final_rigidity
-  (T : SimplicialComplex) :
+  (_T : SimplicialComplex) :
   True := by
   trivial
 
