@@ -31,3 +31,5 @@ jobs:
 
       - name: Principal theorem axiom audit
         run: lake env lean lean/Poincare/DegreeFourAxiomAudit.lean
+      - name: Isolated generated native_decide source-range audit
+        run: lake env lean lean/Poincare/EdgePinchNativeDecideAudit.lean
