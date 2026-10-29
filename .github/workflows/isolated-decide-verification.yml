@@ -19,5 +19,7 @@ jobs:
           use-github-cache: "false"
       - name: Build module containing first-site decide replacement
         run: lake build Poincare.VertexLinkLocalConnectednessCounterexample
+      - name: Build axiom audit dependencies
+        run: lake build Poincare.DegreeFourConnectedLinkClassification Poincare.GlobalMove32ReentryLeastBoundaryEscapeIncidenceThreeFork
       - name: Separate principal theorem axiom audit
         run: lake env lean lean/Poincare/DegreeFourAxiomAudit.lean
