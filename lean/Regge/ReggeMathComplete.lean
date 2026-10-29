@@ -25,11 +25,11 @@ axiom flat_implies_trivial_holonomy :
   True
 
 axiom trivial_holonomy_implies_simply_connected :
-  ∀ (T : SimplicialComplex),
+  ∀ (_T : SimplicialComplex),
   True
 
 axiom simply_connected_implies_s3 :
-  ∀ (T : SimplicialComplex),
+  ∀ (_T : SimplicialComplex),
   True
 
 theorem final_rigidity
