@@ -1,0 +1,23 @@
+name: Isolated native_decide source audit
+
+on:
+  push:
+    branches:
+      - audit/edgepinch-ax1-426-source-range
+  workflow_dispatch:
+
+jobs:
+  source-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install Lean without global axiom gate
+        uses: leanprover/lean-action@v1
+        with:
+          build: "false"
+          axiom-audit: "false"
+          use-github-cache: "false"
+      - name: Build imported source module
+        run: lake build Poincare.VertexLinkLocalConnectednessCounterexample
+      - name: Emit generated declaration type and source range
+        run: lake env lean lean/Poincare/EdgePinchNativeDecideAudit.lean
