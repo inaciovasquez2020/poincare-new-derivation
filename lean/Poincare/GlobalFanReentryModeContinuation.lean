@@ -72,10 +72,10 @@ theorem ClosedTriangulationCore.exists_legal_move23_or_descent_or_next_fanReentr
             (Or.inr
               ⟨FanReentryModeState.fan next⟩)
 
+set_option maxRecDepth 10000 in
 /-- In the incidence-four case, every realized exact-three candidate on the
 old shared-face edge `(m.a,m.b)` after a legal `2-3` has absent source face.
 Thus the candidate is a genuinely legal first `3-2` move. -/
-set_option maxRecDepth 10000 in
 theorem Move23Site.move32_candidate_sourceFaceAbsent_on_ab_after_incidence_four
     {K : Triangulation} (m : Move23Site)
     (hcore : ClosedTriangulationCore K)
