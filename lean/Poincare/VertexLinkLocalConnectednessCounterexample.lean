@@ -89,7 +89,7 @@ theorem edgePinchCandidate_link_zero :
         ⟨3, 5, 7⟩,
         ⟨3, 6, 7⟩
       ] := by
-  native_decide
+  decide
 
 
 theorem edgePinchCandidate_star_zero_one :
