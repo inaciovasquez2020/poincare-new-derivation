@@ -49,7 +49,7 @@ theorem edgePinchCandidate_closedCore :
 
   constructor
 
-  · native_decide
+  · decide
 
   · intro a b c habc hrepresented
 
