@@ -18,6 +18,8 @@ jobs:
         uses: leanprover/lean-action@v1
         with:
           use-github-cache: false
+          axiom-audit: true
+          axiom-audit-allow: propext,Classical.choice,Quot.sound
 
       - name: Build finite witnessed-state module
         run: lake build Poincare.GlobalMove32FiniteWitnessState
