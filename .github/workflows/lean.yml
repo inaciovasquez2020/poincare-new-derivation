@@ -19,6 +19,27 @@ jobs:
         with:
           use-github-cache: false
 
+      - name: Build cross-polytope one-step obstruction
+        run: |
+          lake build Poincare.CrossPolytopeOneStepObstruction
+          lake env lean lean/Poincare/CrossPolytopeOneStepAxiomAudit.lean > /tmp/crosspoly-one-step-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report = Path("/tmp/crosspoly-one-step-axioms.txt").read_text()
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          for name in [
+              "Poincare.ClosedTriangulationCore.move23_PhiSupport_eq_add_four",
+              "Poincare.crossPolytopeBoundary4_no_strict_move23",
+              "Poincare.crossPolytopeBoundary4_no_legal_move41",
+              "Poincare.crossPolytopeBoundary4_no_strict_represented_move23_move32_move41",
+          ]:
+              match = re.search(rf"(?m)^{re.escape(name)}\s*:\s*\[([^\]]*)\]", report)
+              assert match is not None, f"Missing axiom report for {name}: {report}"
+              found = {item.strip() for item in match.group(1).split(",") if item.strip()}
+              assert found <= allowed, f"Unapproved axioms for {name}: {found - allowed}"
+          PY
+
       - name: Build finite witnessed-state module
         run: lake build Poincare.GlobalMove32FiniteWitnessState
       - name: Build witness-anchored continuation module
