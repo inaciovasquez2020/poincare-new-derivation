@@ -2,6 +2,7 @@ import Poincare.GlobalHighEdgeToFanState
 import Poincare.GlobalFanChordTransition
 import Poincare.GlobalMove32SharedEdgeThreeTetSaturation
 import Poincare.Move23UnchangedOverlap
+import Poincare.Move23ClosedCorePreservation
 
 namespace Poincare
 
