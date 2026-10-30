@@ -103,6 +103,7 @@ theorem Move23Site.move32_candidate_sourceFaceAbsent_on_ab_after_incidence_four
   simp only [List.mem_cons] at htau
   rcases htau with rfl | rfl | rfl | htau
   · simp only [Move23Site.newTet₀, Tet.verts, List.mem_cons, List.mem_singleton] at hface
+    clear hcore hlegal hrealized hthree hcore' hends hcNot
     omega
   · simp [Move23Site.newTet₁, Tet.verts] at hface
     aesop
