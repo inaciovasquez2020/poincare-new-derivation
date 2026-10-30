@@ -67,6 +67,13 @@ theorem twoFacePillow_distinct_occurrences_and_faces :
 
 theorem twoFacePillow_no_repeated_face :
     twoFacePillow.NoRepeatedFace := by
+  change
+    ([
+      (⟨0, 0⟩ : PairedFace 2),
+      ⟨1, 0⟩,
+      ⟨0, 1⟩,
+      ⟨1, 1⟩
+    ] : List (PairedFace 2)).Nodup
   decide
 
 end Poincare
