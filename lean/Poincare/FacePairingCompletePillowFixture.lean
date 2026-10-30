@@ -34,7 +34,7 @@ def completeDoublePillow : FacePairingData 2 where
 theorem completeDoublePillow_extends_pillow :
     completeDoublePillow.identifications.take 2 =
       twoFacePillow.identifications := by
-  decide
+  rfl
 
 theorem completeDoublePillow_no_repeated_face :
     completeDoublePillow.NoRepeatedFace := by
