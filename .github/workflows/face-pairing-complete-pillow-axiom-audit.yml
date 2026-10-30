@@ -1,0 +1,67 @@
+name: CompleteDoublePillow three theorem axiom audit
+on:
+  push:
+    branches: [research/face-pairing-pillow-20261030]
+  workflow_dispatch:
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+jobs:
+  fixture-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: 5f766134bce9f07738795d29eb46284d0683c1a0
+      - uses: leanprover/lean-action@v1
+        with:
+          build: "false"
+          axiom-audit: "false"
+          use-github-cache: "false"
+      - name: Run exact-source theorem build and axiom gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "5f766134bce9f07738795d29eb46284d0683c1a0"
+          mkdir -p /tmp/fixture-audit
+          lake build Poincare.FacePairingCompletePillowFixture 2>&1 | tee /tmp/fixture-audit/build.log
+          cat > /tmp/fixture-audit/Audit.lean <<'LEAN'
+          import Poincare.FacePairingCompletePillowFixture
+          #print axioms Poincare.completeDoublePillow_extends_pillow
+          #print axioms Poincare.completeDoublePillow_no_repeated_face
+          #print axioms Poincare.completeDoublePillow_all_faces_paired
+          LEAN
+          lake env lean /tmp/fixture-audit/Audit.lean > /tmp/fixture-audit/axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          s = Path("/tmp/fixture-audit/axioms.txt").read_text()
+          for name in [
+            "Poincare.completeDoublePillow_extends_pillow",
+            "Poincare.completeDoublePillow_no_repeated_face",
+            "Poincare.completeDoublePillow_all_faces_paired"
+          ]:
+            lines = [x for x in s.splitlines() if x.startswith(f"'{name}' ")]
+            assert len(lines) == 1, (name, s)
+            if "does not depend on any axioms" in lines[0]:
+                axs = set()
+            else:
+                match = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", lines[0])
+                assert match, lines[0]
+                axs = set(y.strip() for y in match.group(1).split(",") if y.strip())
+            assert axs <= {"propext", "Classical.choice", "Quot.sound"}, (name, sorted(axs))
+            print("PASS", name, sorted(axs))
+          PY
+      - name: Create reproducibility receipt
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p /tmp/fixture-audit
+          printf 'source_sha=5f766134bce9f07738795d29eb46284d0683c1a0\ncheckout=%s\nworkflow_run=%s\n' "$(git rev-parse HEAD)" "$GITHUB_RUN_ID" > /tmp/fixture-audit/manifest.txt
+          sha256sum lean/Poincare/FacePairingCompletePillowFixture.lean > /tmp/fixture-audit/source.sha256
+      - name: Archive audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: complete-double-pillow-theorem-audit
+          path: /tmp/fixture-audit/
+          if-no-files-found: error
