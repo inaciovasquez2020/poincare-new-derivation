@@ -1,0 +1,25 @@
+name: CompleteDoublePillow edge-valence exact-source build
+on:
+  push:
+    branches: [research/face-pairing-pillow-20261030]
+  workflow_dispatch:
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+jobs:
+  targeted:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: dfa7d5e07bf8d9aadac361685f247f485b85b624
+      - uses: leanprover/lean-action@v1
+        with:
+          build: "false"
+          axiom-audit: "false"
+          use-github-cache: "false"
+      - name: Build exact pinned edge-key theorem
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "dfa7d5e07bf8d9aadac361685f247f485b85b624"
+          lake build Poincare.FacePairingCompletePillowValence
