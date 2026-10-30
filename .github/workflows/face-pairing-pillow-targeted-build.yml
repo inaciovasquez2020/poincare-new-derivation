@@ -1,0 +1,29 @@
+name: FacePairingPillow exact-commit targeted build
+on:
+  push:
+    branches:
+      - research/face-pairing-pillow-20261030
+  workflow_dispatch:
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+jobs:
+  targeted-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact audited source commit
+        uses: actions/checkout@v5
+        with:
+          ref: dac23ea5da7b442a221ab33c17cb8e552541d732
+      - name: Install Lean without global build or global audit
+        uses: leanprover/lean-action@v1
+        with:
+          build: "false"
+          axiom-audit: "false"
+          use-github-cache: "false"
+      - name: Confirm exact source and build target
+        run: |
+          test "$(git rev-parse HEAD)" = "dac23ea5da7b442a221ab33c17cb8e552541d732"
+          test -f lean/Poincare/FacePairingPillow.lean
+          git rev-parse HEAD
+      - name: Build Poincare.FacePairingPillow
+        run: lake build Poincare.FacePairingPillow
