@@ -15,6 +15,7 @@ theorem universal_S3_false :
 
 /-- The genuine, restricted topological Poincare statement, expressed as
 a proposition rather than introduced as an unproved Lean axiom.
+Status: CONDITIONAL_EXTERNAL_THEOREM_ONLY.
 
 This includes the honest closed connected topological 3-manifold and
 simply-connectedness hypotheses, and concludes a real homeomorphism to S³.
