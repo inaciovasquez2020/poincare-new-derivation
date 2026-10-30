@@ -132,7 +132,7 @@ theorem finite_squareGrid_least_boundary_label_escape_probe
     intro hnZero
     have hjEq : j = j0 := by
       apply Fin.ext
-      simpa [j, j0, hnZero]
+      simp [j, j0, hnZero]
     rw [hjEq] at hnOutside'
     exact hnOutside' hlabel0Anchor
 

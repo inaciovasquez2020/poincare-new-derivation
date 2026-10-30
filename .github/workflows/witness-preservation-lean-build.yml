@@ -1,0 +1,13 @@
+name: witness-preservation-lean-build
+on:
+  push:
+    branches:
+      - work/reentry-witness-preservation-20261029
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+      - name: Build witness-preservation target
+        run: lake build Poincare.GlobalFanReentryModeLinkedStep

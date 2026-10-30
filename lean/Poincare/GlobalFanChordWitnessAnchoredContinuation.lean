@@ -114,8 +114,8 @@ theorem WitnessAnchoredFanStep.classifier_transverse_eq_sharedThird
     (hσ : U.sigma = S.witnessPos)
     (hρ : U.rho = S.neighbor)
     (hy : U.transverse = y)
-    (hyw : y ∈ (S.fan.tetAt S.witnessPos).verts)
-    (hyn : y ∈ (S.fan.tetAt S.neighbor).verts) :
+    (_hyw : y ∈ (S.fan.tetAt S.witnessPos).verts)
+    (_hyn : y ∈ (S.fan.tetAt S.neighbor).verts) :
     y = S.sharedThird := by
   by_contra hne_y_shared
   have hσmem : S.witnessPos.1 ∈ vertexLinkTriangles K T.z0 :=

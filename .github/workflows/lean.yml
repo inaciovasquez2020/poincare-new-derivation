@@ -18,6 +18,8 @@ jobs:
         uses: leanprover/lean-action@v1
         with:
           use-github-cache: false
+          axiom-audit: true
+          axiom-audit-allow: propext,Classical.choice,Quot.sound
 
       - name: Verify corrected Perelman interface and its axiom dependencies
         shell: bash

@@ -89,4 +89,23 @@ theorem FanReentryModeStep.fan_to_fan_canonicalEdgeKey_ne
   | fan_reinject old next s hsd hse hrealized hobstruction haway hnonself =>
       exact haway
 
+
+
+/-- A linked reentry-to-reentry step preserves the target site's explicit realization, exact-three incidence, and tetrahedron obstruction witnesses. This does not identify full fan states from edge-state equality. -/
+theorem FanReentryModeStep.reentry_reentry_preserves_witness
+    {K : Triangulation}
+    {old next : WitnessedReentryState K}
+    (hstep : FanReentryModeStep K (.reentry old) (.reentry next)) :
+    next.site.RealizedIn K ∧
+    next.site.SharedEdgeExactlyThree K ∧
+    ∃ tau ∈ K.tets,
+      next.site.a ∈ tau.verts ∧
+      next.site.b ∈ tau.verts ∧
+      next.site.c ∈ tau.verts := by
+  cases hstep with
+  | reentry_next old s' hstep =>
+      exact ⟨(witnessedReentryStateOfStep hstep).realized,
+        (witnessedReentryStateOfStep hstep).three,
+        (witnessedReentryStateOfStep hstep).obstruction⟩
+
 end Poincare
