@@ -51,7 +51,14 @@ theorem completeDoublePillow_all_faces_paired :
     ∀ f : PairedFace 2,
       f ∈ (completeDoublePillow.identifications.flatMap
         (fun g => [g.source, g.target])) := by
-  decide
+  have h :
+      ∀ i : Fin 2, ∀ j : Fin 4,
+        (⟨i, j⟩ : PairedFace 2) ∈
+          (completeDoublePillow.identifications.flatMap
+            (fun g => [g.source, g.target])) := by
+    decide
+  intro ⟨i, j⟩
+  exact h i j
 
 /-- An arrow frame: its axis is the local edge first-second; the face
 is specified by its opposite vertex and must contain that axis. -/
