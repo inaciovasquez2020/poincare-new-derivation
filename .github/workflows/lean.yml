@@ -19,6 +19,36 @@ jobs:
         with:
           use-github-cache: false
 
+      - name: Verify corrected Perelman interface and its axiom dependencies
+        shell: bash
+        run: |
+          lake build Poincare.PerelmanPL
+          lake env lean lean/Poincare/PerelmanPLAudit.lean > /tmp/perelman-pl-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          report = Path("/tmp/perelman-pl-axioms.txt").read_text()
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          theorems = [
+              "Poincare.universal_S3_false",
+              "Poincare.conditional_PL_poincare_recognition",
+              "Poincare.globalPhiSupportDescent_implies_Perelman_PL",
+          ]
+          for name in theorems:
+              lines = [line for line in report.splitlines() if line.startswith(f"'{name}' ")]
+              assert len(lines) == 1, f"missing or duplicate axiom report for {name}: {report}"
+              if "does not depend on any axioms" in lines[0]:
+                  found = set()
+              else:
+                  match = re.search(r"depends on axioms:\s*\[([^\]]*)\]", lines[0])
+                  assert match is not None, f"unrecognized Lean axiom report: {lines[0]}"
+                  found = {s.strip() for s in match.group(1).split(",") if s.strip()}
+              assert found <= allowed, f"unapproved axioms in {name}: {found - allowed}"
+              print(f"{name}: allowed axioms only: {sorted(found)}")
+          PY
+          python3 tools/verify_perelman_pl_conditional_closure.py
+
       - name: Build finite witnessed-state module
         run: lake build Poincare.GlobalMove32FiniteWitnessState
       - name: Build witness-anchored continuation module
