@@ -53,4 +53,26 @@ def standardLocal23InteriorPairings : FacePairingData 2 × FacePairingData 3 :=
     }
   )
 
+
+/-- Both local interiors use each occurrence-face at most once. This is a
+combinatorial necessary condition, not a proof of `2→3` legality in a
+surrounding face-paired triangulation. -/
+theorem standardLocal23InteriorPairings_noRepeatedFace :
+    standardLocal23InteriorPairings.1.NoRepeatedFace ∧
+    standardLocal23InteriorPairings.2.NoRepeatedFace := by
+  constructor
+  · change
+      ([(⟨0, 3⟩ : PairedFace 2), ⟨1, 3⟩] : List (PairedFace 2)).Nodup
+    decide
+  · change
+      ([
+        (⟨0, 1⟩ : PairedFace 3),
+        ⟨1, 1⟩,
+        ⟨0, 0⟩,
+        ⟨2, 1⟩,
+        ⟨1, 0⟩,
+        ⟨2, 0⟩
+      ] : List (PairedFace 3)).Nodup
+    decide
+
 end Poincare
