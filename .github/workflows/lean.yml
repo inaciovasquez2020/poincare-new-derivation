@@ -138,6 +138,28 @@ jobs:
               assert found <= allowed, f"unapproved axioms for {name}: {found - allowed}"
           PY
 
+      - name: Verify certified fan-reentry escape or second source-face obstruction
+        shell: bash
+        run: |
+          lake build Poincare.FanReentryCertifiedEscapeOrObstruction
+          lake env lean lean/Poincare/FanReentryCertifiedEscapeOrObstructionAudit.lean > /tmp/fan-reentry-escape-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report = Path("/tmp/fan-reentry-escape-axioms.txt").read_text()
+          name = "Poincare.Move23Site.exists_certifiedPath_descent_or_second_sourceFace_obstruction"
+          prefix = f"'{name}'"
+          if f"{prefix} does not depend on any axioms" in report:
+              found = set()
+          else:
+              match = re.search(re.escape(prefix) + r" depends on axioms:\s*\[([^\]]*)\]", report)
+              assert match is not None, f"missing axiom report: {report}"
+              found = {item.strip() for item in match.group(1).split(",") if item.strip()}
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          assert found <= allowed, f"unapproved axioms: {found - allowed}"
+          print(f"{name}: allowed only {sorted(found)}")
+          PY
+
       - name: Build finite witnessed-state module
         run: lake build Poincare.GlobalMove32FiniteWitnessState
       - name: Build witness-anchored continuation module
