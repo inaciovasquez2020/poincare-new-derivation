@@ -34,9 +34,14 @@ jobs:
               "Poincare.crossPolytopeBoundary4_no_legal_move41",
               "Poincare.crossPolytopeBoundary4_no_strict_represented_move23_move32_move41",
           ]:
-              match = re.search(rf"(?m)^{re.escape(name)}\s*:\s*\[([^\]]*)\]", report)
-              assert match is not None, f"Missing axiom report for {name}: {report}"
-              found = {item.strip() for item in match.group(1).split(",") if item.strip()}
+              lines = [line for line in report.splitlines() if line.startswith(f"'{name}' ")]
+              assert len(lines) == 1, f"Missing or duplicate axiom report for {name}: {report}"
+              if "does not depend on any axioms" in lines[0]:
+                  found = set()
+              else:
+                  match = re.search(r"depends on axioms:\s*\[([^\]]*)\]", lines[0])
+                  assert match is not None, f"Unrecognized Lean axiom report: {lines[0]}"
+                  found = {item.strip() for item in match.group(1).split(",") if item.strip()}
               assert found <= allowed, f"Unapproved axioms for {name}: {found - allowed}"
           PY
 
