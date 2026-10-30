@@ -1,0 +1,97 @@
+name: FacePairingPillow targeted theorem axiom audit
+
+on:
+  push:
+    branches:
+      - research/face-pairing-pillow-20261030
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  targeted-axiom-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact previously built Lean source
+        uses: actions/checkout@v5
+        with:
+          ref: 4707282f60e7a46b19f47c4f1aa31888f2ed1335
+
+      - name: Install pinned Lean toolchain
+        uses: leanprover/lean-action@v1
+        with:
+          build: "false"
+          axiom-audit: "false"
+          use-github-cache: "false"
+
+      - name: Verify pinned source and build target
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "4707282f60e7a46b19f47c4f1aa31888f2ed1335"
+          test -f lean/Poincare/FacePairingPillow.lean
+          git rev-parse HEAD
+
+      - name: Build and audit three pillow theorems
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/pillow-audit-receipt
+          lake build Poincare.FacePairingPillow 2>&1 | tee /tmp/pillow-audit-receipt/targeted-build.log
+          cat > /tmp/pillow-audit-receipt/PillowAxiomAudit.lean <<'LEAN'
+          import Poincare.FacePairingPillow
+          #print axioms Poincare.twoFacePillow_has_two_identifications
+          #print axioms Poincare.twoFacePillow_distinct_occurrences_and_faces
+          #print axioms Poincare.twoFacePillow_no_repeated_face
+          LEAN
+          lake env lean /tmp/pillow-audit-receipt/PillowAxiomAudit.lean > /tmp/pillow-audit-receipt/axiom-output.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          receipt = Path("/tmp/pillow-audit-receipt/axiom-output.txt").read_text()
+          names = [
+              "Poincare.twoFacePillow_has_two_identifications",
+              "Poincare.twoFacePillow_distinct_occurrences_and_faces",
+              "Poincare.twoFacePillow_no_repeated_face",
+          ]
+          permitted = {"propext", "Classical.choice", "Quot.sound"}
+          for name in names:
+              lines = [s for s in receipt.splitlines() if s.startswith(f"'{name}' ")]
+              assert len(lines) == 1, f"Missing or duplicate axiom output for {name}: {receipt}"
+              line = lines[0]
+              if "does not depend on any axioms" in line:
+                  axioms = set()
+              else:
+                  match = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", line)
+                  assert match, f"Unrecognized axiom output for {name}: {line}"
+                  axioms = {v.strip() for v in match.group(1).split(",") if v.strip()}
+              assert axioms <= permitted, f"Disallowed axiom(s) for {name}: {sorted(axioms - permitted)}"
+              print(f"PASS {name}: {sorted(axioms)}")
+          PY
+
+      - name: Preserve source-bound receipt and hashes
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/pillow-audit-receipt
+          {
+            echo "source_commit=4707282f60e7a46b19f47c4f1aa31888f2ed1335"
+            echo "actual_checkout=$(git rev-parse HEAD)"
+            echo "target=Poincare.FacePairingPillow"
+            echo "previous_targeted_build_run=41114142043"
+            echo "axiom_policy=propext,Classical.choice,Quot.sound"
+            echo "audit_run=$GITHUB_RUN_ID"
+            echo "source_blob=$(git hash-object lean/Poincare/FacePairingPillow.lean)"
+          } > /tmp/pillow-audit-receipt/manifest.txt
+          sha256sum lean/Poincare/FacePairingPillow.lean /tmp/pillow-audit-receipt/PillowAxiomAudit.lean /tmp/pillow-audit-receipt/axiom-output.txt /tmp/pillow-audit-receipt/targeted-build.log 2>/dev/null > /tmp/pillow-audit-receipt/SHA256SUMS || true
+
+      - name: Upload verification receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: face-pairing-pillow-targeted-audit
+          path: /tmp/pillow-audit-receipt/
+          if-no-files-found: error
