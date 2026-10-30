@@ -35,10 +35,7 @@ theorem completeDoublePillow_equivalence_preserves_key
         FacePairingLocalEdge.reverse, Nat.min_comm, Nat.max_comm]
   | pair g hg h =>
       rcases h with ⟨_, _, _, _, hfirst, hsecond⟩
-      have hf := completeDoublePillow_identifications_identity g hg e.first
-      have hs := completeDoublePillow_identifications_identity g hg e.second
-      rw [hf] at hfirst
-      rw [hs] at hsecond
+      simp only [completeDoublePillow_identifications_identity g hg] at hfirst hsecond
       simp [FacePairingLocalEdge.undirectedKey, hfirst, hsecond]
   | symm h ih => exact ih.symm
   | trans h₁ h₂ ih₁ ih₂ => exact ih₁.trans ih₂
