@@ -108,7 +108,7 @@ def SimplyConnectedBarrierCoverage : Prop :=
       5 ≤ vertexDegree K s.d ∧
       5 ≤ vertexDegree K s.e ∧
       (6 ≤ vertexDegree K s.d ∨ 6 ≤ vertexDegree K s.e)) ∨
-    ∃ m : Move23Site, Move2332InitialEscapeSeed K m
+    ∃ m : Move23Site, Nonempty (Move2332InitialEscapeSeed K m)
 
 /-- Conditional reduction: the three-way coverage would imply the
 existing global topology-preserving defect descent, including states
@@ -125,7 +125,7 @@ theorem barrierCoverage_implies_globalDescent
     · rcases h32 with ⟨s, hlegal, hd, he, hhigh⟩
       exact exists_closedCore_homeomorphic_PhiSupport_lt_of_move32
         hcore s hlegal ⟨hd, he, hhigh⟩
-    · rcases hseed with ⟨m, seed⟩
+    · rcases hseed with ⟨m, ⟨seed⟩⟩
       exact exists_closedCore_homeomorphic_PhiSupport_lt_of_initial_escape_seed
         hcore m seed
 
