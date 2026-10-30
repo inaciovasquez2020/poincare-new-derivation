@@ -13,7 +13,7 @@ jobs:
       - name: Checkout exact local-template source
         uses: actions/checkout@v5
         with:
-          ref: 7814f5c599306ba5288f2d6ca20caed77e026b5b
+          ref: 76d5b44f0bf49cdbafca65ed11e16c3455cdc68e
       - name: Install pinned Lean
         uses: leanprover/lean-action@v1
         with:
@@ -24,6 +24,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "7814f5c599306ba5288f2d6ca20caed77e026b5b"
+          test "$(git rev-parse HEAD)" = "76d5b44f0bf49cdbafca65ed11e16c3455cdc68e"
           test -f lean/Poincare/FacePairingLocalMove23.lean
           lake build Poincare.FacePairingLocalMove23
