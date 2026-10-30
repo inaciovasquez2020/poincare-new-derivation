@@ -5,6 +5,8 @@ import Poincare.Move32TopologyPreservingDescent
 
 namespace Poincare
 
+open WellFounded
+
 /-- A genuine three-move Pachner macro-step: one legal 2→3 move (which
 temporarily increases the canonical degree-four defect), followed by two
 legal 3→2 moves. The source must be a certified closed triangulation core.
