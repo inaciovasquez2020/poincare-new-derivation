@@ -18,7 +18,7 @@ theorem completeDoublePillow_identifications_identity :
     ∀ g ∈ completeDoublePillow.identifications,
       ∀ v : Fin 4, g.localVertexMap v = v := by
   intro g hg v
-  simp only [completeDoublePillow, List.mem_cons, List.mem_singleton] at hg
+  simp [completeDoublePillow] at hg
   rcases hg with rfl | rfl | rfl | rfl
   all_goals rfl
 
