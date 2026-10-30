@@ -1,4 +1,3 @@
-import Mathlib
 import Poincare.Move2332InitialEscapeSeed
 import Poincare.TriangulationTopologicalNormalizedS3
 import Poincare.Move41TopologyPreservingDescent
@@ -53,7 +52,7 @@ theorem CertifiedAscentBarrierStep.PhiSupport_lt
 Therefore no cycle of these certified ascent-first blocks is possible. -/
 theorem certifiedAscentBarrierStep_wellFounded :
     WellFounded (fun L K : Triangulation => CertifiedAscentBarrierStep K L) := by
-  apply (measure_wf PhiSupport).mono
+  refine Subrelation.wf ?_ (measure PhiSupport).wf
   intro L K h
   exact h.PhiSupport_lt
 
