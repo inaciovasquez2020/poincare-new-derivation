@@ -77,6 +77,37 @@ jobs:
               assert found <= allowed, f"Unapproved axioms for {name}: {found - allowed}"
           PY
 
+      - name: Verify ascent barrier macro invariant and axiom dependencies
+        shell: bash
+        run: |
+          lake build Poincare.AscentBarrierInvariant
+          lake env lean lean/Poincare/AscentBarrierInvariantAudit.lean > /tmp/ascent-barrier-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          report = Path("/tmp/ascent-barrier-axioms.txt").read_text()
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          for name in [
+              "Poincare.CertifiedAscentBarrierStep.PhiSupport_add_four_eq",
+              "Poincare.CertifiedAscentBarrierStep.PhiSupport_lt",
+              "Poincare.certifiedAscentBarrierStep_wellFounded",
+              "Poincare.CertifiedAscentBarrierStep.homeomorphic",
+              "Poincare.barrierCoverage_implies_globalDescent",
+          ]:
+              prefix = f"'{name}'"
+              if f"{prefix} does not depend on any axioms" in report:
+                  found = set()
+              else:
+                  match = re.search(
+                      re.escape(prefix) + r" depends on axioms:\s*\[([^\]]*)\]",
+                      report,
+                  )
+                  assert match is not None, f"missing or unexpected Lean axiom report: {name}: {report}"
+                  found = {item.strip() for item in match.group(1).split(",") if item.strip()}
+              assert found <= allowed, f"unapproved axioms for {name}: {found - allowed}"
+          PY
+
       - name: Build finite witnessed-state module
         run: lake build Poincare.GlobalMove32FiniteWitnessState
       - name: Build witness-anchored continuation module
