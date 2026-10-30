@@ -36,7 +36,7 @@ jobs:
               "Poincare.globalPhiSupportDescent_implies_Perelman_PL",
           ]
           for name in theorems:
-              pattern = rf"(?m)^{re.escape(name)}\\s*:\\s*\\[([^\\]]*)\\]"
+              pattern = rf"(?m)^{re.escape(name)}\s*:\s*\[([^\]]*)\]"
               match = re.search(pattern, report)
               assert match is not None, f"missing #print axioms result for {name}: {report}"
               found = {s.strip() for s in match.group(1).split(",") if s.strip()}
