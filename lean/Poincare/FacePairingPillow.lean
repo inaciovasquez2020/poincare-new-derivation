@@ -1,3 +1,4 @@
+import Mathlib.Logic.Equiv.Defs
 import Poincare.Triangulation
 
 namespace Poincare
