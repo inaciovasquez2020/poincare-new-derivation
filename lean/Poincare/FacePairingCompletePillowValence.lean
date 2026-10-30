@@ -10,8 +10,8 @@ identification bridge before any class-valence statement.
 
 /-- Canonical unordered local endpoint pair. -/
 def FacePairingLocalEdge.undirectedKey {n : Nat}
-    (e : FacePairingLocalEdge n) : Fin 4 × Fin 4 :=
-  (min e.first e.second, max e.first e.second)
+    (e : FacePairingLocalEdge n) : Nat × Nat :=
+  (min e.first.val e.second.val, max e.first.val e.second.val)
 
 /-- Every gluing in the complete double pillow fixes local vertex labels. -/
 theorem completeDoublePillow_identifications_identity :
