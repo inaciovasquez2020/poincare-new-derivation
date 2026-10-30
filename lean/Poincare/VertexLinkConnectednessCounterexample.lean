@@ -159,7 +159,7 @@ theorem twoBoundaryVertexWedge_adjacent_preserves_left
 
   all_goals
     revert hshare
-    decide
+    native_decide
 
 
 theorem twoBoundaryVertexWedge_reflTransGen_preserves_left
