@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: 3f26babb8ac5a8e00a953ef31bc822399b8b7a15
+          ref: f1ee7a1c15d2d093c59d4842d593b2804cdcea95
       - uses: leanprover/lean-action@v1
         with:
           build: "false"
@@ -21,5 +21,5 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "3f26babb8ac5a8e00a953ef31bc822399b8b7a15"
+          test "$(git rev-parse HEAD)" = "f1ee7a1c15d2d093c59d4842d593b2804cdcea95"
           lake build Poincare.FacePairingCompletePillowFixture
