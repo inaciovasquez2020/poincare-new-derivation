@@ -285,6 +285,7 @@ theorem Move23Site.move32_candidate_sourceFace_not_contains_oldThird
       simpa [hse] using he
     · have hc' := (h1 s.c).2 (by
         simp [Move32Site.targetTet₁, Tet.verts])
-      exact hcc.symm ▸ hc'
+      have heq : m.c = s.c := by simpa using hcc
+      exact heq.symm ▸ hc'
 
 end Poincare
