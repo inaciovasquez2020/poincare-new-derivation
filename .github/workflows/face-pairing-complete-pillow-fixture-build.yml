@@ -1,0 +1,25 @@
+name: CompleteDoublePillow exact-source build
+on:
+  push:
+    branches: [research/face-pairing-pillow-20261030]
+  workflow_dispatch:
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+jobs:
+  targeted:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: 3f26babb8ac5a8e00a953ef31bc822399b8b7a15
+      - uses: leanprover/lean-action@v1
+        with:
+          build: "false"
+          axiom-audit: "false"
+          use-github-cache: "false"
+      - name: Compile fixture at exact source SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "3f26babb8ac5a8e00a953ef31bc822399b8b7a15"
+          lake build Poincare.FacePairingCompletePillowFixture
