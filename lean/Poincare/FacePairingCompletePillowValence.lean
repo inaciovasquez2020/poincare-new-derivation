@@ -32,7 +32,7 @@ theorem completeDoublePillow_equivalence_preserves_key
   | refl e => rfl
   | reverse e =>
       simp [FacePairingLocalEdge.undirectedKey,
-        FacePairingLocalEdge.reverse, min_comm, max_comm]
+        FacePairingLocalEdge.reverse, Nat.min_comm, max_comm]
   | pair g hg h =>
       rcases h with ⟨_, _, _, _, hfirst, hsecond⟩
       have hf := completeDoublePillow_identifications_identity g hg e.first
