@@ -1,0 +1,25 @@
+name: FacePairingLocalMove23 six boundary faces build
+on:
+  push:
+    branches: [research/face-pairing-pillow-20261030]
+  workflow_dispatch:
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+jobs:
+  boundary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: 023ccad50e2535b709d20ca04dad9952ffd66b4e
+      - uses: leanprover/lean-action@v1
+        with:
+          build: "false"
+          axiom-audit: "false"
+          use-github-cache: "false"
+      - name: Verify source SHA and build boundary correspondence
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "023ccad50e2535b709d20ca04dad9952ffd66b4e"
+          lake build Poincare.FacePairingLocalMove23Boundary
