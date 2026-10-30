@@ -1,0 +1,61 @@
+name: FacePairingLocalMove23 non-reuse axiom audit
+on:
+  push:
+    branches: [research/face-pairing-pillow-20261030]
+  workflow_dispatch:
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: 76d5b44f0bf49cdbafca65ed11e16c3455cdc68e
+      - uses: leanprover/lean-action@v1
+        with:
+          build: "false"
+          axiom-audit: "false"
+          use-github-cache: "false"
+      - name: Verify exact source and run targeted theorem audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "76d5b44f0bf49cdbafca65ed11e16c3455cdc68e"
+          mkdir -p /tmp/local23-audit
+          lake build Poincare.FacePairingLocalMove23 2>&1 | tee /tmp/local23-audit/build.log
+          cat > /tmp/local23-audit/Audit.lean <<'LEAN'
+          import Poincare.FacePairingLocalMove23
+          #print axioms Poincare.standardLocal23InteriorPairings_noRepeatedFace
+          LEAN
+          lake env lean /tmp/local23-audit/Audit.lean > /tmp/local23-audit/axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          s = Path("/tmp/local23-audit/axioms.txt").read_text()
+          name = "Poincare.standardLocal23InteriorPairings_noRepeatedFace"
+          lines = [x for x in s.splitlines() if x.startswith(f"'{name}' ")]
+          assert len(lines) == 1, s
+          if "does not depend on any axioms" in lines[0]:
+              axioms = set()
+          else:
+              m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", lines[0])
+              assert m, lines[0]
+              axioms = set(x.strip() for x in m.group(1).split(",") if x.strip())
+          assert axioms <= {"propext", "Classical.choice", "Quot.sound"}, sorted(axioms)
+          print("PASS", name, sorted(axioms))
+          PY
+      - name: Preserve exact source receipt
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p /tmp/local23-audit
+          printf 'source_sha=76d5b44f0bf49cdbafca65ed11e16c3455cdc68e\ncheckout=%s\nrun=%s\n' "$(git rev-parse HEAD)" "$GITHUB_RUN_ID" > /tmp/local23-audit/manifest.txt
+          sha256sum lean/Poincare/FacePairingLocalMove23.lean > /tmp/local23-audit/source.sha256
+      - name: Upload audit receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: local23-noreuse-axiom-audit
+          path: /tmp/local23-audit/
+          if-no-files-found: error
