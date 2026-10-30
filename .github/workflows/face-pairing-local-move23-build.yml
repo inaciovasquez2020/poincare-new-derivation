@@ -1,0 +1,29 @@
+name: FacePairingLocalMove23 exact-source build
+on:
+  push:
+    branches:
+      - research/face-pairing-pillow-20261030
+  workflow_dispatch:
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+jobs:
+  local-move23-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact local-template source
+        uses: actions/checkout@v5
+        with:
+          ref: 7814f5c599306ba5288f2d6ca20caed77e026b5b
+      - name: Install pinned Lean
+        uses: leanprover/lean-action@v1
+        with:
+          build: "false"
+          axiom-audit: "false"
+          use-github-cache: "false"
+      - name: Verify source and build one target
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "7814f5c599306ba5288f2d6ca20caed77e026b5b"
+          test -f lean/Poincare/FacePairingLocalMove23.lean
+          lake build Poincare.FacePairingLocalMove23
