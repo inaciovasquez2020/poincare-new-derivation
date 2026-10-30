@@ -108,6 +108,36 @@ jobs:
               assert found <= allowed, f"unapproved axioms for {name}: {found - allowed}"
           PY
 
+      - name: Verify stabilized finite Pachner path and axiom dependencies
+        shell: bash
+        run: |
+          lake build Poincare.StabilizedFinitePathDescent
+          lake env lean lean/Poincare/StabilizedFinitePathDescentAudit.lean > /tmp/stabilized-path-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report = Path("/tmp/stabilized-path-axioms.txt").read_text()
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          for name in [
+              "Poincare.CertifiedPachnerStep.homeomorphic",
+              "Poincare.CertifiedPachnerPath.homeomorphic",
+              "Poincare.stabilizedPathDescent_implies_globalDescent",
+              "Poincare.crossPolytopeBoundary4_stabilized_path_escape",
+              "Poincare.crossPolytopeBoundary4_stabilized_path_strict_descent",
+          ]:
+              prefix = f"'{name}'"
+              if f"{prefix} does not depend on any axioms" in report:
+                  found = set()
+              else:
+                  match = re.search(
+                      re.escape(prefix) + r" depends on axioms:\s*\[([^\]]*)\]",
+                      report,
+                  )
+                  assert match is not None, f"unrecognized or missing axiom report: {name}: {report}"
+                  found = {item.strip() for item in match.group(1).split(",") if item.strip()}
+              assert found <= allowed, f"unapproved axioms for {name}: {found - allowed}"
+          PY
+
       - name: Build finite witnessed-state module
         run: lake build Poincare.GlobalMove32FiniteWitnessState
       - name: Build witness-anchored continuation module
