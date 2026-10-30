@@ -1,5 +1,7 @@
 import Poincare.Move2332InitialEscapeSeed
 import Poincare.TriangulationTopologicalNormalizedS3
+import Poincare.Move41TopologyPreservingDescent
+import Poincare.Move32TopologyPreservingDescent
 
 namespace Poincare
 
@@ -81,26 +83,48 @@ theorem CertifiedAscentBarrierStep.homeomorphic
     ((hcore1.move32GeometricCarrierHomeomorph s₁ h32₁).trans
       (hcore2.move32GeometricCarrierHomeomorph s₂ h32₂))⟩
 
-/-- Precisely the still-unproved geometric coverage statement:
-every positive-defect simply-connected closed 3-manifold core admits
-the explicit, legal, ascent-first seed. This is a definition, not an axiom. -/
-def SimplyConnectedAscentSeedCoverage : Prop :=
+/-- A still-open geometric coverage condition with three genuine alternatives:
+a degree-certified legal 4→1 descent, a degree-certified legal 3→2 descent,
+or an ascent-first legal 2→3,3→2,3→2 escape seed.
+
+This covers the elementary six-vertex stellar-subdivision obstruction to a
+seed-only statement. No claim of universal coverage is made here. -/
+def SimplyConnectedBarrierCoverage : Prop :=
   ∀ K : Triangulation,
     ClosedTriangulationCore K →
     TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K →
     TriangulationRealizationSimplyConnected K →
     0 < PhiSupport K →
-    ∃ (m : Move23Site), Move2332InitialEscapeSeed K m
+    (∃ s : Move41Site,
+      s.LegalIn K ∧
+      6 ≤ vertexDegree K s.a ∧
+      6 ≤ vertexDegree K s.b ∧
+      6 ≤ vertexDegree K s.c ∧
+      6 ≤ vertexDegree K s.d) ∨
+    (∃ s : Move32Site,
+      s.LegalIn K ∧
+      5 ≤ vertexDegree K s.d ∧
+      5 ≤ vertexDegree K s.e ∧
+      (6 ≤ vertexDegree K s.d ∨ 6 ≤ vertexDegree K s.e)) ∨
+    ∃ m : Move23Site, Move2332InitialEscapeSeed K m
 
-/-- Conditional reduction: if the geometric seed coverage is proved,
-the existing certified macro-block yields global topology-preserving
-descent, and hence the conditional Poincare package. -/
-theorem ascentSeedCoverage_implies_globalDescent
-    (hcoverage : SimplyConnectedAscentSeedCoverage) :
+/-- Conditional reduction: the three-way coverage would imply the
+existing global topology-preserving defect descent, including states
+that have no ascent-first seven-vertex escape seed. -/
+theorem barrierCoverage_implies_globalDescent
+    (hcoverage : SimplyConnectedBarrierCoverage) :
     SimplyConnectedGlobalPhiSupportDescent := by
   intro K hcore hM hSC hpos
-  obtain ⟨m, seed⟩ := hcoverage K hcore hM hSC hpos
-  exact exists_closedCore_homeomorphic_PhiSupport_lt_of_initial_escape_seed
-    hcore m seed
+  rcases hcoverage K hcore hM hSC hpos with h41 | hrest
+  · rcases h41 with ⟨s, hlegal, ha, hb, hc, hd⟩
+    exact exists_closedCore_homeomorphic_PhiSupport_lt_of_move41
+      hcore s hlegal ⟨ha, hb, hc, hd⟩
+  · rcases hrest with h32 | hseed
+    · rcases h32 with ⟨s, hlegal, hd, he, hhigh⟩
+      exact exists_closedCore_homeomorphic_PhiSupport_lt_of_move32
+        hcore s hlegal ⟨hd, he, hhigh⟩
+    · rcases hseed with ⟨m, seed⟩
+      exact exists_closedCore_homeomorphic_PhiSupport_lt_of_initial_escape_seed
+        hcore m seed
 
 end Poincare

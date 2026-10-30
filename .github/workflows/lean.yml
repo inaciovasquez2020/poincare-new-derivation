@@ -93,7 +93,7 @@ jobs:
               "Poincare.CertifiedAscentBarrierStep.PhiSupport_lt",
               "Poincare.certifiedAscentBarrierStep_wellFounded",
               "Poincare.CertifiedAscentBarrierStep.homeomorphic",
-              "Poincare.ascentSeedCoverage_implies_globalDescent",
+              "Poincare.barrierCoverage_implies_globalDescent",
           ]:
               prefix = f"'{name}'"
               if f"{prefix} does not depend on any axioms" in report:

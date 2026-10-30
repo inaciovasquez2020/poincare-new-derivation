@@ -4,4 +4,4 @@ import Poincare.AscentBarrierInvariant
 #print axioms Poincare.CertifiedAscentBarrierStep.PhiSupport_lt
 #print axioms Poincare.certifiedAscentBarrierStep_wellFounded
 #print axioms Poincare.CertifiedAscentBarrierStep.homeomorphic
-#print axioms Poincare.ascentSeedCoverage_implies_globalDescent
+#print axioms Poincare.barrierCoverage_implies_globalDescent
