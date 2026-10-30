@@ -45,11 +45,11 @@ theorem edgePinchCandidate_closedCore :
       rfl | rfl | rfl | rfl | rfl | rfl |
       rfl | rfl | rfl | rfl | rfl | rfl |
       rfl | rfl | rfl | rfl | rfl | rfl <;>
-      native_decide
+      decide
 
   constructor
 
-  · native_decide
+  · decide
 
   · intro a b c habc hrepresented
 
@@ -67,7 +67,7 @@ theorem edgePinchCandidate_closedCore :
       rcases hb with rfl | rfl | rfl | rfl <;>
       rcases hc with rfl | rfl | rfl | rfl <;>
       norm_num at habc <;>
-      native_decide
+      decide
 
 
 theorem edgePinchCandidate_link_zero :
@@ -89,7 +89,7 @@ theorem edgePinchCandidate_link_zero :
         ⟨3, 5, 7⟩,
         ⟨3, 6, 7⟩
       ] := by
-  native_decide
+  decide
 
 
 theorem edgePinchCandidate_star_zero_one :

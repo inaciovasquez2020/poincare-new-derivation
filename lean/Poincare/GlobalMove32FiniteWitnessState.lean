@@ -72,7 +72,7 @@ noncomputable def Move32SiteCode.ofRealized
 @[simp] theorem Move32SiteCode.decode_ofRealized
     {K : Triangulation} (s : Move32Site) (hs : s.RealizedIn K) :
     (Move32SiteCode.ofRealized s hs).decode = s := by
-  cases s <;> simp [Move32SiteCode.ofRealized, Move32SiteCode.decode]
+  cases s; simp [Move32SiteCode.ofRealized, Move32SiteCode.decode]
 /-- Finite codes restricted to sites explicitly realized in K. -/
 def FiniteRealizedMove32Site (K : Triangulation) :=
   {q : Move32SiteCode K // q.decode.RealizedIn K}

@@ -72,6 +72,7 @@ theorem ClosedTriangulationCore.exists_legal_move23_or_descent_or_next_fanReentr
             (Or.inr
               ⟨FanReentryModeState.fan next⟩)
 
+set_option maxRecDepth 10000 in
 /-- In the incidence-four case, every realized exact-three candidate on the
 old shared-face edge `(m.a,m.b)` after a legal `2-3` has absent source face.
 Thus the candidate is a genuinely legal first `3-2` move. -/
@@ -111,15 +112,27 @@ theorem Move23Site.move32_candidate_sourceFaceAbsent_on_ab_after_incidence_four
   · have hunchanged :=
       hcore.move23Site_mem_unchangedTets m hlegal htau
     have hsourceMem :
-        ∀ z : Nat, z ∈ [s.a, s.b, s.c] → z ∈ tau.verts := by
+        ∀ z : Nat, (z = s.a ∨ z = s.b ∨ z = s.c) → z ∈ tau.verts := by
       intro z hz
-      simp only [List.mem_cons, List.mem_singleton] at hz
-      rcases hz with rfl | rfl | rfl
-      · exact hface.1
-      · exact hface.2.1
-      · exact hface.2.2
-    have hdTau : m.d ∈ tau.verts := hsourceMem m.d hends.1
-    have heTau : m.e ∈ tau.verts := hsourceMem m.e hends.2
+      rcases hz with hza | hzb | hzc
+      · subst z
+        exact hface.1
+      · subst z
+        exact hface.2.1
+      · subst z
+        exact hface.2.2
+    have hdTau : m.d ∈ tau.verts := hsourceMem m.d (by
+      rcases hends.1 with h | h | h | hnil
+      · exact Or.inl h
+      · exact Or.inr (Or.inl h)
+      · exact Or.inr (Or.inr h)
+      · simp at hnil)
+    have heTau : m.e ∈ tau.verts := hsourceMem m.e (by
+      rcases hends.2 with h | h | h | hnil
+      · exact Or.inl h
+      · exact Or.inr (Or.inl h)
+      · exact Or.inr (Or.inr h)
+      · simp at hnil)
     exact hlegal.2.2 tau hunchanged.1 ⟨hdTau, heTau⟩
 
 /-- A legal `2-3` move whose shared-face edge `(a,b)` has incidence four
