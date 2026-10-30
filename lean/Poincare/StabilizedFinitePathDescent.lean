@@ -110,6 +110,6 @@ theorem crossPolytopeBoundary4_stabilized_path_strict_descent :
   exact ⟨crossPolytopeEscapeFinal,
     crossPolytopeBoundary4_stabilized_path_escape,
     by rw [crossPolytopeEscapeFinal_PhiSupport,
-      crossPolytopeBoundary4_PhiSupport]; omega⟩
+      crossPolytopeEscapeInitial_PhiSupport]; omega⟩
 
 end Poincare
