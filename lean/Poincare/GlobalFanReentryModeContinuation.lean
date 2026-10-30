@@ -102,7 +102,7 @@ theorem Move23Site.move32_candidate_sourceFaceAbsent_on_ab_after_incidence_four
   rw [m.replace_tets_eq K] at htau
   simp only [List.mem_cons] at htau
   rcases htau with rfl | rfl | rfl | htau
-  · simp [Move23Site.newTet₀, Tet.verts] at hface
+  · simp only [Move23Site.newTet₀, Tet.verts, List.mem_cons, List.mem_singleton] at hface
     aesop
   · simp [Move23Site.newTet₁, Tet.verts] at hface
     aesop
