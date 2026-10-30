@@ -1,0 +1,25 @@
+name: FacePairingEdgeEquivalence exact-source build
+on:
+  push:
+    branches: [research/face-pairing-pillow-20261030]
+  workflow_dispatch:
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+jobs:
+  targeted:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: dd508cf23707133577359081fb28e8b3ad9b4c00
+      - uses: leanprover/lean-action@v1
+        with:
+          build: "false"
+          axiom-audit: "false"
+          use-github-cache: "false"
+      - name: Build edge equivalence at exact source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "dd508cf23707133577359081fb28e8b3ad9b4c00"
+          lake build Poincare.FacePairingEdgeEquivalence
