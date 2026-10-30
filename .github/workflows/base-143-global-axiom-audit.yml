@@ -1,0 +1,19 @@
+name: PR143 exact-base global axiom audit
+on:
+  push:
+    branches:
+      - audit/base-143-20261030
+  workflow_dispatch:
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: 2e8e078e2ddb2747983381fd814514d0c750e4c2
+      - name: Lean build and global axiom audit
+        uses: leanprover/lean-action@v1
+        with:
+          use-github-cache: false
+          axiom-audit: true
+          axiom-audit-allow: propext,Classical.choice,Quot.sound
