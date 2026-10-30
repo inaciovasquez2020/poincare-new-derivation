@@ -49,6 +49,34 @@ jobs:
           PY
           python3 tools/verify_perelman_pl_conditional_closure.py
 
+      - name: Build cross-polytope one-step obstruction
+        run: |
+          lake build Poincare.CrossPolytopeOneStepObstruction
+          lake env lean lean/Poincare/CrossPolytopeOneStepAxiomAudit.lean > /tmp/crosspoly-one-step-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report = Path("/tmp/crosspoly-one-step-axioms.txt").read_text()
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          for name in [
+              "Poincare.ClosedTriangulationCore.move23_PhiSupport_eq_add_four",
+              "Poincare.crossPolytopeBoundary4_no_strict_move23",
+              "Poincare.crossPolytopeBoundary4_no_legal_move41",
+              "Poincare.crossPolytopeBoundary4_no_strict_represented_move23_move32_move41",
+          ]:
+              prefix = f"'{name}'"
+              if f"{prefix} does not depend on any axioms" in report:
+                  found = set()
+              else:
+                  match = re.search(
+                      re.escape(prefix) + r" depends on axioms:\s*\[([^\]]*)\]",
+                      report,
+                  )
+                  assert match is not None, f"Unrecognized or missing Lean axiom report: {name}: {report}"
+                  found = {item.strip() for item in match.group(1).split(",") if item.strip()}
+              assert found <= allowed, f"Unapproved axioms for {name}: {found - allowed}"
+          PY
+
       - name: Build finite witnessed-state module
         run: lake build Poincare.GlobalMove32FiniteWitnessState
       - name: Build witness-anchored continuation module
