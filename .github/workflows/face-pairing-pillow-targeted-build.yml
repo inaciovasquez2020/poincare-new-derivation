@@ -13,7 +13,7 @@ jobs:
       - name: Checkout exact audited source commit
         uses: actions/checkout@v5
         with:
-          ref: 1a0db4f4be74fbc97dae3e6465815e0302619f1e
+          ref: 4707282f60e7a46b19f47c4f1aa31888f2ed1335
       - name: Install Lean without global build or global audit
         uses: leanprover/lean-action@v1
         with:
@@ -22,7 +22,7 @@ jobs:
           use-github-cache: "false"
       - name: Confirm exact source and build target
         run: |
-          test "$(git rev-parse HEAD)" = "1a0db4f4be74fbc97dae3e6465815e0302619f1e"
+          test "$(git rev-parse HEAD)" = "4707282f60e7a46b19f47c4f1aa31888f2ed1335"
           test -f lean/Poincare/FacePairingPillow.lean
           git rev-parse HEAD
       - name: Build Poincare.FacePairingPillow
