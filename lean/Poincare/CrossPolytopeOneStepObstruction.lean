@@ -57,7 +57,6 @@ theorem crossPolytopeBoundary4_no_legal_move41 :
     omega
   have hsupport : s.e ∈ vertexSupport crossPolytopeBoundary4 := by
     rw [mem_vertexSupport_iff]
-    change s.e ∈ allVerts crossPolytopeBoundary4
     change 0 < (allVerts crossPolytopeBoundary4).count s.e at hpos
     simpa using hpos
   have hv : s.e < 8 := by
