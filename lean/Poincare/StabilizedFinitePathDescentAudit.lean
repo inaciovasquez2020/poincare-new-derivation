@@ -1,0 +1,7 @@
+import Poincare.StabilizedFinitePathDescent
+
+#print axioms Poincare.CertifiedPachnerStep.homeomorphic
+#print axioms Poincare.CertifiedPachnerPath.homeomorphic
+#print axioms Poincare.stabilizedPathDescent_implies_globalDescent
+#print axioms Poincare.crossPolytopeBoundary4_stabilized_path_escape
+#print axioms Poincare.crossPolytopeBoundary4_stabilized_path_strict_descent
