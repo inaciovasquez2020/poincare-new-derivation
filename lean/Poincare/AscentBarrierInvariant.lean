@@ -85,12 +85,24 @@ theorem CertifiedAscentBarrierStep.homeomorphic
     ((hcore1.move32GeometricCarrierHomeomorph s₁ h32₁).trans
       (hcore2.move32GeometricCarrierHomeomorph s₂ h32₂))⟩
 
-/-- A still-open geometric coverage condition with three genuine alternatives:
-a degree-certified legal 4→1 descent, a degree-certified legal 3→2 descent,
-or an ascent-first legal 2→3,3→2,3→2 escape seed.
+/-- REFUTED external geometric coverage candidate (not a proved global lemma).
+The three alternatives are a degree-certified 4→1 descent, a certified 3→2
+descent, or an initial legal 2→3 followed by two legal 3→2 moves.
 
-This covers the elementary six-vertex stellar-subdivision obstruction to a
-seed-only statement. No claim of universal coverage is made here. -/
+Dougherty--Faber--Murphy's unflippable 16-vertex simplicial 3-sphere is a
+counterexample: every pair of its vertices is an edge (forbidding 2→3), every
+edge has incidence at least four (forbidding 3→2), and every vertex belongs
+to 26 tetrahedra (forbidding 4→1). Its degree-four PhiSupport is 352 > 0.
+The source identifies this finite complex as a combinatorial 3-sphere:
+Bagchi--Datta, arXiv:1208.1389v2, Example 3.1(b), PDF p.13;
+original: Dougherty--Faber--Murphy, DCG 32 (2004), pp.309--315.
+
+The existing conditional implication below is still logically valid.
+The unrestricted coverage premise is false, so it cannot close the
+independent Poincare proof. An admissible replacement must allow initial
+1→4 stabilization and potentially longer nonmonotone flip sequences.
+This comment records the mathematical/literature boundary; the external
+S³ identification is not independently Lean-formalized here. -/
 def SimplyConnectedBarrierCoverage : Prop :=
   ∀ K : Triangulation,
     ClosedTriangulationCore K →
