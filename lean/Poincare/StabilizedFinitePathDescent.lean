@@ -53,7 +53,7 @@ theorem CertifiedPachnerPath.homeomorphic
       (triangulationTopologicalGeometricCarrier K ≃ₜ
         triangulationTopologicalGeometricCarrier L) := by
   induction h with
-  | refl K =>
+  | refl =>
       exact ⟨Homeomorph.refl _⟩
   | snoc hpath hstep ih =>
       obtain ⟨e⟩ := ih
