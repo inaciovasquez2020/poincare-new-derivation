@@ -78,7 +78,7 @@ theorem tetrahedronOneFourReplacement_pairwise
   have hlocal : [t0, t1, t2, t3].Pairwise
       (fun τ σ => ¬ SameTetVertices τ σ) := by
     simp only [List.pairwise_cons, List.mem_cons,
-      List.not_mem_nil, or_false, List.pairwise_nil]
+      List.not_mem_nil, or_false]
     refine ⟨⟨?_, ?_, ?_⟩, ⟨?_, ?_⟩, ?_⟩
     · intro h
       have hx := (h source.v2).1 (by simp [t0, Tet.verts])
