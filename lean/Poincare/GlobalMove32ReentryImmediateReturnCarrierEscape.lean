@@ -174,4 +174,47 @@ theorem ClosedTriangulationCore.exists_anchorSource_endpoint_and_new_source_vert
 
   exact ⟨hsDClass, hsourceOutside⟩
 
+/-- A shortest possible nonconsecutive witnessed-reentry shared-edge return
+(anchor -> mid -> ret) forces each intermediate shared edge to lie outside
+the other's entire five-vertex carrier. This is a necessary geometric
+constraint, not acyclicity or a global Poincare claim. -/
+theorem ClosedTriangulationCore.witnessedReentry_two_step_return_cross_disjoint
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hlinks : ∀ v ∈ vertexSupport K, VertexLinkConnected K v)
+    (hNoFour : ∀ v ∈ vertexSupport K, vertexDegree K v ≠ 4)
+    (anchor mid ret : Move32Site)
+    (hanchorRealized : anchor.RealizedIn K)
+    (hmidRealized : mid.RealizedIn K)
+    (hstep0 : Move32SourceFaceWitnessedReentry K anchor mid)
+    (hstep1 : Move32SourceFaceWitnessedReentry K mid ret)
+    (hreturn :
+      (ret.d = anchor.d ∧ ret.e = anchor.e) ∨
+      (ret.d = anchor.e ∧ ret.e = anchor.d)) :
+    List.Disjoint [mid.d, mid.e]
+      [anchor.a, anchor.b, anchor.c, anchor.d, anchor.e] ∧
+    List.Disjoint [anchor.d, anchor.e]
+      [mid.a, mid.b, mid.c, mid.d, mid.e] := by
+  constructor
+  · exact
+      hcore.witnessedReentry_next_sharedEdge_disjoint_previous_carrier_of_no_degree_four
+        hlinks hNoFour anchor mid hanchorRealized hstep0
+  · have hfresh :=
+      hcore.witnessedReentry_next_sharedEdge_disjoint_previous_carrier_of_no_degree_four
+        hlinks hNoFour mid ret hmidRealized hstep1
+    rw [List.disjoint_left] at hfresh ⊢
+    intro z hzAnchor hzMid
+    have hzRet : z ∈ [ret.d, ret.e] := by
+      rcases hreturn with ⟨hd, he⟩ | ⟨hd, he⟩
+      · simpa only [hd, he] using hzAnchor
+      · have hz : z = anchor.d ∨ z = anchor.e := by
+          simpa only [List.mem_cons, List.mem_singleton, List.not_mem_nil,
+            or_false] using hzAnchor
+        simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil,
+          or_false]
+        rcases hz with h | h
+        · exact Or.inr (h.trans he.symm)
+        · exact Or.inl (h.trans hd.symm)
+    exact hfresh z hzRet hzMid
+
 end Poincare
