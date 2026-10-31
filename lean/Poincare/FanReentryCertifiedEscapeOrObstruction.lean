@@ -133,4 +133,49 @@ theorem crossPolytope_secondMove_realized_candidate_in_enumerated_range
     hvertexBound tau0 htau0 t.b hb,
     hvertexBound tau1 htau1 t.c hc⟩
 
+/-- Completeness of the explicit six second-move candidates for this fixed
+cross-polytope prefix, with ordered edge endpoints (0,4). In particular,
+a realized candidate cannot escape the finite search by using new labels. -/
+theorem crossPolytope_secondMove_realized_candidate_in_six
+    (t : Move32Site)
+    (hd : t.d = 0)
+    (he : t.e = 4)
+    (ht : t.RealizedIn crossPolytopeEscapeAfter32₁) :
+    (t.a, t.b, t.c) ∈
+      [(3, 6, 7), (3, 7, 6), (6, 3, 7),
+       (6, 7, 3), (7, 3, 6), (7, 6, 3)] := by
+  obtain ⟨ha, hb, hc⟩ :=
+    crossPolytope_secondMove_realized_candidate_in_enumerated_range t ht
+  have hfinite :
+      ∀ a b c : Fin 8,
+        let s : Move32Site :=
+          { a := a.val, b := b.val, c := c.val, d := 0, e := 4 }
+        (crossPolytopeEscapeAfter32₁.tets.any
+          (fun tau => sameTetVerticesBool tau s.targetTet₀) = true) →
+        (crossPolytopeEscapeAfter32₁.tets.any
+          (fun tau => sameTetVerticesBool tau s.targetTet₁) = true) →
+        (crossPolytopeEscapeAfter32₁.tets.any
+          (fun tau => sameTetVerticesBool tau s.targetTet₂) = true) →
+        (a.val, b.val, c.val) ∈
+          [(3, 6, 7), (3, 7, 6), (6, 3, 7),
+           (6, 7, 3), (7, 3, 6), (7, 6, 3)] := by
+    native_decide
+  have hAny : ∀ target : Tet,
+      (∃ tau ∈ crossPolytopeEscapeAfter32₁.tets,
+        SameTetVertices tau target) →
+      crossPolytopeEscapeAfter32₁.tets.any
+        (fun tau => sameTetVerticesBool tau target) = true := by
+    intro target hex
+    obtain ⟨tau, htau, hsame⟩ := hex
+    exact List.any_eq_true.mpr
+      ⟨tau, htau, (sameTetVerticesBool_eq_true_iff tau target).2 hsame⟩
+  obtain ⟨ht₀, ht₁, ht₂⟩ := ht
+  have h₀ := hAny t.targetTet₀ ht₀
+  have h₁ := hAny t.targetTet₁ ht₁
+  have h₂ := hAny t.targetTet₂ ht₂
+  refine hfinite ⟨t.a, ha⟩ ⟨t.b, hb⟩ ⟨t.c, hc⟩ ?_ ?_ ?_
+  · simpa [Move32Site.targetTet₀, hd, he] using h₀
+  · simpa [Move32Site.targetTet₁, hd, he] using h₁
+  · simpa [Move32Site.targetTet₂, hd, he] using h₂
+
 end Poincare
