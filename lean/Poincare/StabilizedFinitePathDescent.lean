@@ -14,6 +14,20 @@ def tetrahedronOneFourReplacement
        ⟨source.v1, source.v2, source.v3, e⟩] ++
       eraseFirstSameTet source K.tets }
 
+/-- Equality orientation for the four outer vertices of a tetrahedron:
+freshness in the source vertex list gives inequalities with the new vertex
+on the right.  This does not establish closed-core preservation. -/
+theorem tetrahedronOneFour_source_ne_fresh
+    (source : Tet) (e : Nat)
+    (hfresh : e ∉ source.verts) :
+    source.v0 ≠ e ∧ source.v1 ≠ e ∧
+    source.v2 ≠ e ∧ source.v3 ≠ e := by
+  have h : e ≠ source.v0 ∧ e ≠ source.v1 ∧
+      e ≠ source.v2 ∧ e ≠ source.v3 := by
+    simpa [Tet.verts] using hfresh
+  exact ⟨Ne.symm h.1, Ne.symm h.2.1,
+    Ne.symm h.2.2.1, Ne.symm h.2.2.2⟩
+
 /-- An actual legal bistellar step between closed triangulation cores.
 The 1→4 case is the inverse of a certified legal 4→1 replacement,
 not the placeholder global `applyMoveImpl`. -/
