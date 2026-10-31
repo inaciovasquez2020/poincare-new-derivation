@@ -208,7 +208,10 @@ theorem Move23Site.move32_candidate_sourceFaceAbsent_on_ab_after_incidence_four
       hsourceMem m.d (by
         simpa only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false]
           using hends.1)
-    have heTau : m.e ∈ tau.verts := hsourceMem m.e hends.2
+    have heTau : m.e ∈ tau.verts :=
+      hsourceMem m.e (by
+        simpa only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false]
+          using hends.2)
     exact hlegal.2.2 tau hunchanged.1 ⟨hdTau, heTau⟩
 
 /-- A legal `2-3` move whose shared-face edge `(a,b)` has incidence four
