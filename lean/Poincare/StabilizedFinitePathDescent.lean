@@ -28,6 +28,30 @@ theorem tetrahedronOneFour_source_ne_fresh
   exact ⟨Ne.symm h.1, Ne.symm h.2.1,
     Ne.symm h.2.2.1, Ne.symm h.2.2.2⟩
 
+/-- A fresh vertex inserted into a nondegenerate represented tetrahedron
+produces only nondegenerate tetrahedra.  Full closed-core preservation still
+requires distinct tetrahedron vertex sets and exact face-incidence counts. -/
+theorem tetrahedronOneFourReplacement_nodup
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (source : Tet) (hsource : source ∈ K.tets)
+    (e : Nat) (hfresh : e ∉ vertexSupport K) :
+    ∀ τ ∈ (tetrahedronOneFourReplacement K source e).tets,
+      τ.verts.Nodup := by
+  have hs : source.verts.Nodup := hcore.1 source hsource
+  have heSrc : e ∉ source.verts := by
+    intro h
+    apply hfresh
+    apply (mem_vertexSupport_iff K e).2
+    exact List.mem_flatMap.mpr ⟨source, hsource, h⟩
+  have hne := tetrahedronOneFour_source_ne_fresh source e heSrc
+  intro τ hτ
+  simp only [tetrahedronOneFourReplacement, List.mem_append] at hτ
+  rcases hτ with hnew | hold
+  · simp only [List.mem_cons] at hnew
+    rcases hnew with rfl | rfl | rfl | rfl | hnil <;>
+      simp_all [Tet.verts, List.nodup_cons]
+  · exact hcore.1 τ (mem_of_mem_eraseFirstSameTet hold)
+
 /-- An actual legal bistellar step between closed triangulation cores.
 The 1→4 case is the inverse of a certified legal 4→1 replacement,
 not the placeholder global `applyMoveImpl`. -/
