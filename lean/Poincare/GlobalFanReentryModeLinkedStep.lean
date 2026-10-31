@@ -89,4 +89,51 @@ theorem FanReentryModeStep.fan_to_fan_canonicalEdgeKey_ne
   | fan_reinject old next s hsd hse hrealized hobstruction haway hnonself =>
       exact haway
 
+/-- Each fully witnessed mixed fan/reentry transition changes its finite
+mode-and-edge key. This is an adjacent-step geometric progress invariant,
+not a global ranking function: longer recurrent cycles remain possible. -/
+theorem FanReentryModeStep.finiteKey_ne
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    {q r : FanReentryModeState K}
+    (hstep : FanReentryModeStep K q r) :
+    q.finiteKey hcore ≠ r.finiteKey hcore := by
+  have hfan (old next : HighFanState K)
+      (hne : canonicalEdgeKey next.v next.x ≠
+        canonicalEdgeKey old.v old.x) :
+      (FanReentryModeState.fan old).finiteKey hcore ≠
+        (FanReentryModeState.fan next).finiteKey hcore := by
+    intro hkey
+    have hstates : old.edgeState = next.edgeState := by
+      simpa [FanReentryModeState.finiteKey] using congrArg Prod.snd hkey
+    have hkeys := congrArg (fun s : SupportedEdgeState K => s.key) hstates
+    apply hne
+    calc
+      canonicalEdgeKey next.v next.x = next.edgeState.key :=
+        next.edgeState_key.symm
+      _ = old.edgeState.key := hkeys.symm
+      _ = canonicalEdgeKey old.v old.x := old.edgeState_key
+  cases hstep with
+  | fan_next old next hv hx =>
+      apply hfan
+      rw [hv, hx]
+      exact old.transition.canonicalEdgeKey_ne_old old.endpoints_ne
+  | fan_reentry old s s' hsd hse hrealized hthree hstep =>
+      simp [FanReentryModeState.finiteKey]
+  | fan_reinject old next s hsd hse hrealized hobstruction haway hnonself =>
+      exact hfan old next haway
+  | reentry_next old s' hstep =>
+      intro hkey
+      have hstep' := hstep.toSourceFaceReentry
+      have hstates :
+          sharedSupportedEdgeState hcore old.site old.realized =
+            sharedSupportedEdgeState hcore s' hstep'.1 := by
+        simpa [FanReentryModeState.finiteKey, witnessedReentryStateOfStep]
+          using congrArg Prod.snd hkey
+      have hne :=
+        hcore.sharedSupportedEdgeState_ne_of_nonself
+          old.site s' old.realized hstep'.1 hstep'.2.2.2
+      exact hne hstates.symm
+  | reentry_fan old next hnonself =>
+      simp [FanReentryModeState.finiteKey]
+
 end Poincare
