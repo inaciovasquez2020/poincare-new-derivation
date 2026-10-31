@@ -77,4 +77,105 @@ theorem Move23Site.exists_certifiedPath_descent_or_second_sourceFace_obstruction
       ⟨s, t, hsd, hse, hslegal, htd, hte,
         htrealized, htthree, habsent⟩
 
+/-- Exhaustive check of all eight-label ordered target-vertex triples after
+the existing cross-polytope 2-3,3-2 prefix. The three Boolean target checks
+are equivalent to the finite represented-tetrahedron witnesses via
+`sameTetVerticesBool_eq_true_iff`. This is a bounded fixture result,
+not a universal coverage or termination theorem. -/
+theorem crossPolytope_secondMove_bounded_enumeration :
+    ((List.range 8).flatMap (fun a =>
+      (List.range 8).flatMap (fun b =>
+        (List.range 8).filterMap (fun c =>
+          let t : Move32Site := { a := a, b := b, c := c, d := 0, e := 4 }
+          if (crossPolytopeEscapeAfter32₁.tets.any
+                (fun tau => sameTetVerticesBool tau t.targetTet₀)) &&
+              (crossPolytopeEscapeAfter32₁.tets.any
+                (fun tau => sameTetVerticesBool tau t.targetTet₁)) &&
+              (crossPolytopeEscapeAfter32₁.tets.any
+                (fun tau => sameTetVerticesBool tau t.targetTet₂))
+          then some (a, b, c) else none)))) =
+      [(3, 6, 7), (3, 7, 6), (6, 3, 7),
+       (6, 7, 3), (7, 3, 6), (7, 6, 3)] ∧
+    (crossPolytopeEscapeAfter32₁.tets.filter
+      (fun tau => 0 ∈ tau.verts ∧ 4 ∈ tau.verts)).length = 3 ∧
+    (crossPolytopeEscapeAfter32₁.tets.all
+      (fun tau => !(tau.verts.contains 3 &&
+        tau.verts.contains 6 && tau.verts.contains 7))) = true := by
+  native_decide
+
+/-- Every realized second Move32 candidate in the concrete cross-polytope
+prefix uses only the eight existing vertex labels, independently of the
+orientation of its edge. This is the completeness bound needed to apply
+the finite List.range 8 enumeration; it asserts no global coverage. -/
+theorem crossPolytope_secondMove_realized_candidate_in_enumerated_range
+    (t : Move32Site)
+    (ht : t.RealizedIn crossPolytopeEscapeAfter32₁) :
+    t.a < 8 ∧ t.b < 8 ∧ t.c < 8 := by
+  have hvertexBound :
+      ∀ tau ∈ crossPolytopeEscapeAfter32₁.tets,
+        ∀ v ∈ tau.verts, v < 8 := by
+    intro tau htau v hv
+    rw [crossPolytopeEscapeAfter32₁_tets] at htau
+    simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at htau
+    rcases htau with rfl | rfl | rfl | rfl |
+      rfl | rfl | rfl | rfl |
+      rfl | rfl | rfl | rfl |
+      rfl | rfl | rfl | rfl
+    all_goals simp [Tet.verts] at hv <;> omega
+  obtain ⟨⟨tau0, htau0, hsame0⟩, ⟨tau1, htau1, hsame1⟩, _⟩ := ht
+  have ha : t.a ∈ tau0.verts :=
+    (hsame0 t.a).2 (by simp [Move32Site.targetTet₀, Tet.verts])
+  have hb : t.b ∈ tau0.verts :=
+    (hsame0 t.b).2 (by simp [Move32Site.targetTet₀, Tet.verts])
+  have hc : t.c ∈ tau1.verts :=
+    (hsame1 t.c).2 (by simp [Move32Site.targetTet₁, Tet.verts])
+  exact ⟨hvertexBound tau0 htau0 t.a ha,
+    hvertexBound tau0 htau0 t.b hb,
+    hvertexBound tau1 htau1 t.c hc⟩
+
+/-- Completeness of the explicit six second-move candidates for this fixed
+cross-polytope prefix, with ordered edge endpoints (0,4). In particular,
+a realized candidate cannot escape the finite search by using new labels. -/
+theorem crossPolytope_secondMove_realized_candidate_in_six
+    (t : Move32Site)
+    (hd : t.d = 0)
+    (he : t.e = 4)
+    (ht : t.RealizedIn crossPolytopeEscapeAfter32₁) :
+    (t.a, t.b, t.c) ∈
+      [(3, 6, 7), (3, 7, 6), (6, 3, 7),
+       (6, 7, 3), (7, 3, 6), (7, 6, 3)] := by
+  obtain ⟨ha, hb, hc⟩ :=
+    crossPolytope_secondMove_realized_candidate_in_enumerated_range t ht
+  have hfinite :
+      ∀ a b c : Fin 8,
+        let s : Move32Site :=
+          { a := a.val, b := b.val, c := c.val, d := 0, e := 4 }
+        (crossPolytopeEscapeAfter32₁.tets.any
+          (fun tau => sameTetVerticesBool tau s.targetTet₀) = true) →
+        (crossPolytopeEscapeAfter32₁.tets.any
+          (fun tau => sameTetVerticesBool tau s.targetTet₁) = true) →
+        (crossPolytopeEscapeAfter32₁.tets.any
+          (fun tau => sameTetVerticesBool tau s.targetTet₂) = true) →
+        (a.val, b.val, c.val) ∈
+          [(3, 6, 7), (3, 7, 6), (6, 3, 7),
+           (6, 7, 3), (7, 3, 6), (7, 6, 3)] := by
+    native_decide
+  have hAny : ∀ target : Tet,
+      (∃ tau ∈ crossPolytopeEscapeAfter32₁.tets,
+        SameTetVertices tau target) →
+      crossPolytopeEscapeAfter32₁.tets.any
+        (fun tau => sameTetVerticesBool tau target) = true := by
+    intro target hex
+    obtain ⟨tau, htau, hsame⟩ := hex
+    exact List.any_eq_true.mpr
+      ⟨tau, htau, (sameTetVerticesBool_eq_true_iff tau target).2 hsame⟩
+  obtain ⟨ht₀, ht₁, ht₂⟩ := ht
+  have h₀ := hAny t.targetTet₀ ht₀
+  have h₁ := hAny t.targetTet₁ ht₁
+  have h₂ := hAny t.targetTet₂ ht₂
+  refine hfinite ⟨t.a, ha⟩ ⟨t.b, hb⟩ ⟨t.c, hc⟩ ?_ ?_ ?_
+  · simpa [Move32Site.targetTet₀, hd, he] using h₀
+  · simpa [Move32Site.targetTet₁, hd, he] using h₁
+  · simpa [Move32Site.targetTet₂, hd, he] using h₂
+
 end Poincare
