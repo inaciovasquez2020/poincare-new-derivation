@@ -151,6 +151,157 @@ theorem tetrahedronOneFourReplacement_pairwise
   · intro τ hτ
     exact hcross t3 (by simp) τ hτ
 
+/-- Replacing any represented tetrahedron by its four fresh-center
+subtetrahedra preserves exact two-fold incidence of every represented
+nondegenerate triangular face. -/
+theorem tetrahedronOneFourReplacement_face_incidence
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (source : Tet) (hsource : source ∈ K.tets)
+    (e : Nat) (hfresh : e ∉ vertexSupport K) :
+    ∀ x y z : Nat,
+      [x, y, z].Nodup →
+      (∃ τ ∈ (tetrahedronOneFourReplacement K source e).tets,
+        x ∈ τ.verts ∧ y ∈ τ.verts ∧ z ∈ τ.verts) →
+      ((tetrahedronOneFourReplacement K source e).tets.filter
+        (fun τ => x ∈ τ.verts ∧ y ∈ τ.verts ∧ z ∈ τ.verts)).length = 2 := by
+  classical
+  let N : List Tet :=
+    [⟨source.v0, source.v1, source.v2, e⟩,
+     ⟨source.v0, source.v1, source.v3, e⟩,
+     ⟨source.v0, source.v2, source.v3, e⟩,
+     ⟨source.v1, source.v2, source.v3, e⟩]
+  let U : List Tet := eraseFirstSameTet source K.tets
+  have hs : source.verts.Nodup := hcore.1 source hsource
+  have heSrc : e ∉ source.verts := by
+    intro he
+    exact hfresh ((mem_vertexSupport_iff K e).2
+      (List.mem_flatMap.mpr ⟨source, hsource, he⟩))
+  have hne := tetrahedronOneFour_source_ne_fresh source e heSrc
+  have hd := hs
+  simp [Tet.verts] at hd
+  have hnotOld : ∀ τ ∈ K.tets, e ∉ τ.verts := by
+    intro τ hτ he
+    exact hfresh ((mem_vertexSupport_iff K e).2
+      (List.mem_flatMap.mpr ⟨τ, hτ, he⟩))
+  intro x y z hxyz hrepresented
+  let p : Tet → Prop := fun τ =>
+    x ∈ τ.verts ∧ y ∈ τ.verts ∧ z ∈ τ.verts
+  have hinvariant : ∀ τ σ, SameTetVertices τ σ → (p τ ↔ p σ) := by
+    intro τ σ hsame
+    simp only [p]
+    constructor <;> intro h
+    · exact ⟨(hsame x).1 h.1, (hsame y).1 h.2.1, (hsame z).1 h.2.2⟩
+    · exact ⟨(hsame x).2 h.1, (hsame y).2 h.2.1, (hsame z).2 h.2.2⟩
+  have hfilter (L : List Tet) :
+      (L.filter p).length =
+        (L.filter fun τ => τ.ContainsTriple x y z).length := by
+    congr 2
+    funext τ
+    simp [p, Tet.ContainsTriple]
+  have hsplit :
+      (U.filter p).length + (if p source then 1 else 0) =
+        (K.tets.filter p).length := by
+    by_cases hp : p source
+    · simpa [U, hp] using
+        (eraseFirstSameTet_filter_length_add_one_eq p source K.tets
+          hinvariant ⟨source, hsource, sameTetVertices_refl source⟩ hp)
+    · simpa [U, hp] using
+        (eraseFirstSameTet_filter_length_eq_of_not
+          p source K.tets hinvariant hp)
+  have hnewCount {n : Tet} (hn : n ∈ N) (hp : p n) :
+      (N.filter p).length =
+        (if e ∈ [x, y, z] then 2 else 1) := by
+    have hx := hp.1
+    have hy := hp.2.1
+    have hz := hp.2.2
+    simp only [N, List.mem_cons, List.not_mem_nil, or_false] at hn
+    rcases hn with rfl | rfl | rfl | rfl
+    all_goals
+      rcases Tet.distinct_triple_face_cases _ x y z hxyz hx hy hz with
+        hface | hface | hface | hface
+      all_goals
+        rw [hfilter N,
+          filter_containsTriple_length_eq_of_sameTripleVertices N hface]
+        have heFace := hface e
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at heFace
+        simp_all [N, Tet.ContainsTriple, Tet.verts, eq_comm]
+  have hnewImpliesSource
+      (hneFace : e ∉ [x, y, z])
+      {n : Tet} (hn : n ∈ N) (hp : p n) : p source := by
+    have hsubset {v : Nat} (hv : v ∈ n.verts) :
+        v ∈ source.verts ∨ v = e := by
+      simp only [N, List.mem_cons, List.not_mem_nil, or_false] at hn
+      rcases hn with rfl | rfl | rfl | rfl <;>
+        simp [Tet.verts] at hv ⊢ <;> aesop
+    have hnot : x ≠ e ∧ y ≠ e ∧ z ≠ e := by
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hneFace
+      exact ⟨fun h => hneFace (Or.inl h.symm),
+        fun h => hneFace (Or.inr (Or.inl h.symm)),
+        fun h => hneFace (Or.inr (Or.inr h.symm))⟩
+    refine ⟨?_, ?_, ?_⟩
+    · rcases hsubset hp.1 with hx | hx
+      · exact hx
+      · exact (hnot.1 hx).elim
+    · rcases hsubset hp.2.1 with hy | hy
+      · exact hy
+      · exact (hnot.2.1 hy).elim
+    · rcases hsubset hp.2.2 with hz | hz
+      · exact hz
+      · exact (hnot.2.2 hz).elim
+  have hnewIfSource (hp : p source) :
+      (N.filter p).length = 1 := by
+    rcases Tet.distinct_triple_face_cases source x y z hxyz
+      hp.1 hp.2.1 hp.2.2 with hface | hface | hface | hface
+    all_goals
+      rw [hfilter N,
+        filter_containsTriple_length_eq_of_sameTripleVertices N hface]
+      simp_all [N, Tet.ContainsTriple, Tet.verts, eq_comm]
+  change ((N ++ U).filter p).length = 2
+  rw [List.filter_append, List.length_append]
+  by_cases he : e ∈ [x, y, z]
+  · have hUnot : ∀ τ ∈ U, ¬ p τ := by
+      intro τ hτ hp
+      have hnot := hnotOld τ (mem_of_mem_eraseFirstSameTet hτ)
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at he
+      rcases he with rfl | rfl | rfl
+      · exact hnot hp.1
+      · exact hnot hp.2.1
+      · exact hnot hp.2.2
+    have hUzero : (U.filter p).length = 0 := by
+      have hempty : U.filter p = [] := by
+        apply List.eq_nil_iff_forall_not_mem.mpr
+        intro τ hτ
+        rcases List.mem_filter.mp hτ with ⟨hmem, hp⟩
+        exact hUnot τ hmem (of_decide_eq_true hp)
+      simp [hempty]
+    rcases hrepresented with ⟨τ, hτ, hp⟩
+    change τ ∈ N ++ U at hτ
+    rcases List.mem_append.mp hτ with hn | hu
+    · have hcount := hnewCount hn hp
+      simp [he, hUzero] at hcount ⊢
+      exact hcount
+    · exact (hUnot τ hu hp).elim
+  · by_cases hpSource : p source
+    · have hKcount : (K.tets.filter p).length = 2 :=
+        hcore.2.2 x y z hxyz ⟨source, hsource, hpSource⟩
+      have hNcount := hnewIfSource hpSource
+      omega
+    · have hNzero : (N.filter p).length = 0 := by
+        have hempty : N.filter p = [] := by
+          apply List.eq_nil_iff_forall_not_mem.mpr
+          intro n hn
+          rcases List.mem_filter.mp hn with ⟨hmem, hp⟩
+          exact hpSource (hnewImpliesSource he hmem (of_decide_eq_true hp))
+        simp [hempty]
+      rcases hrepresented with ⟨τ, hτ, hp⟩
+      change τ ∈ N ++ U at hτ
+      rcases List.mem_append.mp hτ with hn | hu
+      · exact (hpSource (hnewImpliesSource he hn hp)).elim
+      · have hKcount : (K.tets.filter p).length = 2 :=
+          hcore.2.2 x y z hxyz
+            ⟨τ, mem_of_mem_eraseFirstSameTet hu, hp⟩
+        omega
+
 /-- An actual legal bistellar step between closed triangulation cores.
 The 1→4 case is the inverse of a certified legal 4→1 replacement,
 not the placeholder global `applyMoveImpl`. -/
