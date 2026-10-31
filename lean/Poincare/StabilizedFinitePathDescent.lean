@@ -52,6 +52,96 @@ theorem tetrahedronOneFourReplacement_nodup
       simp_all [Tet.verts, List.nodup_cons]
   · exact hcore.1 τ (mem_of_mem_eraseFirstSameTet hold)
 
+/-- Fresh 1→4 insertion preserves uniqueness of represented tetrahedron
+vertex sets.  This is the second closed-core component; triangular-face
+incidence is a separate obligation. -/
+theorem tetrahedronOneFourReplacement_pairwise
+    {K : Triangulation} (hcore : ClosedTriangulationCore K)
+    (source : Tet) (hsource : source ∈ K.tets)
+    (e : Nat) (hfresh : e ∉ vertexSupport K) :
+    (tetrahedronOneFourReplacement K source e).tets.Pairwise
+      (fun τ σ => ¬ SameTetVertices τ σ) := by
+  let t0 : Tet := ⟨source.v0, source.v1, source.v2, e⟩
+  let t1 : Tet := ⟨source.v0, source.v1, source.v3, e⟩
+  let t2 : Tet := ⟨source.v0, source.v2, source.v3, e⟩
+  let t3 : Tet := ⟨source.v1, source.v2, source.v3, e⟩
+  let rest := eraseFirstSameTet source K.tets
+  have hrest : rest.Pairwise (fun τ σ => ¬ SameTetVertices τ σ) := by
+    exact hcore.2.1.sublist (eraseFirstSameTet_sublist source K.tets)
+  have heSrc : e ∉ source.verts := by
+    intro he
+    exact hfresh ((mem_vertexSupport_iff K e).2
+      (List.mem_flatMap.mpr ⟨source, hsource, he⟩))
+  have hne := tetrahedronOneFour_source_ne_fresh source e heSrc
+  have hd := hcore.1 source hsource
+  simp [Tet.verts] at hd
+  have hlocal : [t0, t1, t2, t3].Pairwise
+      (fun τ σ => ¬ SameTetVertices τ σ) := by
+    simp only [List.pairwise_cons, List.mem_cons,
+      List.not_mem_nil, or_false, List.pairwise_nil]
+    refine ⟨⟨?_, ?_, ?_⟩, ⟨?_, ?_⟩, ?_⟩
+    · intro h
+      have hx := (h source.v2).1 (by simp [t0, Tet.verts])
+      simp [t1, Tet.verts] at hx
+      aesop
+    · intro h
+      have hx := (h source.v1).1 (by simp [t0, Tet.verts])
+      simp [t2, Tet.verts] at hx
+      aesop
+    · intro h
+      have hx := (h source.v0).1 (by simp [t0, Tet.verts])
+      simp [t3, Tet.verts] at hx
+      aesop
+    · intro h
+      have hx := (h source.v1).1 (by simp [t1, Tet.verts])
+      simp [t2, Tet.verts] at hx
+      aesop
+    · intro h
+      have hx := (h source.v0).1 (by simp [t1, Tet.verts])
+      simp [t3, Tet.verts] at hx
+      aesop
+    · intro h
+      have hx := (h source.v0).1 (by simp [t2, Tet.verts])
+      simp [t3, Tet.verts] at hx
+      aesop
+  have hcross (n : Tet) (hn : n ∈ [t0, t1, t2, t3])
+      (τ : Tet) (hτ : τ ∈ rest) : ¬ SameTetVertices n τ := by
+    intro hsame
+    have heNew : e ∈ n.verts := by
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hn
+      rcases hn with rfl | rfl | rfl | rfl <;>
+        simp [t0, t1, t2, t3, Tet.verts]
+    have heOld : e ∈ τ.verts := (hsame e).1 heNew
+    apply hfresh
+    apply (mem_vertexSupport_iff K e).2
+    exact List.mem_flatMap.mpr
+      ⟨τ, mem_of_mem_eraseFirstSameTet hτ, heOld⟩
+  simp only [List.pairwise_cons] at hlocal
+  change (t0 :: t1 :: t2 :: t3 :: rest).Pairwise
+    (fun τ σ => ¬ SameTetVertices τ σ)
+  simp only [List.pairwise_cons]
+  refine ⟨?_, ?_, ?_, ?_, hrest⟩
+  · intro τ hτ
+    simp only [List.mem_cons] at hτ
+    rcases hτ with rfl | rfl | rfl | hτ
+    · exact hlocal.1 t1 (by simp)
+    · exact hlocal.1 t2 (by simp)
+    · exact hlocal.1 t3 (by simp)
+    · exact hcross t0 (by simp) τ hτ
+  · intro τ hτ
+    simp only [List.mem_cons] at hτ
+    rcases hτ with rfl | rfl | hτ
+    · exact hlocal.2.1 t2 (by simp)
+    · exact hlocal.2.1 t3 (by simp)
+    · exact hcross t1 (by simp) τ hτ
+  · intro τ hτ
+    simp only [List.mem_cons] at hτ
+    rcases hτ with rfl | hτ
+    · exact hlocal.2.2.1 t3 (by simp)
+    · exact hcross t2 (by simp) τ hτ
+  · intro τ hτ
+    exact hcross t3 (by simp) τ hτ
+
 /-- An actual legal bistellar step between closed triangulation cores.
 The 1→4 case is the inverse of a certified legal 4→1 replacement,
 not the placeholder global `applyMoveImpl`. -/
