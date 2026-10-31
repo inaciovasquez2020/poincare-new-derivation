@@ -79,31 +79,40 @@ theorem tetrahedronOneFourReplacement_pairwise
       (fun τ σ => ¬ SameTetVertices τ σ) := by
     simp only [List.pairwise_cons, List.mem_cons,
       List.not_mem_nil, or_false]
-    refine ⟨⟨?_, ?_, ?_⟩, ⟨?_, ?_⟩, ?_⟩
-    · intro h
-      have hx := (h source.v2).1 (by simp [t0, Tet.verts])
-      simp [t1, Tet.verts] at hx
-      aesop
-    · intro h
-      have hx := (h source.v1).1 (by simp [t0, Tet.verts])
-      simp [t2, Tet.verts] at hx
-      aesop
-    · intro h
-      have hx := (h source.v0).1 (by simp [t0, Tet.verts])
-      simp [t3, Tet.verts] at hx
-      aesop
-    · intro h
-      have hx := (h source.v1).1 (by simp [t1, Tet.verts])
-      simp [t2, Tet.verts] at hx
-      aesop
-    · intro h
-      have hx := (h source.v0).1 (by simp [t1, Tet.verts])
-      simp [t3, Tet.verts] at hx
-      aesop
-    · intro h
+    constructor
+    · intro τ hτ
+      rcases hτ with rfl | rfl | rfl
+      · intro h
+        have hx := (h source.v2).1 (by simp [t0, Tet.verts])
+        simp [t1, Tet.verts] at hx
+        aesop
+      · intro h
+        have hx := (h source.v1).1 (by simp [t0, Tet.verts])
+        simp [t2, Tet.verts] at hx
+        aesop
+      · intro h
+        have hx := (h source.v0).1 (by simp [t0, Tet.verts])
+        simp [t3, Tet.verts] at hx
+        aesop
+    constructor
+    · intro τ hτ
+      rcases hτ with rfl | rfl
+      · intro h
+        have hx := (h source.v1).1 (by simp [t1, Tet.verts])
+        simp [t2, Tet.verts] at hx
+        aesop
+      · intro h
+        have hx := (h source.v0).1 (by simp [t1, Tet.verts])
+        simp [t3, Tet.verts] at hx
+        aesop
+    constructor
+    · intro τ hτ
+      rcases hτ with rfl
+      intro h
       have hx := (h source.v0).1 (by simp [t2, Tet.verts])
       simp [t3, Tet.verts] at hx
       aesop
+    · simp
   have hcross (n : Tet) (hn : n ∈ [t0, t1, t2, t3])
       (τ : Tet) (hτ : τ ∈ rest) : ¬ SameTetVertices n τ := by
     intro hsame
