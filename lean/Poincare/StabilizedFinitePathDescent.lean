@@ -47,6 +47,18 @@ inductive CertifiedPachnerPath : Triangulation → Triangulation → Prop where
       (hstep : CertifiedPachnerStep L M) :
       CertifiedPachnerPath K M
 
+/-- Concatenate two finite certified Pachner paths without changing their
+endpoints or assuming monotonicity of the intermediate defect. -/
+theorem CertifiedPachnerPath.trans
+    {K L M : Triangulation}
+    (hKL : CertifiedPachnerPath K L)
+    (hLM : CertifiedPachnerPath L M) :
+    CertifiedPachnerPath K M := by
+  induction hLM with
+  | refl => exact hKL
+  | snoc _ hstep ih =>
+      exact CertifiedPachnerPath.snoc ih hstep
+
 theorem CertifiedPachnerPath.homeomorphic
     {K L : Triangulation} (h : CertifiedPachnerPath K L) :
     Nonempty
