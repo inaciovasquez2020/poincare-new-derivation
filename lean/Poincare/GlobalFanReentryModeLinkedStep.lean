@@ -137,7 +137,10 @@ theorem FanReentryModeStep.finiteKey_ne
           old.site s' old.realized hstep'.1 hstep'.2.2.2
       exact hne hstates.symm
   | reentry_fan old next hnonself =>
-      simp [FanReentryModeState.finiteKey]
+      intro hkey
+      have htag : (true : Bool) = false := by
+        simpa [FanReentryModeState.finiteKey] using congrArg Prod.fst hkey
+      cases htag
 
 /-- A three-step fan-to-fan cycle makes a strict natural-valued ranking
 on *all* linked mixed-mode transitions impossible. This theorem is conditional
