@@ -103,4 +103,34 @@ theorem crossPolytope_secondMove_bounded_enumeration :
         tau.verts.contains 6 && tau.verts.contains 7))) = true := by
   native_decide
 
+/-- Every realized second Move32 candidate in the concrete cross-polytope
+prefix uses only the eight existing vertex labels, independently of the
+orientation of its edge. This is the completeness bound needed to apply
+the finite List.range 8 enumeration; it asserts no global coverage. -/
+theorem crossPolytope_secondMove_realized_candidate_in_enumerated_range
+    (t : Move32Site)
+    (ht : t.RealizedIn crossPolytopeEscapeAfter32₁) :
+    t.a < 8 ∧ t.b < 8 ∧ t.c < 8 := by
+  have hvertexBound :
+      ∀ tau ∈ crossPolytopeEscapeAfter32₁.tets,
+        ∀ v ∈ tau.verts, v < 8 := by
+    intro tau htau v hv
+    rw [crossPolytopeEscapeAfter32₁_tets] at htau
+    simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at htau
+    rcases htau with rfl | rfl | rfl | rfl |
+      rfl | rfl | rfl | rfl |
+      rfl | rfl | rfl | rfl |
+      rfl | rfl | rfl | rfl
+    all_goals simp [Tet.verts] at hv <;> omega
+  obtain ⟨⟨tau0, htau0, hsame0⟩, ⟨tau1, htau1, hsame1⟩, _⟩ := ht
+  have ha : t.a ∈ tau0.verts :=
+    (hsame0 t.a).2 (by simp [Move32Site.targetTet₀, Tet.verts])
+  have hb : t.b ∈ tau0.verts :=
+    (hsame0 t.b).2 (by simp [Move32Site.targetTet₀, Tet.verts])
+  have hc : t.c ∈ tau1.verts :=
+    (hsame1 t.c).2 (by simp [Move32Site.targetTet₁, Tet.verts])
+  exact ⟨hvertexBound tau0 htau0 t.a ha,
+    hvertexBound tau0 htau0 t.b hb,
+    hvertexBound tau1 htau1 t.c hc⟩
+
 end Poincare
