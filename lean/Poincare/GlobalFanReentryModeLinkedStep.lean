@@ -136,4 +136,24 @@ theorem FanReentryModeStep.finiteKey_ne
   | reentry_fan old next hnonself =>
       simp [FanReentryModeState.finiteKey]
 
+/-- A three-step fan-to-fan cycle makes a strict natural-valued ranking
+on *all* linked mixed-mode transitions impossible. This theorem is conditional
+on the three fully certified `HighFanState` transition witnesses; it does not
+assert their existence for a particular fixed triangulation. -/
+theorem FanReentryModeStep.no_nat_strict_ranking_of_three_fan_cycle
+    {K : Triangulation} (a b c : HighFanState K)
+    (hab : b.v = a.transition.z0 ∧ b.x = a.transition.z1)
+    (hbc : c.v = b.transition.z0 ∧ c.x = b.transition.z1)
+    (hca : a.v = c.transition.z0 ∧ a.x = c.transition.z1)
+    (rank : FanReentryModeState K → Nat)
+    (hstrict : ∀ {s t : FanReentryModeState K},
+      FanReentryModeStep K s t → rank t < rank s) : False := by
+  have h01 : rank (.fan b) < rank (.fan a) :=
+    hstrict (FanReentryModeStep.fan_next a b hab.1 hab.2)
+  have h12 : rank (.fan c) < rank (.fan b) :=
+    hstrict (FanReentryModeStep.fan_next b c hbc.1 hbc.2)
+  have h20 : rank (.fan a) < rank (.fan c) :=
+    hstrict (FanReentryModeStep.fan_next c a hca.1 hca.2)
+  omega
+
 end Poincare
