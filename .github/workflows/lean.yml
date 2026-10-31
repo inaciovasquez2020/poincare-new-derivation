@@ -164,6 +164,8 @@ jobs:
         run: lake build Poincare.GlobalMove32FiniteWitnessState
       - name: Build witness-anchored continuation module
         run: lake build Poincare.GlobalFanChordWitnessAnchoredContinuation
+      - name: Build Zenodo U16 first high-fan witness
+        run: lake build Poincare.ZenodoU16FirstHighFan
 
       - name: Build principal theorem module
         run: lake build Poincare.GlobalMove32ReentryLeastBoundaryEscapeIncidenceThreeFork
