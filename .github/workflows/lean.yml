@@ -19,6 +19,14 @@ jobs:
         with:
           use-github-cache: false
 
+      - name: Targeted frozen witness-alignment build
+        shell: bash
+        run: |
+          git fetch --no-tags --depth=1 origin 176e9b40da9053b9781d2353ff8e74cad7a50cb3
+          git checkout --detach 176e9b40da9053b9781d2353ff8e74cad7a50cb3
+          test "$(git rev-parse HEAD)" = "176e9b40da9053b9781d2353ff8e74cad7a50cb3"
+          lake build Poincare.GlobalMove32ReentryImmediateReturnCarrierEscape
+
       - name: Verify corrected Perelman interface and its axiom dependencies
         shell: bash
         run: |
