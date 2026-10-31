@@ -64,7 +64,10 @@ theorem zenodoU16_first_highFan :
   let s4 : {t : LinkTriangle // t ∈ vertexLinkStarTriangles K 2 7} := ⟨t4, hm4⟩
   have h01 : (vertexLinkStarGraph K 2 7).Adj s0 s1 := by
     rw [vertexLinkStarGraph_adj]
-    exact ⟨by decide, ⟨hm0, hm1, 3, by decide, by decide, by decide⟩⟩
+    exact ⟨by simp [s0, s1, t0, t1],
+      ⟨hm0, hm1, 3, by decide,
+        by simp [s0, t0, LinkTriangle.verts],
+        by simp [s1, t1, LinkTriangle.verts]⟩⟩
   have h12 : (vertexLinkStarGraph K 2 7).Adj s1 s2 := by
     rw [vertexLinkStarGraph_adj]
     exact ⟨by decide, ⟨hm1, hm2, 9, by decide, by decide, by decide⟩⟩
