@@ -2,6 +2,18 @@ import Poincare.AscentBarrierInvariant
 
 namespace Poincare
 
+/-- The literal forward 1→4 replacement of any specified tetrahedron.
+This is a combinatorial candidate, not a certified legal step: preservation
+of the closed core and an inverse legal 4→1 certificate are still required. -/
+def tetrahedronOneFourReplacement
+    (K : Triangulation) (source : Tet) (e : Nat) : Triangulation :=
+  { tets :=
+      [⟨source.v0, source.v1, source.v2, e⟩,
+       ⟨source.v0, source.v1, source.v3, e⟩,
+       ⟨source.v0, source.v2, source.v3, e⟩,
+       ⟨source.v1, source.v2, source.v3, e⟩] ++
+      eraseFirstSameTet source K.tets }
+
 /-- An actual legal bistellar step between closed triangulation cores.
 The 1→4 case is the inverse of a certified legal 4→1 replacement,
 not the placeholder global `applyMoveImpl`. -/
@@ -46,6 +58,18 @@ inductive CertifiedPachnerPath : Triangulation → Triangulation → Prop where
       (hpath : CertifiedPachnerPath K L)
       (hstep : CertifiedPachnerStep L M) :
       CertifiedPachnerPath K M
+
+/-- Concatenate two finite certified Pachner paths without changing their
+endpoints or assuming monotonicity of the intermediate defect. -/
+theorem CertifiedPachnerPath.trans
+    {K L M : Triangulation}
+    (hKL : CertifiedPachnerPath K L)
+    (hLM : CertifiedPachnerPath L M) :
+    CertifiedPachnerPath K M := by
+  induction hLM with
+  | refl => exact hKL
+  | snoc _ hstep ih =>
+      exact CertifiedPachnerPath.snoc ih hstep
 
 theorem CertifiedPachnerPath.homeomorphic
     {K L : Triangulation} (h : CertifiedPachnerPath K L) :
