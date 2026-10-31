@@ -230,9 +230,36 @@ theorem tetrahedronOneFourReplacement_face_incidence
       {n : Tet} (hn : n ∈ N) (hp : p n) : p source := by
     have hsubset {v : Nat} (hv : v ∈ n.verts) :
         v ∈ source.verts ∨ v = e := by
+      have hv0 : source.v0 ∈ source.verts := by simp [Tet.verts]
+      have hv1 : source.v1 ∈ source.verts := by simp [Tet.verts]
+      have hv2 : source.v2 ∈ source.verts := by simp [Tet.verts]
+      have hv3 : source.v3 ∈ source.verts := by simp [Tet.verts]
       simp only [N, List.mem_cons, List.not_mem_nil, or_false] at hn
-      rcases hn with rfl | rfl | rfl | rfl <;>
-        simp only [Tet.verts, List.mem_cons, List.not_mem_nil, or_false] at hv ⊢ <;> aesop
+      rcases hn with rfl | rfl | rfl | rfl
+      · simp only [Tet.verts, List.mem_cons, List.not_mem_nil, or_false] at hv
+        rcases hv with rfl | rfl | rfl | rfl
+        · exact Or.inl hv0
+        · exact Or.inl hv1
+        · exact Or.inl hv2
+        · exact Or.inr rfl
+      · simp only [Tet.verts, List.mem_cons, List.not_mem_nil, or_false] at hv
+        rcases hv with rfl | rfl | rfl | rfl
+        · exact Or.inl hv0
+        · exact Or.inl hv1
+        · exact Or.inl hv3
+        · exact Or.inr rfl
+      · simp only [Tet.verts, List.mem_cons, List.not_mem_nil, or_false] at hv
+        rcases hv with rfl | rfl | rfl | rfl
+        · exact Or.inl hv0
+        · exact Or.inl hv2
+        · exact Or.inl hv3
+        · exact Or.inr rfl
+      · simp only [Tet.verts, List.mem_cons, List.not_mem_nil, or_false] at hv
+        rcases hv with rfl | rfl | rfl | rfl
+        · exact Or.inl hv1
+        · exact Or.inl hv2
+        · exact Or.inl hv3
+        · exact Or.inr rfl
     have hnot : x ≠ e ∧ y ≠ e ∧ z ≠ e := by
       simp only [List.mem_cons, List.not_mem_nil, or_false] at hneFace
       exact ⟨fun h => hneFace (Or.inl h.symm),
