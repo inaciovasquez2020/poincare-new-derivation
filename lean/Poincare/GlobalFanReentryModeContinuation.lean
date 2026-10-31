@@ -204,7 +204,10 @@ theorem Move23Site.move32_candidate_sourceFaceAbsent_on_ab_after_incidence_four
       · exact hface.1
       · exact hface.2.1
       · exact hface.2.2
-    have hdTau : m.d ∈ tau.verts := hsourceMem m.d hends.1
+    have hdTau : m.d ∈ tau.verts :=
+      hsourceMem m.d (by
+        simpa only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false]
+          using hends.1)
     have heTau : m.e ∈ tau.verts := hsourceMem m.e hends.2
     exact hlegal.2.2 tau hunchanged.1 ⟨hdTau, heTau⟩
 
