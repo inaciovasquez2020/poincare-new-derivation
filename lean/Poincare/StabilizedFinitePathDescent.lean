@@ -232,7 +232,7 @@ theorem tetrahedronOneFourReplacement_face_incidence
         v ∈ source.verts ∨ v = e := by
       simp only [N, List.mem_cons, List.not_mem_nil, or_false] at hn
       rcases hn with rfl | rfl | rfl | rfl <;>
-        simp [Tet.verts] at hv ⊢ <;> aesop
+        simp only [Tet.verts, List.mem_cons, List.not_mem_nil, or_false] at hv ⊢ <;> aesop
     have hnot : x ≠ e ∧ y ≠ e ∧ z ≠ e := by
       simp only [List.mem_cons, List.not_mem_nil, or_false] at hneFace
       exact ⟨fun h => hneFace (Or.inl h.symm),
