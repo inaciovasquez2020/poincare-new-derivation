@@ -33,8 +33,13 @@ theorem tetrahedronOneFourReplacement_nodup
   simp only [tetrahedronOneFourReplacement, List.mem_append] at hτ
   rcases hτ with hnew | hold
   · simp only [List.mem_cons, List.mem_singleton] at hnew
-    rcases hnew with rfl | rfl | rfl | rfl <;>
-      simp_all [Tet.verts, List.nodup_cons]
+    rcases hnew with rfl | rfl | rfl | hlast
+    · simp_all [Tet.verts, List.nodup_cons]
+    · simp_all [Tet.verts, List.nodup_cons]
+    · simp_all [Tet.verts, List.nodup_cons]
+    · rcases hlast with rfl | hnil
+      · simp_all [Tet.verts, List.nodup_cons]
+      · simp at hnil
   · exact hcore.1 τ (mem_of_mem_eraseFirstSameTet hold)
 
 /-- An actual legal bistellar step between closed triangulation cores.
