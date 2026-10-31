@@ -77,4 +77,30 @@ theorem Move23Site.exists_certifiedPath_descent_or_second_sourceFace_obstruction
       ⟨s, t, hsd, hse, hslegal, htd, hte,
         htrealized, htthree, habsent⟩
 
+/-- Exhaustive check of all eight-label ordered target-vertex triples after
+the existing cross-polytope 2-3,3-2 prefix. The three Boolean target checks
+are equivalent to the finite represented-tetrahedron witnesses via
+`sameTetVerticesBool_eq_true_iff`. This is a bounded fixture result,
+not a universal coverage or termination theorem. -/
+theorem crossPolytope_secondMove_bounded_enumeration :
+    ((List.range 8).flatMap (fun a =>
+      (List.range 8).flatMap (fun b =>
+        (List.range 8).filterMap (fun c =>
+          let t : Move32Site := { a := a, b := b, c := c, d := 0, e := 4 }
+          if (crossPolytopeEscapeAfter32₁.tets.any
+                (fun tau => sameTetVerticesBool tau t.targetTet₀)) &&
+              (crossPolytopeEscapeAfter32₁.tets.any
+                (fun tau => sameTetVerticesBool tau t.targetTet₁)) &&
+              (crossPolytopeEscapeAfter32₁.tets.any
+                (fun tau => sameTetVerticesBool tau t.targetTet₂))
+          then some (a, b, c) else none)))) =
+      [(3, 6, 7), (3, 7, 6), (6, 3, 7),
+       (6, 7, 3), (7, 3, 6), (7, 6, 3)] ∧
+    (crossPolytopeEscapeAfter32₁.tets.filter
+      (fun tau => 0 ∈ tau.verts ∧ 4 ∈ tau.verts)).length = 3 ∧
+    (crossPolytopeEscapeAfter32₁.tets.all
+      (fun tau => !(tau.verts.contains 3 &&
+        tau.verts.contains 6 && tau.verts.contains 7))) = true := by
+  native_decide
+
 end Poincare
