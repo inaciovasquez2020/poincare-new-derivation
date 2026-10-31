@@ -1,5 +1,6 @@
 import Poincare.GlobalMove32WitnessedReentryFreshEndpoints
 import Mathlib.Tactic
+import Poincare.GlobalEdgeCyclicFan
 
 namespace Poincare
 
@@ -216,5 +217,135 @@ theorem ClosedTriangulationCore.witnessedReentry_two_step_return_cross_disjoint
         · exact Or.inr (h.trans he.symm)
         · exact Or.inl (h.trans hd.symm)
     exact hfresh z hzRet hzMid
+
+/-- The two tetrahedra retained by a witnessed source-face reentry can be
+selected in any covering ambient fan about a source-face edge. They are
+adjacent at the third source vertex, and their explicit 2-3 candidate uses
+the already represented returned edge as its prospective new chord.
+No legal 2-3 move or strict descent is asserted. -/
+theorem ClosedTriangulationCore.witnessedReentry_representedChord_on_aligned_sourceFace
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (s t : Move32Site)
+    (hs : s.RealizedIn K)
+    (hstep : Move32SourceFaceWitnessedReentry K s t)
+    (F : AmbientEdgeCyclicFan K s.a s.b) :
+    ∃ α β : {q : LinkTriangle //
+        q ∈ vertexLinkStarTriangles K s.a s.b},
+      (vertexLinkStarGraph K s.a s.b).Adj α β ∧
+      ∃ m : Move23Site,
+        m.a = s.a ∧ m.b = s.b ∧ m.c = s.c ∧
+        m.d = t.d ∧ m.e = t.e ∧
+        SameTetVertices (F.tetAt α) m.leftTet ∧
+        SameTetVertices (F.tetAt β) m.rightTet ∧
+        ¬ m.NewEdgeAbsent K := by
+  classical
+  rcases hstep with
+    ⟨tau, rho, x, y, sigma,
+      htauK, hrhoK, hTauRho,
+      haTau, hbTau, hcTau,
+      haRho, hbRho, hcRho,
+      hxTau, hxABC, hyRho, hyABC, hxy,
+      hsigmaK, hxSigma, hySigma, _hnonself,
+      htd, hte, _htRealized, _htThree, _htObstruction⟩
+  subst x
+  subst y
+  have habc : [s.a, s.b, s.c].Nodup := by
+    have hfive := hcore.move32Site_distinct s hs
+    simp at hfive ⊢
+    aesop
+  have hca : s.c ≠ s.a := by
+    have hfive := hcore.move32Site_distinct s hs
+    simp at hfive
+    aesop
+  have hcb : s.c ≠ s.b := by
+    have hfive := hcore.move32Site_distinct s hs
+    simp at hfive
+    aesop
+  obtain ⟨α, hα⟩ := F.covers_ambient tau htauK haTau hbTau
+  obtain ⟨β, hβ⟩ := F.covers_ambient rho hrhoK haRho hbRho
+  have hαβ : α ≠ β := by
+    intro heq
+    apply hTauRho
+    have hTet : tau = rho := by
+      calc
+        tau = F.tetAt α := hα.symm
+        _ = F.tetAt β := by rw [heq]
+        _ = rho := hβ
+    rw [hTet]
+    exact sameTetVertices_refl rho
+  have hlinkα : tau.linkTriangleAt? s.a = some α.1 := by
+    simpa only [hα] using F.tetAt_link α
+  have hlinkβ : rho.linkTriangleAt? s.a = some β.1 := by
+    simpa only [hβ] using F.tetAt_link β
+  have hcα : s.c ∈ α.1.verts :=
+    (tau.mem_linkTriangleAt?_iff s.a s.c α.1 hlinkα hca).2 hcTau
+  have hcβ : s.c ∈ β.1.verts :=
+    (rho.mem_linkTriangleAt?_iff s.a s.c β.1 hlinkβ hca).2 hcRho
+  have hadj : (vertexLinkStarGraph K s.a s.b).Adj α β :=
+    (vertexLinkStarGraph_adj K s.a s.b α β).2
+      ⟨hαβ, α.2, β.2, s.c, hcb, hcα, hcβ⟩
+  obtain ⟨u, v, _hu, _huABC, _hv, _hvABC, _huv,
+      hTauCover, hRhoCover⟩ :=
+    Tet.exists_distinct_complement_vertices tau rho
+      (hcore.1 tau htauK) (hcore.1 rho hrhoK)
+      habc haTau hbTau hcTau haRho hbRho hcRho hTauRho
+  have huEq : u = t.d := by
+    rcases hTauCover t.d hxTau with h | h | h | h
+    · exact (hxABC (by simp [h])).elim
+    · exact (hxABC (by simp [h])).elim
+    · exact (hxABC (by simp [h])).elim
+    · exact h.symm
+  have hvEq : v = t.e := by
+    rcases hRhoCover t.e hyRho with h | h | h | h
+    · exact (hyABC (by simp [h])).elim
+    · exact (hyABC (by simp [h])).elim
+    · exact (hyABC (by simp [h])).elim
+    · exact h.symm
+  have hDistinct : [s.a, s.b, s.c, t.d, t.e].Nodup := by
+    simp only [List.nodup_cons, List.mem_cons,
+      List.not_mem_nil, or_false] at habc hxABC hyABC ⊢
+    aesop
+  let m : Move23Site :=
+    { a := s.a, b := s.b, c := s.c,
+      d := t.d, e := t.e, distinct := hDistinct }
+  have hTauSame : SameTetVertices tau m.leftTet := by
+    intro z
+    constructor
+    · intro hz
+      rcases hTauCover z hz with h | h | h | h
+      · simp [m, Move23Site.leftTet, Tet.verts, h]
+      · simp [m, Move23Site.leftTet, Tet.verts, h]
+      · simp [m, Move23Site.leftTet, Tet.verts, h]
+      · simp [m, Move23Site.leftTet, Tet.verts, h, huEq]
+    · intro hz
+      simp [m, Move23Site.leftTet, Tet.verts] at hz
+      rcases hz with rfl | rfl | rfl | rfl
+      · exact haTau
+      · exact hbTau
+      · exact hcTau
+      · exact hxTau
+  have hRhoSame : SameTetVertices rho m.rightTet := by
+    intro z
+    constructor
+    · intro hz
+      rcases hRhoCover z hz with h | h | h | h
+      · simp [m, Move23Site.rightTet, Tet.verts, h]
+      · simp [m, Move23Site.rightTet, Tet.verts, h]
+      · simp [m, Move23Site.rightTet, Tet.verts, h]
+      · simp [m, Move23Site.rightTet, Tet.verts, h, hvEq]
+    · intro hz
+      simp [m, Move23Site.rightTet, Tet.verts] at hz
+      rcases hz with rfl | rfl | rfl | rfl
+      · exact haRho
+      · exact hbRho
+      · exact hcRho
+      · exact hyRho
+  refine ⟨α, β, hadj, m, rfl, rfl, rfl, rfl, rfl, ?_, ?_, ?_⟩
+  · simpa only [hα] using hTauSame
+  · simpa only [hβ] using hRhoSame
+  · intro habsent
+    exact (habsent sigma hsigmaK)
+      ⟨by simpa [m] using hxSigma, by simpa [m] using hySigma⟩
 
 end Poincare
