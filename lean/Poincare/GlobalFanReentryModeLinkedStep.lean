@@ -118,7 +118,10 @@ theorem FanReentryModeStep.finiteKey_ne
       rw [hv, hx]
       exact old.transition.canonicalEdgeKey_ne_old old.endpoints_ne
   | fan_reentry old s s' hsd hse hrealized hthree hstep =>
-      simp [FanReentryModeState.finiteKey]
+      intro hkey
+      have htag : (false : Bool) = true := by
+        simpa [FanReentryModeState.finiteKey] using congrArg Prod.fst hkey
+      cases htag
   | fan_reinject old next s hsd hse hrealized hobstruction haway hnonself =>
       exact hfan old next haway
   | reentry_next old s' hstep =>
