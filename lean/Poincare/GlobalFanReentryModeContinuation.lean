@@ -199,7 +199,7 @@ theorem Move23Site.move32_candidate_sourceFaceAbsent_on_ab_after_incidence_four
     have hsourceMem :
         ∀ z : Nat, z ∈ [s.a, s.b, s.c] → z ∈ tau.verts := by
       intro z hz
-      simp only [List.mem_cons, List.mem_singleton] at hz
+      simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at hz
       rcases hz with rfl | rfl | rfl
       · exact hface.1
       · exact hface.2.1
