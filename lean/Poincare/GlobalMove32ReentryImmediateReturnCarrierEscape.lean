@@ -51,11 +51,11 @@ theorem ClosedTriangulationCore.exists_anchorSource_endpoint_and_new_source_vert
   have hanchorDNotCarrier :
       anchor.d ∉ [s.a, s.b, s.c, s.d, s.e] := by
     intro hmem
-    apply hfresh anchor.d
-    · rcases hreturn with hdirect | hreverse
+    have hretD : anchor.d ∈ [ret.d, ret.e] := by
+      rcases hreturn with hdirect | hreverse
       · simpa [hdirect.1]
       · simpa [hreverse.2]
-    · exact hmem
+    exact (hfresh hretD) hmem
 
   have hanchorENotCarrier :
       anchor.e ∉ [s.a, s.b, s.c, s.d, s.e] := by
