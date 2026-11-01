@@ -1011,4 +1011,15 @@ theorem zenodoU16_faceBatch_104 :
     (zenodoU16Original.tets.filter (fun tau => 12 ∈ tau.verts ∧ 13 ∈ tau.verts ∧ 16 ∈ tau.verts)).length = 2 := by
   refine ⟨by decide, by decide, by decide, by decide⟩
 
+/-- Assembly base case: quantify the four vertex slots of the first U(16)
+tetrahedron, rather than checking only four ordered face triples. -/
+theorem zenodoU16_firstTet_quantifiedFaceIncidence :
+    ∀ a ∈ (⟨1, 2, 3, 6⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 2, 3, 6⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 2, 3, 6⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧ b ∈ sigma.verts ∧ c ∈ sigma.verts)).length = 2 := by
+  decide
+
 end Poincare
