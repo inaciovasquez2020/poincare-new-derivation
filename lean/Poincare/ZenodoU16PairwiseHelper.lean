@@ -133,4 +133,9 @@ instance boundedRepresentedFaceIncidence_decidable (K : Triangulation) :
   unfold BoundedRepresentedFaceIncidence
   infer_instance
 
+/-- Finite exact incidence of every represented triangular face in U(16). -/
+theorem zenodoU16_boundedFaceIncidence :
+    BoundedRepresentedFaceIncidence zenodoU16Original := by
+  decide
+
 end Poincare
