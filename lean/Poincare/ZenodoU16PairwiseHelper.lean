@@ -55,4 +55,18 @@ theorem tet_pairwise_cons_of_distinct
     (tau :: rest).Pairwise (fun a b => ¬ SameTetVertices a b) := by
   exact List.Pairwise.cons hdistinct hrest
 
+/-- The four vertex slots suffice for testing equality of represented vertex sets. -/
+def tetSameVerticesBounded (tau sigma : Tet) : Prop :=
+  (∀ v ∈ tau.verts, v ∈ sigma.verts) ∧
+  (∀ v ∈ sigma.verts, v ∈ tau.verts)
+
+/-- Bounded membership is equivalent to the original extensional definition. -/
+theorem tetSameVerticesBounded_iff (tau sigma : Tet) :
+    tetSameVerticesBounded tau sigma ↔ SameTetVertices tau sigma := by
+  constructor
+  · intro h v
+    exact ⟨fun hv => h.1 v hv, fun hv => h.2 v hv⟩
+  · intro h
+    exact ⟨fun v hv => (h v).mp hv, fun v hv => (h v).mpr hv⟩
+
 end Poincare
