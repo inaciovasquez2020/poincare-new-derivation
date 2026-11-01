@@ -96,4 +96,11 @@ theorem zenodoU16_full_boundedPairwise :
       (fun tau sigma => ¬ tetSameVerticesBounded tau sigma) := by
   decide
 
+/-- Full 104-tetrahedron vertex-set uniqueness in the original core predicate. -/
+theorem zenodoU16_full_pairwise :
+    zenodoU16Original.tets.Pairwise
+      (fun tau sigma => ¬ SameTetVertices tau sigma) := by
+  exact tet_boundedPairwise_implies_pairwise
+    zenodoU16Original.tets zenodoU16_full_boundedPairwise
+
 end Poincare
