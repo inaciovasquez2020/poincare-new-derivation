@@ -103,4 +103,28 @@ theorem zenodoU16_full_pairwise :
   exact tet_boundedPairwise_implies_pairwise
     zenodoU16Original.tets zenodoU16_full_boundedPairwise
 
+/-- Face incidence checked only at triples of vertices of represented tetrahedra. -/
+def BoundedRepresentedFaceIncidence (K : Triangulation) : Prop :=
+  ∀ tau ∈ K.tets,
+    ∀ a ∈ tau.verts, ∀ b ∈ tau.verts, ∀ c ∈ tau.verts,
+      [a, b, c].Nodup →
+      (K.tets.filter (fun sigma =>
+        a ∈ sigma.verts ∧ b ∈ sigma.verts ∧ c ∈ sigma.verts)).length = 2
+
+/-- Finite represented-face incidence is exactly the third closed-core condition. -/
+theorem boundedRepresentedFaceIncidence_iff (K : Triangulation) :
+    BoundedRepresentedFaceIncidence K ↔
+      (∀ a b c : Nat,
+        [a, b, c].Nodup →
+        (∃ tau ∈ K.tets,
+          a ∈ tau.verts ∧ b ∈ tau.verts ∧ c ∈ tau.verts) →
+        (K.tets.filter (fun sigma =>
+          a ∈ sigma.verts ∧ b ∈ sigma.verts ∧ c ∈ sigma.verts)).length = 2) := by
+  constructor
+  · intro h a b c hdistinct hex
+    rcases hex with ⟨tau, htau, ha, hb, hc⟩
+    exact h tau htau a ha b hb c hc hdistinct
+  · intro h tau htau a ha b hb c hc hdistinct
+    exact h a b c hdistinct ⟨tau, htau, ha, hb, hc⟩
+
 end Poincare
