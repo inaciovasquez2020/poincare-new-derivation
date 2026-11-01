@@ -207,4 +207,16 @@ theorem zenodoU16_sixthTet_faceIncidence :
       2 ∈ tau.verts ∧ 8 ∈ tau.verts ∧ 16 ∈ tau.verts)).length = 2 := by
   refine ⟨by decide, by decide, by decide, by decide⟩
 
+/-- Seventh finite batch: four faces of U(16) tet ⟨1,2,9,10⟩. -/
+theorem zenodoU16_seventhTet_faceIncidence :
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 2 ∈ tau.verts ∧ 9 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 2 ∈ tau.verts ∧ 10 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 9 ∈ tau.verts ∧ 10 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      2 ∈ tau.verts ∧ 9 ∈ tau.verts ∧ 10 ∈ tau.verts)).length = 2 := by
+  refine ⟨by decide, by decide, by decide, by decide⟩
+
 end Poincare
