@@ -75,4 +75,10 @@ instance tetSameVerticesBounded_decidable (tau sigma : Tet) :
   unfold tetSameVerticesBounded
   infer_instance
 
+/-- A finite, computationally decidable pairwise certificate for three tetrahedra. -/
+theorem zenodoU16_firstThree_boundedPairwise :
+    ([⟨1, 2, 3, 6⟩, ⟨1, 2, 3, 9⟩, ⟨1, 2, 5, 10⟩] : List Tet).Pairwise
+      (fun tau sigma => ¬ tetSameVerticesBounded tau sigma) := by
+  decide
+
 end Poincare
