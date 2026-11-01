@@ -69,4 +69,10 @@ theorem tetSameVerticesBounded_iff (tau sigma : Tet) :
   · intro h
     exact ⟨fun v hv => (h v).mp hv, fun v hv => (h v).mpr hv⟩
 
+/-- Decidability follows from searching each tetrahedron's finite vertex list. -/
+instance tetSameVerticesBounded_decidable (tau sigma : Tet) :
+    Decidable (tetSameVerticesBounded tau sigma) := by
+  unfold tetSameVerticesBounded
+  infer_instance
+
 end Poincare
