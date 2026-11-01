@@ -146,4 +146,17 @@ theorem zenodoU16_firstTet_faceIncidence :
       2 ∈ tau.verts ∧ 3 ∈ tau.verts ∧ 6 ∈ tau.verts)).length = 2 := by
   refine ⟨by decide, by decide, by decide, by decide⟩
 
+/-- Second bounded batch: exact incidence for the four triangular faces
+of U(16) tetrahedron ⟨1,2,3,9⟩. -/
+theorem zenodoU16_secondTet_faceIncidence :
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 2 ∈ tau.verts ∧ 3 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 2 ∈ tau.verts ∧ 9 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 3 ∈ tau.verts ∧ 9 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      2 ∈ tau.verts ∧ 3 ∈ tau.verts ∧ 9 ∈ tau.verts)).length = 2 := by
+  refine ⟨by decide, by decide, by decide, by decide⟩
+
 end Poincare
