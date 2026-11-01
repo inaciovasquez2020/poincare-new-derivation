@@ -25,7 +25,7 @@ theorem sigmaD_isCycle_edges {a b c d : Nat}
   have hSigma : sigmaD a b c d = S.powersetCard 3 := by
     simp [S, sigmaD, Finset.powersetCard_succ_insert,
       hab, hac, had, hbc, hbd, hcd,
-      Finset.insert_comm, Finset.insert_left_comm, Finset.insert_assoc]
+      Finset.insert_comm, Finset.insert_assoc]
   intro g hg
   rw [hSigma]
   by_cases hsub : g ⊆ S
