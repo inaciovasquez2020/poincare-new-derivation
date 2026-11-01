@@ -19,4 +19,16 @@ theorem tet_not_same_of_separating_vertex
   intro h
   exact hnot ((h v).mp hmem)
 
+/-- Quantified comparison for the two subsequent tetrahedra. -/
+theorem zenodoU16_first_two_followers :
+    ∀ sigma ∈ ([⟨1, 2, 3, 9⟩, ⟨1, 2, 5, 10⟩] : List Tet),
+      ¬ SameTetVertices (⟨1, 2, 3, 6⟩ : Tet) sigma := by
+  intro sigma hsigma
+  simp only [List.mem_cons, List.mem_singleton] at hsigma
+  rcases hsigma with rfl | rfl
+  · exact tet_not_same_of_separating_vertex
+      ⟨1, 2, 3, 6⟩ ⟨1, 2, 3, 9⟩ 6 (by decide) (by decide)
+  · exact tet_not_same_of_separating_vertex
+      ⟨1, 2, 3, 6⟩ ⟨1, 2, 5, 10⟩ 6 (by decide) (by decide)
+
 end Poincare
