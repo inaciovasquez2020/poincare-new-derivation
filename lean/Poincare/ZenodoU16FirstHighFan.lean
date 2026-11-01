@@ -44,4 +44,25 @@ theorem zenodoU16_edge27_linkStar :
        ⟨7, 9, 15⟩, ⟨7, 14, 15⟩] := by
   decide
 
+/-- Independently check the five adjacent link-triangle pairs that
+close the edge-(2,7) cycle.  These are pure, explicitly witnessed
+finite incidence statements; the ambient cyclic fan is constructed later. -/
+theorem zenodoU16_edge27_cyclicAdjacency :
+    VertexLinkStarAdjacent zenodoU16Original 2 7
+      ⟨3, 4, 7⟩ ⟨3, 7, 9⟩ ∧
+    VertexLinkStarAdjacent zenodoU16Original 2 7
+      ⟨3, 7, 9⟩ ⟨7, 9, 15⟩ ∧
+    VertexLinkStarAdjacent zenodoU16Original 2 7
+      ⟨7, 9, 15⟩ ⟨7, 14, 15⟩ ∧
+    VertexLinkStarAdjacent zenodoU16Original 2 7
+      ⟨7, 14, 15⟩ ⟨4, 7, 14⟩ ∧
+    VertexLinkStarAdjacent zenodoU16Original 2 7
+      ⟨4, 7, 14⟩ ⟨3, 4, 7⟩ := by
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · exact ⟨by decide, by decide, 3, by decide, by decide, by decide⟩
+  · exact ⟨by decide, by decide, 9, by decide, by decide, by decide⟩
+  · exact ⟨by decide, by decide, 15, by decide, by decide, by decide⟩
+  · exact ⟨by decide, by decide, 14, by decide, by decide, by decide⟩
+  · exact ⟨by decide, by decide, 4, by decide, by decide, by decide⟩
+
 end Poincare
