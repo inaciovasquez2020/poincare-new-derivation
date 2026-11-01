@@ -2376,8 +2376,7 @@ and the complete quantified face-incidence assembly. -/
 theorem zenodoU16_closedCore :
     ClosedTriangulationCore zenodoU16Original := by
   refine ⟨?_, zenodoU16_full_pairwise, ?_⟩
-  · intro tau htau
-    exact zenodoU16_tets_nodup.mem htau
+  · decide
   · exact (boundedRepresentedFaceIncidence_iff
       zenodoU16Original).mp zenodoU16_boundedFaceIncidence
 
