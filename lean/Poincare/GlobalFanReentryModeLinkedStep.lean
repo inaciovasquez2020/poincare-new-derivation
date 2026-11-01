@@ -95,6 +95,45 @@ theorem FanReentryModeStep.exists_fan_next_of_chord_successor
       transition := T' }
   exact ⟨next, FanReentryModeStep.fan_next old next rfl rfl⟩
 
+/-- Retain the witnessed reentry lineage in the source-face classification.
+Unlike the coarse continuation result, the last branch returns an actual
+linked reentry step; the descent and high-edge branches remain unchanged. -/
+theorem FanReentryModeStep.reentry_classification_linked
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hlinks : ∀ v ∈ vertexSupport K, VertexLinkConnected K v)
+    (hconn : TetrahedronVertexOverlapConnected K)
+    (hNoFour : ∀ v ∈ vertexSupport K, vertexDegree K v ≠ 4)
+    (old : WitnessedReentryState K) :
+    (∃ K',
+      ClosedTriangulationCore K' ∧
+      PhiSupport K' < PhiSupport K ∧
+      Nonempty
+        (triangulationTopologicalGeometricCarrier K ≃ₜ
+          triangulationTopologicalGeometricCarrier K')) ∨
+    (∃ x y sigma,
+      x ≠ y ∧
+      sigma ∈ K.tets ∧
+      x ∈ sigma.verts ∧
+      y ∈ sigma.verts ∧
+      ¬ ((x = old.site.d ∧ y = old.site.e) ∨
+         (x = old.site.e ∧ y = old.site.d)) ∧
+      4 ≤
+        (K.tets.filter (fun gamma =>
+          decide (x ∈ gamma.verts ∧ y ∈ gamma.verts))).length) ∨
+    ∃ next : WitnessedReentryState K,
+      FanReentryModeStep K (.reentry old) (.reentry next) := by
+  rcases
+      hcore.exists_descent_or_nonself_complementEdge_high_or_witnessedReentry_of_move32_sourceFace_obstruction
+        hlinks hconn hNoFour old.site old.realized old.obstruction with
+    hdescent | hhigh | hreentry
+  · exact Or.inl hdescent
+  · exact Or.inr (Or.inl hhigh)
+  · obtain ⟨s', hstep⟩ := hreentry
+    exact Or.inr (Or.inr
+      ⟨witnessedReentryStateOfStep hstep,
+        FanReentryModeStep.reentry_next old s' hstep⟩)
+
 /-- Every linked fan-to-fan step changes the unordered central edge. -/
 theorem FanReentryModeStep.fan_to_fan_canonicalEdgeKey_ne
     {K : Triangulation}
