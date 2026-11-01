@@ -72,6 +72,22 @@ theorem ClosedTriangulationCore.exists_legal_move23_or_descent_or_next_fanReentr
             (Or.inr
               ⟨FanReentryModeState.fan next⟩)
 
+/-- Diagnostic: the coarse three-way continuation statement already follows
+from the input mode, without manifold, legality, or descent hypotheses.
+Consequently this particular disjunction alone cannot prove escape. -/
+theorem fanReentryMode_coarseContinuation_withoutGeometry
+    {K : Triangulation}
+    (q : FanReentryModeState K) :
+    (∃ m : Move23Site, m.LegalIn K) ∨
+    (∃ K',
+      ClosedTriangulationCore K' ∧
+      PhiSupport K' < PhiSupport K ∧
+      Nonempty
+        (triangulationTopologicalGeometricCarrier K ≃ₜ
+          triangulationTopologicalGeometricCarrier K')) ∨
+    Nonempty (FanReentryModeState K) := by
+  exact Or.inr (Or.inr ⟨q⟩)
+
 /-- In the incidence-four case, every realized exact-three candidate on the
 old shared-face edge `(m.a,m.b)` after a legal `2-3` has absent source face.
 Thus the candidate is a genuinely legal first `3-2` move. -/
