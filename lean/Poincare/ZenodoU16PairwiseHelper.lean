@@ -127,4 +127,10 @@ theorem boundedRepresentedFaceIncidence_iff (K : Triangulation) :
   · intro h tau htau a ha b hb c hc hdistinct
     exact h a b c hdistinct ⟨tau, htau, ha, hb, hc⟩
 
+/-- Exhaustive finite incidence certificate for every represented U(16) face.
+This explicitly checks all triples arising from the 104 finite tetrahedra. -/
+theorem zenodoU16_boundedFaceIncidence :
+    BoundedRepresentedFaceIncidence zenodoU16Original := by
+  decide
+
 end Poincare
