@@ -86,4 +86,12 @@ theorem zenodoU16_edge49_cyclicAdjacency :
   · exact ⟨by decide, by decide, 16, by decide, by decide, by decide⟩
   · exact ⟨by decide, by decide, 1, by decide, by decide, by decide⟩
 
+/-- Exhaustive link-star computation for the represented edge (4,9)
+in the exact 104-tetrahedron U(16) fixture. -/
+theorem zenodoU16_edge49_linkStar :
+    vertexLinkStarTriangles zenodoU16Original 4 9 =
+      [⟨1, 9, 11⟩, ⟨1, 9, 16⟩, ⟨5, 6, 9⟩,
+       ⟨5, 9, 11⟩, ⟨6, 9, 16⟩] := by
+  decide
+
 end Poincare
