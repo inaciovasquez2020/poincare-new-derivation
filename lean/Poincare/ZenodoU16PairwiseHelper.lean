@@ -81,4 +81,12 @@ theorem zenodoU16_firstThree_boundedPairwise :
       (fun tau sigma => ¬ tetSameVerticesBounded tau sigma) := by
   decide
 
+/-- Transfer a finite pairwise certificate to extensional vertex-set inequality. -/
+theorem tet_boundedPairwise_implies_pairwise (ts : List Tet)
+    (h : ts.Pairwise (fun a b => ¬ tetSameVerticesBounded a b)) :
+    ts.Pairwise (fun a b => ¬ SameTetVertices a b) := by
+  exact h.imp (by
+    intro a b hab hs
+    exact hab ((tetSameVerticesBounded_iff a b).mpr hs))
+
 end Poincare
