@@ -159,4 +159,16 @@ theorem zenodoU16_secondTet_faceIncidence :
       2 ∈ tau.verts ∧ 3 ∈ tau.verts ∧ 9 ∈ tau.verts)).length = 2 := by
   refine ⟨by decide, by decide, by decide, by decide⟩
 
+/-- Third finite batch: the four triangular faces of U(16) tet ⟨1,2,5,10⟩. -/
+theorem zenodoU16_thirdTet_faceIncidence :
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 2 ∈ tau.verts ∧ 5 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 2 ∈ tau.verts ∧ 10 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 5 ∈ tau.verts ∧ 10 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      2 ∈ tau.verts ∧ 5 ∈ tau.verts ∧ 10 ∈ tau.verts)).length = 2 := by
+  refine ⟨by decide, by decide, by decide, by decide⟩
+
 end Poincare
