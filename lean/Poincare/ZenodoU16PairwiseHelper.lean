@@ -255,4 +255,16 @@ theorem zenodoU16_tenthTet_faceIncidence :
       3 ∈ tau.verts ∧ 12 ∈ tau.verts ∧ 13 ∈ tau.verts)).length = 2 := by
   refine ⟨by decide, by decide, by decide, by decide⟩
 
+/-- Eleventh finite batch: four faces of U(16) tet ⟨1,4,9,11⟩. -/
+theorem zenodoU16_eleventhTet_faceIncidence :
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 4 ∈ tau.verts ∧ 9 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 4 ∈ tau.verts ∧ 11 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 9 ∈ tau.verts ∧ 11 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      4 ∈ tau.verts ∧ 9 ∈ tau.verts ∧ 11 ∈ tau.verts)).length = 2 := by
+  refine ⟨by decide, by decide, by decide, by decide⟩
+
 end Poincare
