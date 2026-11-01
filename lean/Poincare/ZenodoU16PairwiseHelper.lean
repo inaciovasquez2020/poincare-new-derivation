@@ -127,4 +127,10 @@ theorem boundedRepresentedFaceIncidence_iff (K : Triangulation) :
   · intro h tau htau a ha b hb c hc hdistinct
     exact h a b c hdistinct ⟨tau, htau, ha, hb, hc⟩
 
+/-- All quantified variables are bounded by finite tetrahedron vertex lists. -/
+instance boundedRepresentedFaceIncidence_decidable (K : Triangulation) :
+    Decidable (BoundedRepresentedFaceIncidence K) := by
+  unfold BoundedRepresentedFaceIncidence
+  infer_instance
+
 end Poincare
