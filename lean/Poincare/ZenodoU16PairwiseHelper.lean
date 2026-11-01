@@ -195,4 +195,16 @@ theorem zenodoU16_fifthTet_faceIncidence :
       2 ∈ tau.verts ∧ 6 ∈ tau.verts ∧ 8 ∈ tau.verts)).length = 2 := by
   refine ⟨by decide, by decide, by decide, by decide⟩
 
+/-- Sixth finite batch: the four triangular faces of U(16) tet ⟨1,2,8,16⟩. -/
+theorem zenodoU16_sixthTet_faceIncidence :
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 2 ∈ tau.verts ∧ 8 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 2 ∈ tau.verts ∧ 16 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 8 ∈ tau.verts ∧ 16 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      2 ∈ tau.verts ∧ 8 ∈ tau.verts ∧ 16 ∈ tau.verts)).length = 2 := by
+  refine ⟨by decide, by decide, by decide, by decide⟩
+
 end Poincare
