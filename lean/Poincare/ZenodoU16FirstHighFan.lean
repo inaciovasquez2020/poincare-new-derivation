@@ -94,4 +94,10 @@ theorem zenodoU16_edge49_linkStar :
        ⟨5, 9, 11⟩, ⟨6, 9, 16⟩] := by
   decide
 
+/-- First independently decidable closed-core obligation:
+every represented U(16) tetrahedron has four distinct vertices. -/
+theorem zenodoU16_tets_nodup :
+    zenodoU16Original.tets.Forall (fun tau => tau.verts.Nodup) := by
+  decide
+
 end Poincare
