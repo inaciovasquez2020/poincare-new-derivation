@@ -47,4 +47,12 @@ theorem zenodoU16_firstThree_pairwise :
         ⟨1, 2, 3, 9⟩ ⟨1, 2, 5, 10⟩ 9 (by decide) (by decide)
     · exact List.Pairwise.cons (by simp) List.Pairwise.nil
 
+/-- Extend a verified finite pairwise batch by one new tetrahedron. -/
+theorem tet_pairwise_cons_of_distinct
+    (tau : Tet) (rest : List Tet)
+    (hrest : rest.Pairwise (fun a b => ¬ SameTetVertices a b))
+    (hdistinct : ∀ sigma ∈ rest, ¬ SameTetVertices tau sigma) :
+    (tau :: rest).Pairwise (fun a b => ¬ SameTetVertices a b) := by
+  exact List.Pairwise.cons hdistinct hrest
+
 end Poincare
