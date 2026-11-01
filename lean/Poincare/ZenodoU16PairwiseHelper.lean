@@ -1022,4 +1022,1240 @@ theorem zenodoU16_firstTet_quantifiedFaceIncidence :
             a ∈ sigma.verts ∧ b ∈ sigma.verts ∧ c ∈ sigma.verts)).length = 2 := by
   decide
 
+/-- Quantified face-incidence certificate for U(16) tetrahedron 2. -/
+theorem zenodoU16_quantifiedFaceBatch_2 :
+    ∀ a ∈ (⟨1, 2, 3, 9⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 2, 3, 9⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 2, 3, 9⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 3. -/
+theorem zenodoU16_quantifiedFaceBatch_3 :
+    ∀ a ∈ (⟨1, 2, 5, 10⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 2, 5, 10⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 2, 5, 10⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 4. -/
+theorem zenodoU16_quantifiedFaceBatch_4 :
+    ∀ a ∈ (⟨1, 2, 5, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 2, 5, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 2, 5, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 5. -/
+theorem zenodoU16_quantifiedFaceBatch_5 :
+    ∀ a ∈ (⟨1, 2, 6, 8⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 2, 6, 8⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 2, 6, 8⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 6. -/
+theorem zenodoU16_quantifiedFaceBatch_6 :
+    ∀ a ∈ (⟨1, 2, 8, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 2, 8, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 2, 8, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 7. -/
+theorem zenodoU16_quantifiedFaceBatch_7 :
+    ∀ a ∈ (⟨1, 2, 9, 10⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 2, 9, 10⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 2, 9, 10⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 8. -/
+theorem zenodoU16_quantifiedFaceBatch_8 :
+    ∀ a ∈ (⟨1, 3, 6, 13⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 3, 6, 13⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 3, 6, 13⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 9. -/
+theorem zenodoU16_quantifiedFaceBatch_9 :
+    ∀ a ∈ (⟨1, 3, 9, 12⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 3, 9, 12⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 3, 9, 12⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 10. -/
+theorem zenodoU16_quantifiedFaceBatch_10 :
+    ∀ a ∈ (⟨1, 3, 12, 13⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 3, 12, 13⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 3, 12, 13⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 11. -/
+theorem zenodoU16_quantifiedFaceBatch_11 :
+    ∀ a ∈ (⟨1, 4, 9, 11⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 4, 9, 11⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 4, 9, 11⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 12. -/
+theorem zenodoU16_quantifiedFaceBatch_12 :
+    ∀ a ∈ (⟨1, 4, 9, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 4, 9, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 4, 9, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 13. -/
+theorem zenodoU16_quantifiedFaceBatch_13 :
+    ∀ a ∈ (⟨1, 4, 11, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 4, 11, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 4, 11, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 14. -/
+theorem zenodoU16_quantifiedFaceBatch_14 :
+    ∀ a ∈ (⟨1, 4, 15, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 4, 15, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 4, 15, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 15. -/
+theorem zenodoU16_quantifiedFaceBatch_15 :
+    ∀ a ∈ (⟨1, 5, 7, 10⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 5, 7, 10⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 5, 7, 10⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 16. -/
+theorem zenodoU16_quantifiedFaceBatch_16 :
+    ∀ a ∈ (⟨1, 5, 7, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 5, 7, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 5, 7, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 17. -/
+theorem zenodoU16_quantifiedFaceBatch_17 :
+    ∀ a ∈ (⟨1, 6, 8, 14⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 6, 8, 14⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 6, 8, 14⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 18. -/
+theorem zenodoU16_quantifiedFaceBatch_18 :
+    ∀ a ∈ (⟨1, 6, 13, 14⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 6, 13, 14⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 6, 13, 14⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 19. -/
+theorem zenodoU16_quantifiedFaceBatch_19 :
+    ∀ a ∈ (⟨1, 7, 10, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 7, 10, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 7, 10, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 20. -/
+theorem zenodoU16_quantifiedFaceBatch_20 :
+    ∀ a ∈ (⟨1, 7, 15, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 7, 15, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 7, 15, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 21. -/
+theorem zenodoU16_quantifiedFaceBatch_21 :
+    ∀ a ∈ (⟨1, 8, 9, 12⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 8, 9, 12⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 8, 9, 12⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 22. -/
+theorem zenodoU16_quantifiedFaceBatch_22 :
+    ∀ a ∈ (⟨1, 8, 9, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 8, 9, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 8, 9, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 23. -/
+theorem zenodoU16_quantifiedFaceBatch_23 :
+    ∀ a ∈ (⟨1, 8, 12, 14⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 8, 12, 14⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 8, 12, 14⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 24. -/
+theorem zenodoU16_quantifiedFaceBatch_24 :
+    ∀ a ∈ (⟨1, 9, 10, 11⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 9, 10, 11⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 9, 10, 11⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 25. -/
+theorem zenodoU16_quantifiedFaceBatch_25 :
+    ∀ a ∈ (⟨1, 10, 11, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 10, 11, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 10, 11, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 26. -/
+theorem zenodoU16_quantifiedFaceBatch_26 :
+    ∀ a ∈ (⟨1, 12, 13, 14⟩ : Tet).verts,
+      ∀ b ∈ (⟨1, 12, 13, 14⟩ : Tet).verts,
+        ∀ c ∈ (⟨1, 12, 13, 14⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 27. -/
+theorem zenodoU16_quantifiedFaceBatch_27 :
+    ∀ a ∈ (⟨2, 3, 4, 7⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 3, 4, 7⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 3, 4, 7⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 28. -/
+theorem zenodoU16_quantifiedFaceBatch_28 :
+    ∀ a ∈ (⟨2, 3, 4, 10⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 3, 4, 10⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 3, 4, 10⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 29. -/
+theorem zenodoU16_quantifiedFaceBatch_29 :
+    ∀ a ∈ (⟨2, 3, 6, 11⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 3, 6, 11⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 3, 6, 11⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 30. -/
+theorem zenodoU16_quantifiedFaceBatch_30 :
+    ∀ a ∈ (⟨2, 3, 7, 9⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 3, 7, 9⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 3, 7, 9⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 31. -/
+theorem zenodoU16_quantifiedFaceBatch_31 :
+    ∀ a ∈ (⟨2, 3, 10, 11⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 3, 10, 11⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 3, 10, 11⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 32. -/
+theorem zenodoU16_quantifiedFaceBatch_32 :
+    ∀ a ∈ (⟨2, 4, 7, 14⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 4, 7, 14⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 4, 7, 14⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 33. -/
+theorem zenodoU16_quantifiedFaceBatch_33 :
+    ∀ a ∈ (⟨2, 4, 10, 13⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 4, 10, 13⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 4, 10, 13⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 34. -/
+theorem zenodoU16_quantifiedFaceBatch_34 :
+    ∀ a ∈ (⟨2, 4, 13, 14⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 4, 13, 14⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 4, 13, 14⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 35. -/
+theorem zenodoU16_quantifiedFaceBatch_35 :
+    ∀ a ∈ (⟨2, 5, 10, 12⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 5, 10, 12⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 5, 10, 12⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 36. -/
+theorem zenodoU16_quantifiedFaceBatch_36 :
+    ∀ a ∈ (⟨2, 5, 12, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 5, 12, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 5, 12, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 37. -/
+theorem zenodoU16_quantifiedFaceBatch_37 :
+    ∀ a ∈ (⟨2, 6, 8, 11⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 6, 8, 11⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 6, 8, 11⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 38. -/
+theorem zenodoU16_quantifiedFaceBatch_38 :
+    ∀ a ∈ (⟨2, 7, 9, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 7, 9, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 7, 9, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 39. -/
+theorem zenodoU16_quantifiedFaceBatch_39 :
+    ∀ a ∈ (⟨2, 7, 14, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 7, 14, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 7, 14, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 40. -/
+theorem zenodoU16_quantifiedFaceBatch_40 :
+    ∀ a ∈ (⟨2, 8, 11, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 8, 11, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 8, 11, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 41. -/
+theorem zenodoU16_quantifiedFaceBatch_41 :
+    ∀ a ∈ (⟨2, 9, 10, 13⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 9, 10, 13⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 9, 10, 13⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 42. -/
+theorem zenodoU16_quantifiedFaceBatch_42 :
+    ∀ a ∈ (⟨2, 9, 13, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 9, 13, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 9, 13, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 43. -/
+theorem zenodoU16_quantifiedFaceBatch_43 :
+    ∀ a ∈ (⟨2, 10, 11, 12⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 10, 11, 12⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 10, 11, 12⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 44. -/
+theorem zenodoU16_quantifiedFaceBatch_44 :
+    ∀ a ∈ (⟨2, 11, 12, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 11, 12, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 11, 12, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 45. -/
+theorem zenodoU16_quantifiedFaceBatch_45 :
+    ∀ a ∈ (⟨2, 13, 14, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨2, 13, 14, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨2, 13, 14, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 46. -/
+theorem zenodoU16_quantifiedFaceBatch_46 :
+    ∀ a ∈ (⟨3, 4, 5, 8⟩ : Tet).verts,
+      ∀ b ∈ (⟨3, 4, 5, 8⟩ : Tet).verts,
+        ∀ c ∈ (⟨3, 4, 5, 8⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 47. -/
+theorem zenodoU16_quantifiedFaceBatch_47 :
+    ∀ a ∈ (⟨3, 4, 5, 11⟩ : Tet).verts,
+      ∀ b ∈ (⟨3, 4, 5, 11⟩ : Tet).verts,
+        ∀ c ∈ (⟨3, 4, 5, 11⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 48. -/
+theorem zenodoU16_quantifiedFaceBatch_48 :
+    ∀ a ∈ (⟨3, 4, 7, 12⟩ : Tet).verts,
+      ∀ b ∈ (⟨3, 4, 7, 12⟩ : Tet).verts,
+        ∀ c ∈ (⟨3, 4, 7, 12⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 49. -/
+theorem zenodoU16_quantifiedFaceBatch_49 :
+    ∀ a ∈ (⟨3, 4, 8, 10⟩ : Tet).verts,
+      ∀ b ∈ (⟨3, 4, 8, 10⟩ : Tet).verts,
+        ∀ c ∈ (⟨3, 4, 8, 10⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 50. -/
+theorem zenodoU16_quantifiedFaceBatch_50 :
+    ∀ a ∈ (⟨3, 4, 11, 12⟩ : Tet).verts,
+      ∀ b ∈ (⟨3, 4, 11, 12⟩ : Tet).verts,
+        ∀ c ∈ (⟨3, 4, 11, 12⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 51. -/
+theorem zenodoU16_quantifiedFaceBatch_51 :
+    ∀ a ∈ (⟨3, 5, 8, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨3, 5, 8, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨3, 5, 8, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 52. -/
+theorem zenodoU16_quantifiedFaceBatch_52 :
+    ∀ a ∈ (⟨3, 5, 11, 14⟩ : Tet).verts,
+      ∀ b ∈ (⟨3, 5, 11, 14⟩ : Tet).verts,
+        ∀ c ∈ (⟨3, 5, 11, 14⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 53. -/
+theorem zenodoU16_quantifiedFaceBatch_53 :
+    ∀ a ∈ (⟨3, 5, 14, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨3, 5, 14, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨3, 5, 14, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 54. -/
+theorem zenodoU16_quantifiedFaceBatch_54 :
+    ∀ a ∈ (⟨3, 6, 11, 13⟩ : Tet).verts,
+      ∀ b ∈ (⟨3, 6, 11, 13⟩ : Tet).verts,
+        ∀ c ∈ (⟨3, 6, 11, 13⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 55. -/
+theorem zenodoU16_quantifiedFaceBatch_55 :
+    ∀ a ∈ (⟨3, 7, 9, 12⟩ : Tet).verts,
+      ∀ b ∈ (⟨3, 7, 9, 12⟩ : Tet).verts,
+        ∀ c ∈ (⟨3, 7, 9, 12⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 56. -/
+theorem zenodoU16_quantifiedFaceBatch_56 :
+    ∀ a ∈ (⟨3, 8, 10, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨3, 8, 10, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨3, 8, 10, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 57. -/
+theorem zenodoU16_quantifiedFaceBatch_57 :
+    ∀ a ∈ (⟨3, 8, 15, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨3, 8, 15, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨3, 8, 15, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 58. -/
+theorem zenodoU16_quantifiedFaceBatch_58 :
+    ∀ a ∈ (⟨3, 10, 11, 14⟩ : Tet).verts,
+      ∀ b ∈ (⟨3, 10, 11, 14⟩ : Tet).verts,
+        ∀ c ∈ (⟨3, 10, 11, 14⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 59. -/
+theorem zenodoU16_quantifiedFaceBatch_59 :
+    ∀ a ∈ (⟨3, 10, 14, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨3, 10, 14, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨3, 10, 14, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 60. -/
+theorem zenodoU16_quantifiedFaceBatch_60 :
+    ∀ a ∈ (⟨3, 11, 12, 13⟩ : Tet).verts,
+      ∀ b ∈ (⟨3, 11, 12, 13⟩ : Tet).verts,
+        ∀ c ∈ (⟨3, 11, 12, 13⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 61. -/
+theorem zenodoU16_quantifiedFaceBatch_61 :
+    ∀ a ∈ (⟨3, 14, 15, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨3, 14, 15, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨3, 14, 15, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 62. -/
+theorem zenodoU16_quantifiedFaceBatch_62 :
+    ∀ a ∈ (⟨4, 5, 6, 9⟩ : Tet).verts,
+      ∀ b ∈ (⟨4, 5, 6, 9⟩ : Tet).verts,
+        ∀ c ∈ (⟨4, 5, 6, 9⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 63. -/
+theorem zenodoU16_quantifiedFaceBatch_63 :
+    ∀ a ∈ (⟨4, 5, 6, 12⟩ : Tet).verts,
+      ∀ b ∈ (⟨4, 5, 6, 12⟩ : Tet).verts,
+        ∀ c ∈ (⟨4, 5, 6, 12⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 64. -/
+theorem zenodoU16_quantifiedFaceBatch_64 :
+    ∀ a ∈ (⟨4, 5, 8, 13⟩ : Tet).verts,
+      ∀ b ∈ (⟨4, 5, 8, 13⟩ : Tet).verts,
+        ∀ c ∈ (⟨4, 5, 8, 13⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 65. -/
+theorem zenodoU16_quantifiedFaceBatch_65 :
+    ∀ a ∈ (⟨4, 5, 9, 11⟩ : Tet).verts,
+      ∀ b ∈ (⟨4, 5, 9, 11⟩ : Tet).verts,
+        ∀ c ∈ (⟨4, 5, 9, 11⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 66. -/
+theorem zenodoU16_quantifiedFaceBatch_66 :
+    ∀ a ∈ (⟨4, 5, 12, 13⟩ : Tet).verts,
+      ∀ b ∈ (⟨4, 5, 12, 13⟩ : Tet).verts,
+        ∀ c ∈ (⟨4, 5, 12, 13⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 67. -/
+theorem zenodoU16_quantifiedFaceBatch_67 :
+    ∀ a ∈ (⟨4, 6, 9, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨4, 6, 9, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨4, 6, 9, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 68. -/
+theorem zenodoU16_quantifiedFaceBatch_68 :
+    ∀ a ∈ (⟨4, 6, 12, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨4, 6, 12, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨4, 6, 12, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 69. -/
+theorem zenodoU16_quantifiedFaceBatch_69 :
+    ∀ a ∈ (⟨4, 6, 15, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨4, 6, 15, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨4, 6, 15, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 70. -/
+theorem zenodoU16_quantifiedFaceBatch_70 :
+    ∀ a ∈ (⟨4, 7, 12, 14⟩ : Tet).verts,
+      ∀ b ∈ (⟨4, 7, 12, 14⟩ : Tet).verts,
+        ∀ c ∈ (⟨4, 7, 12, 14⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 71. -/
+theorem zenodoU16_quantifiedFaceBatch_71 :
+    ∀ a ∈ (⟨4, 8, 10, 13⟩ : Tet).verts,
+      ∀ b ∈ (⟨4, 8, 10, 13⟩ : Tet).verts,
+        ∀ c ∈ (⟨4, 8, 10, 13⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 72. -/
+theorem zenodoU16_quantifiedFaceBatch_72 :
+    ∀ a ∈ (⟨4, 11, 12, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨4, 11, 12, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨4, 11, 12, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 73. -/
+theorem zenodoU16_quantifiedFaceBatch_73 :
+    ∀ a ∈ (⟨4, 12, 13, 14⟩ : Tet).verts,
+      ∀ b ∈ (⟨4, 12, 13, 14⟩ : Tet).verts,
+        ∀ c ∈ (⟨4, 12, 13, 14⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 74. -/
+theorem zenodoU16_quantifiedFaceBatch_74 :
+    ∀ a ∈ (⟨5, 6, 7, 10⟩ : Tet).verts,
+      ∀ b ∈ (⟨5, 6, 7, 10⟩ : Tet).verts,
+        ∀ c ∈ (⟨5, 6, 7, 10⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 75. -/
+theorem zenodoU16_quantifiedFaceBatch_75 :
+    ∀ a ∈ (⟨5, 6, 7, 13⟩ : Tet).verts,
+      ∀ b ∈ (⟨5, 6, 7, 13⟩ : Tet).verts,
+        ∀ c ∈ (⟨5, 6, 7, 13⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 76. -/
+theorem zenodoU16_quantifiedFaceBatch_76 :
+    ∀ a ∈ (⟨5, 6, 9, 14⟩ : Tet).verts,
+      ∀ b ∈ (⟨5, 6, 9, 14⟩ : Tet).verts,
+        ∀ c ∈ (⟨5, 6, 9, 14⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 77. -/
+theorem zenodoU16_quantifiedFaceBatch_77 :
+    ∀ a ∈ (⟨5, 6, 10, 12⟩ : Tet).verts,
+      ∀ b ∈ (⟨5, 6, 10, 12⟩ : Tet).verts,
+        ∀ c ∈ (⟨5, 6, 10, 12⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 78. -/
+theorem zenodoU16_quantifiedFaceBatch_78 :
+    ∀ a ∈ (⟨5, 6, 13, 14⟩ : Tet).verts,
+      ∀ b ∈ (⟨5, 6, 13, 14⟩ : Tet).verts,
+        ∀ c ∈ (⟨5, 6, 13, 14⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 79. -/
+theorem zenodoU16_quantifiedFaceBatch_79 :
+    ∀ a ∈ (⟨5, 7, 13, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨5, 7, 13, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨5, 7, 13, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 80. -/
+theorem zenodoU16_quantifiedFaceBatch_80 :
+    ∀ a ∈ (⟨5, 8, 13, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨5, 8, 13, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨5, 8, 13, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 81. -/
+theorem zenodoU16_quantifiedFaceBatch_81 :
+    ∀ a ∈ (⟨5, 9, 11, 14⟩ : Tet).verts,
+      ∀ b ∈ (⟨5, 9, 11, 14⟩ : Tet).verts,
+        ∀ c ∈ (⟨5, 9, 11, 14⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 82. -/
+theorem zenodoU16_quantifiedFaceBatch_82 :
+    ∀ a ∈ (⟨5, 12, 13, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨5, 12, 13, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨5, 12, 13, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 83. -/
+theorem zenodoU16_quantifiedFaceBatch_83 :
+    ∀ a ∈ (⟨5, 13, 14, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨5, 13, 14, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨5, 13, 14, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 84. -/
+theorem zenodoU16_quantifiedFaceBatch_84 :
+    ∀ a ∈ (⟨6, 7, 8, 11⟩ : Tet).verts,
+      ∀ b ∈ (⟨6, 7, 8, 11⟩ : Tet).verts,
+        ∀ c ∈ (⟨6, 7, 8, 11⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 85. -/
+theorem zenodoU16_quantifiedFaceBatch_85 :
+    ∀ a ∈ (⟨6, 7, 8, 14⟩ : Tet).verts,
+      ∀ b ∈ (⟨6, 7, 8, 14⟩ : Tet).verts,
+        ∀ c ∈ (⟨6, 7, 8, 14⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 86. -/
+theorem zenodoU16_quantifiedFaceBatch_86 :
+    ∀ a ∈ (⟨6, 7, 10, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨6, 7, 10, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨6, 7, 10, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 87. -/
+theorem zenodoU16_quantifiedFaceBatch_87 :
+    ∀ a ∈ (⟨6, 7, 11, 13⟩ : Tet).verts,
+      ∀ b ∈ (⟨6, 7, 11, 13⟩ : Tet).verts,
+        ∀ c ∈ (⟨6, 7, 11, 13⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 88. -/
+theorem zenodoU16_quantifiedFaceBatch_88 :
+    ∀ a ∈ (⟨6, 7, 14, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨6, 7, 14, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨6, 7, 14, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 89. -/
+theorem zenodoU16_quantifiedFaceBatch_89 :
+    ∀ a ∈ (⟨6, 9, 14, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨6, 9, 14, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨6, 9, 14, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 90. -/
+theorem zenodoU16_quantifiedFaceBatch_90 :
+    ∀ a ∈ (⟨6, 10, 12, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨6, 10, 12, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨6, 10, 12, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 91. -/
+theorem zenodoU16_quantifiedFaceBatch_91 :
+    ∀ a ∈ (⟨6, 14, 15, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨6, 14, 15, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨6, 14, 15, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 92. -/
+theorem zenodoU16_quantifiedFaceBatch_92 :
+    ∀ a ∈ (⟨7, 8, 9, 12⟩ : Tet).verts,
+      ∀ b ∈ (⟨7, 8, 9, 12⟩ : Tet).verts,
+        ∀ c ∈ (⟨7, 8, 9, 12⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 93. -/
+theorem zenodoU16_quantifiedFaceBatch_93 :
+    ∀ a ∈ (⟨7, 8, 9, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨7, 8, 9, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨7, 8, 9, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 94. -/
+theorem zenodoU16_quantifiedFaceBatch_94 :
+    ∀ a ∈ (⟨7, 8, 11, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨7, 8, 11, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨7, 8, 11, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 95. -/
+theorem zenodoU16_quantifiedFaceBatch_95 :
+    ∀ a ∈ (⟨7, 8, 12, 14⟩ : Tet).verts,
+      ∀ b ∈ (⟨7, 8, 12, 14⟩ : Tet).verts,
+        ∀ c ∈ (⟨7, 8, 12, 14⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 96. -/
+theorem zenodoU16_quantifiedFaceBatch_96 :
+    ∀ a ∈ (⟨7, 8, 15, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨7, 8, 15, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨7, 8, 15, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 97. -/
+theorem zenodoU16_quantifiedFaceBatch_97 :
+    ∀ a ∈ (⟨7, 11, 13, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨7, 11, 13, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨7, 11, 13, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 98. -/
+theorem zenodoU16_quantifiedFaceBatch_98 :
+    ∀ a ∈ (⟨8, 9, 10, 13⟩ : Tet).verts,
+      ∀ b ∈ (⟨8, 9, 10, 13⟩ : Tet).verts,
+        ∀ c ∈ (⟨8, 9, 10, 13⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 99. -/
+theorem zenodoU16_quantifiedFaceBatch_99 :
+    ∀ a ∈ (⟨8, 9, 10, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨8, 9, 10, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨8, 9, 10, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 100. -/
+theorem zenodoU16_quantifiedFaceBatch_100 :
+    ∀ a ∈ (⟨8, 9, 13, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨8, 9, 13, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨8, 9, 13, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 101. -/
+theorem zenodoU16_quantifiedFaceBatch_101 :
+    ∀ a ∈ (⟨9, 10, 11, 14⟩ : Tet).verts,
+      ∀ b ∈ (⟨9, 10, 11, 14⟩ : Tet).verts,
+        ∀ c ∈ (⟨9, 10, 11, 14⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 102. -/
+theorem zenodoU16_quantifiedFaceBatch_102 :
+    ∀ a ∈ (⟨9, 10, 14, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨9, 10, 14, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨9, 10, 14, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 103. -/
+theorem zenodoU16_quantifiedFaceBatch_103 :
+    ∀ a ∈ (⟨10, 11, 12, 15⟩ : Tet).verts,
+      ∀ b ∈ (⟨10, 11, 12, 15⟩ : Tet).verts,
+        ∀ c ∈ (⟨10, 11, 12, 15⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
+/-- Quantified face-incidence certificate for U(16) tetrahedron 104. -/
+theorem zenodoU16_quantifiedFaceBatch_104 :
+    ∀ a ∈ (⟨11, 12, 13, 16⟩ : Tet).verts,
+      ∀ b ∈ (⟨11, 12, 13, 16⟩ : Tet).verts,
+        ∀ c ∈ (⟨11, 12, 13, 16⟩ : Tet).verts,
+          [a, b, c].Nodup →
+          (zenodoU16Original.tets.filter (fun sigma =>
+            a ∈ sigma.verts ∧
+            b ∈ sigma.verts ∧
+            c ∈ sigma.verts)).length = 2 := by
+  decide
+
 end Poincare
