@@ -277,4 +277,36 @@ theorem FanReentryModeStep.no_nat_strict_ranking_of_three_fan_cycle
     hstrict (FanReentryModeStep.fan_next c a hca.1 hca.2)
   omega
 
+/-- In a two-step ordinary fan-chord return to the same oriented central edge,
+the transverse carriers must differ whenever degree-four vertices are
+excluded. This does not exclude the differing-carrier return, reinjection
+steps, reversed-edge returns, or longer mixed cycles. -/
+theorem FanReentryModeStep.two_fan_next_oriented_return_transverse_ne
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hlinks : ∀ v ∈ vertexSupport K, VertexLinkConnected K v)
+    (hNoFour : ∀ v ∈ vertexSupport K, vertexDegree K v ≠ 4)
+    (old mid ret : HighFanState K)
+    (hfirst :
+      mid.v = old.transition.z0 ∧
+      mid.x = old.transition.z1)
+    (hsecond :
+      ret.v = mid.transition.z0 ∧
+      ret.x = mid.transition.z1)
+    (hreturn : ret.v = old.v ∧ ret.x = old.x) :
+    old.transition.transverse ≠ mid.transition.transverse := by
+  intro hsame
+  have hback0 : mid.transition.z0 = old.v := by
+    calc
+      mid.transition.z0 = ret.v := hsecond.1.symm
+      _ = old.v := hreturn.1
+  have hback1 : mid.transition.z1 = old.x := by
+    calc
+      mid.transition.z1 = ret.x := hsecond.2.symm
+      _ = old.x := hreturn.2
+  exact hcore.fanChord_twoCycle_same_transverse_impossible_noFour
+    hlinks hNoFour old.transition mid.transition
+    ⟨hfirst.1.symm, hfirst.2.symm, rfl⟩
+    ⟨hback0, hback1, hsame.symm⟩
+
 end Poincare
