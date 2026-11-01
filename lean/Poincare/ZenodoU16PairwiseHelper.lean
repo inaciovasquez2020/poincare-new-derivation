@@ -10,4 +10,13 @@ theorem zenodoU16_firstPair_ne :
     (h 6).mp (by decide)
   exact (by decide : 6 ∉ (⟨1, 2, 3, 9⟩ : Tet).verts) h6
 
+/-- A bounded comparison of two tetrahedra by their four vertex slots.
+A separating vertex certifies nonidentity of the represented vertex sets. -/
+theorem tet_not_same_of_separating_vertex
+    (tau sigma : Tet) (v : Nat)
+    (hmem : v ∈ tau.verts) (hnot : v ∉ sigma.verts) :
+    ¬ SameTetVertices tau sigma := by
+  intro h
+  exact hnot ((h v).mp hmem)
+
 end Poincare
