@@ -267,4 +267,84 @@ theorem zenodoU16_eleventhTet_faceIncidence :
       4 ∈ tau.verts ∧ 9 ∈ tau.verts ∧ 11 ∈ tau.verts)).length = 2 := by
   refine ⟨by decide, by decide, by decide, by decide⟩
 
+/-- Finite face batch 12. -/
+theorem zenodoU16_faceBatch_12 :
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 4 ∈ tau.verts ∧ 9 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 4 ∈ tau.verts ∧ 16 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 9 ∈ tau.verts ∧ 16 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 4 ∈ tau.verts ∧ 9 ∈ tau.verts ∧ 16 ∈ tau.verts)).length = 2 := by
+  refine ⟨by decide, by decide, by decide, by decide⟩
+
+/-- Finite face batch 13. -/
+theorem zenodoU16_faceBatch_13 :
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 4 ∈ tau.verts ∧ 11 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 4 ∈ tau.verts ∧ 15 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 11 ∈ tau.verts ∧ 15 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 4 ∈ tau.verts ∧ 11 ∈ tau.verts ∧ 15 ∈ tau.verts)).length = 2 := by
+  refine ⟨by decide, by decide, by decide, by decide⟩
+
+/-- Finite face batch 14. -/
+theorem zenodoU16_faceBatch_14 :
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 4 ∈ tau.verts ∧ 15 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 4 ∈ tau.verts ∧ 16 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 15 ∈ tau.verts ∧ 16 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 4 ∈ tau.verts ∧ 15 ∈ tau.verts ∧ 16 ∈ tau.verts)).length = 2 := by
+  refine ⟨by decide, by decide, by decide, by decide⟩
+
+/-- Finite face batch 15. -/
+theorem zenodoU16_faceBatch_15 :
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 5 ∈ tau.verts ∧ 7 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 5 ∈ tau.verts ∧ 10 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 7 ∈ tau.verts ∧ 10 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 5 ∈ tau.verts ∧ 7 ∈ tau.verts ∧ 10 ∈ tau.verts)).length = 2 := by
+  refine ⟨by decide, by decide, by decide, by decide⟩
+
+/-- Finite face batch 16. -/
+theorem zenodoU16_faceBatch_16 :
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 5 ∈ tau.verts ∧ 7 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 5 ∈ tau.verts ∧ 16 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 7 ∈ tau.verts ∧ 16 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 5 ∈ tau.verts ∧ 7 ∈ tau.verts ∧ 16 ∈ tau.verts)).length = 2 := by
+  refine ⟨by decide, by decide, by decide, by decide⟩
+
+/-- Finite face batch 17. -/
+theorem zenodoU16_faceBatch_17 :
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 6 ∈ tau.verts ∧ 8 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 6 ∈ tau.verts ∧ 14 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 8 ∈ tau.verts ∧ 14 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 6 ∈ tau.verts ∧ 8 ∈ tau.verts ∧ 14 ∈ tau.verts)).length = 2 := by
+  refine ⟨by decide, by decide, by decide, by decide⟩
+
+/-- Finite face batch 18. -/
+theorem zenodoU16_faceBatch_18 :
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 6 ∈ tau.verts ∧ 13 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 6 ∈ tau.verts ∧ 14 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 13 ∈ tau.verts ∧ 14 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 6 ∈ tau.verts ∧ 13 ∈ tau.verts ∧ 14 ∈ tau.verts)).length = 2 := by
+  refine ⟨by decide, by decide, by decide, by decide⟩
+
+/-- Finite face batch 19. -/
+theorem zenodoU16_faceBatch_19 :
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 7 ∈ tau.verts ∧ 10 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 7 ∈ tau.verts ∧ 15 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 10 ∈ tau.verts ∧ 15 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 7 ∈ tau.verts ∧ 10 ∈ tau.verts ∧ 15 ∈ tau.verts)).length = 2 := by
+  refine ⟨by decide, by decide, by decide, by decide⟩
+
+/-- Finite face batch 20. -/
+theorem zenodoU16_faceBatch_20 :
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 7 ∈ tau.verts ∧ 15 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 7 ∈ tau.verts ∧ 16 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 15 ∈ tau.verts ∧ 16 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 7 ∈ tau.verts ∧ 15 ∈ tau.verts ∧ 16 ∈ tau.verts)).length = 2 := by
+  refine ⟨by decide, by decide, by decide, by decide⟩
+
+/-- Finite face batch 21. -/
+theorem zenodoU16_faceBatch_21 :
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 8 ∈ tau.verts ∧ 9 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 8 ∈ tau.verts ∧ 12 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 1 ∈ tau.verts ∧ 9 ∈ tau.verts ∧ 12 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau => 8 ∈ tau.verts ∧ 9 ∈ tau.verts ∧ 12 ∈ tau.verts)).length = 2 := by
+  refine ⟨by decide, by decide, by decide, by decide⟩
+
 end Poincare
