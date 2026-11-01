@@ -2370,4 +2370,15 @@ theorem zenodoU16_boundedFaceIncidence :
   · exact zenodoU16_quantifiedFaceBatch_103
   · exact zenodoU16_quantifiedFaceBatch_104
 
+/-- Closed-core certificate for the exact finite U(16) fixture.
+Uses previously verified vertex distinctness, pairwise uniqueness,
+and the complete quantified face-incidence assembly. -/
+theorem zenodoU16_closedCore :
+    ClosedTriangulationCore zenodoU16Original := by
+  refine ⟨?_, zenodoU16_full_pairwise, ?_⟩
+  · intro tau htau
+    exact zenodoU16_tets_nodup.mem htau
+  · exact (boundedRepresentedFaceIncidence_iff
+      zenodoU16Original).mp zenodoU16_boundedFaceIncidence
+
 end Poincare
