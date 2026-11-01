@@ -45,6 +45,6 @@ theorem zenodoU16_firstThree_pairwise :
       rcases hsigma with rfl
       exact tet_not_same_of_separating_vertex
         ⟨1, 2, 3, 9⟩ ⟨1, 2, 5, 10⟩ 9 (by decide) (by decide)
-    · exact List.Pairwise.nil
+    · exact List.Pairwise.cons (by simp) List.Pairwise.nil
 
 end Poincare
