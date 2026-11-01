@@ -75,6 +75,26 @@ inductive FanReentryModeStep (K : Triangulation) :
       FanReentryModeStep K
         (.reentry old) (.fan next)
 
+/-- The genuine next-chord output of the existing fan continuation
+produces a linked fan-to-fan step, retaining both chord endpoints.
+This handles only that output case; other continuation branches remain open. -/
+theorem FanReentryModeStep.exists_fan_next_of_chord_successor
+    {K : Triangulation}
+    (old : HighFanState K)
+    (hnext : Nonempty
+      (FanChordTransition K old.transition.z0 old.transition.z1)) :
+    ∃ next : HighFanState K,
+      FanReentryModeStep K (.fan old) (.fan next) := by
+  obtain ⟨T'⟩ := hnext
+  let next : HighFanState K :=
+    { v := old.transition.z0
+      x := old.transition.z1
+      v_supported := old.transition.z0_supported
+      x_supported := old.transition.z1_supported
+      endpoints_ne := old.transition.endpoints_ne
+      transition := T' }
+  exact ⟨next, FanReentryModeStep.fan_next old next rfl rfl⟩
+
 /-- Every linked fan-to-fan step changes the unordered central edge. -/
 theorem FanReentryModeStep.fan_to_fan_canonicalEdgeKey_ne
     {K : Triangulation}
