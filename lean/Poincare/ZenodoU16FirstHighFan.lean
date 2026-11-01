@@ -104,6 +104,6 @@ theorem zenodoU16_tets_nodup :
 theorem zenodoU16_tets_pairwise :
     zenodoU16Original.tets.Pairwise
       (fun tau sigma => ¬ SameTetVertices tau sigma) := by
-  decide
+  simp [zenodoU16Original, List.pairwise_cons, SameTetVertices, Tet.verts]
 
 end Poincare
