@@ -100,4 +100,10 @@ theorem zenodoU16_tets_nodup :
     zenodoU16Original.tets.Forall (fun tau => tau.verts.Nodup) := by
   decide
 
+/-- All 104 U(16) tetrahedra represent distinct vertex sets. -/
+theorem zenodoU16_tets_pairwise :
+    zenodoU16Original.tets.Pairwise
+      (fun tau sigma => ¬ SameTetVertices tau sigma) := by
+  decide
+
 end Poincare
