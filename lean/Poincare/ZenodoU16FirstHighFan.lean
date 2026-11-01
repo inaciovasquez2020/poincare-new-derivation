@@ -82,7 +82,10 @@ theorem zenodoU16_first_highFan :
         by simp [s3, t3, LinkTriangle.verts]⟩⟩
   have h34 : (vertexLinkStarGraph K 2 7).Adj s3 s4 := by
     rw [vertexLinkStarGraph_adj]
-    exact ⟨by decide, ⟨hm3, hm4, 14, by decide, by decide, by decide⟩⟩
+    exact ⟨by simp [s3, s4, t3, t4],
+      ⟨hm3, hm4, 14, by decide,
+        by simp [s3, t3, LinkTriangle.verts],
+        by simp [s4, t4, LinkTriangle.verts]⟩⟩
   have h40 : (vertexLinkStarGraph K 2 7).Adj s4 s0 := by
     rw [vertexLinkStarGraph_adj]
     exact ⟨by decide, ⟨hm4, hm0, 4, by decide, by decide, by decide⟩⟩
