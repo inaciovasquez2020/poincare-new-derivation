@@ -133,4 +133,17 @@ instance boundedRepresentedFaceIncidence_decidable (K : Triangulation) :
   unfold BoundedRepresentedFaceIncidence
   infer_instance
 
+/-- First bounded batch: exact incidence counts for the four distinct
+faces of the first U(16) tetrahedron ⟨1,2,3,6⟩. -/
+theorem zenodoU16_firstTet_faceIncidence :
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 2 ∈ tau.verts ∧ 3 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 2 ∈ tau.verts ∧ 6 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      1 ∈ tau.verts ∧ 3 ∈ tau.verts ∧ 6 ∈ tau.verts)).length = 2 ∧
+    (zenodoU16Original.tets.filter (fun tau =>
+      2 ∈ tau.verts ∧ 3 ∈ tau.verts ∧ 6 ∈ tau.verts)).length = 2 := by
+  refine ⟨by decide, by decide, by decide, by decide⟩
+
 end Poincare
