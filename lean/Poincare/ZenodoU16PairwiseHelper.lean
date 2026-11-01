@@ -89,4 +89,11 @@ theorem tet_boundedPairwise_implies_pairwise (ts : List Tet)
     intro a b hab hs
     exact hab ((tetSameVerticesBounded_iff a b).mpr hs))
 
+/-- Exhaustive finite vertex-set uniqueness check for the 104-tetrahedron fixture.
+No extensional quantification over Nat is evaluated by decide. -/
+theorem zenodoU16_full_boundedPairwise :
+    zenodoU16Original.tets.Pairwise
+      (fun tau sigma => ¬ tetSameVerticesBounded tau sigma) := by
+  decide
+
 end Poincare
