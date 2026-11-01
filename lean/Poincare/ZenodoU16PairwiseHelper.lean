@@ -2258,4 +2258,116 @@ theorem zenodoU16_quantifiedFaceBatch_104 :
             c ∈ sigma.verts)).length = 2 := by
   decide
 
+/-- Assembly of the 104 independently verified quantified face certificates.
+This proves only the finite represented-face incidence property. -/
+theorem zenodoU16_boundedFaceIncidence :
+    BoundedRepresentedFaceIncidence zenodoU16Original := by
+  intro tau htau
+  simp only [zenodoU16Original, List.mem_cons, List.mem_nil_iff, or_false] at htau
+  rcases htau with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
+  · exact zenodoU16_firstTet_quantifiedFaceIncidence
+  · exact zenodoU16_quantifiedFaceBatch_2
+  · exact zenodoU16_quantifiedFaceBatch_3
+  · exact zenodoU16_quantifiedFaceBatch_4
+  · exact zenodoU16_quantifiedFaceBatch_5
+  · exact zenodoU16_quantifiedFaceBatch_6
+  · exact zenodoU16_quantifiedFaceBatch_7
+  · exact zenodoU16_quantifiedFaceBatch_8
+  · exact zenodoU16_quantifiedFaceBatch_9
+  · exact zenodoU16_quantifiedFaceBatch_10
+  · exact zenodoU16_quantifiedFaceBatch_11
+  · exact zenodoU16_quantifiedFaceBatch_12
+  · exact zenodoU16_quantifiedFaceBatch_13
+  · exact zenodoU16_quantifiedFaceBatch_14
+  · exact zenodoU16_quantifiedFaceBatch_15
+  · exact zenodoU16_quantifiedFaceBatch_16
+  · exact zenodoU16_quantifiedFaceBatch_17
+  · exact zenodoU16_quantifiedFaceBatch_18
+  · exact zenodoU16_quantifiedFaceBatch_19
+  · exact zenodoU16_quantifiedFaceBatch_20
+  · exact zenodoU16_quantifiedFaceBatch_21
+  · exact zenodoU16_quantifiedFaceBatch_22
+  · exact zenodoU16_quantifiedFaceBatch_23
+  · exact zenodoU16_quantifiedFaceBatch_24
+  · exact zenodoU16_quantifiedFaceBatch_25
+  · exact zenodoU16_quantifiedFaceBatch_26
+  · exact zenodoU16_quantifiedFaceBatch_27
+  · exact zenodoU16_quantifiedFaceBatch_28
+  · exact zenodoU16_quantifiedFaceBatch_29
+  · exact zenodoU16_quantifiedFaceBatch_30
+  · exact zenodoU16_quantifiedFaceBatch_31
+  · exact zenodoU16_quantifiedFaceBatch_32
+  · exact zenodoU16_quantifiedFaceBatch_33
+  · exact zenodoU16_quantifiedFaceBatch_34
+  · exact zenodoU16_quantifiedFaceBatch_35
+  · exact zenodoU16_quantifiedFaceBatch_36
+  · exact zenodoU16_quantifiedFaceBatch_37
+  · exact zenodoU16_quantifiedFaceBatch_38
+  · exact zenodoU16_quantifiedFaceBatch_39
+  · exact zenodoU16_quantifiedFaceBatch_40
+  · exact zenodoU16_quantifiedFaceBatch_41
+  · exact zenodoU16_quantifiedFaceBatch_42
+  · exact zenodoU16_quantifiedFaceBatch_43
+  · exact zenodoU16_quantifiedFaceBatch_44
+  · exact zenodoU16_quantifiedFaceBatch_45
+  · exact zenodoU16_quantifiedFaceBatch_46
+  · exact zenodoU16_quantifiedFaceBatch_47
+  · exact zenodoU16_quantifiedFaceBatch_48
+  · exact zenodoU16_quantifiedFaceBatch_49
+  · exact zenodoU16_quantifiedFaceBatch_50
+  · exact zenodoU16_quantifiedFaceBatch_51
+  · exact zenodoU16_quantifiedFaceBatch_52
+  · exact zenodoU16_quantifiedFaceBatch_53
+  · exact zenodoU16_quantifiedFaceBatch_54
+  · exact zenodoU16_quantifiedFaceBatch_55
+  · exact zenodoU16_quantifiedFaceBatch_56
+  · exact zenodoU16_quantifiedFaceBatch_57
+  · exact zenodoU16_quantifiedFaceBatch_58
+  · exact zenodoU16_quantifiedFaceBatch_59
+  · exact zenodoU16_quantifiedFaceBatch_60
+  · exact zenodoU16_quantifiedFaceBatch_61
+  · exact zenodoU16_quantifiedFaceBatch_62
+  · exact zenodoU16_quantifiedFaceBatch_63
+  · exact zenodoU16_quantifiedFaceBatch_64
+  · exact zenodoU16_quantifiedFaceBatch_65
+  · exact zenodoU16_quantifiedFaceBatch_66
+  · exact zenodoU16_quantifiedFaceBatch_67
+  · exact zenodoU16_quantifiedFaceBatch_68
+  · exact zenodoU16_quantifiedFaceBatch_69
+  · exact zenodoU16_quantifiedFaceBatch_70
+  · exact zenodoU16_quantifiedFaceBatch_71
+  · exact zenodoU16_quantifiedFaceBatch_72
+  · exact zenodoU16_quantifiedFaceBatch_73
+  · exact zenodoU16_quantifiedFaceBatch_74
+  · exact zenodoU16_quantifiedFaceBatch_75
+  · exact zenodoU16_quantifiedFaceBatch_76
+  · exact zenodoU16_quantifiedFaceBatch_77
+  · exact zenodoU16_quantifiedFaceBatch_78
+  · exact zenodoU16_quantifiedFaceBatch_79
+  · exact zenodoU16_quantifiedFaceBatch_80
+  · exact zenodoU16_quantifiedFaceBatch_81
+  · exact zenodoU16_quantifiedFaceBatch_82
+  · exact zenodoU16_quantifiedFaceBatch_83
+  · exact zenodoU16_quantifiedFaceBatch_84
+  · exact zenodoU16_quantifiedFaceBatch_85
+  · exact zenodoU16_quantifiedFaceBatch_86
+  · exact zenodoU16_quantifiedFaceBatch_87
+  · exact zenodoU16_quantifiedFaceBatch_88
+  · exact zenodoU16_quantifiedFaceBatch_89
+  · exact zenodoU16_quantifiedFaceBatch_90
+  · exact zenodoU16_quantifiedFaceBatch_91
+  · exact zenodoU16_quantifiedFaceBatch_92
+  · exact zenodoU16_quantifiedFaceBatch_93
+  · exact zenodoU16_quantifiedFaceBatch_94
+  · exact zenodoU16_quantifiedFaceBatch_95
+  · exact zenodoU16_quantifiedFaceBatch_96
+  · exact zenodoU16_quantifiedFaceBatch_97
+  · exact zenodoU16_quantifiedFaceBatch_98
+  · exact zenodoU16_quantifiedFaceBatch_99
+  · exact zenodoU16_quantifiedFaceBatch_100
+  · exact zenodoU16_quantifiedFaceBatch_101
+  · exact zenodoU16_quantifiedFaceBatch_102
+  · exact zenodoU16_quantifiedFaceBatch_103
+  · exact zenodoU16_quantifiedFaceBatch_104
+
 end Poincare
