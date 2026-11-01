@@ -65,4 +65,25 @@ theorem zenodoU16_edge27_cyclicAdjacency :
   · exact ⟨by decide, by decide, 14, by decide, by decide, by decide⟩
   · exact ⟨by decide, by decide, 4, by decide, by decide, by decide⟩
 
+
+/-- Five explicit adjacent link-triangle pairs around the represented edge (4,9).
+This checks local incidence only; a covering graph walk is not yet claimed. -/
+theorem zenodoU16_edge49_cyclicAdjacency :
+    VertexLinkStarAdjacent zenodoU16Original 4 9
+      ⟨1, 9, 11⟩ ⟨5, 9, 11⟩ ∧
+    VertexLinkStarAdjacent zenodoU16Original 4 9
+      ⟨5, 9, 11⟩ ⟨5, 6, 9⟩ ∧
+    VertexLinkStarAdjacent zenodoU16Original 4 9
+      ⟨5, 6, 9⟩ ⟨6, 9, 16⟩ ∧
+    VertexLinkStarAdjacent zenodoU16Original 4 9
+      ⟨6, 9, 16⟩ ⟨1, 9, 16⟩ ∧
+    VertexLinkStarAdjacent zenodoU16Original 4 9
+      ⟨1, 9, 16⟩ ⟨1, 9, 11⟩ := by
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · exact ⟨by decide, by decide, 11, by decide, by decide, by decide⟩
+  · exact ⟨by decide, by decide, 5, by decide, by decide, by decide⟩
+  · exact ⟨by decide, by decide, 6, by decide, by decide, by decide⟩
+  · exact ⟨by decide, by decide, 16, by decide, by decide, by decide⟩
+  · exact ⟨by decide, by decide, 1, by decide, by decide, by decide⟩
+
 end Poincare
