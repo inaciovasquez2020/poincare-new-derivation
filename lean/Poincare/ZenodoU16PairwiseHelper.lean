@@ -31,4 +31,20 @@ theorem zenodoU16_first_two_followers :
   · exact tet_not_same_of_separating_vertex
       ⟨1, 2, 3, 6⟩ ⟨1, 2, 5, 10⟩ 6 (by decide) (by decide)
 
+/-- Pairwise vertex-set uniqueness of a bounded three-tetrahedron batch. -/
+theorem zenodoU16_firstThree_pairwise :
+    ([⟨1, 2, 3, 6⟩, ⟨1, 2, 3, 9⟩, ⟨1, 2, 5, 10⟩] : List Tet).Pairwise
+      (fun tau sigma => ¬ SameTetVertices tau sigma) := by
+  rw [List.pairwise_cons]
+  constructor
+  · exact zenodoU16_first_two_followers
+  · rw [List.pairwise_cons]
+    constructor
+    · intro sigma hsigma
+      simp only [List.mem_cons, List.mem_nil_iff, or_false] at hsigma
+      rcases hsigma with rfl
+      exact tet_not_same_of_separating_vertex
+        ⟨1, 2, 3, 9⟩ ⟨1, 2, 5, 10⟩ 9 (by decide) (by decide)
+    · exact List.Pairwise.nil
+
 end Poincare
