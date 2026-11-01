@@ -19,6 +19,9 @@ jobs:
         with:
           use-github-cache: false
 
+      - name: Build isolated sigmaD mod-2 cycle
+        run: lake build Poincare.GlobalSigmaDMod2Cycle
+
       - name: Verify corrected Perelman interface and its axiom dependencies
         shell: bash
         run: |
