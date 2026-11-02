@@ -49,6 +49,9 @@ jobs:
             simp [sigmaD, Finset.powersetCard_succ_insert,
               hsmall, hone, hlarge, hab, hac, had, hbc, hbd, hcd,
               Finset.insert_comm]
+            ext face
+            simp only [Finset.mem_insert, Finset.mem_singleton]
+            tauto
           
           end SigmaDIsolated
           LEAN
