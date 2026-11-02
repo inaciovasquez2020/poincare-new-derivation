@@ -16,6 +16,7 @@ jobs:
       - name: Set up Lean
         uses: leanprover/lean-action@v1
         with:
+          auto-config: false
           use-github-cache: false
       - name: Compile standalone finite-set equality
         shell: bash
