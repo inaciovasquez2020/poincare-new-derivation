@@ -23,9 +23,18 @@ theorem sigmaD_isCycle_edges {a b c d : Nat}
   have hcardS : S.card = 4 := by
     simp [S, hab, hac, had, hbc, hbd, hcd]
   have hSigma : sigmaD a b c d = S.powersetCard 3 := by
+    have hsmall : Finset.powersetCard 2 ({d} : Finset Nat) = ∅ :=
+      Finset.powersetCard_eq_empty.mpr (by simp)
+    have hone : Finset.powersetCard 1 ({d} : Finset Nat) = {{d}} := by
+      simpa using Finset.powersetCard_self ({d} : Finset Nat)
+    have hlarge : Finset.powersetCard 3 ({d} : Finset Nat) = ∅ :=
+      Finset.powersetCard_eq_empty.mpr (by simp)
     simp [S, sigmaD, Finset.powersetCard_succ_insert,
-      hab, hac, had, hbc, hbd, hcd,
+      hsmall, hone, hlarge, hab, hac, had, hbc, hbd, hcd,
       Finset.insert_comm]
+    ext face
+    simp only [Finset.mem_insert, Finset.mem_singleton]
+    tauto
   intro g hg
   rw [hSigma]
   by_cases hsub : g ⊆ S
