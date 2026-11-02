@@ -1,0 +1,54 @@
+name: Isolated SigmaD face equality
+
+on:
+  push:
+    branches:
+      - proof/sigmaD-mod2-cycle-isolated-20261101
+
+permissions:
+  contents: read
+
+jobs:
+  isolated-face-equality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Lean
+        uses: leanprover/lean-action@v1
+        with:
+          use-github-cache: false
+      - name: Compile standalone finite-set equality
+        shell: bash
+        run: |
+          cat > /tmp/SigmaDFaceEquality.lean <<'LEAN'
+          import Mathlib.Tactic
+          
+          namespace SigmaDIsolated
+          
+          def sigmaD (a b c d : Nat) : Finset (Finset Nat) :=
+            {{a, b, c}, {a, b, d}, {a, c, d}, {b, c, d}}
+          
+          theorem sigmaD_eq_powersetCard {a b c d : Nat}
+              (hn : [a, b, c, d].Nodup) :
+              sigmaD a b c d =
+                (show Finset Nat from {a, b, c, d}).powersetCard 3 := by
+            classical
+            have hdistinct :
+                a ≠ b ∧ a ≠ c ∧ a ≠ d ∧ b ≠ c ∧ b ≠ d ∧ c ≠ d := by
+              simp only [List.nodup_cons, List.mem_cons, List.mem_singleton,
+                List.not_mem_nil, not_or] at hn
+              aesop
+            rcases hdistinct with ⟨hab, hac, had, hbc, hbd, hcd⟩
+            have hsmall : Finset.powersetCard 2 ({d} : Finset Nat) = ∅ :=
+              Finset.powersetCard_eq_empty.mpr (by simp)
+            have hone : Finset.powersetCard 1 ({d} : Finset Nat) = {{d}} := by
+              simpa using Finset.powersetCard_self ({d} : Finset Nat)
+            have hlarge : Finset.powersetCard 3 ({d} : Finset Nat) = ∅ :=
+              Finset.powersetCard_eq_empty.mpr (by simp)
+            simp [sigmaD, Finset.powersetCard_succ_insert,
+              hsmall, hone, hlarge, hab, hac, had, hbc, hbd, hcd,
+              Finset.insert_comm]
+          
+          end SigmaDIsolated
+          LEAN
+          lake env lean /tmp/SigmaDFaceEquality.lean
