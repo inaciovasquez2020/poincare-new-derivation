@@ -62,12 +62,12 @@ jobs:
             classical
             have hfilter :
                 (S.powersetCard 3).filter (g ⊆ ·) =
-                  ((S \\ g).powersetCard (3 - g.card)).image (· ∪ g) := by
+                  ((S \ g).powersetCard (3 - g.card)).image (· ∪ g) := by
               ext x
               simp only [Finset.mem_filter, Finset.mem_powersetCard, Finset.mem_image]
               constructor
               · intro ⟨⟨hxt, hxn⟩, hsx⟩
-                exact ⟨x \\ g,
+                exact ⟨x \ g,
                   ⟨fun y hy => Finset.mem_sdiff.mpr
                     ⟨hxt (Finset.mem_sdiff.mp hy).1, (Finset.mem_sdiff.mp hy).2⟩,
                     by rw [Finset.card_sdiff_of_subset hsx, hxn]⟩,
@@ -81,13 +81,13 @@ jobs:
                     Finset.disjoint_sdiff_self_left), hyn]
                 omega
             have hinj :
-                Set.InjOn (· ∪ g) ↑((S \\ g).powersetCard (3 - g.card)) :=
+                Set.InjOn (· ∪ g) ↑((S \ g).powersetCard (3 - g.card)) :=
               fun a ha b hb hab =>
                 (Finset.union_sdiff_cancel_right
                   (Finset.disjoint_of_subset_left
                     (Finset.mem_powersetCard.mp ha).1
                     Finset.disjoint_sdiff_self_left)).symm.trans
-                ((congrArg (· \\ g) hab).trans
+                ((congrArg (· \ g) hab).trans
                   (Finset.union_sdiff_cancel_right
                     (Finset.disjoint_of_subset_left
                       (Finset.mem_powersetCard.mp hb).1
