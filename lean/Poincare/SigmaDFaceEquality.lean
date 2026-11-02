@@ -1,0 +1,77 @@
+import Mathlib.Tactic
+
+namespace SigmaDIsolated
+
+def sigmaD (a b c d : Nat) : Finset (Finset Nat) :=
+  {{a, b, c}, {a, b, d}, {a, c, d}, {b, c, d}}
+
+theorem sigmaD_eq_powersetCard {a b c d : Nat}
+    (hn : [a, b, c, d].Nodup) :
+    sigmaD a b c d =
+      (show Finset Nat from {a, b, c, d}).powersetCard 3 := by
+  classical
+  have hdistinct :
+      a ≠ b ∧ a ≠ c ∧ a ≠ d ∧ b ≠ c ∧ b ≠ d ∧ c ≠ d := by
+    simp only [List.nodup_cons, List.mem_cons, List.mem_singleton,
+      List.not_mem_nil, not_or] at hn
+    aesop
+  rcases hdistinct with ⟨hab, hac, had, hbc, hbd, hcd⟩
+  have hsmall : Finset.powersetCard 2 ({d} : Finset Nat) = ∅ :=
+    Finset.powersetCard_eq_empty.mpr (by simp)
+  have hone : Finset.powersetCard 1 ({d} : Finset Nat) = {{d}} := by
+    simpa using Finset.powersetCard_self ({d} : Finset Nat)
+  have hlarge : Finset.powersetCard 3 ({d} : Finset Nat) = ∅ :=
+    Finset.powersetCard_eq_empty.mpr (by simp)
+  simp [sigmaD, Finset.powersetCard_succ_insert,
+    hsmall, hone, hlarge, hab, hac, had, hbc, hbd, hcd,
+    Finset.insert_comm]
+  ext face
+  simp only [Finset.mem_insert, Finset.mem_singleton]
+  tauto
+
+theorem count_three_faces_containing_edge
+    (S g : Finset Nat)
+    (hS : S.card = 4) (hg : g.card = 2) (hsub : g ⊆ S) :
+    ((S.powersetCard 3).filter (fun f => g ⊆ f)).card = 2 := by
+  classical
+  have hdiff : Disjoint (S \ g) g := by
+    apply Finset.disjoint_left.mpr
+    intro z hz hz_g
+    exact (Finset.mem_sdiff.mp hz).2 hz_g
+  have hfilter :
+      (S.powersetCard 3).filter (g ⊆ ·) =
+        ((S \ g).powersetCard (3 - g.card)).image (· ∪ g) := by
+    ext x
+    simp only [Finset.mem_filter, Finset.mem_powersetCard, Finset.mem_image]
+    constructor
+    · intro ⟨⟨hxt, hxn⟩, hsx⟩
+      exact ⟨x \ g,
+        ⟨fun y hy => Finset.mem_sdiff.mpr
+          ⟨hxt (Finset.mem_sdiff.mp hy).1, (Finset.mem_sdiff.mp hy).2⟩,
+          by rw [Finset.card_sdiff_of_subset hsx, hxn]⟩,
+        Finset.sdiff_union_of_subset hsx⟩
+    · rintro ⟨y, ⟨hyt, hyn⟩, rfl⟩
+      refine ⟨⟨Finset.union_subset
+        (hyt.trans Finset.sdiff_subset) hsub, ?_⟩,
+        Finset.subset_union_right⟩
+      rw [Finset.card_union_of_disjoint
+        (Finset.disjoint_of_subset_left hyt
+          hdiff), hyn]
+      omega
+  have hinj :
+      Set.InjOn (· ∪ g) ↑((S \ g).powersetCard (3 - g.card)) :=
+    fun a ha b hb hab =>
+      (Finset.union_sdiff_cancel_right
+        (Finset.disjoint_of_subset_left
+          (Finset.mem_powersetCard.mp ha).1
+          hdiff)).symm.trans
+      ((congrArg (· \ g) hab).trans
+        (Finset.union_sdiff_cancel_right
+          (Finset.disjoint_of_subset_left
+            (Finset.mem_powersetCard.mp hb).1
+            hdiff)))
+  rw [hfilter, Finset.card_image_of_injOn hinj,
+    Finset.card_powersetCard, Finset.card_sdiff_of_subset hsub, hS, hg]
+  norm_num
+
+end SigmaDIsolated
