@@ -165,6 +165,36 @@ jobs:
       - name: Build witness-anchored continuation module
         run: lake build Poincare.GlobalFanChordWitnessAnchoredContinuation
 
+      - name: Verify PhiSupport Euler count and axiom dependencies
+        shell: bash
+        run: |
+          lake build Poincare.PhiSupportEulerCount
+          printf '%s\n' \
+            'import Poincare.PhiSupportEulerCount' \
+            '#print axioms Poincare.ClosedTriangulationCore.PhiSupport_eq_four_mul_tets_sub_vertices' \
+            > /tmp/phi-support-euler-count-audit.lean
+          lake env lean /tmp/phi-support-euler-count-audit.lean > /tmp/phi-support-euler-count-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          report = Path("/tmp/phi-support-euler-count-axioms.txt").read_text()
+          name = "Poincare.ClosedTriangulationCore.PhiSupport_eq_four_mul_tets_sub_vertices"
+          prefix = f"'{name}'"
+          if f"{prefix} does not depend on any axioms" in report:
+              found = set()
+          else:
+              match = re.search(
+                  re.escape(prefix) + r" depends on axioms:\s*\[([^\]]*)\]",
+                  report,
+              )
+              assert match is not None, f"missing or invalid axiom report: {report}"
+              found = {s.strip() for s in match.group(1).split(",") if s.strip()}
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          assert found <= allowed, f"unapproved axioms: {found - allowed}"
+          print(f"{name}: allowed axioms only: {sorted(found)}")
+          PY
+
       - name: Build principal theorem module
         run: lake build Poincare.GlobalMove32ReentryLeastBoundaryEscapeIncidenceThreeFork
 
