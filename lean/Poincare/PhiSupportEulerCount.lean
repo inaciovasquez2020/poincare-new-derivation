@@ -97,7 +97,6 @@ theorem ClosedTriangulationCore.PhiSupport_eq_four_mul_tets_sub_vertices
       PhiSupport K + 4 * (vertexSupport K).length =
           (∑ v ∈ s, vertexDefect K v) + 4 * s.card := by
             rw [phiSupport_eq_finset_sum K, hcard]
-            rfl
       _ = (∑ v ∈ s, vertexDegree K v) := hsum
       _ = 4 * K.tets.length := sum_vertexDegrees_eq_four_mul_tets K
   omega
