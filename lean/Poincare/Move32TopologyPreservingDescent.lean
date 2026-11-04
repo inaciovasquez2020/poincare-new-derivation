@@ -1,6 +1,7 @@
 import Poincare.Move32ClosedCorePreservation
 import Poincare.Move32DegreeSupportBalance
 import Poincare.Move32GeometricCarrierHomeomorph
+import Poincare.GlobalPhiSupportDegreeGap
 
 namespace Poincare
 
