@@ -104,4 +104,23 @@ theorem ClosedTriangulationCore.move32Site_replace_unconditional_descent
     ⟨hcore.move32GeometricCarrierHomeomorph s hlegal⟩⟩
   omega
 
+
+/-- Under the absence of topology-preserving strict PhiSupport descent,
+no legal 3-to-2 move exists on a closed core. -/
+theorem ClosedTriangulationCore.no_legal_move32_of_no_strict_descent
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hNoDescent :
+      ¬ ∃ K',
+        ClosedTriangulationCore K' ∧
+        PhiSupport K' < PhiSupport K ∧
+        Nonempty
+          (triangulationTopologicalGeometricCarrier K ≃ₜ
+            triangulationTopologicalGeometricCarrier K')) :
+    ¬ ∃ s : Move32Site, s.LegalIn K := by
+  rintro ⟨s, hlegal⟩
+  exact hNoDescent
+    ⟨s.replace K,
+      hcore.move32Site_replace_unconditional_descent s hlegal⟩
+
 end Poincare
