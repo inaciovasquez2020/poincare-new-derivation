@@ -63,12 +63,12 @@ theorem ClosedTriangulationCore.offStar_component_has_crossing
     | refl =>
         intro ha
         exact ha
-    | @tail a b c hprev hstep ih =>
+    | @tail mid last hprev hstep ih =>
         intro ha
-        have hb : b ∈ C := ih ha
-        by_cases hc : c ∈ vertexLinkStarTriangles K v x
-        · exact (hnoCross b hb c hc hstep).elim
-        · exact hCclosed b hb c hstep hc
+        have hmid : mid ∈ C := ih ha
+        by_cases hlast : last ∈ vertexLinkStarTriangles K v x
+        · exact (hnoCross mid hmid last hlast hstep).elim
+        · exact hCclosed mid hmid last hstep hlast
   exact (hCoff ρ₀ (hstay hpath hσ)) hρstar
 
 end Poincare
