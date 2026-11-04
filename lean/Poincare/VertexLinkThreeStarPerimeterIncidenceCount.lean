@@ -35,19 +35,24 @@ theorem ClosedTriangulationCore.three_star_perimeter_incidence_count
       (hx : x ∈ σ.verts) :
       ((σ.edges hnodup).filter
         (fun f => decide (¬(x = f.lo ∨ x = f.hi)))).length = 1 := by
-    rcases σ with ⟨a, b, c⟩
-    have hn : (a ≠ b ∧ a ≠ c) ∧ b ≠ c := by
-      simpa [LinkTriangle.verts] using hnodup
-    rcases hn with ⟨⟨hab, hac⟩, hbc⟩
-    have hx_cases : x = a ∨ x = b ∨ x = c := by
-      simpa [LinkTriangle.verts] using hx
-    rcases hx_cases with hxa | hxb | hxc
-    · subst x
-      simp [LinkTriangle.edges, LinkEdge.incident_ofDistinct_iff, hab, hac, hbc]
-    · subst x
-      simp [LinkTriangle.edges, LinkEdge.incident_ofDistinct_iff, hab, hac, hbc]
-    · subst x
-      simp [LinkTriangle.edges, LinkEdge.incident_ofDistinct_iff, hab, hac, hbc]
+    have hinc :
+        ((σ.edges hnodup).filter
+          (fun f => decide (x = f.lo ∨ x = f.hi))).length = 2 := by
+      simpa [hx] using
+        LinkTriangle.incident_edges_filter_length σ hnodup x
+    have htotal :
+        (σ.edges hnodup).length =
+          ((σ.edges hnodup).filter
+            (fun f => decide (x = f.lo ∨ x = f.hi))).length +
+          ((σ.edges hnodup).filter
+            (fun f => decide (¬(x = f.lo ∨ x = f.hi)))).length := by
+      simpa only [decide_not] using
+        (List.length_eq_length_filter_add
+          (l := σ.edges hnodup)
+          (fun f : LinkEdge => decide (x = f.lo ∨ x = f.hi)))
+    have hlen : (σ.edges hnodup).length = 3 :=
+      LinkTriangle.edges_length σ hnodup
+    omega
   have hpoint
       (σ : {t : LinkTriangle // t ∈ vertexLinkStarTriangles K v x}) :
       ((σ.1.edges
@@ -71,7 +76,9 @@ theorem ClosedTriangulationCore.three_star_perimeter_incidence_count
     induction l with
     | nil => simp
     | cons a t ih =>
-        simp [hpoint a, ih]
+        simp only [List.map_cons, List.sum_cons, List.length_cons]
+        rw [hpoint a, ih]
+        omega
   rw [List.length_flatMap]
   calc
     _ = (vertexLinkStarTriangles K v x).attach.length := hsum _
