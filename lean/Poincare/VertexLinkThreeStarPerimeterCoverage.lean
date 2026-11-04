@@ -108,9 +108,17 @@ theorem ClosedTriangulationCore.incidenceThree_star_perimeterEdgeSet_eq
   have hcover (σ : LinkTriangle) :
       σ ∈ vertexLinkStarTriangles K v x ↔
         σ = σ₀ ∨ σ = σ₁ ∨ σ = σ₂ := by
-    have heq := congrArg (fun S : Finset LinkTriangle => σ ∈ S) hstarEq
-    simpa only [List.mem_toFinset, Finset.mem_insert,
-      Finset.mem_singleton] using heq.symm
+    constructor
+    · intro hσ
+      have hh : σ ∈ ({σ₀, σ₁, σ₂} : Finset LinkTriangle) := by
+        rw [hstarEq]
+        exact List.mem_toFinset.mpr hσ
+      simpa only [Finset.mem_insert, Finset.mem_singleton] using hh
+    · intro hσ
+      have hh : σ ∈ ({σ₀, σ₁, σ₂} : Finset LinkTriangle) := by
+        simpa only [Finset.mem_insert, Finset.mem_singleton] using hσ
+      rw [hstarEq] at hh
+      exact List.mem_toFinset.mp hh
 
   refine ⟨a, b, c, hab, hac, hbc, ?_⟩
   calc
