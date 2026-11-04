@@ -85,4 +85,23 @@ theorem ClosedTriangulationCore.move32Site_replace_PhiSupport_add_four_eq
   rcases hdCases with hd3 | hd4 | hd5 | hd6 <;>
     rcases heCases with he3 | he4 | he5 | he6 <;> omega
 
+
+/-- A legal 3-to-2 move on a closed core is an unconditional
+topology-preserving strict PhiSupport descent. -/
+theorem ClosedTriangulationCore.move32Site_replace_unconditional_descent
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (s : Move32Site)
+    (hlegal : s.LegalIn K) :
+    ClosedTriangulationCore (s.replace K) ∧
+      PhiSupport (s.replace K) < PhiSupport K ∧
+      Nonempty
+        (triangulationTopologicalGeometricCarrier K ≃ₜ
+          triangulationTopologicalGeometricCarrier (s.replace K)) := by
+  have hdrop :=
+    hcore.move32Site_replace_PhiSupport_add_four_eq s hlegal
+  refine ⟨hcore.move32Site_replace_closedCore s hlegal, ?_,
+    ⟨hcore.move32GeometricCarrierHomeomorph s hlegal⟩⟩
+  omega
+
 end Poincare
