@@ -62,6 +62,7 @@ theorem vertexLinkMod2_star_boundary_zero_of_center_endpoint
     · simp [hs]
   simp_rw [hterm]
   rw [← Finset.sum_filter]
-  simp [hcard]
+  simp only [Finset.sum_const, hcard]
+  decide
 
 end Poincare
