@@ -166,4 +166,23 @@ theorem CertifiedPachnerStep.move14_of_legal41_with_fresh_center
     hlegal.closedCore.move41Site_replace_closedCore s hlegal,
     Move41Site.center_not_mem_vertexSupport_replace hlegal, rfl⟩
 
+
+/-- A literal inverse 4→1 source has the selected target tetrahedron
+at the head of its tetrahedron list. Thus a non-head tetrahedron cannot
+be subdivided as an exact inverse step for the same site without first
+changing the representation. This is an obstruction, not a connectivity
+or universal insertion theorem. -/
+theorem move14_nonhead_exact_equality_impossible
+    {K P : Triangulation} (s : Move41Site)
+    (headTet : Tet) (tail : List Tet)
+    (hK : K.tets = headTet :: tail)
+    (hneq : headTet ≠ s.targetTet) :
+    K ≠ s.replace P := by
+  intro h
+  have htet := congrArg Triangulation.tets h
+  change K.tets = s.targetTet :: s.unchangedTets P at htet
+  rw [hK] at htet
+  injection htet with hhead _
+  exact hneq hhead
+
 end Poincare
