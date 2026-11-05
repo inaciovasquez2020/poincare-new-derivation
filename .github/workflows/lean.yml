@@ -162,6 +162,9 @@ jobs:
           print(f"{name}: allowed only {sorted(found)}")
           PY
 
+      - name: JIID audit isolated mixed-mode recurrence module
+        run: lake build Poincare.GlobalFanReentryModeFiniteRecurrence
+
       - name: Build finite witnessed-state module
         run: lake build Poincare.GlobalMove32FiniteWitnessState
       - name: Build witness-anchored continuation module
