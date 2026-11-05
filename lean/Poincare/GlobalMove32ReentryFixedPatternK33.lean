@@ -34,4 +34,19 @@ theorem fixedPattern_forces_K33_link :
   all_goals rcases hb with rfl | rfl | rfl
   all_goals decide
 
+
+/--
+The Euler equation and bipartite-face incidence inequality
+for a spherical embedding of K3,3 are incompatible.
+
+This arithmetic result does not establish the existence of
+a spherical embedding or derive the face equations.
+-/
+theorem fixedPattern_K33_spherical_face_count_impossible
+    (F : Nat)
+    (hEuler : 6 + F = 9 + 2)
+    (hFaceIncidence : 4 * F ≤ 2 * 9) :
+    False := by
+  omega
+
 end Poincare
