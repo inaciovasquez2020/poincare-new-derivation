@@ -145,4 +145,50 @@ theorem
         hqRet,
         hqOutside⟩
 
+
+/-- A witnessed return cannot preserve both source-face carrier
+containments under the existing geometric hypotheses. -/
+theorem witnessedReturn_not_both_sourceFaces_contained
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hlinks :
+      ∀ v ∈ vertexSupport K, VertexLinkConnected K v)
+    (hconn : TetrahedronVertexOverlapConnected K)
+    (hNoFour :
+      ∀ v ∈ vertexSupport K, vertexDegree K v ≠ 4)
+    (anchor prev ret : Move32Site)
+    (hanchorRealized : anchor.RealizedIn K)
+    (hanchorThree : anchor.SharedEdgeExactlyThree K)
+    (hprevRealized : prev.RealizedIn K)
+    (hretRealized : ret.RealizedIn K)
+    (hretThree : ret.SharedEdgeExactlyThree K)
+    (hstep : Move32SourceFaceWitnessedReentry K prev ret)
+    (hstate :
+      sharedSupportedEdgeState hcore anchor hanchorRealized =
+      sharedSupportedEdgeState hcore ret hretRealized) :
+    ¬ (
+      (∀ z ∈ [ret.a, ret.b, ret.c],
+        z ∈ [anchor.a, anchor.b, anchor.c,
+             anchor.d, anchor.e]) ∧
+      (∀ z ∈ [prev.a, prev.b, prev.c],
+        z ∈ [ret.a, ret.b, ret.c,
+             ret.d, ret.e])
+    ) := by
+  intro hboth
+  obtain ⟨hretInside, hprevInside⟩ := hboth
+
+  rcases
+    hcore.exists_return_sourceFace_vertex_outside_anchor_carrier_or_predecessor_sourceFace_vertex_outside_return_carrier_of_witnessedReentry_return_state_of_no_degree_four
+      hlinks hconn hNoFour
+      anchor prev ret
+      hanchorRealized hanchorThree
+      hprevRealized hretRealized hretThree
+      hstep hstate with hret | hprev
+
+  · obtain ⟨q, hq, hout⟩ := hret
+    exact hout (hretInside q hq)
+
+  · obtain ⟨q, hq, hout⟩ := hprev
+    exact hout (hprevInside q hq)
+
 end Poincare
