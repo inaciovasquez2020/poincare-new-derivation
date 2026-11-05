@@ -162,7 +162,9 @@ theorem exists_recurrent_fanReentryModeKey_classified
       cases hj : states j with
       | fan next =>
           have hstate : old.edgeState = next.edgeState := by
-            simpa [hi, hj] using hkey
+            have hkey' := hkey
+            rw [hi, hj] at hkey'
+            exact congrArg Prod.snd hkey'
 
           have hcanon :
               canonicalEdgeKey old.v old.x =
