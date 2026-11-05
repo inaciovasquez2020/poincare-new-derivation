@@ -223,4 +223,54 @@ theorem FanReentryModeStep.reentry_to_reentry_finiteKey_ne
       simpa [FanReentryModeState.finiteKey,
         witnessedReentryStateOfStep] using hsnd
 
+
+/-- Every recurrent mixed-mode key return is nonconsecutive. -/
+theorem exists_nonconsecutive_recurrent_fanReentryModeKey
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (states : Nat → FanReentryModeState K)
+    (hstep :
+      ∀ n, FanReentryModeStep K (states n) (states (n + 1))) :
+    ∃ i j,
+      i + 1 < j ∧
+      j ≤ Fintype.card (FanReentryModeKey K) ∧
+      (states i).finiteKey hcore =
+        (states j).finiteKey hcore ∧
+      ∀ n,
+        i ≤ n →
+        n < j →
+        FanReentryModeStep K (states n) (states (n + 1)) := by
+  obtain ⟨i, j, hij, hbound, hkey, hsegment, hbranch⟩ :=
+    exists_recurrent_fanReentryModeKey_classified
+      hcore states hstep
+
+  have hgap : i + 1 < j := by
+    rcases hbranch with hfan | hreentry
+    · obtain ⟨old, next, hi, hj, hgap, hcanon⟩ := hfan
+      exact hgap
+    · obtain ⟨old, next, hi, hj⟩ := hreentry
+      by_contra hnot
+      have hsucc : j = i + 1 := by omega
+
+      have hlink :
+          FanReentryModeStep K
+            (.reentry old) (.reentry next) := by
+        have h := hsegment i (Nat.le_refl i) (by omega)
+        have hj' : states (i + 1) = .reentry next := by
+          simpa [hsucc] using hj
+        simpa [hi, hj'] using h
+
+      have hneq :=
+        FanReentryModeStep.reentry_to_reentry_finiteKey_ne
+          hcore hlink
+
+      have hsame :
+          (FanReentryModeState.reentry next).finiteKey hcore =
+            (FanReentryModeState.reentry old).finiteKey hcore := by
+        simpa only [hi, hj] using hkey.symm
+
+      exact hneq hsame
+
+  exact ⟨i, j, hgap, hbound, hkey, hsegment⟩
+
 end Poincare
