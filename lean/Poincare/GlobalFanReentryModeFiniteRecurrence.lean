@@ -162,7 +162,7 @@ theorem exists_recurrent_fanReentryModeKey_classified
       cases hj : states j with
       | fan next =>
           have hstate : old.edgeState = next.edgeState := by
-            simpa [hi, hj] using hkey
+            simpa [hi, hj, FanReentryModeState.finiteKey] using congrArg Prod.snd hkey
 
           have hcanon :
               canonicalEdgeKey old.v old.x =
@@ -187,21 +187,19 @@ theorem exists_recurrent_fanReentryModeKey_classified
             exact hneq hcanon.symm
 
           exact
-            Or.inl ⟨old, next, hi, hj, hgap, hcanon⟩
+            Or.inl ⟨old, next, rfl, rfl, hgap, hcanon⟩
 
       | reentry next =>
-          have hfalse : False := by
-            simpa [hi, hj, FanReentryModeState.finiteKey] using hkey
-          exact hfalse.elim
+          have htag := congrArg Prod.fst hkey
+          simp [hi, hj, FanReentryModeState.finiteKey] at htag
 
   | reentry old =>
       cases hj : states j with
       | fan next =>
-          have hfalse : False := by
-            simpa [hi, hj, FanReentryModeState.finiteKey] using hkey
-          exact hfalse.elim
+          have htag := congrArg Prod.fst hkey
+          simp [hi, hj, FanReentryModeState.finiteKey] at htag
 
       | reentry next =>
-          exact Or.inr ⟨old, next, hi, hj⟩
+          exact Or.inr ⟨old, next, rfl, rfl⟩
 
 end Poincare
