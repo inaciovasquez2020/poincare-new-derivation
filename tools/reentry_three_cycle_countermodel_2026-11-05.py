@@ -140,6 +140,92 @@ def main():
         print(f"LINK_GRAPH_EDGES := {E}")
         print(f"PLANAR_EDGE_BOUND := {3 * V - 6}")
 
+
+    k5_witnesses = {
+        6: (
+            (0, 2, 3, 4, 7),
+            (
+                (0, 1, 4, 6),
+                (0, 1, 6, 7),
+                (0, 2, 3, 6),
+                (2, 4, 6, 7),
+                (3, 4, 6, 7),
+            ),
+        ),
+        7: (
+            (0, 1, 2, 4, 6),
+            (
+                (0, 1, 4, 7),
+                (0, 1, 6, 7),
+                (0, 2, 7, 8),
+                (1, 2, 7, 8),
+                (2, 4, 6, 7),
+            ),
+        ),
+        8: (
+            (0, 2, 4, 5, 6),
+            (
+                (0, 2, 3, 8),
+                (0, 4, 6, 8),
+                (0, 5, 6, 8),
+                (2, 3, 6, 8),
+                (2, 4, 5, 8),
+            ),
+        ),
+    }
+
+    def link_contains_k5(tetrahedra, vertex):
+        triangles = {
+            tuple(x for x in t if x != vertex)
+            for t in tetrahedra if vertex in t
+        }
+        edges = {
+            edge
+            for triangle in triangles
+            for edge in combinations(triangle, 2)
+        }
+        vertices = sorted({
+            x for triangle in triangles for x in triangle
+        })
+        return any(
+            all(edge in edges for edge in combinations(five, 2))
+            for five in combinations(vertices, 5)
+        )
+
+    for vertex, (clique, witness) in k5_witnesses.items():
+        assert len(witness) == 5
+        assert set(witness) <= required
+
+        triangles = {
+            tuple(x for x in t if x != vertex)
+            for t in witness if vertex in t
+        }
+        edges = {
+            edge
+            for triangle in triangles
+            for edge in combinations(triangle, 2)
+        }
+
+        assert all(
+            edge in edges for edge in combinations(clique, 2)
+        )
+
+        incident = sorted(t for t in required if vertex in t)
+        for size in range(1, 5):
+            assert not any(
+                link_contains_k5(subset, vertex)
+                for subset in combinations(incident, size)
+            )
+
+        print(f"K5_LINK_VERTEX := {vertex}")
+        print(f"K5_VERTICES := {clique}")
+        print(f"MINIMAL_K5_TETRAHEDRA := {len(witness)}")
+        print(f"K5_SUBGRAPH_CERTIFICATE_{vertex} := PASS")
+
+    print("MINIMAL_K5_CERTIFICATE := PASS")
+    print("FIXED_WITNESS_MANIFOLD_EXTENSION := EXCLUDED")
+    print("GENERAL_THREE_CYCLE_EXCLUSION := OPEN")
+
     print("PLANARITY_CERTIFICATE := PASS")
     print("FIXED_WITNESS_SIMPLICIAL_MANIFOLD_EXTENSION := EXCLUDED")
     print("CERTIFICATE_SCOPE := EXACT_15_TETRAHEDRON_WITNESS_PATTERN")
