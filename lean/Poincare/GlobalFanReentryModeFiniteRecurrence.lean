@@ -202,4 +202,25 @@ theorem exists_recurrent_fanReentryModeKey_classified
       | reentry next =>
           exact Or.inr ⟨old, next, rfl, rfl⟩
 
+
+/-- Every witnessed reentry-to-reentry transition changes its finite key. -/
+theorem FanReentryModeStep.reentry_to_reentry_finiteKey_ne
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    {old next : WitnessedReentryState K}
+    (hstep :
+      FanReentryModeStep K (.reentry old) (.reentry next)) :
+    (FanReentryModeState.reentry next).finiteKey hcore ≠
+      (FanReentryModeState.reentry old).finiteKey hcore := by
+  intro hkeys
+  cases hstep with
+  | reentry_next old s' hw =>
+      have hchange :=
+        hcore.sharedSupportedEdgeState_ne_of_sourceFaceReentry
+          old.site s' old.realized hw.toSourceFaceReentry
+      apply hchange
+      have hsnd := congrArg Prod.snd hkeys
+      simpa [FanReentryModeState.finiteKey,
+        witnessedReentryStateOfStep] using hsnd
+
 end Poincare
