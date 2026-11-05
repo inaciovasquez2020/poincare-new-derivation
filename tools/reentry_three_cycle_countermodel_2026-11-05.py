@@ -90,6 +90,61 @@ def main():
         assert len(edges[next_edge]) == 3
         print('WITNESSED_REENTRY_STEP_%d := PASS' % i)
     print('THREE_STEP_CHANGING_CARRIER_CYCLE := PASS')
+
+    required = set()
+
+    for i, (face, edge) in enumerate(SITES):
+        next_edge = SITES[(i + 1) % len(SITES)][1]
+
+        required.update(
+            tuple(sorted((*edge, *pair)))
+            for pair in combinations(face, 2)
+        )
+
+        required.update(
+            tuple(sorted((*face, vertex)))
+            for vertex in next_edge
+        )
+
+    assert len(required) == 15
+    assert required <= K
+
+    print("PLANARITY_WITNESS_TETRAHEDRA := 15")
+
+    for vertex in (6, 7, 8):
+        triangles = {
+            tuple(x for x in tetrahedron if x != vertex)
+            for tetrahedron in required
+            if vertex in tetrahedron
+        }
+
+        link_vertices = {
+            x for triangle in triangles for x in triangle
+        }
+
+        link_edges = {
+            pair
+            for triangle in triangles
+            for pair in combinations(triangle, 2)
+        }
+
+        V = len(link_vertices)
+        E = len(link_edges)
+
+        assert V == 8
+        assert E == 19
+        assert E > 3 * V - 6
+
+        print(f"PLANARITY_VERTEX_{vertex} := PASS")
+        print(f"LINK_GRAPH_VERTICES := {V}")
+        print(f"LINK_GRAPH_EDGES := {E}")
+        print(f"PLANAR_EDGE_BOUND := {3 * V - 6}")
+
+    print("PLANARITY_CERTIFICATE := PASS")
+    print("FIXED_WITNESS_SIMPLICIAL_MANIFOLD_EXTENSION := EXCLUDED")
+    print("CERTIFICATE_SCOPE := EXACT_15_TETRAHEDRON_WITNESS_PATTERN")
+    print("GENERAL_REENTRY_CYCLE_EXCLUSION := OPEN")
+
     print('GLOBAL_MANIFOLD_HYPOTHESIS := FAIL')
     print('GLOBAL_JIID := OPEN')
 
