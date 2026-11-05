@@ -5,3 +5,4 @@ import Poincare.StabilizedFinitePathDescent
 #print axioms Poincare.stabilizedPathDescent_implies_globalDescent
 #print axioms Poincare.crossPolytopeBoundary4_stabilized_path_escape
 #print axioms Poincare.crossPolytopeBoundary4_stabilized_path_strict_descent
+#print axioms Poincare.certifiedPachnerStep_iff_exactLabeledMove
