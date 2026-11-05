@@ -6,3 +6,4 @@ import Poincare.StabilizedFinitePathDescent
 #print axioms Poincare.crossPolytopeBoundary4_stabilized_path_escape
 #print axioms Poincare.crossPolytopeBoundary4_stabilized_path_strict_descent
 #print axioms Poincare.certifiedPachnerStep_iff_exactLabeledMove
+#print axioms Poincare.CertifiedPachnerStep.move14_of_legal41_with_fresh_center

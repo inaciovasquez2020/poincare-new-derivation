@@ -151,4 +151,19 @@ theorem certifiedPachnerStep_iff_exactLabeledMove
       subst L
       exact CertifiedPachnerStep.move14 hcore s hlegal
 
+
+/-- An inverse of a legal 4→1 site is an exact certified 1→4 step.
+The recovered center is fresh in the source triangulation.
+This theorem does not construct such a site for every tetrahedron. -/
+theorem CertifiedPachnerStep.move14_of_legal41_with_fresh_center
+    {P : Triangulation}
+    (s : Move41Site) (hlegal : s.LegalIn P) :
+    CertifiedPachnerStep (s.replace P) P ∧
+      ClosedTriangulationCore (s.replace P) ∧
+      s.e ∉ vertexSupport (s.replace P) ∧
+      (s.replace P).tets = s.targetTet :: s.unchangedTets P := by
+  exact ⟨CertifiedPachnerStep.move14 hlegal.closedCore s hlegal,
+    hlegal.closedCore.move41Site_replace_closedCore s hlegal,
+    Move41Site.center_not_mem_vertexSupport_replace hlegal, rfl⟩
+
 end Poincare
