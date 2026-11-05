@@ -1,4 +1,4 @@
-import Poincare.Triangulation
+import Poincare.Validity
 
 namespace Poincare
 
@@ -26,14 +26,27 @@ def tetHasDistinctVertices (τ : Tet) : Prop :=
   τ.v1 ≠ τ.v2 ∧ τ.v1 ≠ τ.v3 ∧ τ.v2 ≠ τ.v3
 
 theorem degenerateOneTet_not_distinct :
-    ¬ tetHasDistinctVertices degenerateOneTet.tets.head! := by
+    ¬ tetHasDistinctVertices (degenerateOneTet.tets.head (by decide)) := by
   simp [tetHasDistinctVertices, degenerateOneTet]
 
 theorem S3_does_not_imply_tetrahedral_vertex_distinctness :
     ∃ K : Triangulation, S3 K ∧
       ∃ τ ∈ K.tets, ¬ tetHasDistinctVertices τ := by
-  refine ⟨degenerateOneTet, degenerateOneTet_is_S3, degenerateOneTet.tets.head!, ?_, ?_⟩
+  refine ⟨degenerateOneTet, degenerateOneTet_is_S3, (degenerateOneTet.tets.head (by decide)), ?_, ?_⟩
   · simp [degenerateOneTet]
   · exact degenerateOneTet_not_distinct
+
+
+theorem S3_does_not_imply_ClosedTriangulationCore :
+    ¬ (∀ K : Triangulation,
+        S3 K → ClosedTriangulationCore K) := by
+  intro h
+  have hcore :=
+    h degenerateOneTet degenerateOneTet_is_S3
+  have htet :=
+    hcore.1
+      ({ v0 := 0, v1 := 0, v2 := 0, v3 := 0 } : Tet)
+      (by simp [degenerateOneTet])
+  simp [Tet.verts] at htet
 
 end Poincare
