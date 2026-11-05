@@ -124,6 +124,7 @@ jobs:
               "Poincare.stabilizedPathDescent_implies_globalDescent",
               "Poincare.crossPolytopeBoundary4_stabilized_path_escape",
               "Poincare.crossPolytopeBoundary4_stabilized_path_strict_descent",
+              "Poincare.certifiedPachnerStep_iff_exactLabeledMove",
           ]:
               prefix = f"'{name}'"
               if f"{prefix} does not depend on any axioms" in report:
