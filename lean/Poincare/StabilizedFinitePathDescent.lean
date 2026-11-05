@@ -112,4 +112,43 @@ theorem crossPolytopeBoundary4_stabilized_path_strict_descent :
     by rw [crossPolytopeEscapeFinal_PhiSupport,
       crossPolytopeEscapeInitial_PhiSupport]; omega⟩
 
+
+/-- Exactly characterize the four certified labeled move constructors.
+The inverse 1-to-4 case requires a legal 4-to-1 predecessor; this
+does not establish representation of every abstract bistellar move. -/
+theorem certifiedPachnerStep_iff_exactLabeledMove
+    (K L : Triangulation) :
+    CertifiedPachnerStep K L ↔
+      (ClosedTriangulationCore K ∧
+        ∃ s : Move23Site, s.LegalIn K ∧ L = s.replace K) ∨
+      (ClosedTriangulationCore K ∧
+        ∃ s : Move32Site, s.LegalIn K ∧ L = s.replace K) ∨
+      (ClosedTriangulationCore K ∧
+        ∃ s : Move41Site, s.LegalIn K ∧ L = s.replace K) ∨
+      (∃ P : Triangulation, ClosedTriangulationCore P ∧
+        ∃ s : Move41Site, s.LegalIn P ∧ K = s.replace P ∧ L = P) := by
+  constructor
+  · intro h
+    cases h with
+    | move23 hcore s hlegal =>
+        exact Or.inl ⟨hcore, s, hlegal, rfl⟩
+    | move32 hcore s hlegal =>
+        exact Or.inr (Or.inl ⟨hcore, s, hlegal, rfl⟩)
+    | move41 hcore s hlegal =>
+        exact Or.inr (Or.inr (Or.inl ⟨hcore, s, hlegal, rfl⟩))
+    | move14 hcore s hlegal =>
+        exact Or.inr (Or.inr (Or.inr ⟨_, hcore, s, hlegal, rfl, rfl⟩))
+  · intro h
+    rcases h with h23 | h32 | h41 | h14
+    · rcases h23 with ⟨hcore, s, hlegal, rfl⟩
+      exact CertifiedPachnerStep.move23 hcore s hlegal
+    · rcases h32 with ⟨hcore, s, hlegal, rfl⟩
+      exact CertifiedPachnerStep.move32 hcore s hlegal
+    · rcases h41 with ⟨hcore, s, hlegal, rfl⟩
+      exact CertifiedPachnerStep.move41 hcore s hlegal
+    · rcases h14 with ⟨P, hcore, s, hlegal, hK, hL⟩
+      subst K
+      subst L
+      exact CertifiedPachnerStep.move14 hcore s hlegal
+
 end Poincare
