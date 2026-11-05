@@ -167,6 +167,35 @@ jobs:
       - name: Build witness-anchored continuation module
         run: lake build Poincare.GlobalFanChordWitnessAnchoredContinuation
 
+      - name: Verify connected vertex-star coefficient propagation and axiom dependencies
+        shell: bash
+        run: |
+          lake build Poincare.GlobalFanReentryModeFailClosedRecurrence
+          printf '%s\n' \
+            'import Poincare.GlobalFanReentryModeFailClosedRecurrence' \
+            '#print axioms Poincare.ClosedTriangulationCore.vertexStar_weight_eq_of_linkAdjacent' \
+            > /tmp/vertex-star-coeff-axiom-audit.lean
+          lake env lean /tmp/vertex-star-coeff-axiom-audit.lean > /tmp/vertex-star-coeff-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report = Path("/tmp/vertex-star-coeff-axioms.txt").read_text()
+          name = "Poincare.ClosedTriangulationCore.vertexStar_weight_eq_of_linkAdjacent"
+          prefix = f"'{name}'"
+          if f"{prefix} does not depend on any axioms" in report:
+              found = set()
+          else:
+              match = re.search(
+                  re.escape(prefix) + r" depends on axioms:\s*\[([^\]]*)\]",
+                  report,
+              )
+              assert match is not None, f"missing axiom report for {name}: {report}"
+              found = {item.strip() for item in match.group(1).split(",") if item.strip()}
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          assert found <= allowed, f"unapproved axioms: {found - allowed}"
+          print(f"{name}: allowed axioms only: {sorted(found)}")
+          PY
+
       - name: Verify PhiSupport Euler count and axiom dependencies
         shell: bash
         run: |
