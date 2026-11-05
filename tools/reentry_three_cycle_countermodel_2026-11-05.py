@@ -231,6 +231,205 @@ def main():
     print("CERTIFICATE_SCOPE := EXACT_15_TETRAHEDRON_WITNESS_PATTERN")
     print("GENERAL_REENTRY_CYCLE_EXCLUSION := OPEN")
 
+
+    def bounded_required_tetrahedra(candidate_faces, cycle_edges):
+        result = set()
+        for i, face in enumerate(candidate_faces):
+            old = cycle_edges[i]
+            nxt = cycle_edges[(i + 1) % 3]
+            result.update(
+                tuple(sorted((*old, *pair)))
+                for pair in combinations(face, 2)
+            )
+            result.update(
+                tuple(sorted((*face, x)))
+                for x in nxt
+            )
+        return result
+
+    def bounded_compatible(tets, candidate_faces, cycle_edges):
+        if len(tets) != 15:
+            return False
+        fc = Counter(
+            f for t in tets for f in combinations(t, 3)
+        )
+        ec = Counter(
+            e for t in tets for e in combinations(t, 2)
+        )
+        return (
+            all(n <= 2 for n in fc.values())
+            and all(fc[f] == 2 for f in candidate_faces)
+            and all(ec[e] == 3 for e in cycle_edges)
+        )
+
+    def bounded_link_graphs(tets):
+        for v in sorted({x for t in tets for x in t}):
+            triangles = {
+                tuple(x for x in t if x != v)
+                for t in tets if v in t
+            }
+            link_edges = {
+                e for t in triangles
+                for e in combinations(t, 2)
+            }
+            nodes = sorted({
+                x for t in triangles for x in t
+            })
+            yield v, nodes, link_edges
+
+    def bounded_has_k5(tets):
+        for _, nodes, link_edges in bounded_link_graphs(tets):
+            for five in combinations(nodes, 5):
+                if all(
+                    e in link_edges
+                    for e in combinations(five, 2)
+                ):
+                    return True
+        return False
+
+    def bounded_exceeds_planar_bound(tets):
+        return any(
+            len(nodes) >= 3
+            and len(link_edges) > 3 * len(nodes) - 6
+            for _, nodes, link_edges in bounded_link_graphs(tets)
+        )
+
+    def bounded_trapped_link(tets):
+        fc = Counter(
+            f for t in tets for f in combinations(t, 3)
+        )
+        represented_edges = sorted({
+            e for t in tets for e in combinations(t, 2)
+        })
+
+        for edge in represented_edges:
+            graph = defaultdict(set)
+            for t in tets:
+                if set(edge) <= set(t):
+                    a, b = sorted(set(t) - set(edge))
+                    graph[a].add(b)
+                    graph[b].add(a)
+
+            remaining = set(graph)
+            components = []
+
+            while remaining:
+                start = min(remaining)
+                seen = {start}
+                stack = [start]
+
+                while stack:
+                    for neighbor in graph[stack.pop()]:
+                        if neighbor not in seen:
+                            seen.add(neighbor)
+                            stack.append(neighbor)
+
+                components.append(tuple(sorted(seen)))
+                remaining -= seen
+
+            if len(components) <= 1:
+                continue
+
+            closed = [
+                component for component in components
+                if all(
+                    fc[tuple(sorted((*edge, x)))] == 2
+                    for x in component
+                )
+            ]
+
+            if closed:
+                fully_saturated = all(
+                    fc[tuple(sorted((*edge, x)))] == 2
+                    for x in graph
+                )
+                return "full" if fully_saturated else "mixed"
+
+        return None
+
+    cycle_edges = tuple(edge for _, edge in SITES)
+    assert cycle_edges == ((0, 1), (2, 3), (4, 5))
+
+    search_vertices = set(range(11))
+    options = [
+        list(combinations(
+            sorted(
+                search_vertices
+                - set(cycle_edges[i])
+                - set(cycle_edges[(i + 1) % 3])
+            ),
+            3
+        ))
+        for i in range(3)
+    ]
+
+    bounded_counts = Counter()
+
+    for f0 in options[0]:
+        for f1 in options[1]:
+            for f2 in options[2]:
+                candidate_faces = (f0, f1, f2)
+                tets = bounded_required_tetrahedra(
+                    candidate_faces, cycle_edges
+                )
+
+                if not bounded_compatible(
+                    tets, candidate_faces, cycle_edges
+                ):
+                    continue
+
+                bounded_counts["compatible"] += 1
+
+                if bounded_has_k5(tets):
+                    bounded_counts["k5"] += 1
+                    continue
+
+                bounded_counts["k5_free"] += 1
+
+                if bounded_exceeds_planar_bound(tets):
+                    bounded_counts["planar_bound"] += 1
+                    continue
+
+                defect = bounded_trapped_link(tets)
+
+                if defect == "full":
+                    bounded_counts["fully_saturated"] += 1
+                elif defect == "mixed":
+                    bounded_counts["mixed_saturation"] += 1
+                else:
+                    bounded_counts["surviving"] += 1
+
+    expected_counts = {
+        "compatible": 14040,
+        "k5": 13440,
+        "k5_free": 600,
+        "planar_bound": 360,
+        "fully_saturated": 60,
+        "mixed_saturation": 180,
+        "surviving": 0,
+    }
+
+    for key, expected_value in expected_counts.items():
+        print(
+            f"BOUNDED_{key.upper()} := "
+            f"{bounded_counts[key]}"
+        )
+        assert bounded_counts[key] == expected_value
+
+    assert (
+        bounded_counts["k5"]
+        + bounded_counts["planar_bound"]
+        + bounded_counts["fully_saturated"]
+        + bounded_counts["mixed_saturation"]
+        == bounded_counts["compatible"]
+    )
+
+    print("BOUNDED_11_VERTEX_EXCLUSION_CERTIFICATE := PASS")
+    print("CERTIFICATE_SCOPE := RELAXED_THREE_STEP_INCIDENCE")
+    print("ARBITRARY_VERTEX_COUNT := NOT_TESTED")
+    print("FULL_WITNESSED_REENTRY_RELATION := NOT_VERIFIED")
+    print("GENERAL_THREE_CYCLE_EXCLUSION := OPEN")
+
     print('GLOBAL_MANIFOLD_HYPOTHESIS := FAIL')
     print('GLOBAL_JIID := OPEN')
 
