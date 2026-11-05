@@ -177,4 +177,38 @@ def Move41Site.insertFreshAt
     (_hfresh : s.e ∉ vertexSupport K) : Triangulation :=
   { tets := before ++ s.sourceTets ++ after }
 
+
+/-- The four tetrahedra of a fresh 1→4 insertion have pairwise
+distinct vertex sets, solely from the five distinct site vertices. -/
+theorem Move41Site.sourceTets_pairwise_distinct (s : Move41Site) :
+    s.sourceTets.Pairwise (fun tau sigma => ¬ SameTetVertices tau sigma) := by
+  have hd := s.distinct
+  simp [Move41Site.sourceTets, Move41Site.sourceTet₀, Move41Site.sourceTet₁,
+    Move41Site.sourceTet₂, Move41Site.sourceTet₃] at hd ⊢
+  refine ⟨⟨?_, ?_, ?_⟩, ⟨?_, ?_⟩, ?_⟩
+  · intro h
+    have hx := (h s.c).1 (by simp [Tet.verts])
+    simp [Tet.verts] at hx
+    aesop
+  · intro h
+    have hx := (h s.b).1 (by simp [Tet.verts])
+    simp [Tet.verts] at hx
+    aesop
+  · intro h
+    have hx := (h s.a).1 (by simp [Tet.verts])
+    simp [Tet.verts] at hx
+    aesop
+  · intro h
+    have hx := (h s.b).1 (by simp [Tet.verts])
+    simp [Tet.verts] at hx
+    aesop
+  · intro h
+    have hx := (h s.a).1 (by simp [Tet.verts])
+    simp [Tet.verts] at hx
+    aesop
+  · intro h
+    have hx := (h s.a).1 (by simp [Tet.verts])
+    simp [Tet.verts] at hx
+    aesop
+
 end Poincare
