@@ -166,4 +166,15 @@ theorem CertifiedPachnerStep.move14_of_legal41_with_fresh_center
     hlegal.closedCore.move41Site_replace_closedCore s hlegal,
     Move41Site.center_not_mem_vertexSupport_replace hlegal, rfl⟩
 
+
+/-- Exact positional 1→4 replacement at the selected tetrahedron.
+The unchanged prefix and suffix remain in their original order.
+This definition does not itself certify closed-core or topological preservation. -/
+def Move41Site.insertFreshAt
+    (s : Move41Site) (K : Triangulation)
+    (before after : List Tet)
+    (_hsource : K.tets = before ++ s.targetTet :: after)
+    (_hfresh : s.e ∉ vertexSupport K) : Triangulation :=
+  { tets := before ++ s.sourceTets ++ after }
+
 end Poincare
