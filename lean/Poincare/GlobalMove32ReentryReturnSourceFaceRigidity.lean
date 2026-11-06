@@ -81,7 +81,7 @@ theorem
       (hz : z ∈ [anchor.a, anchor.b, anchor.c]) :
       z ≠ anchor.d ∧ z ≠ anchor.e := by
     have h := hanchorFive
-    simp only [List.mem_cons, List.mem_singleton] at hz
+    simp at hz
     simp at h
     rcases hz with rfl | rfl | rfl <;> aesop
 
