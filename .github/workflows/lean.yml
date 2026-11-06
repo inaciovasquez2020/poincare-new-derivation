@@ -19,6 +19,42 @@ jobs:
         with:
           use-github-cache: false
 
+      - name: Audit fixed43 nonboundary and sealed-edge conditional Lean modules
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake env lean lean/Poincare/Fixed43NonboundaryCertificate.lean | tee /tmp/fixed43-audit.txt
+          lake env lean lean/Poincare/SealedEdgeCompletionConditional.lean | tee /tmp/sealed-edge-audit.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          modules = {
+              "/tmp/fixed43-audit.txt": ["fixedPrefix_detectingCycle_nonboundary"],
+              "/tmp/sealed-edge-audit.txt": [
+                  "saturated_subset_equal",
+                  "sealed_edge_link_reachability",
+                  "sealed_edge_exclusion",
+              ],
+          }
+          for filename, names in modules.items():
+              report = Path(filename).read_text()
+              for name in names:
+                  matching = [line for line in report.splitlines()
+                              if re.search(r"(?:^|\\.)" + re.escape(name) + r"' ", line)]
+                  assert len(matching) == 1, f"missing or duplicated axiom report: {name}: {report}"
+                  line = matching[0]
+                  if "does not depend on any axioms" in line:
+                      found = set()
+                  else:
+                      match = re.search(r"depends on axioms:\\s*\\[([^\\]]*)\\]", line)
+                      assert match, f"malformed axiom report for {name}: {line}"
+                      found = {x.strip() for x in match.group(1).split(",") if x.strip()}
+                  assert found <= allowed, f"disallowed axiom for {name}: {found - allowed}"
+                  print(f"AXIOM_AUDIT_PASS {name}: {sorted(found)}")
+          PY
+
       - name: Verify corrected Perelman interface and its axiom dependencies
         shell: bash
         run: |
