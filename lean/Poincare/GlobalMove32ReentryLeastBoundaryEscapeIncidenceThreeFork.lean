@@ -274,5 +274,65 @@ theorem ClosedTriangulationCore.not_noDescent_of_noHigh_sourceFace_start
   rcases hdescent with ⟨j, k, hj, hk, hinside, houtside, hstrictDescent⟩
   exact hNoDescent hstrictDescent
 
+/--
+No infinite witnessed-reentry trajectory survives the simultaneous exclusion of
+strict topology-preserving PhiSupport descent and nonself high-incidence escape
+under the closed-core, connected-link, overlap-connected, simply-connected,
+and no-degree-four hypotheses.
+
+This is conditional: it does not prohibit cycles with a high-edge branch.
+The proof uses the already verified first-exit obstruction theorem, not a
+global cycle-rigidity or Poincare theorem.
+-/
+theorem ClosedTriangulationCore.no_perpetual_witnessedReentry_of_noDescent_noHigh
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hlinks : ∀ v ∈ vertexSupport K, VertexLinkConnected K v)
+    (hconn : TetrahedronVertexOverlapConnected K)
+    (hSC : TriangulationRealizationSimplyConnected K)
+    (hNoFour : ∀ v ∈ vertexSupport K, vertexDegree K v ≠ 4)
+    (hNoDescent :
+      ¬ ∃ K',
+        ClosedTriangulationCore K' ∧
+        PhiSupport K' < PhiSupport K ∧
+        Nonempty
+          (triangulationTopologicalGeometricCarrier K ≃ₜ
+            triangulationTopologicalGeometricCarrier K'))
+    (hNoHigh :
+      ∀ s : Move32Site,
+        s.RealizedIn K →
+        (∃ tau ∈ K.tets,
+          s.a ∈ tau.verts ∧
+          s.b ∈ tau.verts ∧
+          s.c ∈ tau.verts) →
+        ¬ ∃ x y sigma,
+          x ≠ y ∧ sigma ∈ K.tets ∧
+          x ∈ sigma.verts ∧ y ∈ sigma.verts ∧
+          ¬ ((x = s.d ∧ y = s.e) ∨
+             (x = s.e ∧ y = s.d)) ∧
+          4 ≤ (K.tets.filter
+            (fun gamma => decide (x ∈ gamma.verts ∧ y ∈ gamma.verts))).length)
+    (sites : Nat → Move32Site)
+    (hrealized : ∀ n, (sites n).RealizedIn K)
+    (hthree : ∀ n, (sites n).SharedEdgeExactlyThree K)
+    (hstep :
+      ∀ n, Move32SourceFaceWitnessedReentry K (sites n) (sites (n + 1))) :
+    False := by
+  have hsource :
+      ∃ tau ∈ K.tets,
+        (sites 0).a ∈ tau.verts ∧
+        (sites 0).b ∈ tau.verts ∧
+        (sites 0).c ∈ tau.verts := by
+    rcases hstep 0 with
+      ⟨tau, _rho, _x, _y, _sigma, htau, _hrho, _hne,
+        ha, hb, hc, _rest⟩
+    exact ⟨tau, htau, ha, hb, hc⟩
+
+  exact hcore.not_noDescent_of_noHigh_sourceFace_start
+    hlinks hconn hSC hNoFour hNoDescent hNoHigh
+    (sites 0) (hrealized 0) (hthree 0) hsource
+
+#print axioms ClosedTriangulationCore.no_perpetual_witnessedReentry_of_noDescent_noHigh
+
 end CarrierLoopNullHomotopyData
 end Poincare
