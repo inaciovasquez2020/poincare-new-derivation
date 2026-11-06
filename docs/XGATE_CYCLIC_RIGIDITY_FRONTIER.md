@@ -109,3 +109,39 @@ witnesses forces either (i) equality of full sites with a forbidden immediate
 self-edge, (ii) a degree-four vertex, or (iii) a legal Move23 / strict
 `PhiSupport` descent. The inspected definitions do not currently establish
 this disjunction. This is a proof target, not a theorem or verified conjecture.
+
+## 2026-11-05 three-step countermodel
+
+A finite computational fixture contains 9 vertices and 27 distinct
+tetrahedra. It has a three-step changing-carrier witnessed-reentry
+cycle with sites:
+
+- Source face (4,6,7), edge (0,1)
+- Source face (0,6,8), edge (2,3)
+- Source face (2,7,8), edge (4,5)
+
+Verified by the standalone Python incidence checker:
+
+- Every represented triangular face has incidence exactly two.
+- The tetrahedron vertex-overlap graph is connected.
+- All vertex links are connected by triangle adjacency.
+- No represented vertex has degree four.
+- All three witnessed-reentry transitions satisfy the recorded
+  incidence, target-realization, and fresh-endpoint conditions.
+
+However, six vertex links have Euler characteristic 1 rather
+than 2. Therefore the fixture is not a triangulated closed
+topological 3-manifold.
+
+This refutes three-cycle exclusion from the weaker closed-core,
+connected-link, overlap-connectivity, and no-degree-four conditions
+alone. It does not refute exclusion under the full manifold and
+simple-connectivity hypotheses.
+
+Verification is computational, not a Lean theorem.
+
+THREE_CYCLE_EXCLUSION_WITH_WEAKER_HYPOTHESES := REFUTED
+THREE_CYCLE_EXCLUSION_FOR_MANIFOLDS := OPEN
+GLOBAL_CYCLIC_RIGIDITY := OPEN
+UNIVERSAL_STABILIZED_DESCENT := OPEN
+GLOBAL_JIID := OPEN
