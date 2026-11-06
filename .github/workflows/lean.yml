@@ -37,7 +37,7 @@ jobs:
               ],
           }
           for filename, names in modules.items():
-              report = Path(filename).read_text().replace(",\\n ", ", ")
+              report = Path(filename).read_text()
               for name in names:
                   matches = [
                       line for line in report.splitlines()
