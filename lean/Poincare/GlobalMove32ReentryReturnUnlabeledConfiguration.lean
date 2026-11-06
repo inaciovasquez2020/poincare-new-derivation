@@ -1,6 +1,5 @@
 import Poincare.GlobalMove32ReentryReturnFiveVertexCarrier
 import Poincare.GlobalMove32ReentryReturnTargetStarEquivalence
-import Poincare.GlobalMove32ReentryReturnSourceFaceRigidity
 
 namespace Poincare
 
@@ -118,45 +117,5 @@ theorem
       hstate
 
   exact ⟨hedge, hcarrier, htarget⟩
-
-
-/-- A repeated exact-three supported edge fixes the entire unlabeled
-reentry configuration, not merely the central edge. This does not
-exclude cycles of relabeled sites or prove global JIID. -/
-theorem
-    ClosedTriangulationCore.unlabeledConfiguration_eq_of_sharedSupportedEdgeState_eq
-    {K : Triangulation}
-    (hcore : ClosedTriangulationCore K)
-    (anchor ret : Move32Site)
-    (hanchorRealized : anchor.RealizedIn K)
-    (hanchorThree : anchor.SharedEdgeExactlyThree K)
-    (hretRealized : ret.RealizedIn K)
-    (hretThree : ret.SharedEdgeExactlyThree K)
-    (hstate :
-      sharedSupportedEdgeState hcore anchor hanchorRealized =
-        sharedSupportedEdgeState hcore ret hretRealized) :
-    (((anchor.d = ret.d ∧ anchor.e = ret.e) ∨
-      (anchor.d = ret.e ∧ anchor.e = ret.d)) ∧
-     (∀ z : Nat,
-       z ∈ [anchor.a, anchor.b, anchor.c, anchor.d, anchor.e] ↔
-         z ∈ [ret.a, ret.b, ret.c, ret.d, ret.e]) ∧
-     (∀ tau : Tet,
-       tau ∈ K.tets →
-         ((SameTetVertices tau anchor.targetTet₀ ∨
-           SameTetVertices tau anchor.targetTet₁ ∨
-           SameTetVertices tau anchor.targetTet₂) ↔
-          (SameTetVertices tau ret.targetTet₀ ∨
-           SameTetVertices tau ret.targetTet₁ ∨
-           SameTetVertices tau ret.targetTet₂)))) := by
-  have hsource :=
-    hcore.sourceFace_support_eq_of_sharedSupportedEdgeState_eq
-      anchor ret hanchorRealized hanchorThree
-      hretRealized hretThree hstate
-  exact
-    hcore.unlabeledConfiguration_eq_of_sourceFace_support_eq_of_sharedSupportedEdgeState_eq
-      anchor ret hanchorRealized hanchorThree
-      hretRealized hretThree hsource hstate
-
-#print axioms ClosedTriangulationCore.unlabeledConfiguration_eq_of_sharedSupportedEdgeState_eq
 
 end Poincare
