@@ -145,4 +145,54 @@ theorem
         hqRet,
         hqOutside⟩
 
+
+/--
+At a repeated exact-three shared-edge key, the return source face is
+already rigid by the source-face support theorem.  Consequently the
+same-source predecessor-carrier escape alternative is mandatory,
+not one half of a disjunction.
+
+This holds under the closed-core, connected-link, overlap-connected,
+and no-degree-four hypotheses used by the geometric manifold program.
+It does not prohibit longer recurrent carrier-change cycles.
+-/
+theorem
+    ClosedTriangulationCore.exists_predecessor_sourceFace_vertex_outside_return_carrier_of_witnessedReentry_return_state_of_no_degree_four
+    {K : Triangulation}
+    (hcore : ClosedTriangulationCore K)
+    (hlinks :
+      ∀ v ∈ vertexSupport K,
+        VertexLinkConnected K v)
+    (hconn : TetrahedronVertexOverlapConnected K)
+    (hNoFour :
+      ∀ v ∈ vertexSupport K,
+        vertexDegree K v ≠ 4)
+    (anchor prev ret : Move32Site)
+    (hanchorRealized : anchor.RealizedIn K)
+    (hanchorThree : anchor.SharedEdgeExactlyThree K)
+    (hprevRealized : prev.RealizedIn K)
+    (hretRealized : ret.RealizedIn K)
+    (hretThree : ret.SharedEdgeExactlyThree K)
+    (hstep : Move32SourceFaceWitnessedReentry K prev ret)
+    (hstate :
+      sharedSupportedEdgeState hcore anchor hanchorRealized =
+        sharedSupportedEdgeState hcore ret hretRealized) :
+    ∃ z ∈ [prev.a, prev.b, prev.c],
+      z ∉ [ret.a, ret.b, ret.c, ret.d, ret.e] := by
+  have hsource :
+      ∀ z : Nat,
+        z ∈ [anchor.a, anchor.b, anchor.c] ↔
+          z ∈ [ret.a, ret.b, ret.c] :=
+    hcore.sourceFace_support_eq_of_sharedSupportedEdgeState_eq
+      anchor ret hanchorRealized hanchorThree
+      hretRealized hretThree hstate
+
+  exact
+    hcore.exists_predecessor_sourceFace_vertex_outside_return_carrier_of_witnessedReentry_same_source_return_state_of_no_degree_four
+      hlinks hconn hNoFour anchor prev ret
+      hanchorRealized hanchorThree hprevRealized
+      hretRealized hretThree hstep hsource hstate
+
+#print axioms ClosedTriangulationCore.exists_predecessor_sourceFace_vertex_outside_return_carrier_of_witnessedReentry_return_state_of_no_degree_four
+
 end Poincare
