@@ -8,17 +8,17 @@ A combinatorial descent program on triangulated closed simply connected 3-manifo
 
 ## Core object
 
-For the repository's finite tetrahedron-list model \(K\), let
-\(V(K)\) be the distinct vertices appearing in its tetrahedra and let
-\(d_K(v)\) count occurrences of \(v\) among those tetrahedra. Under the
+For the repository's finite tetrahedron-list model $K$, let
+$V(K)$ be the distinct vertices appearing in its tetrahedra and let
+$d_K(v)$ count occurrences of $v$ among those tetrahedra. Under the
 no-repeated-vertices condition supplied by `ClosedTriangulationCore K`,
 this is the number of incident tetrahedra. The actual supported-vertex
 defect used by the descent program is
 
-\[
+$$
 \Phi_{\mathrm{support}}(K)
    =\sum_{v\in V(K)} |d_K(v)-4|.
-\]
+$$
 
 Lean: `lean/Poincare/Triangulation.lean` defines `targetDegree := 4`,
 `vertexDefect` and `PhiSupport`. Do not confuse `PhiSupport` with
@@ -30,14 +30,14 @@ degree-four formalization and is superseded here.
 The predicate named `S3 K` in this minimal combinatorial source is
 currently **defined as** `normalized K`, where
 `normalized K := PhiSupport K = 0`. Its name alone does **not** establish
-a geometric homeomorphism \(|K|\cong S^3\); that conclusion requires
+a geometric homeomorphism $|K|\cong S^3$; that conclusion requires
 separate topological hypotheses and proofs.
 
 ## Admissible local moves
 
-\[
+$$
 \mathcal M=\{(1\leftrightarrow 4),(2\leftrightarrow 3)\}.
-\]
+$$
 
 These preserve homeomorphism type.
 
@@ -46,7 +46,7 @@ These preserve homeomorphism type.
 The program seeks a rigorous descent/obstruction route:
 
 1. Define admissible Pachner-type local moves.
-2. Define a defect functional \(\Phi\).
+2. Define a defect functional $\Phi$.
 3. Establish local descent or a structural obstruction when descent is unavailable.
 4. Control recurrent high-fan behavior.
 5. Establish the remaining global implications needed for an unconditional Poincaré theorem.
@@ -63,7 +63,7 @@ The latest merged work (#105–#112) develops and constrains recurrent high-fan 
 - **#108:** distinct retained-neighbor choices give distinct FanChordTransition states.
 - **#109:** represented triangular faces admit an exact cross-face tetrahedron completion.
 - **#111:** the first-ear two-sided obstruction branch was carried through verification work.
-- **#112:** a realized exact-three Move32 site yields either strict \(\Phi\)-support descent or a source-face obstruction; in the no-degree-four branch, that obstruction forces a nonself high-incidence source edge.
+- **#112:** a realized exact-three Move32 site yields either strict $\Phi$-support descent or a source-face obstruction; in the no-degree-four branch, that obstruction forces a nonself high-incidence source edge.
 
 These are local/structural results. They do **not** by themselves exclude every possible recurrent high-fan configuration and do not prove `Poincare.JIID` or the Poincaré conjecture.
 
@@ -114,13 +114,13 @@ lake env lean "$tmp/axioms.lean"
 A global conditional closure can be stated only relative to the remaining load-bearing assumptions/lemmas, including:
 
 - Global strict descent (not established):
-\[
+$$
 \forall T\not\simeq S^3,\ \exists T'\in\mathcal M(T)\ \text{s.t.}\ \Phi_{\mathrm{support}}(T')<\Phi_{\mathrm{support}}(T).
-\]
+$$
 - Geometric zero-defect characterization (not supplied by the definitional alias `S3 K := normalized K`):
-\[
+$$
 \Phi_{\mathrm{support}}(T)=0 \;\Longrightarrow\; |T|\cong S^3.
-\]
+$$
 
 The current local frontier does not establish these two global statements unconditionally.
 
