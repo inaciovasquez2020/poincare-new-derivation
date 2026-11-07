@@ -8,11 +8,30 @@ A combinatorial descent program on triangulated closed simply connected 3-manifo
 
 ## Core object
 
-For a finite triangulation \(T\) of a closed 3-manifold, define
+For the repository's finite tetrahedron-list model \(K\), let
+\(V(K)\) be the distinct vertices appearing in its tetrahedra and let
+\(d_K(v)\) count occurrences of \(v\) among those tetrahedra. Under the
+no-repeated-vertices condition supplied by `ClosedTriangulationCore K`,
+this is the number of incident tetrahedra. The actual supported-vertex
+defect used by the descent program is
+
 \[
-\Phi(T)=\sum_{v\in T}|d(v)-6|,
+\Phi_{\mathrm{support}}(K)
+   =\sum_{v\in V(K)} |d_K(v)-4|.
 \]
-where \(d(v)\) is the number of tetrahedra incident to \(v\).
+
+Lean: `lean/Poincare/Triangulation.lean` defines `targetDegree := 4`,
+`vertexDefect` and `PhiSupport`. Do not confuse `PhiSupport` with
+`Phi`: the latter folds over `allVerts` **with multiplicities**, whereas
+`PhiSupport` folds over `vertexSupport` with duplicates removed.
+The former README expression using `|d(v)-6|` was inconsistent with the
+formalized functional and must not be used as its specification.
+
+The predicate named `S3 K` in this minimal combinatorial source is
+currently **defined as** `normalized K`, where
+`normalized K := PhiSupport K = 0`. Its name alone does **not** establish
+a geometric homeomorphism \(|K|\cong S^3\); that conclusion requires
+separate topological hypotheses and proofs.
 
 ## Admissible local moves
 
@@ -50,21 +69,53 @@ These are local/structural results. They do **not** by themselves exclude every 
 
 ## LocalDelta
 
-- `lean/Poincare/LocalDelta.lean` records local Pachner-move delta classification.
-- The module classifies local `ΔΦ` from degree multisets and does not claim strict global descent.
+- `lean/Poincare/LocalDelta.lean` records local Pachner-move delta classification for the **degree-four** `defect` function.
+- The module classifies local signed `Δ` values of the degree-four defect from degree multisets and does not claim strict global descent.
 - The repository also contains a concrete nonuniform 2-to-3 positive-sign certificate.
+
+## Verified incidence-count identity (scoped)
+
+At remote main revision `ea6b6c5f22858b5e7fc3c38e616303147b62e69b`,
+`lean/Poincare/PhiSupportEulerCount.lean` proves:
+
+```lean
+theorem ClosedTriangulationCore.PhiSupport_eq_four_mul_tets_sub_vertices
+    {K : Triangulation} (hcore : ClosedTriangulationCore K) :
+    PhiSupport K = 4 * (K.tets.length - (vertexSupport K).length)
+```
+
+This is an **incidence-counting identity**, conditional on the explicit
+`ClosedTriangulationCore K` hypothesis (distinct vertices per tetrahedron,
+no duplicate tetrahedron vertex sets, and exactly two incident tetrahedra
+at each represented triangular face). It does not assert global descent,
+topological sphere recognition, or the Poincaré conjecture. The subtraction
+in the displayed Lean theorem is natural-number subtraction.
+
+The existing [Lean CI run](https://github.com/inaciovasquez2020/poincare-new-derivation/actions/runs/42221418648)
+built `Poincare.PhiSupportEulerCount` and checked `#print axioms`.
+Reported dependencies were `[Classical.choice, Quot.sound, propext]`.
+This is a prior remote CI receipt, **not** an independently reproduced
+Mac build. Full global JIID remains **OPEN**.
+
+Reproduce under the repository's pinned toolchain
+(`leanprover/lean4:v4.30.0-rc1`):
+
+```bash
+lake build Poincare.PhiSupportEulerCount
+printf '%s\\n' 'import Poincare.PhiSupportEulerCount' '#print axioms Poincare.ClosedTriangulationCore.PhiSupport_eq_four_mul_tets_sub_vertices' | lake env lean /dev/stdin
+```
 
 ## Minimal valid conditional status
 
 A global conditional closure can be stated only relative to the remaining load-bearing assumptions/lemmas, including:
 
-- Local spherical descent:
+- Global strict descent (not established):
 \[
-\forall T\not\simeq S^3,\ \exists T'\in\mathcal M(T)\ \text{s.t.}\ \Phi(T')<\Phi(T).
+\forall T\not\simeq S^3,\ \exists T'\in\mathcal M(T)\ \text{s.t.}\ \Phi_{\mathrm{support}}(T')<\Phi_{\mathrm{support}}(T).
 \]
-- Zero-defect characterization:
+- Geometric zero-defect characterization (not supplied by the definitional alias `S3 K := normalized K`):
 \[
-\Phi(T)=0 \;\Longrightarrow\; T\simeq S^3.
+\Phi_{\mathrm{support}}(T)=0 \;\Longrightarrow\; |T|\cong S^3.
 \]
 
 The current local frontier does not establish these two global statements unconditionally.
