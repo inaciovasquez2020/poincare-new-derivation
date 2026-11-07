@@ -24,8 +24,8 @@ Lean: `lean/Poincare/Triangulation.lean` defines `targetDegree := 4`,
 `vertexDefect` and `PhiSupport`. Do not confuse `PhiSupport` with
 `Phi`: the latter folds over `allVerts` **with multiplicities**, whereas
 `PhiSupport` folds over `vertexSupport` with duplicates removed.
-The former README expression using `|d(v)-6|` was inconsistent with the
-formalized functional and must not be used as its specification.
+The earlier README's degree-six reference was inconsistent with this
+degree-four formalization and is superseded here.
 
 The predicate named `S3 K` in this minimal combinatorial source is
 currently **defined as** `normalized K`, where
@@ -101,8 +101,12 @@ Reproduce under the repository's pinned toolchain
 (`leanprover/lean4:v4.30.0-rc1`):
 
 ```bash
+set -euo pipefail
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
 lake build Poincare.PhiSupportEulerCount
-printf '%s\\n' 'import Poincare.PhiSupportEulerCount' '#print axioms Poincare.ClosedTriangulationCore.PhiSupport_eq_four_mul_tets_sub_vertices' | lake env lean /dev/stdin
+printf '%s\\n' 'import Poincare.PhiSupportEulerCount' '#print axioms Poincare.ClosedTriangulationCore.PhiSupport_eq_four_mul_tets_sub_vertices' > "$tmp/axioms.lean"
+lake env lean "$tmp/axioms.lean"
 ```
 
 ## Minimal valid conditional status
