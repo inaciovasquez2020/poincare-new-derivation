@@ -105,7 +105,7 @@ set -euo pipefail
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 lake build Poincare.PhiSupportEulerCount
-printf '%s\\n' 'import Poincare.PhiSupportEulerCount' '#print axioms Poincare.ClosedTriangulationCore.PhiSupport_eq_four_mul_tets_sub_vertices' > "$tmp/axioms.lean"
+printf '%s\n' 'import Poincare.PhiSupportEulerCount' '#print axioms Poincare.ClosedTriangulationCore.PhiSupport_eq_four_mul_tets_sub_vertices' > "$tmp/axioms.lean"
 lake env lean "$tmp/axioms.lean"
 ```
 
