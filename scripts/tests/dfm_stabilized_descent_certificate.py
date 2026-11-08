@@ -9,7 +9,7 @@ Run from the repository root:
     python3 scripts/tests/dfm_stabilized_descent_certificate.py
 """
 
-from collections import Counter
+from collections import Counter, defaultdict, deque
 from itertools import combinations
 
 
@@ -97,6 +97,50 @@ def extra_common_link(tetrahedra, u, v):
     return common - link(tetrahedra, {u, v})
 
 
+def legal_moves(tets):
+    # A new vertex has no incidence data, so one fresh label suffices.
+    vertices = {v for tet in tets for v in tet}
+    fresh = next(i for i in range(len(vertices) + 1) if i not in vertices)
+    yield from ((tet, frozenset({fresh})) for tet in tets)
+    for size in (1, 2, 3):
+        stars = defaultdict(set)
+        for tet in tets:
+            for face in combinations(tet, size):
+                stars[frozenset(face)].add(tet)
+        for a, star in stars.items():
+            if len(star) != 5 - size:
+                continue
+            b = frozenset.union(*star) - a
+            if len(b) != 5 - size:
+                continue
+            if star == {a | (b - {v}) for v in b} and not incident(tets, b):
+                yield a, b
+
+def check_lower_bound(tetrahedra):
+    start = frozenset(tetrahedra)
+    initial_defect = defect(start)
+    seen = {start}
+    pending = deque([start])
+    while pending:
+        state = pending.popleft()
+        for a, b in legal_moves(state):
+            replacement = {b | (a - {v}) for v in a}
+            candidate = (state - incident(state, a)) | replacement
+            candidate_defect = defect(candidate)
+            if candidate_defect > 364 or candidate in seen:
+                continue
+            require(candidate_defect >= initial_defect, "descent at or below 364")
+            check_closed_core(candidate)
+            seen.add(candidate)
+            require(len(seen) <= 313, "state limit exceeded before closure")
+            pending.append(candidate)
+
+    histogram = Counter(map(defect, seen))
+    require(histogram == {352: 1, 360: 104, 364: 208},
+            "unexpected sublevel component")
+    print("SUBLEVEL_COMPONENT := 313")
+
+
 def main():
     tetrahedra = {
         frozenset((v + shift) % 16 for v in facet)
@@ -112,6 +156,7 @@ def main():
     require(all(extra_common_link(tetrahedra, *edge) for edge in edges),
             "initial edge satisfies the link condition")
 
+    check_lower_bound(tetrahedra)
     profile = [defect(tetrahedra)]
     for step, (a, b) in enumerate(PREFIX, 1):
         tetrahedra = flip(tetrahedra, a, b)
