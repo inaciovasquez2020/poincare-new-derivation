@@ -14,11 +14,11 @@ Pinned `leanprover/lean4:v4.30.0-rc1`. Status reports below are from user-suppli
 | `verified/FanTriangleRepaired.lean` | `triangle_component_closed`, `no_fourth_vertex_in_triangle_fan` | PASS, no axioms |
 | `verified/SecondRimOrderInvariantCore_20261109.lean` | `secondSourceTripleAvoidsOldB`, `secondTransverseOutsideOriginalFive` | PASS, `[propext]` |
 | `verified/SecondRimActualTetTransport_20261109.lean` | `sourceFaceAbsentAfterConcretePrefix` | PASS, `[propext]` |
+| `verified/SecondRimComposedAllInOne_20261109.lean` | `secondSourceFaceAbsent_of_realizedTargets_and_prefix` (contains earlier two base proof modules inline) | PASS, `[propext]` in Mac receipt `secondrim-composed.4jgdUWO5` |
 | `verified/SecondRimCornerTraceback_20261109.lean` | `retained_witness_one_step`, `retained_witness_two_steps`, `first_corner_original`, `second_corner_original` | four stages PASS, `[propext]` |
 | `verified/SecondRimFourthIncidentTet_20261109.lean` | `fourth_incident_of_incidence_four` | PASS, `[propext, Classical.choice, Quot.sound]`; corrected version only |
 
 Additional Mac-verified temporary sources **not yet copied into this branch**:
-- `Poincare.SecondRimComposedFreshness.secondSourceFaceAbsent_of_realizedTargets_and_prefix`, Mac receipt `secondrim-composed.4jgdUWO5`, PASS `[propext]`. The proof combines the order-invariant and concrete transport sources.
 - `Poincare.SecondRimHighSpokeActualTet.edgeAdj_symm`, `corner_edgeTriangle`, `no_fourth_reachable_corner`, `transverses_ne_of_represented_fourth`, Mac receipt `secondrim-high-spoke.nrj7Gfdq`, PASS (none or `[propext]`).
 - `Poincare.SecondRimHighSpokeActualTet.transverses_ne_of_incidence_four`, Mac receipt `fourth-edge-bridge.4E2Yh2rt`, PASS `[propext, Classical.choice, Quot.sound]`. Verified source SHA-256: `1065ccc9a87c93a4aaedcd0810dec072d84ca90f51c3a93612a0875ee6a14c98`; underlying high-spoke source SHA-256: `e39c7696fc85855a36cb83f41811462f96c5686b69cbbca0a81d1ba9a976fed3`.
 
