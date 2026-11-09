@@ -49,18 +49,25 @@ jobs:
               assert not re.search(r"\b(sorry|admit|opaque|native_decide)\b", content), source
               assert not re.search(r"(?m)^\s*axiom\b", content), source
               text = Path(path).read_text()
-              reports = [
-                  line for line in text.splitlines()
-                  if re.match(r"^'.+' (?:does not depend on any axioms|depends on axioms:\s*\[[^\]]*\])$", line)
-              ]
-              assert len(reports) == count, f"{source}: expected {count} axiom reports, got {reports!r}; complete output: {text}"
-              for line in reports:
-                  if "does not depend on any axioms" in line:
-                      found = set()
-                  else:
-                      match = re.search(r"depends on axioms:\s*\[([^\]]*)\]", line)
-                      assert match is not None, line
-                      found = {part.strip() for part in match.group(1).split(",") if part.strip()}
+              # Lean may wrap axiom lists across lines; match full receipts,
+              # including private declaration names, without discarding newlines.
+              report_pattern = (
+                  r"(?m)^'([^'\\n]+)' "
+                  r"(does not depend on any axioms|depends on axioms:\\s*\\[([^\\]]*)\\])"
+                  r"(?=\\n|$)"
+              )
+              reports = list(re.finditer(report_pattern, text))
+              assert len(reports) == count, f"{source}: expected {count} axiom reports, got {len(reports)}; complete output: {text}"
+              expected_names = (
+                  ["fixedPrefix_detectingCycle_nonboundary"]
+                  if count == 1 else
+                  ["saturated_subset_equal", "sealed_edge_link_reachability", "sealed_edge_exclusion"]
+              )
+              assert [m.group(1).split(".")[-1] for m in reports] == expected_names, (
+                  source, [m.group(1) for m in reports]
+              )
+              for match in reports:
+                  found = {part.strip() for part in (match.group(3) or "").split(",") if part.strip()}
                   assert found <= allowed, f"{source}: unapproved axioms {sorted(found - allowed)}"
               print(f"{source}: AXIOM_AUDIT_PASS; receipts={count}")
           PY
