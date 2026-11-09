@@ -1,0 +1,73 @@
+name: Fixed43 finite certificate and conditional sealed-edge gate
+
+on:
+  push:
+    branches: [proof/fixed43-clean-20261105]
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lean/**'
+      - lean-toolchain
+      - lakefile.lean
+      - lake-manifest.json
+      - .github/workflows/fixed43-certificate-audit.yml
+
+permissions:
+  contents: read
+
+jobs:
+  fixed43-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install pinned Lean toolchain and build dependencies
+        uses: leanprover/lean-action@v1
+        with:
+          use-github-cache: true
+      - name: Compile both certificate modules
+        run: lake build Poincare.Fixed43NonboundaryCertificate Poincare.SealedEdgeCompletionConditional
+      - name: Enforce axiom whitelist for four load-bearing declarations
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake env lean lean/Poincare/Fixed43NonboundaryCertificate.lean > "$RUNNER_TEMP/fixed43-axioms.txt"
+          lake env lean lean/Poincare/SealedEdgeCompletionConditional.lean > "$RUNNER_TEMP/sealed-edge-axioms.txt"
+          python3 - "$RUNNER_TEMP/fixed43-axioms.txt" "$RUNNER_TEMP/sealed-edge-axioms.txt" <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          expected = [
+              (Path("lean/Poincare/Fixed43NonboundaryCertificate.lean"), 1),
+              (Path("lean/Poincare/SealedEdgeCompletionConditional.lean"), 3),
+          ]
+          for (source, count), path in zip(expected, sys.argv[1:], strict=True):
+              content = source.read_text()
+              assert len(re.findall(r"(?m)^#print axioms\s+", content)) == count, source
+              assert not re.search(r"\b(sorry|admit|opaque|native_decide)\b", content), source
+              assert not re.search(r"(?m)^\s*axiom\b", content), source
+              text = Path(path).read_text()
+              # Lean may wrap axiom lists across lines; match full receipts,
+              # including private declaration names, without discarding newlines.
+              report_pattern = (
+                  r"(?m)^'([^'\n]+)' "
+                  r"(does not depend on any axioms|depends on axioms:\s*\[([^\]]*)\])"
+                  r"(?=\n|$)"
+              )
+              reports = list(re.finditer(report_pattern, text))
+              assert len(reports) == count, f"{source}: expected {count} axiom reports, got {len(reports)}; complete output: {text}"
+              expected_names = (
+                  ["fixedPrefix_detectingCycle_nonboundary"]
+                  if count == 1 else
+                  ["saturated_subset_equal", "sealed_edge_link_reachability", "sealed_edge_exclusion"]
+              )
+              assert [m.group(1).split(".")[-1] for m in reports] == expected_names, (
+                  source, [m.group(1) for m in reports]
+              )
+              for match in reports:
+                  found = {part.strip() for part in (match.group(3) or "").split(",") if part.strip()}
+                  assert found <= allowed, f"{source}: unapproved axioms {sorted(found - allowed)}"
+              print(f"{source}: AXIOM_AUDIT_PASS; receipts={count}")
+          PY
