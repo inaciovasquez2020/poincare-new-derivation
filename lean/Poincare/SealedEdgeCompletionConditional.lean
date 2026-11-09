@@ -1,7 +1,10 @@
 import Mathlib
-set_option maxRecDepth 8192
-set_option maxHeartbeats 0
+
 namespace Poincare
+
+section SealedEdgeResourceBounds
+set_option maxRecDepth 8192
+set_option maxHeartbeats 10000000
 
 private def edgeLinkAdjacent
     (completion : Finset (Finset Nat))
@@ -137,4 +140,6 @@ private theorem sealed_edge_exclusion
 #print axioms saturated_subset_equal
 #print axioms sealed_edge_link_reachability
 #print axioms sealed_edge_exclusion
+
+end SealedEdgeResourceBounds
 end Poincare

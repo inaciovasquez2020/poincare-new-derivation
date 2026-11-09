@@ -1,9 +1,10 @@
 import Mathlib
 
-set_option maxRecDepth 8192
-set_option maxHeartbeats 0
-
 namespace Poincare
+
+section Fixed43ResourceBounds
+set_option maxRecDepth 8192
+set_option maxHeartbeats 10000000
 
 private abbrev Edge12 := Fin 12 × Fin 12
 private abbrev Triangle12 := Fin 12 × Fin 12 × Fin 12
@@ -305,9 +306,10 @@ private theorem detectingCycle_odd :
   decide
 
 /--
-The explicit detecting cycle is nonboundary
-in the 113-face optimistic relaxation of the
-fixed 43-tetrahedron prefix.
+The explicit detecting cycle is nonboundary relative to the literal
+finite list `certifiedFaces`. This statement alone does not identify that
+list with the face set of the fixed 43-tetrahedron triangulation or prove
+a global Pachner-descent or Poincare-recognition theorem.
 -/
 theorem fixedPrefix_detectingCycle_nonboundary :
     ¬ ∃ chain : List Triangle12,
@@ -322,4 +324,5 @@ theorem fixedPrefix_detectingCycle_nonboundary :
 
 #print axioms fixedPrefix_detectingCycle_nonboundary
 
+end Fixed43ResourceBounds
 end Poincare
