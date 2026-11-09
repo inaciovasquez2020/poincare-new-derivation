@@ -52,9 +52,9 @@ jobs:
               # Lean may wrap axiom lists across lines; match full receipts,
               # including private declaration names, without discarding newlines.
               report_pattern = (
-                  r"(?m)^'([^'\\n]+)' "
-                  r"(does not depend on any axioms|depends on axioms:\\s*\\[([^\\]]*)\\])"
-                  r"(?=\\n|$)"
+                  r"(?m)^'([^'\n]+)' "
+                  r"(does not depend on any axioms|depends on axioms:\s*\[([^\]]*)\])"
+                  r"(?=\n|$)"
               )
               reports = list(re.finditer(report_pattern, text))
               assert len(reports) == count, f"{source}: expected {count} axiom reports, got {len(reports)}; complete output: {text}"
