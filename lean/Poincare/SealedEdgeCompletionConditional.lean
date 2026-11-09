@@ -3,8 +3,7 @@ import Mathlib
 namespace Poincare
 
 section SealedEdgeResourceBounds
-set_option maxRecDepth 8192
-set_option maxHeartbeats 10000000
+-- Use Lean's default bounded elaboration limits for these conditional proofs.
 
 private def edgeLinkAdjacent
     (completion : Finset (Finset Nat))
