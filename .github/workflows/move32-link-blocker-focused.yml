@@ -6,7 +6,12 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - lean/Poincare/Move32LinkBlocker.lean
+      # Trigger on any Lean source or build-dependency change, not just this lemma.
+      - 'lean/**'
+      - lean-toolchain
+      - lakefile.lean
+      - lakefile.toml
+      - lake-manifest.json
       - .github/workflows/move32-link-blocker-focused.yml
 
 permissions:
