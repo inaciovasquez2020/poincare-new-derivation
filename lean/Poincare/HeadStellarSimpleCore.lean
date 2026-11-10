@@ -133,6 +133,6 @@ theorem Move41Site.headStellar_vertexSupport_iff
     Move41Site.sourceTet₀, Move41Site.sourceTet₁,
     Move41Site.sourceTet₂, Move41Site.sourceTet₃,
     Move41Site.targetTet, Tet.verts, List.mem_flatMap]
-  simp only [or_assoc, or_left_comm, or_comm, or_self]
+  aesop
 
 end Poincare
