@@ -257,6 +257,7 @@ theorem Move41Site.headStellar_legal (s : Move41Site) (rest : List Tet)
     have hd := s.distinct
     have hnot : s.e ∉ s.targetTet.verts := by
       simp_all [Move41Site.targetTet, Tet.verts, eq_comm]
+    change τ ∈ s.sourceTets ++ rest at hτ
     rcases List.mem_append.mp hτ with hs | hr
     · exact hnot ((hsame s.e).mp (s.sourceCenter τ hs))
     · exact (List.pairwise_cons.mp hcore.2.1).1 τ hr (sameTetVertices_symm hsame)
