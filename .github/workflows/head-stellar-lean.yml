@@ -37,7 +37,10 @@ jobs:
             '#print axioms Poincare.Move41Site.replace_headStellar_exact' \
             '#print axioms Poincare.Move41Site.headStellar_center_saturated' \
             '#print axioms Poincare.Tet.freshStellarSite_target' \
-            '#print axioms Poincare.Tet.freshHeadStellar_replace_exact' > "$audit"
+            '#print axioms Poincare.Tet.freshHeadStellar_replace_exact' \
+            '#print axioms Poincare.Move41Site.headStellar_closedCore' \
+            '#print axioms Poincare.Move41Site.headStellar_legal' \
+            '#print axioms Poincare.Tet.freshHeadStellar_certifiedMove14' > "$audit"
           lake env lean "$audit" > "$report"
           python3 - "$report" <<'PY'
           import re
@@ -50,6 +53,9 @@ jobs:
               "Poincare.Move41Site.headStellar_center_saturated",
               "Poincare.Tet.freshStellarSite_target",
               "Poincare.Tet.freshHeadStellar_replace_exact",
+              "Poincare.Move41Site.headStellar_closedCore",
+              "Poincare.Move41Site.headStellar_legal",
+              "Poincare.Tet.freshHeadStellar_certifiedMove14",
           ]
           for name in names:
               pattern = re.escape(f"'{name}' ") + r"(does not depend on any axioms|depends on axioms:\s*\[([^\]]*)\])"
