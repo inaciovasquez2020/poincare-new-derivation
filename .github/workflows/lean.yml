@@ -128,6 +128,8 @@ jobs:
               "Poincare.CertifiedPachnerStep.move14_of_legal41_with_fresh_center",
               "Poincare.CertifiedPachnerStep.target_closedCore",
               "Poincare.CertifiedPachnerPath.target_closedCore",
+              "Poincare.CertifiedPachnerStep.source_closedCore",
+              "Poincare.CertifiedPachnerPath.eq_or_closedCore_endpoints",
           ]:
               prefix = f"'{name}'"
               if f"{prefix} does not depend on any axioms" in report:
