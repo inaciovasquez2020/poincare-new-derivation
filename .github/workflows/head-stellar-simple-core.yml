@@ -35,9 +35,9 @@ jobs:
           audit="$(mktemp --suffix=.lean)"
           report="$(mktemp)"
           trap 'rm -f "$audit" "$report"' EXIT
-          printf '%s\\n' \\
-            'import Poincare.HeadStellarCenterDegree' \\
-            '#print axioms Poincare.Move41Site.headStellar_center_vertexDegree' \\
+          printf '%s\n' \
+            'import Poincare.HeadStellarCenterDegree' \
+            '#print axioms Poincare.Move41Site.headStellar_center_vertexDegree' \
             '#print axioms Poincare.Move41Site.headStellar_center_vertexDefect' > "$audit"
           lake env lean "$audit" > "$report"
           python3 - "$report" <<'PY'
@@ -53,7 +53,7 @@ jobs:
                   found = set()
               else:
                   m = re.fullmatch(re.escape(f"'{name}' ") +
-                      r"depends on axioms:\\s*\\[([^\\]]*)\\]", lines[0])
+                      r"depends on axioms:\s*\[([^\]]*)\]", lines[0])
                   assert m, lines[0]
                   found = {x.strip() for x in m.group(1).split(",") if x.strip()}
               assert found <= allowed, (name, found - allowed)
