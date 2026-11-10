@@ -77,6 +77,12 @@ class Triangulation:
         return sum(max(0, d - 2) for d in self._edge_degrees())
 
     def candidate_32_moves(self) -> List[Move32]:
+        """Enumerate 3-to-2 edge stars with fresh target tetrahedra and face.
+
+        A result is a combinatorial candidate, not a certificate that the
+        entire input is a closed triangulated manifold. In particular, this
+        function does not independently validate all vertex links.
+        """
         edge_map = self.edge_to_tets()
         vdeg = self.vertex_degrees()
         phi_self = self.phi()
