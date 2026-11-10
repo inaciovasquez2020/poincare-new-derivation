@@ -196,7 +196,7 @@ theorem Move41Site.headStellar_closedCore (s : Move41Site) (rest : List Tet)
               τ ∈ s.targetTet :: s.sourceTets) : L.filter p = [] := by
             rw [List.filter_eq_nil_iff]
             intro τ hτ
-            exact Bool.eq_false_iff.mpr (fun hp => hlocal ⟨τ, hsub τ hτ, hp⟩)
+            exact fun hp => hlocal ⟨τ, hsub τ hτ, hp⟩
           rw [emptyFilter s.sourceTets (fun τ hτ => List.mem_cons_of_mem _ hτ),
             emptyFilter [s.targetTet] (by simp)]
       have hold : ∃ τ ∈ s.targetTet :: rest,
