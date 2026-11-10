@@ -117,6 +117,11 @@ class Triangulation:
             target_v = tuple(sorted((v, a, b, c)))
             if target_u in self.tetrahedra or target_v in self.tetrahedra:
                 continue
+            # The output triangle must also be absent before the move,
+            # including if it occurs in an unrelated tetrahedron. Its
+            # prior presence would make this an invalid bistellar exchange.
+            if any(a in t and b in t and c in t for t in self.tetrahedra):
+                continue
 
             T2 = self._apply_32_raw(edge, (a, b, c))
             delta1 = phi_self - T2.phi()
