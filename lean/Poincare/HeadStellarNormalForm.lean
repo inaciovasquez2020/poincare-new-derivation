@@ -234,7 +234,7 @@ private theorem filter_length_one_of_pairwise {α : Type} (p : α → Bool) (L :
       have hnil : L.filter p = [] := by
         rw [List.filter_eq_nil_iff]
         intro y hy
-        exact Bool.eq_false_iff.mpr (fun hpy => hx y hy ⟨hp, hpy⟩)
+        exact fun hpy => hx y hy ⟨hp, hpy⟩
       simp [hp, hnil]
 
 /-- The canonical inverse is legal in the freshly subdivided core. -/
