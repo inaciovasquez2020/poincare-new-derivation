@@ -35,7 +35,8 @@ jobs:
           printf '%s\n' \
             'import Poincare.HeadStellarSimpleCore' \
             '#print axioms Poincare.Move41Site.sourceTets_pairwise_of_distinct' \
-            '#print axioms Poincare.Move41Site.headStellar_simple' > "$audit"
+            '#print axioms Poincare.Move41Site.headStellar_simple' \
+            '#print axioms Poincare.Move41Site.headStellar_vertexSupport_iff' > "$audit"
           lake env lean "$audit" > "$report"
           python3 - "$report" <<'PY'
           import re
@@ -46,6 +47,7 @@ jobs:
           for name in [
               "Poincare.Move41Site.sourceTets_pairwise_of_distinct",
               "Poincare.Move41Site.headStellar_simple",
+              "Poincare.Move41Site.headStellar_vertexSupport_iff",
           ]:
               pattern = re.escape(f"'{name}' ") + r"(does not depend on any axioms|depends on axioms:\s*\[([^\]]*)\])"
               matches = list(re.finditer(pattern, report))
