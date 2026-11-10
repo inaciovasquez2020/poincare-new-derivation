@@ -180,4 +180,31 @@ theorem CertifiedPachnerPath.trans
       exact CertifiedPachnerPath.snoc ih hstep
 
 
+/-- Every certified elementary Pachner move has a closed-triangulation
+target. The inverse 1→4 constructor uses its certified 4→1 predecessor. -/
+theorem CertifiedPachnerStep.target_closedCore
+    {K L : Triangulation} (h : CertifiedPachnerStep K L) :
+    ClosedTriangulationCore L := by
+  cases h with
+  | move23 hcore s hlegal =>
+      exact hcore.move23Site_replace_closedCore s hlegal
+  | move32 hcore s hlegal =>
+      exact hcore.move32Site_replace_closedCore s hlegal
+  | move41 hcore s hlegal =>
+      exact hcore.move41Site_replace_closedCore s hlegal
+  | move14 hcore s hlegal =>
+      exact hcore
+
+/-- A certified finite path cannot leave the closed-core class when its
+source is a closed core. This is an endpoint invariant, not descent. -/
+theorem CertifiedPachnerPath.target_closedCore
+    {K L : Triangulation} (h : CertifiedPachnerPath K L)
+    (hcore : ClosedTriangulationCore K) :
+    ClosedTriangulationCore L := by
+  induction h with
+  | refl => exact hcore
+  | snoc hpath hstep ih =>
+      exact hstep.target_closedCore
+
+
 end Poincare
