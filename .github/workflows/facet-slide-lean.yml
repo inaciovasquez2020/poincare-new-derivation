@@ -1,0 +1,59 @@
+name: Facet-slide scoped Lean certificate
+
+on:
+  push:
+    paths:
+      - 'lean/Poincare/FacetSlideRegion.lean'
+      - '.github/workflows/facet-slide-lean.yml'
+  pull_request:
+    paths:
+      - 'lean/Poincare/FacetSlideRegion.lean'
+      - '.github/workflows/facet-slide-lean.yml'
+
+jobs:
+  scoped-lean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          use-github-cache: true
+      - name: Compile actual scoped theorem module
+        run: lake build Poincare.FacetSlideRegion
+      - name: Enforce exact axiom boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          audit="$(mktemp --suffix=.lean)"
+          report="$(mktemp)"
+          trap 'rm -f "$audit" "$report"' EXIT
+          printf '%s\n' \
+            'import Poincare.FacetSlideRegion' \
+            '#print axioms Poincare.facetSlide_encodedRegion_identity' \
+            '#print axioms Poincare.ClosedTriangulationCore.PhiSupport_add_eight_of_facetSlide_counts' > "$audit"
+          lake env lean "$audit" > "$report"
+          python3 - "$report" <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+
+          report = Path(sys.argv[1]).read_text(encoding="utf-8")
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          names = [
+              "Poincare.facetSlide_encodedRegion_identity",
+              "Poincare.ClosedTriangulationCore.PhiSupport_add_eight_of_facetSlide_counts",
+          ]
+          for name in names:
+              prefix = re.escape(f"'{name}' ")
+              pattern = prefix + r"(does not depend on any axioms|depends on axioms:\s*\[([^\]]*)\])"
+              matches = list(re.finditer(pattern, report))
+              assert len(matches) == 1, f"missing or ambiguous axiom report: {name}"
+              found = matches[0]
+              axioms = (
+                  set() if found.group(1) == "does not depend on any axioms"
+                  else {a.strip() for a in found.group(2).split(",") if a.strip()}
+              )
+              assert axioms <= allowed, f"unapproved axioms: {name}: {axioms - allowed}"
+              assert "sorryAx" not in found.group(0), f"sorry axiom: {name}"
+              print(f"{name}: AXIOM_AUDIT_PASS {sorted(axioms)}")
+          PY
