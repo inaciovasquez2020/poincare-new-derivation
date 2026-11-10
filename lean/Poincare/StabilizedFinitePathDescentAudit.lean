@@ -7,3 +7,5 @@ import Poincare.StabilizedFinitePathDescent
 #print axioms Poincare.crossPolytopeBoundary4_stabilized_path_strict_descent
 #print axioms Poincare.certifiedPachnerStep_iff_exactLabeledMove
 #print axioms Poincare.CertifiedPachnerStep.move14_of_legal41_with_fresh_center
+#print axioms Poincare.CertifiedPachnerStep.target_closedCore
+#print axioms Poincare.CertifiedPachnerPath.target_closedCore
