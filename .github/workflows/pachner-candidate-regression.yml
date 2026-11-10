@@ -4,11 +4,13 @@ on:
   push:
     paths:
       - 'scripts/pachner_search.py'
+      - 'tests/test_pachner_search.py'
       - 'tests/test_pachner_target_guard_unittest.py'
       - '.github/workflows/pachner-candidate-regression.yml'
   pull_request:
     paths:
       - 'scripts/pachner_search.py'
+      - 'tests/test_pachner_search.py'
       - 'tests/test_pachner_target_guard_unittest.py'
       - '.github/workflows/pachner-candidate-regression.yml'
 
