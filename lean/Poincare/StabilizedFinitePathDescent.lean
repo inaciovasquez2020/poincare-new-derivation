@@ -177,7 +177,7 @@ theorem CertifiedPachnerPath.trans
   induction hLM with
   | refl => exact hKL
   | snoc hpath hstep ih =>
-      exact CertifiedPachnerPath.snoc ih hstep
+      exact CertifiedPachnerPath.snoc (ih hKL) hstep
 
 
 end Poincare
