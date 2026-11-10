@@ -1,0 +1,61 @@
+name: Head-stellar simple-core Lean audit
+
+on:
+  push:
+    paths:
+      - 'lean/Poincare/HeadStellarSimpleCore.lean'
+      - '.github/workflows/head-stellar-simple-core.yml'
+  pull_request:
+    paths:
+      - 'lean/Poincare/HeadStellarSimpleCore.lean'
+      - '.github/workflows/head-stellar-simple-core.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: leanprover/lean-action@v1
+        with:
+          use-github-cache: true
+      - name: Compile actual Lean module
+        run: lake build Poincare.HeadStellarSimpleCore
+      - name: Audit source-pairwise and simple-core theorems
+        shell: bash
+        run: |
+          set -euo pipefail
+          audit="$(mktemp --suffix=.lean)"
+          report="$(mktemp)"
+          trap 'rm -f "$audit" "$report"' EXIT
+          printf '%s\n' \
+            'import Poincare.HeadStellarSimpleCore' \
+            '#print axioms Poincare.Move41Site.sourceTets_pairwise_of_distinct' \
+            '#print axioms Poincare.Move41Site.headStellar_simple' > "$audit"
+          lake env lean "$audit" > "$report"
+          python3 - "$report" <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+          report = Path(sys.argv[1]).read_text(encoding="utf-8")
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          for name in [
+              "Poincare.Move41Site.sourceTets_pairwise_of_distinct",
+              "Poincare.Move41Site.headStellar_simple",
+          ]:
+              pattern = re.escape(f"'{name}' ") + r"(does not depend on any axioms|depends on axioms:\s*\[([^\]]*)\])"
+              matches = list(re.finditer(pattern, report))
+              assert len(matches) == 1, f"missing or ambiguous axiom report: {name}"
+              match = matches[0]
+              axioms = (
+                  set() if match.group(1) == "does not depend on any axioms"
+                  else {a.strip() for a in match.group(2).split(",") if a.strip()}
+              )
+              assert axioms <= allowed, f"unapproved axioms: {name}: {axioms - allowed}"
+              assert "sorryAx" not in match.group(0)
+              print(f"{name}: AXIOM_AUDIT_PASS {sorted(axioms)}")
+          PY
