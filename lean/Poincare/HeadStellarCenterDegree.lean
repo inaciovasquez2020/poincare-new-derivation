@@ -17,7 +17,8 @@ theorem Move41Site.headStellar_center_vertexDegree
         intro ρ hρ
         exact hfresh ρ (by simp [hρ])
       have hzero := ih htail
-      simpa [List.flatMap_cons, List.count_append, hτ] using hzero
+      have hτzero : τ.verts.count s.e = 0 := (List.count_eq_zero).2 hτ
+      simpa [List.flatMap_cons, List.count_append, hτzero] using hzero
   have hd := s.distinct
   simp [List.nodup_cons] at hd
   simp [vertexDegree, allVerts, Move41Site.headStellar,
