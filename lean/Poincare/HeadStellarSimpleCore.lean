@@ -120,4 +120,19 @@ theorem Move41Site.headStellar_simple
     · intro ρ hρ
       exact hcross s.sourceTet₃ (by simp [Move41Site.sourceTets]) ρ hρ
 
+/-- A literal head 1→4 stellar subdivision has exactly the old vertex
+support plus its center.  This set-level identity requires neither a closed
+core nor a fresh center; it is independent of face-incidence preservation. -/
+theorem Move41Site.headStellar_vertexSupport_iff
+    (s : Move41Site) (rest : List Tet) (v : Nat) :
+    v ∈ vertexSupport (s.headStellar rest) ↔
+      v = s.e ∨
+        v ∈ vertexSupport ({ tets := s.targetTet :: rest } : Triangulation) := by
+  simp only [mem_vertexSupport_iff]
+  simp [allVerts, Move41Site.headStellar,
+    Move41Site.sourceTet₀, Move41Site.sourceTet₁,
+    Move41Site.sourceTet₂, Move41Site.sourceTet₃,
+    Move41Site.targetTet, Tet.verts, List.mem_flatMap]
+  tauto
+
 end Poincare
