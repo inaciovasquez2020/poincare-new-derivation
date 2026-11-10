@@ -48,7 +48,7 @@ class Move32TargetCollisionTests(unittest.TestCase):
         output = T.apply_32(candidates[0])
         self.assertEqual(
             set(output.tetrahedra),
-            {(5, 2, 3, 4), (0, 2, 3, 4), (1, 2, 3, 4)},
+            {(2, 3, 4, 5), (0, 2, 3, 4), (1, 2, 3, 4)},
         )
         self.assertEqual(len(output.tetrahedra), 3)
 
