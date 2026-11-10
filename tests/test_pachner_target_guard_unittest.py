@@ -11,6 +11,7 @@ from scripts.pachner_search import Triangulation
 
 class Move32TargetCollisionTests(unittest.TestCase):
     def test_boundary_of_four_simplex_has_no_legal_32_target(self):
+        """Reject all edge moves on the 4-simplex boundary sphere."""
         # Every edge has three incident tetrahedra, but the two replacement
         # tetrahedra are already present in the five-facet 3-sphere.
         facets = [
@@ -23,6 +24,7 @@ class Move32TargetCollisionTests(unittest.TestCase):
         self.assertEqual(T.candidate_32_moves(), [])
 
     def test_one_represented_target_blocks_its_edge(self):
+        """Reject replacement if one output tetrahedron is present."""
         T = Triangulation([
             (0, 1, 2, 3),
             (0, 1, 2, 4),
@@ -34,6 +36,7 @@ class Move32TargetCollisionTests(unittest.TestCase):
         ))
 
     def test_represented_replacement_triangle_blocks_edge(self):
+        """Reject a new face that another tetrahedron already contains."""
         # Neither target tetrahedron is present, but the output triangle
         # is already a face of an unrelated tetrahedron.
         T = Triangulation([
@@ -47,6 +50,7 @@ class Move32TargetCollisionTests(unittest.TestCase):
         ))
 
     def test_unrepresented_targets_retain_valid_local_candidate(self):
+        """Keep a genuine local 3-to-2 candidate with fresh output face."""
         T = Triangulation([
             (0, 1, 2, 3),
             (0, 1, 2, 4),
