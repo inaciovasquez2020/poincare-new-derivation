@@ -4,10 +4,12 @@ on:
   push:
     paths:
       - 'lean/Poincare/HeadStellarSimpleCore.lean'
+      - 'lean/Poincare/HeadStellarCenterDegree.lean'
       - '.github/workflows/head-stellar-simple-core.yml'
   pull_request:
     paths:
       - 'lean/Poincare/HeadStellarSimpleCore.lean'
+      - 'lean/Poincare/HeadStellarCenterDegree.lean'
       - '.github/workflows/head-stellar-simple-core.yml'
 
 permissions:
@@ -25,6 +27,40 @@ jobs:
           use-github-cache: true
       - name: Compile actual Lean module
         run: lake build Poincare.HeadStellarSimpleCore
+      - name: Compile and audit new center degree and zero defect theorems
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.HeadStellarCenterDegree
+          audit="$(mktemp --suffix=.lean)"
+          report="$(mktemp)"
+          trap 'rm -f "$audit" "$report"' EXIT
+          printf '%s\\n' \\
+            'import Poincare.HeadStellarCenterDegree' \\
+            '#print axioms Poincare.Move41Site.headStellar_center_vertexDegree' \\
+            '#print axioms Poincare.Move41Site.headStellar_center_vertexDefect' > "$audit"
+          lake env lean "$audit" > "$report"
+          python3 - "$report" <<'PY'
+          import re, sys
+          from pathlib import Path
+          report = Path(sys.argv[1]).read_text()
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          for name in ["Poincare.Move41Site.headStellar_center_vertexDegree",
+                       "Poincare.Move41Site.headStellar_center_vertexDefect"]:
+              lines = [line for line in report.splitlines() if line.startswith(f"'{name}' ")]
+              assert len(lines) == 1, (name, report)
+              if "does not depend on any axioms" in lines[0]:
+                  found = set()
+              else:
+                  m = re.fullmatch(re.escape(f"'{name}' ") +
+                      r"depends on axioms:\\s*\\[([^\\]]*)\\]", lines[0])
+                  assert m, lines[0]
+                  found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+              assert found <= allowed, (name, found - allowed)
+              assert "sorryAx" not in lines[0]
+              print(name, "AXIOM_AUDIT_PASS", sorted(found))
+          PY
+
       - name: Audit source-pairwise and simple-core theorems
         shell: bash
         run: |
