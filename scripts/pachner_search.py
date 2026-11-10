@@ -110,6 +110,14 @@ class Triangulation:
             if set(opp_pairs) != expected:
                 continue
 
+            # A 3->2 bistellar move may not insert a tetrahedron already
+            # represented in the complex. Such collisions otherwise create
+            # duplicate simplices and spurious defect/energy descents.
+            target_u = tuple(sorted((u, a, b, c)))
+            target_v = tuple(sorted((v, a, b, c)))
+            if target_u in self.tetrahedra or target_v in self.tetrahedra:
+                continue
+
             T2 = self._apply_32_raw(edge, (a, b, c))
             delta1 = phi_self - T2.phi()
             delta2 = phi2_self - T2.phi2()
