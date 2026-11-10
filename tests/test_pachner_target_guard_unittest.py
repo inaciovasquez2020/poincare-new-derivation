@@ -33,12 +33,25 @@ class Move32TargetCollisionTests(unittest.TestCase):
             move.edge == (0, 1) for move in T.candidate_32_moves()
         ))
 
+    def test_represented_replacement_triangle_blocks_edge(self):
+        # Neither target tetrahedron is present, but the output triangle
+        # is already a face of an unrelated tetrahedron.
+        T = Triangulation([
+            (0, 1, 2, 3),
+            (0, 1, 2, 4),
+            (0, 1, 3, 4),
+            (2, 3, 4, 5),
+        ])
+        self.assertFalse(any(
+            move.edge == (0, 1) for move in T.candidate_32_moves()
+        ))
+
     def test_unrepresented_targets_retain_valid_local_candidate(self):
         T = Triangulation([
             (0, 1, 2, 3),
             (0, 1, 2, 4),
             (0, 1, 3, 4),
-            (5, 2, 3, 4),
+            (5, 6, 7, 8),  # The replacement triangle is absent.
         ])
         candidates = [
             move for move in T.candidate_32_moves()
@@ -48,7 +61,7 @@ class Move32TargetCollisionTests(unittest.TestCase):
         output = T.apply_32(candidates[0])
         self.assertEqual(
             set(output.tetrahedra),
-            {(2, 3, 4, 5), (0, 2, 3, 4), (1, 2, 3, 4)},
+            {(5, 6, 7, 8), (0, 2, 3, 4), (1, 2, 3, 4)},
         )
         self.assertEqual(len(output.tetrahedra), 3)
 
