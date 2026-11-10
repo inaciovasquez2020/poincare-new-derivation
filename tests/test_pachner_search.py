@@ -14,7 +14,7 @@ def test_admissible_32_detection_and_step():
         [0, 1, 2, 3],
         [0, 1, 2, 4],
         [0, 1, 3, 4],
-        [5, 2, 3, 4],
+        [5, 6, 7, 8],
     ]
     T = Triangulation(tetrahedra)
     cands = T.candidate_32_moves()
@@ -27,7 +27,7 @@ def test_admissible_32_detection_and_step():
 
     actual = canon(T2.tetrahedra)
     expected = canon([
-        (5, 2, 3, 4),
+        (5, 6, 7, 8),
         (0, 2, 3, 4),
         (1, 2, 3, 4),
     ])
