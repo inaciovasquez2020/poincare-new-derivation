@@ -1,0 +1,64 @@
+name: Head-stellar canonical inverse Lean audit
+
+on:
+  push:
+    paths:
+      - 'lean/Poincare/HeadStellarNormalForm.lean'
+      - '.github/workflows/head-stellar-lean.yml'
+  pull_request:
+    paths:
+      - 'lean/Poincare/HeadStellarNormalForm.lean'
+      - '.github/workflows/head-stellar-lean.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  focused-lean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: leanprover/lean-action@v1
+        with:
+          use-github-cache: true
+      - name: Compile actual head-stellar declarations
+        run: lake build Poincare.HeadStellarNormalForm
+      - name: Audit each declaration against permitted axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          audit="$(mktemp --suffix=.lean)"
+          report="$(mktemp)"
+          trap 'rm -f "$audit" "$report"' EXIT
+          printf '%s\n' \
+            'import Poincare.HeadStellarNormalForm' \
+            '#print axioms Poincare.Move41Site.replace_headStellar_exact' \
+            '#print axioms Poincare.Move41Site.headStellar_center_saturated' \
+            '#print axioms Poincare.Tet.freshStellarSite_target' \
+            '#print axioms Poincare.Tet.freshHeadStellar_replace_exact' > "$audit"
+          lake env lean "$audit" > "$report"
+          python3 - "$report" <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+          report = Path(sys.argv[1]).read_text(encoding="utf-8")
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          names = [
+              "Poincare.Move41Site.replace_headStellar_exact",
+              "Poincare.Move41Site.headStellar_center_saturated",
+              "Poincare.Tet.freshStellarSite_target",
+              "Poincare.Tet.freshHeadStellar_replace_exact",
+          ]
+          for name in names:
+              pattern = re.escape(f"'{name}' ") + r"(does not depend on any axioms|depends on axioms:\s*\[([^\]]*)\])"
+              matches = list(re.finditer(pattern, report))
+              assert len(matches) == 1, f"missing or ambiguous axiom report: {name}"
+              found = matches[0]
+              axioms = (set() if found.group(1) == "does not depend on any axioms"
+                        else {a.strip() for a in found.group(2).split(",") if a.strip()})
+              assert axioms <= allowed, f"unapproved axioms: {name}: {axioms - allowed}"
+              assert "sorryAx" not in found.group(0), f"unapproved sorryAx: {name}"
+              print(f"{name}: AXIOM_AUDIT_PASS {sorted(axioms)}")
+          PY
