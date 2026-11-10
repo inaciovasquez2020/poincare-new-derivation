@@ -207,4 +207,31 @@ theorem CertifiedPachnerPath.target_closedCore
       exact hstep.target_closedCore
 
 
+
+/-- Both endpoints of a non-reflexive certified step are closed cores.
+For inverse 1→4, the source is the legal 4→1 target. -/
+theorem CertifiedPachnerStep.source_closedCore
+    {K L : Triangulation} (h : CertifiedPachnerStep K L) :
+    ClosedTriangulationCore K := by
+  cases h with
+  | move23 hcore s hlegal => exact hcore
+  | move32 hcore s hlegal => exact hcore
+  | move41 hcore s hlegal => exact hcore
+  | move14 hcore s hlegal =>
+      exact hcore.move41Site_replace_closedCore s hlegal
+
+/-- A certified path is either reflexive or both endpoints are closed cores.
+No initial closed-core premise is required, and this asserts no descent. -/
+theorem CertifiedPachnerPath.eq_or_closedCore_endpoints
+    {K L : Triangulation} (h : CertifiedPachnerPath K L) :
+    K = L ∨ (ClosedTriangulationCore K ∧ ClosedTriangulationCore L) := by
+  induction h with
+  | refl => exact Or.inl rfl
+  | snoc hpath hstep ih =>
+      right
+      rcases ih with hEq | ⟨hcoreK, _⟩
+      · subst K
+        exact ⟨hstep.source_closedCore, hstep.target_closedCore⟩
+      · exact ⟨hcoreK, hstep.target_closedCore⟩
+
 end Poincare

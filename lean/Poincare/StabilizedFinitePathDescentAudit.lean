@@ -9,3 +9,5 @@ import Poincare.StabilizedFinitePathDescent
 #print axioms Poincare.CertifiedPachnerStep.move14_of_legal41_with_fresh_center
 #print axioms Poincare.CertifiedPachnerStep.target_closedCore
 #print axioms Poincare.CertifiedPachnerPath.target_closedCore
+#print axioms Poincare.CertifiedPachnerStep.source_closedCore
+#print axioms Poincare.CertifiedPachnerPath.eq_or_closedCore_endpoints
