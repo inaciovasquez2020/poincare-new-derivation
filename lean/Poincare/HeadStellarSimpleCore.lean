@@ -88,8 +88,36 @@ theorem Move41Site.headStellar_simple
     · exact h2
     · exact h3
     · exact hrestN τ hτ
-  · change (s.sourceTets ++ rest).Pairwise
-      (fun τ σ => ¬ SameTetVertices τ σ)
-    exact (s.sourceTets_pairwise_of_distinct).append hrestP hcross
+  · have hp : (s.sourceTet₀ :: s.sourceTet₁ :: s.sourceTet₂ ::
+        s.sourceTet₃ :: ([] : List Tet)).Pairwise
+        (fun τ σ => ¬ SameTetVertices τ σ) := by
+      simpa [Move41Site.sourceTets] using s.sourceTets_pairwise_of_distinct
+    have hp0 := (List.pairwise_cons.mp hp).1
+    have hp1 := (List.pairwise_cons.mp (List.pairwise_cons.mp hp).2).1
+    have hp2 :=
+      (List.pairwise_cons.mp
+        (List.pairwise_cons.mp (List.pairwise_cons.mp hp).2).2).1
+    simp only [Move41Site.headStellar, List.pairwise_cons]
+    refine ⟨?_, ?_, ?_, ?_, hrestP⟩
+    · intro ρ hρ
+      simp only [List.mem_cons] at hρ
+      rcases hρ with rfl | rfl | rfl | hρ
+      · exact hp0 _ (by simp)
+      · exact hp0 _ (by simp)
+      · exact hp0 _ (by simp)
+      · exact hcross s.sourceTet₀ (by simp [Move41Site.sourceTets]) ρ hρ
+    · intro ρ hρ
+      simp only [List.mem_cons] at hρ
+      rcases hρ with rfl | rfl | hρ
+      · exact hp1 _ (by simp)
+      · exact hp1 _ (by simp)
+      · exact hcross s.sourceTet₁ (by simp [Move41Site.sourceTets]) ρ hρ
+    · intro ρ hρ
+      simp only [List.mem_cons] at hρ
+      rcases hρ with rfl | hρ
+      · exact hp2 _ (by simp)
+      · exact hcross s.sourceTet₂ (by simp [Move41Site.sourceTets]) ρ hρ
+    · intro ρ hρ
+      exact hcross s.sourceTet₃ (by simp [Move41Site.sourceTets]) ρ hρ
 
 end Poincare
