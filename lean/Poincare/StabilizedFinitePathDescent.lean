@@ -166,4 +166,18 @@ theorem CertifiedPachnerStep.move14_of_legal41_with_fresh_center
     hlegal.closedCore.move41Site_replace_closedCore s hlegal,
     Move41Site.center_not_mem_vertexSupport_replace hlegal, rfl⟩
 
+/-- Concatenate two independently certified finite Pachner histories.
+Every move in the composite was already certified in one of the inputs;
+no monotonicity or global descent hypothesis is required. -/
+theorem CertifiedPachnerPath.trans
+    {K L M : Triangulation}
+    (hKL : CertifiedPachnerPath K L)
+    (hLM : CertifiedPachnerPath L M) :
+    CertifiedPachnerPath K M := by
+  induction hLM with
+  | refl => exact hKL
+  | snoc hpath hstep ih =>
+      exact CertifiedPachnerPath.snoc ih hstep
+
+
 end Poincare
