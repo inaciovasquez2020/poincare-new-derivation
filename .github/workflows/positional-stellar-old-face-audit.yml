@@ -1,0 +1,80 @@
+name: Positional stellar old-face persistence Lean audit
+
+on:
+  push:
+    paths:
+      - 'lean/**'
+      - 'lean-toolchain'
+      - 'lakefile.lean'
+      - 'lake-manifest.json'
+      - '.github/workflows/positional-stellar-old-face-audit.yml'
+  pull_request:
+    paths:
+      - 'lean/**'
+      - 'lean-toolchain'
+      - 'lakefile.lean'
+      - 'lake-manifest.json'
+      - '.github/workflows/positional-stellar-old-face-audit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Verify exact HEAD
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          echo "EXACT_HEAD := $EXPECTED_SHA"
+      - uses: leanprover/lean-action@v1
+        with:
+          use-github-cache: true
+          auto-config: false
+      - name: Compile old triangle persistence module
+        run: lake build Poincare.PositionalStellarOldFacePersistence
+      - name: Audit exact kernel axioms
+        run: |
+          set -euo pipefail
+          audit="$(mktemp --suffix=.lean)"
+          report="$(mktemp)"
+          trap 'rm -f "$audit" "$report"' EXIT
+          printf '%s\n' \
+            'import Poincare.PositionalStellarOldFacePersistence' \
+            '#print axioms Poincare.Move41Site.targetTet_triangle_covered_by_source' \
+            '#print axioms Poincare.Move41Site.insertFreshAt_old_triangle_persists' \
+            '#print axioms Poincare.Move41Site.insertFreshAt_sourceFaceAbsent_implies_original' > "$audit"
+          lake env lean "$audit" > "$report"
+          python3 - "$report" <<'PY'
+          import re, sys
+          from pathlib import Path
+          output = Path(sys.argv[1]).read_text(encoding="utf-8")
+          names = [
+              "Poincare.Move41Site.targetTet_triangle_covered_by_source",
+              "Poincare.Move41Site.insertFreshAt_old_triangle_persists",
+              "Poincare.Move41Site.insertFreshAt_sourceFaceAbsent_implies_original",
+          ]
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          markers = list(re.finditer(r"^'([^'\n]+)'[ \t]+", output, re.MULTILINE))
+          assert len(markers) == len(names), f"Unexpected report count: {len(markers)}"
+          assert [m.group(1) for m in markers] == names, "Missing or reordered declarations"
+          for i,m in enumerate(markers):
+              end = markers[i+1].start() if i+1 < len(markers) else len(output)
+              body = output[m.end():end].strip()
+              if body == "does not depend on any axioms":
+                  axioms = set()
+              else:
+                  k = re.fullmatch(r"depends on axioms:\s*\[([^\]]*)\]", body, re.DOTALL)
+                  assert k is not None, f"Unrecognized axiom report: {body}"
+                  axioms = {a.strip() for a in k.group(1).split(",") if a.strip()}
+                  assert axioms, "Empty axiom list"
+              assert axioms <= allowed, f"Forbidden axioms: {axioms-allowed}"
+              print(f"{names[i]} AXIOM_AUDIT_PASS {sorted(axioms)}")
+          PY
