@@ -1,4 +1,5 @@
 import Poincare.TriangulationTopologicalGeometricCarrier
+import Mathlib.Topology.Homeomorph
 
 namespace Poincare
 
