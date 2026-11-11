@@ -27,7 +27,6 @@ noncomputable def triangulationTopologicalGeometricCarrier_homeomorph_of_perm
     triangulationTopologicalGeometricCarrier K ≃ₜ
       triangulationTopologicalGeometricCarrier L := by
   have hspace := triangulationTopologicalGeometricComplex_space_eq_of_perm hperm
-  simp only [triangulationTopologicalGeometricCarrier, hspace]
-  exact Homeomorph.refl _
+  exact Homeomorph.setCongr hspace
 
 end Poincare
