@@ -1,0 +1,68 @@
+name: Positional stellar ambient old-edge incidence focused audit
+
+on:
+  push:
+    paths:
+      - 'lean/**'
+      - 'lean-toolchain'
+      - 'lakefile.lean'
+      - 'lake-manifest.json'
+      - '.github/workflows/positional-stellar-ambient-edge-audit.yml'
+  pull_request:
+    paths:
+      - 'lean/**'
+      - 'lean-toolchain'
+      - 'lakefile.lean'
+      - 'lake-manifest.json'
+      - '.github/workflows/positional-stellar-ambient-edge-audit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Verify exact HEAD
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          echo "EXACT_HEAD := $EXPECTED_SHA"
+      - uses: leanprover/lean-action@v1
+        with:
+          use-github-cache: true
+          auto-config: false
+      - name: Compile exact old-edge incidence module
+        run: lake build Poincare.PositionalStellarAmbientEdgeIncidence
+      - name: Audit exact kernel axioms
+        run: |
+          set -euo pipefail
+          audit="$(mktemp --suffix=.lean)"
+          report="$(mktemp)"
+          trap 'rm -f "$audit" "$report"' EXIT
+          printf '%s\n' \
+            'import Poincare.PositionalStellarAmbientEdgeIncidence' \
+            '#print axioms Poincare.Move41Site.insertFreshAt_old_edge_incidence' > "$audit"
+          lake env lean "$audit" > "$report"
+          python3 - "$report" <<'PY'
+          import re, sys
+          from pathlib import Path
+          output = Path(sys.argv[1]).read_text(encoding="utf-8").strip()
+          name = "Poincare.Move41Site.insertFreshAt_old_edge_incidence"
+          pattern = r"'" + re.escape(name) + r"' depends on axioms:\s*\[([^\]]*)\]"
+          m = re.fullmatch(pattern, output, re.DOTALL)
+          if m:
+              axioms = {a.strip() for a in m.group(1).split(",") if a.strip()}
+              assert axioms
+          else:
+              assert output == f"'{name}' does not depend on any axioms", output
+              axioms = set()
+          assert axioms <= {"propext", "Classical.choice", "Quot.sound"}, axioms
+          print(f"AXIOM_AUDIT_PASS {sorted(axioms)}")
+          PY
