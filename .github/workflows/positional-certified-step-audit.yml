@@ -26,9 +26,19 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Assert exact checked-out revision
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          echo "EXACT_HEAD := $EXPECTED_SHA"
       - uses: leanprover/lean-action@v1
         with:
           use-github-cache: true
+          auto-config: false
       - name: Compile positional certified step
         run: lake build Poincare.PermutationCertifiedStellar
       - name: Audit exact kernel axioms
