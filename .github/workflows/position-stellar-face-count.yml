@@ -41,7 +41,7 @@ jobs:
           printf '%s\n' \
             'import Poincare.PositionStellarFaceCount' \
             '#print axioms Poincare.Move41Site.insertFreshAt_filter_length' \
-            '#print axioms Poincare.Move41Site.selected_source_filter_length' \ > "$audit"
+            '#print axioms Poincare.Move41Site.selected_source_filter_length' > "$audit"
           lake env lean "$audit" > "$report"
           python3 - "$report" <<'PY'
           import re
