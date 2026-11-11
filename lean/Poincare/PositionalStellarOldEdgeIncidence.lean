@@ -15,8 +15,7 @@ theorem Move41Site.sourceTets_old_edge_count
       decide (u ∈ τ.verts ∧ v ∈ τ.verts))).length =
       if u ∈ s.targetTet.verts ∧ v ∈ s.targetTet.verts then 2 else 0 := by
   have hd := s.distinct
-  simp only [List.nodup_cons, List.not_mem_cons, List.not_mem_nil,
-    and_true] at hd
+  simp at hd
   by_cases hua : u = s.a
   all_goals by_cases hub : u = s.b
   all_goals by_cases huc : u = s.c
