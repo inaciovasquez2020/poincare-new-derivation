@@ -100,12 +100,12 @@ theorem Move41Site.insertFreshAt_PhiSupport_eq_add_eight
       PhiSupport K + 8 := by
   have htets := s.insertFreshAt_tets_length K before after hsource hfresh
   have hverts := s.insertFreshAt_vertexSupport_length K before after hsource hfresh
-  have hK := hcore.PhiSupport_eq_four_mul_tets_sub_vertices
+  have hK := hcore.PhiSupport_add_four_mul_vertices_eq_four_mul_tets
   have hT :
-      PhiSupport (s.insertFreshAt K before after hsource hfresh) =
-        4 * ((s.insertFreshAt K before after hsource hfresh).tets.length -
-          (vertexSupport (s.insertFreshAt K before after hsource hfresh)).length) :=
-    ClosedTriangulationCore.PhiSupport_eq_four_mul_tets_sub_vertices
+      PhiSupport (s.insertFreshAt K before after hsource hfresh) +
+          4 * (vertexSupport (s.insertFreshAt K before after hsource hfresh)).length =
+        4 * (s.insertFreshAt K before after hsource hfresh).tets.length :=
+    ClosedTriangulationCore.PhiSupport_add_four_mul_vertices_eq_four_mul_tets
       (s.insertFreshAt_closedCore K before after hsource hcore hfresh)
   omega
 
