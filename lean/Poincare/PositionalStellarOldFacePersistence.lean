@@ -43,19 +43,18 @@ theorem Move41Site.insertFreshAt_old_triangle_persists
   rcases List.mem_append.mp hτ' with hb | ha
   · exact ⟨τ, by
       change τ ∈ before ++ s.sourceTets ++ after
-      exact List.mem_append.mpr (Or.inl hb), hx, hy, hz⟩
+      exact List.mem_append.mpr (Or.inl (List.mem_append.mpr (Or.inl hb))), hx, hy, hz⟩
   · rcases List.mem_cons.mp ha with htarget | hafter
     · subst τ
       obtain ⟨ρ, hρ, hrx, hry, hrz⟩ :=
         s.targetTet_triangle_covered_by_source x y z hx hy hz
       exact ⟨ρ, by
         change ρ ∈ before ++ s.sourceTets ++ after
-        exact List.mem_append.mpr (Or.inr
-          (List.mem_append.mpr (Or.inl hρ))), hrx, hry, hrz⟩
+        exact List.mem_append.mpr (Or.inl
+          (List.mem_append.mpr (Or.inr hρ))), hrx, hry, hrz⟩
     · exact ⟨τ, by
         change τ ∈ before ++ s.sourceTets ++ after
-        exact List.mem_append.mpr (Or.inr
-          (List.mem_append.mpr (Or.inr hafter))), hx, hy, hz⟩
+        exact List.mem_append.mpr (Or.inr hafter), hx, hy, hz⟩
 
 /-- If a 3→2 candidate's complementary face is absent after a fresh
 positional stellar insertion, then that same face was already absent
