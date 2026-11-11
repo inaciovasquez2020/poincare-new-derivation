@@ -3,11 +3,17 @@ name: Position-stellar interface boundary Lean audit
 on:
   pull_request:
     paths:
-      - 'lean/Poincare/PositionStellarInterfaceBoundary.lean'
+      - 'lean/**'
+      - 'lean-toolchain'
+      - 'lakefile.lean'
+      - 'lake-manifest.json'
       - '.github/workflows/position-stellar-interface.yml'
   push:
     paths:
-      - 'lean/Poincare/PositionStellarInterfaceBoundary.lean'
+      - 'lean/**'
+      - 'lean-toolchain'
+      - 'lakefile.lean'
+      - 'lake-manifest.json'
       - '.github/workflows/position-stellar-interface.yml'
 
 permissions:
