@@ -55,7 +55,9 @@ The current work has advanced substantially through the local obstruction/descen
 
 ## Current frontier
 
-The latest merged work (#105–#112) develops and constrains recurrent high-fan configurations:
+[PR #181](https://github.com/inaciovasquez2020/poincare-new-derivation/pull/181) adds an ordered arbitrary-position 1→4 insertion and proves an obstruction to literal list equality with the existing head-inserting inverse. Positional closed-core preservation and global descent remain open.
+
+Earlier merged work (#105–#112) develops and constrains recurrent high-fan configurations:
 
 - **#105:** repeated retained local fan location has a unique transverse carrier.
 - **#106:** repeated retained local fan data determines the chord endpoints.
