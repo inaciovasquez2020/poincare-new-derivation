@@ -41,7 +41,7 @@ theorem Move41Site.insertFreshAt_all_four_spokes_not_legal32
   have hmem (τ : Tet) (hτ : τ ∈ s.sourceTets) :
       τ ∈ (s.insertFreshAt K before after hsource hfresh).tets := by
     change τ ∈ before ++ s.sourceTets ++ after
-    exact List.mem_append.mpr (Or.inr (List.mem_append.mpr (Or.inl hτ)))
+    exact List.mem_append.mpr (Or.inl (List.mem_append.mpr (Or.inr hτ)))
   refine ⟨?_, ?_, ?_, ?_⟩
   · apply Move32Site.not_legal_of_sourceFace_present
       (s.spoke32AtA) _ s.sourceTet₃
