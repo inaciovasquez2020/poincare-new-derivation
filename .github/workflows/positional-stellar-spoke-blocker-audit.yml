@@ -1,0 +1,71 @@
+name: Positional stellar spoke obstruction Lean audit
+
+on:
+  push:
+    paths:
+      - 'lean/**'
+      - 'lean-toolchain'
+      - 'lakefile.lean'
+      - 'lake-manifest.json'
+      - '.github/workflows/positional-stellar-spoke-blocker-audit.yml'
+  pull_request:
+    paths:
+      - 'lean/**'
+      - 'lean-toolchain'
+      - 'lakefile.lean'
+      - 'lake-manifest.json'
+      - '.github/workflows/positional-stellar-spoke-blocker-audit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Verify exact HEAD
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          echo "EXACT_HEAD := $EXPECTED_SHA"
+      - uses: leanprover/lean-action@v1
+        with:
+          use-github-cache: true
+          auto-config: false
+      - name: Compile spoke blocker
+        run: lake build Poincare.PositionalStellarSpokeBlocker
+      - name: Check kernel axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          audit="$(mktemp --suffix=.lean)"
+          report="$(mktemp)"
+          trap 'rm -f "$audit" "$report"' EXIT
+          printf '%s\n' \
+            'import Poincare.PositionalStellarSpokeBlocker' \
+            '#print axioms Poincare.Move41Site.insertFreshAt_all_four_spokes_not_legal32' > "$audit"
+          lake env lean "$audit" > "$report"
+          python3 - "$report" <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+          report = Path(sys.argv[1]).read_text(encoding="utf-8").strip()
+          name = "Poincare.Move41Site.insertFreshAt_all_four_spokes_not_legal32"
+          match = re.fullmatch(
+              r"'"+re.escape(name)+r"' depends on axioms:\s*\[([^\]]*)\]", report,
+              re.DOTALL)
+          if match:
+              axioms = {a.strip() for a in match.group(1).split(",") if a.strip()}
+          else:
+              assert report == f"'{name}' does not depend on any axioms", report
+              axioms = set()
+          assert axioms <= {"propext", "Classical.choice", "Quot.sound"}, axioms
+          print(f"AXIOM_AUDIT_PASS {sorted(axioms)}")
+          PY
