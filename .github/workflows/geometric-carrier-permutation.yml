@@ -53,7 +53,7 @@ jobs:
               "Poincare.triangulationTopologicalGeometricComplex_space_eq_of_perm",
               "Poincare.triangulationTopologicalGeometricCarrier_homeomorph_of_perm",
           ]
-          markers = list(re.finditer(r"^'([^'\\n]+)'[ \\t]+", report, re.MULTILINE))
+          markers = list(re.finditer(r"^'([^'\n]+)'[ \t]+", report, re.MULTILINE))
           assert len(markers) == len(names), f"unexpected number of axiom reports: {len(markers)}"
           assert [m.group(1) for m in markers] == names, "missing or reordered axiom declarations"
           for i, marker in enumerate(markers):
@@ -62,7 +62,7 @@ jobs:
               if body == "does not depend on any axioms":
                   axioms = set()
               else:
-                  match = re.fullmatch(r"depends on axioms:\\s*\\[([^\\]]*)\\]", body, re.DOTALL)
+                  match = re.fullmatch(r"depends on axioms:\s*\[([^\]]*)\]", body, re.DOTALL)
                   assert match is not None, f"unrecognized axiom report for {names[i]}: {body!r}"
                   axioms = {x.strip() for x in match.group(1).split(",") if x.strip()}
                   assert axioms, f"empty or malformed axiom list for {names[i]}"
