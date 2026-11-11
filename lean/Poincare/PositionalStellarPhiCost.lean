@@ -1,4 +1,5 @@
 import Poincare.PermutationCertifiedStellar
+import Poincare.HeadStellarSimpleCore
 import Poincare.PhiSupportEulerCount
 import Mathlib.Tactic
 
