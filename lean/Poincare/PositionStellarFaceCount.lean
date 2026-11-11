@@ -10,7 +10,7 @@ theorem Move41Site.insertFreshAt_filter_length
     (before after : List Tet)
     (hsource : K.tets = before ++ s.targetTet :: after)
     (hfresh : s.e ∉ vertexSupport K)
-    (p : Tet → Prop) :
+    (p : Tet → Bool) :
     ((s.insertFreshAt K before after hsource hfresh).tets.filter p).length =
       ((s.headStellar (before ++ after)).tets.filter p).length := by
   change ((before ++ s.sourceTets ++ after).filter p).length =
@@ -21,7 +21,7 @@ theorem Move41Site.insertFreshAt_filter_length
 /-- The source's old face multiplicities are similarly independent of
 whether the selected target tetrahedron occurs at the head or later. -/
 theorem Move41Site.selected_source_filter_length
-    (s : Move41Site) (before after : List Tet) (p : Tet → Prop) :
+    (s : Move41Site) (before after : List Tet) (p : Tet → Bool) :
     ((before ++ s.targetTet :: after).filter p).length =
       ((s.targetTet :: (before ++ after)).filter p).length := by
   simp only [List.filter_append, List.length_append, List.filter_cons,
