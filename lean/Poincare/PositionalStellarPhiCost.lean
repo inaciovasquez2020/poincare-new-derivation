@@ -71,7 +71,8 @@ theorem Move41Site.insertFreshAt_vertexSupport_length
   have hcK : (vertexSupport K).toFinset.card =
       (vertexSupport K).length :=
     List.toFinset_card_of_nodup hnK
-  rw [← hcT, hfin, Finset.card_insert_of_not_mem hnot, hcK]
+  rw [← hcT, hfin]
+  simp [hnot, hcK]
 
 /-- A fresh 1→4 increases the tetrahedron-list length by three. -/
 theorem Move41Site.insertFreshAt_tets_length
