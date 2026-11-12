@@ -124,7 +124,8 @@ theorem Move41Site.insertFreshAt_legal32_iff
       rw [if_pos hin, hthree] at heq
       omega
     exact ⟨⟨(hrealized hdf hef hout).1 hl.1, by
-      simpa [Move32Site.SharedEdgeExactlyThree, hout, hthree] using heq.symm, habs⟩, hout⟩
+      rw [if_neg hout, Nat.add_zero] at heq
+      exact heq.symm.trans hthree, habs⟩, hout⟩
   · rintro ⟨hk, hout⟩
     obtain ⟨⟨τ₀, ht₀, hs₀⟩, ⟨τ₁, ht₁, hs₁⟩, _⟩ := hk.1
     have hdf := hold τ₀ ht₀ m.d ((hs₀ m.d).2 (by simp [Move32Site.targetTet₀, Tet.verts]))
@@ -137,7 +138,8 @@ theorem Move41Site.insertFreshAt_legal32_iff
     have hthree := hk.2.1
     change (K.tets.filter (fun τ => m.d ∈ τ.verts ∧ m.e ∈ τ.verts)).length = 3 at hthree
     refine ⟨(hrealized hdf hef hout).2 hk.1, ?_, ?_⟩
-    · simpa [Move32Site.SharedEdgeExactlyThree, hout, hthree] using heq
+    · rw [if_neg hout, Nat.add_zero] at heq
+      exact heq.trans hthree
     · intro τ hτ hface
       rw [htets, List.mem_append, List.mem_append] at hτ
       rcases hτ with (hb | hc) | ha
