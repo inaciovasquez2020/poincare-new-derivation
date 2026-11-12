@@ -46,15 +46,19 @@ jobs:
           audit="$(mktemp --suffix=.lean)"
           report="$(mktemp)"
           trap 'rm -f "$audit" "$report"' EXIT
-          printf '%s\n' \
-            'import Poincare.PositionalStellarOldEdgeIncidence' \
-            '#print axioms Poincare.Move41Site.sourceTets_old_edge_count' > "$audit"
-          lake env lean "$audit" > "$report"
-          python3 - "$report" <<'PY'
+          for name in \
+            Poincare.Move41Site.sourceTets_old_edge_count \
+            Poincare.Move41Site.insertFreshAt_old_edge_count
+          do
+            printf '%s\n' \
+              'import Poincare.PositionalStellarOldEdgeIncidence' \
+              "#print axioms $name" > "$audit"
+            lake env lean "$audit" > "$report"
+            python3 - "$report" "$name" <<'PY'
           import re, sys
           from pathlib import Path
           output = Path(sys.argv[1]).read_text(encoding="utf-8").strip()
-          name = "Poincare.Move41Site.sourceTets_old_edge_count"
+          name = sys.argv[2]
           pattern = r"'" + re.escape(name) + r"' depends on axioms:\s*\[([^\]]*)\]"
           m = re.fullmatch(pattern, output, re.DOTALL)
           if m:
@@ -66,3 +70,4 @@ jobs:
           assert axioms <= {"propext", "Classical.choice", "Quot.sound"}, axioms
           print(f"AXIOM_AUDIT_PASS {sorted(axioms)}")
           PY
+          done
