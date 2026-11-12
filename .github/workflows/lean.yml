@@ -120,6 +120,7 @@ jobs:
           allowed = {"propext", "Classical.choice", "Quot.sound"}
           for name in [
               "Poincare.CertifiedPachnerStep.homeomorphic",
+              "Poincare.CertifiedPachnerPath.trans",
               "Poincare.CertifiedPachnerPath.homeomorphic",
               "Poincare.stabilizedPathDescent_implies_globalDescent",
               "Poincare.crossPolytopeBoundary4_stabilized_path_escape",
