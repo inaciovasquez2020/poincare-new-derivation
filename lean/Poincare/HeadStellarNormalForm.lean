@@ -97,7 +97,7 @@ private theorem Move41Site.sourceCenter (s : Move41Site) :
     simp [Move41Site.sourceTet₀, Move41Site.sourceTet₁,
       Move41Site.sourceTet₂, Move41Site.sourceTet₃, Tet.verts]
 
-private theorem Move41Site.sourceDistinct (s : Move41Site) :
+theorem Move41Site.sourceDistinct (s : Move41Site) :
     s.sourceTets.Pairwise (fun τ σ => ¬ SameTetVertices τ σ) := by
   simp [Move41Site.sourceTets]
   refine ⟨⟨?_, ?_, ?_⟩, ⟨?_, ?_⟩, ?_⟩
