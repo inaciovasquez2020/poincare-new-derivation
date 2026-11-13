@@ -167,6 +167,30 @@ jobs:
           print(f"{name}: allowed only {sorted(found)}")
           PY
 
+      - name: JIID audit isolated mixed-mode recurrence module
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.GlobalFanReentryModeFiniteRecurrence
+          printf '%s\n' 'import Poincare.GlobalFanReentryModeFiniteRecurrence' '#print axioms Poincare.exists_recurrent_fanReentryModeKey_classified' > /tmp/jiid-recurrence-axioms.lean
+          lake env lean /tmp/jiid-recurrence-axioms.lean > /tmp/jiid-recurrence-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          name = "Poincare.exists_recurrent_fanReentryModeKey_classified"
+          lines = [s for s in Path("/tmp/jiid-recurrence-axioms.txt").read_text().splitlines() if s.startswith(f"'{name}' ")]
+          assert len(lines) == 1, f"missing or duplicated report: {lines}"
+          line = lines[0]
+          if line == f"'{name}' does not depend on any axioms":
+              found = set()
+          else:
+              m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", line)
+              assert m is not None, f"unrecognized report: {line}"
+              found = {a.strip() for a in m.group(1).split(",") if a.strip()}
+          assert found <= {"propext", "Classical.choice", "Quot.sound"}, f"unapproved: {found}"
+          print(f"{name}: permitted axioms PASS: {sorted(found)}")
+          PY
+
       - name: Build finite witnessed-state module
         run: lake build Poincare.GlobalMove32FiniteWitnessState
       - name: Build witness-anchored continuation module
