@@ -145,6 +145,30 @@ jobs:
               assert found <= allowed, f"unapproved axioms for {name}: {found - allowed}"
           PY
 
+      - name: Verify stellar source distinctness exact axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.HeadStellarNormalForm
+          printf '%s\n' 'import Poincare.HeadStellarNormalForm' '#print axioms Poincare.Move41Site.sourceDistinct' > /tmp/poincare-stellar-source-axioms.lean
+          lake env lean /tmp/poincare-stellar-source-axioms.lean > /tmp/poincare-stellar-source-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          name = "Poincare.Move41Site.sourceDistinct"
+          lines = [s for s in Path("/tmp/poincare-stellar-source-axioms.txt").read_text().splitlines() if s.startswith(f"'{name}' ")]
+          assert len(lines) == 1, f"missing/duplicate axiom report: {lines}"
+          line = lines[0]
+          if line == f"'{name}' does not depend on any axioms":
+              found = set()
+          else:
+              m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", line)
+              assert m is not None, f"unrecognized axiom report: {line}"
+              found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+          assert found <= {"propext", "Classical.choice", "Quot.sound"}, f"unapproved axioms: {found}"
+          print(f"{name}: AXIOMS_PASS: {sorted(found)}")
+          PY
+
       - name: Verify vertex relabeling exact theorem axioms
         shell: bash
         run: |
