@@ -109,3 +109,43 @@ witnesses forces either (i) equality of full sites with a forbidden immediate
 self-edge, (ii) a degree-four vertex, or (iii) a legal Move23 / strict
 `PhiSupport` descent. The inspected definitions do not currently establish
 this disjunction. This is a proof target, not a theorem or verified conjecture.
+
+## Follow-up: high-edge branch and normalization closure audit (2026-10-23)
+
+This audit separates the branches already handled by the code from the theorem still required for a global normalization argument. It is a documentation-only frontier update; it does not assert a new Lean theorem.
+
+### Branch 1 — high edge conversion
+
+The existing theorem
+`ClosedTriangulationCore.exists_legal_move23_or_highFanState_of_edgeIncidence_four_le`
+converts an edge with incidence at least four, under its stated core/manifold/incidence hypotheses, into either a legal Move23 site or a `HighFanState`. This is a valid branch split, not a termination result.
+
+The source-face obstruction chain also contains
+`move32_sourceFace_obstruction_false_of_noHigh`: under its connected-link and no-degree-four hypotheses, a represented source-face obstruction forces a nonself high-incidence edge. Consequently, any attempted global argument that assumes both such an obstruction and absence of all nonself high edges is vacuous under those hypotheses. It cannot discharge the genuine high-edge branch.
+
+### Branch 2 — legal-move progress
+
+The existing Move2332 block proves a strict `PhiSupport` decrease when its second Move32 source face is absent. When that source face is represented, the theorem retains the second source-face obstruction and the automatic reinjection theorem routes the next state to a legal Move23 option, a high-fan mode, or witnessed reentry (depending on the exact theorem's hypotheses).
+
+This handles the local legal-move alternative only when the required incidence-four and legality premises are available. It does not prove that every legal Move23 selected by the general high-edge split admits the specific balanced Move2332 block, nor that the remaining obstruction branches terminate. Do not generalize the local block to all legal moves without proving those premises.
+
+### Branch 3 — exact termination obligation
+
+The missing statement is a geometric cycle-exclusion/termination theorem for the actual retained transition data. In particular, it must not merely repeat a finite-key recurrence result. It must establish, under the actual closed connected 3-manifold, closed-core, connected-link, tetrahedron-overlap, and no-degree-four assumptions, that a recurrent high-fan/witnessed-reentry cycle yields at least one of:
+
+1. a legal move for which the applicable local progress theorem's premises are proved;
+2. a strict topology-preserving `PhiSupport` descent;
+3. a contradiction with an established incidence/link constraint.
+
+The current sources do not establish this disjunction for every recurrent cycle. The abstract finite-key countermodel boundary above is only a warning about insufficient bookkeeping, not a triangulation counterexample.
+
+### Branch 4 — normalization and JIID
+
+Even a proved cycle-exclusion lemma would need to be connected to a well-founded normalization induction: each nonterminal case must produce a valid successor triangulation in the same admissible class and either decrease a natural-valued measure or discharge the case. Only after the induction yields the stated normalization theorem may its existing topological consequence be applied. The current frontier does not prove the required universal descent/normalization theorem, and `Poincare.JIID` remains open.
+
+### Verification record
+
+- **Inspected repository:** `inaciovasquez2020/poincare-new-derivation`, default branch `main`, on 2026-10-23.
+- **Files checked:** `GlobalHighEdgeToFanState.lean`, `GlobalFanChordMove2332SecondStep.lean`, `GlobalFanChordMove2332AutomaticModeReinjection.lean`, `GlobalMove32SourceFaceNoHighContradiction.lean`, `GlobalFanReentryModeFiniteRecurrence.lean`, and this frontier document.
+- **Code change:** none in Lean; this update records the audited proof boundary and the precise missing implication.
+- **Build/CI:** not run in this session. No compile, theorem closure, normalization completion, or Poincare proof is claimed.
