@@ -145,6 +145,33 @@ jobs:
               assert found <= allowed, f"unapproved axioms for {name}: {found - allowed}"
           PY
 
+      - name: Verify permutation-aware two-step path and axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.StellarSlideCertifiedPath
+          printf '%s\n' 'import Poincare.StellarSlideCertifiedPath' '#print axioms Poincare.PermutationCertifiedPachnerPath.homeomorphic' '#print axioms Poincare.permutationCertifiedTwoMovePath_of_legal23_legal32' > /tmp/stellar-slide-path-axioms.lean
+          lake env lean /tmp/stellar-slide-path-axioms.lean > /tmp/stellar-slide-path-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          names = ["Poincare.PermutationCertifiedPachnerPath.homeomorphic",
+                   "Poincare.permutationCertifiedTwoMovePath_of_legal23_legal32"]
+          report = Path("/tmp/stellar-slide-path-axioms.txt").read_text().splitlines()
+          for name in names:
+              lines = [s for s in report if s.startswith(f"'{name}' ")]
+              assert len(lines) == 1, f"missing/duplicate report for {name}: {lines}"
+              line = lines[0]
+              if line == f"'{name}' does not depend on any axioms":
+                  found = set()
+              else:
+                  m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", line)
+                  assert m is not None, f"unknown report: {line}"
+                  found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+              assert found <= {"propext", "Classical.choice", "Quot.sound"}, f"unapproved axioms for {name}: {found}"
+              print(f"{name}: AXIOMS_PASS {sorted(found)}")
+          PY
+
       - name: Verify stellar source distinctness exact axioms
         shell: bash
         run: |
