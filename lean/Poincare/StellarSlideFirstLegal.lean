@@ -25,8 +25,8 @@ theorem Move41Site.slideFirst23_newEdgeAbsent
     simp only [Move41Site.sourceTets, List.mem_cons,
       List.not_mem_nil, or_false] at hρ
     rcases hρ with rfl | rfl | rfl | rfl <;>
-      simp [Move41Site.sourceTet₀, Move41Site.sourceTet₁,
-        Move41Site.sourceTet₂, Move41Site.sourceTet₃, Tet.verts] at *
+      simp_all [Move41Site.sourceTet₀, Move41Site.sourceTet₁,
+        Move41Site.sourceTet₂, Move41Site.sourceTet₃, Tet.verts]
   exact hfo ((hsame f).1 hft)
 
 /-- The first slide step is actually legal in the closed-core stellar
