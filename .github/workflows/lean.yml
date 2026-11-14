@@ -145,6 +145,31 @@ jobs:
               assert found <= allowed, f"unapproved axioms for {name}: {found - allowed}"
           PY
 
+      - name: Verify exact stellar-slide endpoint and axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.StellarSlideEndpoint
+          printf '%s\n' 'import Poincare.StellarSlideEndpoint' '#print axioms Poincare.Move41Site.slideSecond32_replace_canonical' > /tmp/stellar-slide-endpoint-axioms.lean
+          lake env lean /tmp/stellar-slide-endpoint-axioms.lean > /tmp/stellar-slide-endpoint-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          name = "Poincare.Move41Site.slideSecond32_replace_canonical"
+          rows = Path("/tmp/stellar-slide-endpoint-axioms.txt").read_text().splitlines()
+          reports = [row for row in rows if row.startswith(f"'{name}' ")]
+          assert len(reports) == 1, f"missing or duplicate report: {reports}"
+          row = reports[0]
+          if row == f"'{name}' does not depend on any axioms":
+              found = set()
+          else:
+              m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", row)
+              assert m, f"unexpected output: {row}"
+              found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+          assert found <= {"propext", "Classical.choice", "Quot.sound"}, found
+          print(f"{name}: AXIOMS_PASS {sorted(found)}")
+          PY
+
       - name: Verify second-slide complete legality and axioms
         shell: bash
         run: |
