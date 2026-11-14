@@ -145,6 +145,31 @@ jobs:
               assert found <= allowed, f"unapproved axioms for {name}: {found - allowed}"
           PY
 
+      - name: Verify second-slide exact shared-edge incidence and axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.StellarSlideSecondEdge
+          printf '%s\n' 'import Poincare.StellarSlideSecondEdge' '#print axioms Poincare.Move41Site.slideSecond32_sharedEdgeExactlyThree' > /tmp/stellar-second-edge-axioms.lean
+          lake env lean /tmp/stellar-second-edge-axioms.lean > /tmp/stellar-second-edge-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          name = "Poincare.Move41Site.slideSecond32_sharedEdgeExactlyThree"
+          rows = Path("/tmp/stellar-second-edge-axioms.txt").read_text().splitlines()
+          reports = [row for row in rows if row.startswith(f"'{name}' ")]
+          assert len(reports) == 1, f"missing or duplicate report: {reports}"
+          row = reports[0]
+          if row == f"'{name}' does not depend on any axioms":
+              found = set()
+          else:
+              m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", row)
+              assert m, f"unexpected output: {row}"
+              found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+          assert found <= {"propext", "Classical.choice", "Quot.sound"}, found
+          print(f"{name}: AXIOMS_PASS {sorted(found)}")
+          PY
+
       - name: Verify actual second-slide source-face absence and axioms
         shell: bash
         run: |
