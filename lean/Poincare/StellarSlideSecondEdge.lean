@@ -43,7 +43,7 @@ theorem Move41Site.slideSecond32_sharedEdgeExactlyThree
     have hde : s.d ≠ s.e := by
       simp at hd
       omega
-    simp [List.filter, p, Tet.verts, hde]
+    simp [List.filter, p, Tet.verts, hda, hdb, hdc, hdf, hde]
   change (((s.slideFirst23 f hfive).replace
       (s.headStellar ((⟨s.a, s.b, s.c, f⟩ : Tet) :: rest))).tets.filter p).length = 3
   rw [s.slideFirst23_replace_canonical f rest hfive hf,
