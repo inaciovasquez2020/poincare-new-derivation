@@ -17,6 +17,7 @@ theorem Move41Site.slideSecond32_replace_canonical
        ⟨s.a, s.b, s.e, f⟩,
        ⟨s.a, s.c, s.e, f⟩,
        ⟨s.b, s.c, s.e, f⟩] ++ rest := by
+  simp only [Move32Site.replace_tets_eq, Move32Site.unchangedTets]
   rw [show ((s.slideFirst23 f hfive).replace
     (s.headStellar ((⟨s.a, s.b, s.c, f⟩ : Tet) :: rest))).tets =
       [⟨s.a, s.b, s.e, f⟩,
