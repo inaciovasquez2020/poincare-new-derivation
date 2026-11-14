@@ -1,0 +1,40 @@
+name: U16 finite unlocking certificates
+
+on:
+  pull_request:
+    paths:
+      - 'certificates/u16/**'
+      - '.github/workflows/u16-unlock-certificates.yml'
+  workflow_dispatch:
+
+jobs:
+  finite-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reproduce receipt and all 104 unlocking witnesses
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd certificates/u16
+          python3 -B urf_u16_unlock_audit.py > "$RUNNER_TEMP/u16-produced.json"
+          python3 -B u16_all_witness_manifest.py > "$RUNNER_TEMP/u16-manifest.json"
+          python3 - "$RUNNER_TEMP/u16-produced.json" "$RUNNER_TEMP/u16-manifest.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          expected = json.loads(Path("urf_u16_unlock_receipt.json").read_text())
+          actual = json.loads(Path(sys.argv[1]).read_text())
+          assert actual == expected, "replayed receipt does not match checked-in certificate"
+          manifest = json.loads(Path(sys.argv[2]).read_text())
+          assert manifest == {
+              "all_witnesses_count": 104,
+              "all_witnesses_sha256": "2dfa073cacd7b673bb2daadc8cc1b52254ce643b205904d7dc8dc306945545d1",
+          }, "full certificate manifest mismatch"
+          assert actual["first_old_old_32_depth_counts"] == {"2": 96, "3": 8}
+          print("U16_UNLOCK_FINITE_CERTIFICATES := PASS")
+          print("WITNESSES := 104")
+          print("LEAN_VERIFIED := NOT_RUN")
+          print("GLOBAL_POINCARE := OPEN")
+          PY
