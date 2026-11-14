@@ -145,6 +145,31 @@ jobs:
               assert found <= allowed, f"unapproved axioms for {name}: {found - allowed}"
           PY
 
+      - name: Verify closed-core stellar-slide second-face exclusion
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.StellarSlideSecondFace
+          printf '%s\n' 'import Poincare.StellarSlideSecondFace' '#print axioms Poincare.Move41Site.slide_second_rest_face_absent' > /tmp/stellar-second-face-axioms.lean
+          lake env lean /tmp/stellar-second-face-axioms.lean > /tmp/stellar-second-face-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          name = "Poincare.Move41Site.slide_second_rest_face_absent"
+          rows = Path("/tmp/stellar-second-face-axioms.txt").read_text().splitlines()
+          lines = [row for row in rows if row.startswith(f"'{name}' ")]
+          assert len(lines) == 1, f"missing/duplicate axiom output: {lines}"
+          line = lines[0]
+          if line == f"'{name}' does not depend on any axioms":
+              found = set()
+          else:
+              match = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", line)
+              assert match, f"unexpected output: {line}"
+              found = {v.strip() for v in match.group(1).split(",") if v.strip()}
+          assert found <= {"propext", "Classical.choice", "Quot.sound"}, found
+          print(f"{name}: AXIOMS_PASS {sorted(found)}")
+          PY
+
       - name: Verify canonical first stellar-slide replacement
         shell: bash
         run: |
