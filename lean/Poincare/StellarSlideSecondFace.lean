@@ -20,18 +20,18 @@ theorem Move41Site.slide_second_rest_face_absent
         (fun τ => s.a ∈ τ.verts ∧ s.b ∈ τ.verts ∧ s.c ∈ τ.verts)).length = 2 := by
     exact hcore.2.2 s.a s.b s.c habc
       ⟨s.targetTet, by simp, by simp [Move41Site.targetTet, Tet.verts]⟩
+  have hnormalized :
+      2 + (rest.filter (fun τ => s.a ∈ τ.verts ∧
+        s.b ∈ τ.verts ∧ s.c ∈ τ.verts)).length = 2 := by
+    simpa [Move41Site.targetTet, Tet.verts] using hcount
   have hzero :
       (rest.filter (fun τ => s.a ∈ τ.verts ∧
         s.b ∈ τ.verts ∧ s.c ∈ τ.verts)).length = 0 := by
-    simp [Move41Site.targetTet, Tet.verts] at hcount
     omega
   have hnil :
       rest.filter (fun τ => s.a ∈ τ.verts ∧
-        s.b ∈ τ.verts ∧ s.c ∈ τ.verts) = [] := by
-    cases h : rest.filter (fun τ => s.a ∈ τ.verts ∧
-      s.b ∈ τ.verts ∧ s.c ∈ τ.verts) with
-    | nil => exact h
-    | cons τ tail => simp [h] at hzero
+        s.b ∈ τ.verts ∧ s.c ∈ τ.verts) = [] :=
+    List.length_eq_zero_iff.mp hzero
   intro τ hτ habcτ
   have hmem :
       τ ∈ rest.filter (fun σ => s.a ∈ σ.verts ∧
