@@ -24,27 +24,30 @@ theorem Move41Site.slideSecond32_sourceFaceAbsent
   have hd := s.distinct
   have hext := s.slide_second_rest_face_absent f rest hcore
   intro τ hτ hface
+  change s.a ∈ τ.verts ∧ s.b ∈ τ.verts ∧ s.c ∈ τ.verts at hface
   rw [s.slideFirst23_replace_canonical f rest hfive hf] at hτ
-  simp only [List.mem_append, List.mem_cons, List.not_mem_nil, or_false] at hτ
-  rcases hτ with h0 | h1 | h2 | h3 | h4 | h5 | hrest
-  · subst τ
-    simp [Move41Site.slideSecond32, Tet.verts] at hface
-    simp_all
-  · subst τ
-    simp [Move41Site.slideSecond32, Tet.verts] at hface
-    simp_all
-  · subst τ
-    simp [Move41Site.slideSecond32, Tet.verts] at hface
-    simp_all
-  · subst τ
-    simp [Move41Site.slideSecond32, Tet.verts] at hface
-    simp_all
-  · subst τ
-    simp [Move41Site.slideSecond32, Tet.verts] at hface
-    simp_all
-  · subst τ
-    simp [Move41Site.slideSecond32, Tet.verts] at hface
-    simp_all
+  simp only [List.mem_append] at hτ
+  rcases hτ with hlocal | hrest
+  · simp only [List.mem_cons, List.not_mem_nil, or_false] at hlocal
+    rcases hlocal with h0 | h1 | h2 | h3 | h4 | h5
+    · rw [h0] at hface
+      simp [Tet.verts] at hface
+      simp_all
+    · rw [h1] at hface
+      simp [Tet.verts] at hface
+      simp_all
+    · rw [h2] at hface
+      simp [Tet.verts] at hface
+      simp_all
+    · rw [h3] at hface
+      simp [Tet.verts] at hface
+      simp_all
+    · rw [h4] at hface
+      simp [Tet.verts] at hface
+      simp_all
+    · rw [h5] at hface
+      simp [Tet.verts] at hface
+      simp_all
   · exact hext τ hrest hface
 
 end Poincare
