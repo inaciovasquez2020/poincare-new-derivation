@@ -21,12 +21,12 @@ theorem Move41Site.slideSecond32_sharedEdgeExactlyThree
       of_decide_eq_true hp
     exact (hfresh τ hτ) hpair.2
   have hlocal :
-      ([⟨s.a, s.b, s.e, f⟩,
+      (([⟨s.a, s.b, s.e, f⟩,
         ⟨s.a, s.c, s.e, f⟩,
         ⟨s.b, s.c, s.e, f⟩,
         ⟨s.a, s.b, s.d, s.e⟩,
         ⟨s.a, s.c, s.d, s.e⟩,
-        ⟨s.b, s.c, s.d, s.e⟩] : List Tet).filter p |>.length = 3 := by
+        ⟨s.b, s.c, s.d, s.e⟩] : List Tet).filter p).length = 3 := by
     have hd := s.distinct
     have hm := hfive
     have hff := hf
