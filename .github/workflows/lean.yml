@@ -145,6 +145,31 @@ jobs:
               assert found <= allowed, f"unapproved axioms for {name}: {found - allowed}"
           PY
 
+      - name: Verify canonical first stellar-slide replacement
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.StellarSlideFirstReplacement
+          printf '%s\n' 'import Poincare.StellarSlideFirstReplacement' '#print axioms Poincare.Move41Site.slideFirst23_replace_canonical' > /tmp/stellar-replacement-axioms.lean
+          lake env lean /tmp/stellar-replacement-axioms.lean > /tmp/stellar-replacement-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          name = "Poincare.Move41Site.slideFirst23_replace_canonical"
+          report = Path("/tmp/stellar-replacement-axioms.txt").read_text().splitlines()
+          lines = [s for s in report if s.startswith(f"'{name}' ")]
+          assert len(lines) == 1, f"missing/duplicate declaration report: {lines}"
+          line = lines[0]
+          if line == f"'{name}' does not depend on any axioms":
+              found = set()
+          else:
+              m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", line)
+              assert m is not None, f"unknown report: {line}"
+              found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+          assert found <= {"propext", "Classical.choice", "Quot.sound"}, f"unapproved axioms: {found}"
+          print(f"{name}: AXIOMS_PASS {sorted(found)}")
+          PY
+
       - name: Verify first stellar-slide move legality and axioms
         shell: bash
         run: |
