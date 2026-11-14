@@ -32,22 +32,22 @@ theorem Move41Site.slideSecond32_sourceFaceAbsent
     rcases hlocal with h0 | h1 | h2 | h3 | h4 | h5
     · rw [h0] at hface
       simp [Tet.verts] at hface
-      simp_all
+      simp_all <;> omega
     · rw [h1] at hface
       simp [Tet.verts] at hface
-      simp_all
+      simp_all <;> omega
     · rw [h2] at hface
       simp [Tet.verts] at hface
-      simp_all
+      simp_all <;> omega
     · rw [h3] at hface
       simp [Tet.verts] at hface
-      simp_all
+      simp_all <;> omega
     · rw [h4] at hface
       simp [Tet.verts] at hface
-      simp_all
+      simp_all <;> omega
     · rw [h5] at hface
       simp [Tet.verts] at hface
-      simp_all
+      simp_all <;> omega
   · exact hext τ hrest hface
 
 end Poincare
