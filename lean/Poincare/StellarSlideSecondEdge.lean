@@ -28,10 +28,19 @@ theorem Move41Site.slideSecond32_sharedEdgeExactlyThree
         ⟨s.a, s.c, s.d, s.e⟩,
         ⟨s.b, s.c, s.d, s.e⟩] : List Tet).filter p).length = 3 := by
     have hd := s.distinct
-    have hm := hfive
-    have hff := hf
-    simp at hd hm hff
-    simp_all [p, Tet.verts] <;> omega
+    have hda : s.d ≠ s.a := by
+      simp at hd
+      omega
+    have hdb : s.d ≠ s.b := by
+      simp at hd
+      omega
+    have hdc : s.d ≠ s.c := by
+      simp at hd
+      omega
+    have hdf : s.d ≠ f := by
+      simp at hf
+      omega
+    simp [p, Tet.verts, hda, hdb, hdc, hdf]
   change (((s.slideFirst23 f hfive).replace
       (s.headStellar ((⟨s.a, s.b, s.c, f⟩ : Tet) :: rest))).tets.filter p).length = 3
   rw [s.slideFirst23_replace_canonical f rest hfive hf,
