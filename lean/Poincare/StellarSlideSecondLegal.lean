@@ -27,7 +27,9 @@ theorem Move41Site.slideSecond32_legal
     refine ⟨⟨_, ?_, fun _ => Iff.rfl⟩,
       ⟨_, ?_, fun _ => Iff.rfl⟩,
       ⟨_, ?_, fun _ => Iff.rfl⟩⟩
-    all_goals simp [K, hcanon]
+    all_goals
+      rw [show K.tets = _ from hcanon]
+      simp
   exact ⟨hreal,
     s.slideSecond32_sharedEdgeExactlyThree f rest hfive hf hfresh,
     s.slideSecond32_sourceFaceAbsent f rest hfive hf hcore⟩
