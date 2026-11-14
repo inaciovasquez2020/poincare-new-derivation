@@ -1,0 +1,125 @@
+{
+  "all_witness_intermediates_closed_face_and_connected_sphere_links": true,
+  "bfs_states_processed": 1199,
+  "example_certificates": {
+    "2": {
+      "final_tetrahedra": 108,
+      "phi_final": 364,
+      "pre_unlock_moves": [
+        [
+          "23",
+          [
+            [
+              0,
+              1,
+              4
+            ],
+            9,
+            16
+          ]
+        ],
+        [
+          "23",
+          [
+            [
+              0,
+              4,
+              6
+            ],
+            7,
+            16
+          ]
+        ]
+      ],
+      "stellar_tetrahedron": [
+        0,
+        1,
+        4,
+        6
+      ],
+      "unlock_32": [
+        [
+          0,
+          4
+        ],
+        [
+          7,
+          9,
+          16
+        ]
+      ]
+    },
+    "3": {
+      "final_tetrahedra": 109,
+      "phi_final": 368,
+      "pre_unlock_moves": [
+        [
+          "23",
+          [
+            [
+              0,
+              1,
+              8
+            ],
+            10,
+            16
+          ]
+        ],
+        [
+          "23",
+          [
+            [
+              0,
+              1,
+              10
+            ],
+            14,
+            16
+          ]
+        ],
+        [
+          "23",
+          [
+            [
+              0,
+              8,
+              10
+            ],
+            11,
+            16
+          ]
+        ]
+      ],
+      "stellar_tetrahedron": [
+        0,
+        1,
+        8,
+        9
+      ],
+      "unlock_32": [
+        [
+          0,
+          10
+        ],
+        [
+          11,
+          14,
+          16
+        ]
+      ]
+    }
+  },
+  "facet_sha256": "4e4e4e280195ff124ceb19c5ca0934a3f5829b94ed9a45ca25537d89bf907ccb",
+  "first_old_old_32_depth_counts": {
+    "2": 96,
+    "3": 8
+  },
+  "original_facets": 104,
+  "post_stabilization_moves_rechecked": 320,
+  "source": "Dougherty-Faber-Murphy U16, seven cyclic facet generators, modulo 16",
+  "stabilizations_checked": 104,
+  "stabilized_23_sites_each": 4,
+  "stabilized_32_sites_each": 0,
+  "stabilized_41_sites_each": 1,
+  "status": "COMPUTATION_PASS; NOT_LEAN_VERIFIED; finite U16 only"
+}
