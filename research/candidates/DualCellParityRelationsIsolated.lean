@@ -19,9 +19,10 @@ theorem parity_append (w : Face → ZMod 2) (p q : List Face) :
   simp [parity, List.map_append, List.sum_append]
 
 private theorem double_zero (a : ZMod 2) : a + a = 0 := by
+  have htwo : (2 : ZMod 2) = 0 := by decide
   calc
     a + a = (2 : ZMod 2) * a := by ring
-    _ = 0 := by norm_num
+    _ = 0 := by rw [htwo]; ring
 
 /-- Elementary path-homotopy moves in the dual two-skeleton, as a
     purely combinatorial presentation. -/
@@ -48,9 +49,9 @@ theorem parity_invariant_edit
     parity w p = parity w q := by
   cases h with
   | erasePair p q f =>
-      simp [parity_append, parity, double_zero, add_assoc]
+      simp [parity_append, parity, ← add_assoc, double_zero]
   | insertPair p q f =>
-      simp [parity_append, parity, double_zero, add_assoc]
+      simp [parity_append, parity, ← add_assoc, double_zero]
   | eraseCell p q e =>
       simp [parity_append, hw e, add_assoc]
   | insertCell p q e =>
