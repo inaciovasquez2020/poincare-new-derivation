@@ -54,8 +54,8 @@ theorem equal_on_avoiding_path
         simpa [boundary3, hreverse.1, hreverse.2] using
           (hB f).trans hzero
       exact (xor_false_eq hx).symm
-  · intro _ _ _ hleft hright
-    exact hleft.trans hright
+  · intro _ _ ihleft ihright
+    exact ihleft.trans ihright
 
 /-- A dual path avoiding the sphere cannot join two tetrahedra across a
     face belonging to the sphere if the sphere is a mod-two boundary. -/
