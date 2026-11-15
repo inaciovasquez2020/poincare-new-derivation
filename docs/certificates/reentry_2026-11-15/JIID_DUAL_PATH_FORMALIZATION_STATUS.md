@@ -35,4 +35,4 @@ SimplyConnectedSpace in current Mathlib is a **path-homotopy** property. Merely 
 - `#print axioms`: **NOT_RUN**.
 - Global triangulation and topological bridges: **OPEN**.
 - JIID/global independent Poincaré derivation: **OPEN**.
-- GitHub edits/commit/push: **NOT_PERFORMED**.
+- GitHub preservation: **COMMITTED** on `audit/reentry-adversarial-h1-20261115` as an **uncompiled research candidate**; not merged, not integrated into `lean/Poincare/`.
