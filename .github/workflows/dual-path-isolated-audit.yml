@@ -1,0 +1,45 @@
+name: Isolated dual-path induction proof check
+on:
+  push:
+    branches:
+      - audit/reentry-adversarial-h1-20261115
+  pull_request:
+  workflow_dispatch:
+jobs:
+  isolate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+      - name: Compile isolated candidate and enforce permitted axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          p=research/candidates/DualPathParityInductionIsolated.lean
+          if ! lake env lean "$p" > /tmp/isolated-axioms.log 2>&1; then
+            cat /tmp/isolated-axioms.log
+            exit 1
+          fi
+          cat /tmp/isolated-axioms.log
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          lines=Path('/tmp/isolated-axioms.log').read_text().splitlines()
+          for name in (
+              'Poincare.DualPathParityIsolated.equal_on_avoiding_path',
+              'Poincare.DualPathParityIsolated.nonboundary_of_avoiding_return',
+          ):
+              hits=[x for x in lines if x.startswith(f"'{name}' ")]
+              assert len(hits)==1, (name,hits)
+              m=re.fullmatch(re.escape(f"'{name}'")+r" depends on axioms: \[([^\]]*)\]",hits[0])
+              if hits[0]==f"'{name}' does not depend on any axioms":
+                  axioms=set()
+              else:
+                  assert m, hits[0]
+                  axioms=set(x.strip() for x in m.group(1).split(',') if x.strip())
+              assert axioms <= {'propext','Classical.choice','Quot.sound'}, axioms
+              print(name,'AXIOMS_PASS')
+          PY
