@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - audit/reentry-adversarial-h1-20261115
+  pull_request:
   workflow_dispatch:
 jobs:
   dual-path:
