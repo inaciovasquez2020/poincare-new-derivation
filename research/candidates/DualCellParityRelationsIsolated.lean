@@ -1,0 +1,77 @@
+import Mathlib
+
+/-!
+An algebraic presentation of mod-two dual-edge parity under elementary
+backtrack and dual-2-cell edits. This does not identify the presentation
+with homotopies of the geometric carrier.
+-/
+
+namespace Poincare.DualCellParity
+
+universe u v
+variable {Face : Type u} {Cell : Type v}
+
+def parity (w : Face → ZMod 2) (p : List Face) : ZMod 2 :=
+  (p.map w).sum
+
+theorem parity_append (w : Face → ZMod 2) (p q : List Face) :
+    parity w (p ++ q) = parity w p + parity w q := by
+  simp [parity, List.map_append, List.sum_append]
+
+private theorem double_zero (a : ZMod 2) : a + a = 0 := by
+  calc
+    a + a = (2 : ZMod 2) * a := by ring
+    _ = 0 := by norm_num
+
+/-- Elementary path-homotopy moves in the dual two-skeleton, as a
+    purely combinatorial presentation. -/
+inductive Edit (boundary : Cell → List Face) :
+    List Face → List Face → Prop
+  | erasePair (p q : List Face) (f : Face) :
+      Edit boundary (p ++ [f, f] ++ q) (p ++ q)
+  | insertPair (p q : List Face) (f : Face) :
+      Edit boundary (p ++ q) (p ++ [f, f] ++ q)
+  | eraseCell (p q : List Face) (e : Cell) :
+      Edit boundary (p ++ boundary e ++ q) (p ++ q)
+  | insertCell (p q : List Face) (e : Cell) :
+      Edit boundary (p ++ q) (p ++ boundary e ++ q)
+
+/-- Mod-two cocycle condition on each abstract dual two-cell. -/
+def IsCocycle (w : Face → ZMod 2)
+    (boundary : Cell → List Face) : Prop :=
+  ∀ e, parity w (boundary e) = 0
+
+theorem parity_invariant_edit
+    (w : Face → ZMod 2) (boundary : Cell → List Face)
+    (hw : IsCocycle w boundary)
+    {p q : List Face} (h : Edit boundary p q) :
+    parity w p = parity w q := by
+  cases h with
+  | erasePair p q f =>
+      simp [parity_append, parity, double_zero, add_assoc]
+  | insertPair p q f =>
+      simp [parity_append, parity, double_zero, add_assoc]
+  | eraseCell p q e =>
+      simp [parity_append, hw e, add_assoc]
+  | insertCell p q e =>
+      simp [parity_append, hw e, add_assoc]
+
+/-- Invariance under any finite sequence of elementary dual two-cell
+    relations. The geometric-carrier comparison is a separate obligation. -/
+theorem parity_invariant_edits
+    (w : Face → ZMod 2) (boundary : Cell → List Face)
+    (hw : IsCocycle w boundary)
+    {p q : List Face}
+    (h : Relation.ReflTransGen (Edit boundary) p q) :
+    parity w p = parity w q := by
+  exact Relation.ReflTransGen.trans_induction_on
+    (motive := fun {p q} _ => parity w p = parity w q)
+    h
+    (fun _ => rfl)
+    (fun hstep => parity_invariant_edit w boundary hw hstep)
+    (fun _ _ ih₁ ih₂ => ih₁.trans ih₂)
+
+#print axioms parity_invariant_edit
+#print axioms parity_invariant_edits
+
+end Poincare.DualCellParity
