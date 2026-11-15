@@ -1,17 +1,17 @@
 # JIID — dual-path nonboundary formalization boundary
 
-**Date:** 2026-11-15. **Status:** mathematical finite-dual theorem proved, Lean source authored but **NOT_COMPILED**. No global JIID closure.
+**Date:** 2026-11-15. **Status:** abstract finite dual-path parity theorems **LEAN_VERIFIED** on the audit branch at commit `c4f1307d6690620df9586ee1d033ca58b250dd35` (GitHub Actions run `43766201620`); abstract dual-cell edit parity theorems **LEAN_VERIFIED** at the same commit (run `43766201604`). No global JIID closure.
 
 ## Candidate source
 
-`DualPathNonboundaryParity.lean` defines a face-to-two-tetrahedra incidence model with Boolean mod-two 3-boundary, the face-avoiding dual-adjacency relation, and the following *candidate* Lean theorems:
+`DualPathNonboundaryParity.lean` defines a face-to-two-tetrahedra incidence model with Boolean mod-two 3-boundary, the face-avoiding dual-adjacency relation, and the following **Lean-verified abstract** theorems:
 
 - `Poincare.DualPathParity.equal_on_avoiding_path`
 - `Poincare.DualPathParity.nonboundary_of_avoiding_return`
 
 The general proof is by induction on `Relation.ReflTransGen`: if an edge in the dual path crosses a face absent from `sphere`, its two tetrahedral coefficients must agree. The marked face in the sphere forces them to disagree. Boolean xor is the coefficient addition in F₂.
 
-**Not an actual-repo theorem:** The abstract face-pair map requires a proof that every source triangle has exactly two represented incident tetrahedra and is correctly identified by `ClosedTriangulationCore`; `s.RealizedIn K` and link connectivity then give the avoiding dual path. This bridge has not been formalized.
+**Not yet integrated into the actual triangulation:** The abstract face-pair map requires a proof that every source triangle has exactly two represented incident tetrahedra and is correctly identified by `ClosedTriangulationCore`; `s.RealizedIn K` and link connectivity then give the avoiding dual path. This bridge has not been formalized.
 
 ## Non-circular proposed integration
 
@@ -31,8 +31,9 @@ SimplyConnectedSpace in current Mathlib is a **path-homotopy** property. Merely 
 
 - Independent mathematical finite parity proof: **PROVED**.
 - Python dual graph / F₂ test of 51-tetrahedron witness, as previously recorded: **COMPUTATION_PASS** (existing receipt; no rerun in this phase).
-- Lean source type-check and kernel compilation: **NOT_RUN** (Lean/Lake unavailable in the current container).
-- `#print axioms`: **NOT_RUN**.
+- Lean kernel compilation: **PASS** for `lean/Poincare/DualPathNonboundaryParity.lean`, exact commit `c4f1307d6690620df9586ee1d033ca58b250dd35`, CI run `43766201620`.
+- Abstract dual-cell edit parity: **PASS** for `research/candidates/DualCellParityRelationsIsolated.lean`, same commit, CI run `43766201604`.
+- `#print axioms`: **PASS** in both dedicated workflows; allowed axioms restricted to `propext`, `Classical.choice`, `Quot.sound`; no `sorryAx`. These are not proofs of the geometric comparison.
 - Global triangulation and topological bridges: **OPEN**.
 - JIID/global independent Poincaré derivation: **OPEN**.
-- GitHub preservation: **COMMITTED** on `audit/reentry-adversarial-h1-20261115` as an **uncompiled research candidate**; not merged, not integrated into `lean/Poincare/`.
+- GitHub preservation: **COMMITTED** on `audit/reentry-adversarial-h1-20261115`; finite parity is integrated into `lean/Poincare/` but the dual-cell module remains an isolated candidate. Neither constructs the actual incidence/dual-CW carrier comparison. Merge is a separate gate.
