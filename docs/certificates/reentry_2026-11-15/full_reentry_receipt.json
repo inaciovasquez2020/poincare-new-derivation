@@ -1,0 +1,59 @@
+{
+  "self_tests": "PASS",
+  "python": "3.13.5",
+  "source_files": {
+    "poincare_full_reentry_test.py": "adf218d97700b9eda8056c834cb0f8ea4d843e550c530ee4ac62e84a5f2947e1",
+    "poincare_reentry_bfs.py": "f8f0f26638ef3432a12d5ade964f62231032bba134efe11a73a3d2dcaf3b6f4d"
+  },
+  "cases": [
+    {
+      "vertices": 6,
+      "status": "COMPLETE_NO_WITNESS",
+      "checked_states": 25,
+      "discovered_states": 25,
+      "directed_moves": 120,
+      "remaining_queue": 0,
+      "limits": {
+        "max_states": 150000,
+        "seconds": 35.0,
+        "triggered": null
+      },
+      "counts": {
+        "blocked": 120,
+        "nonself": 120,
+        "complement_present": 0,
+        "complement_degree_three": 0
+      },
+      "witness": null,
+      "state_stream_sha256": "9c1d31ba29e0f4cb97f45e1a84a6e4e6686040c6bba159160a8932b8051998cc",
+      "elapsed_seconds": 0.007,
+      "scope": "all fixed-vertex labeled 2-3/3-2 states reachable from all iterated 1-4 subdivision seeds of boundary(4-simplex)"
+    },
+    {
+      "vertices": 7,
+      "status": "COMPLETE_NO_WITNESS",
+      "checked_states": 2145,
+      "discovered_states": 2145,
+      "directed_moves": 18480,
+      "remaining_queue": 0,
+      "limits": {
+        "max_states": 150000,
+        "seconds": 35.0,
+        "triggered": null
+      },
+      "counts": {
+        "blocked": 6300,
+        "nonself": 6300,
+        "complement_present": 0,
+        "complement_degree_three": 0
+      },
+      "witness": null,
+      "state_stream_sha256": "931789a07ffd7eb50b3cb36fd51f2ce828499d5441711985c27a9b80ff6a256a",
+      "elapsed_seconds": 0.927,
+      "scope": "all fixed-vertex labeled 2-3/3-2 states reachable from all iterated 1-4 subdivision seeds of boundary(4-simplex)"
+    }
+  ],
+  "global_theorem": "OPEN",
+  "lean": "NOT_RUN",
+  "pass_condition": "Only individual COMPLETE_NO_WITNESS components count as full finite checks"
+}
