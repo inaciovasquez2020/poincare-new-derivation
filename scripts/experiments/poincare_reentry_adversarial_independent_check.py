@@ -3,7 +3,8 @@
 Does not import the witness generator. Python standard library only.
 """
 import json,sys,itertools,collections,hashlib,pathlib
-P=pathlib.Path(__file__).with_name('poincare_reentry_adversarial_receipt.json')
+P=(pathlib.Path(sys.argv[1]) if len(sys.argv)>1 else
+   pathlib.Path(__file__).resolve().parents[2] / 'docs/certificates/reentry_2026-11-15/poincare_reentry_adversarial_receipt.json')
 r=json.loads(P.read_text())
 def product(m=4):
  t=set()
