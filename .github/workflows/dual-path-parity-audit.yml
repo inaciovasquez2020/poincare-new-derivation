@@ -19,7 +19,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          lake env lean lean/Poincare/DualPathNonboundaryParity.lean > /tmp/dual-path-axioms.log
+          if ! lake env lean lean/Poincare/DualPathNonboundaryParity.lean > /tmp/dual-path-axioms.log 2>&1; then
+            cat /tmp/dual-path-axioms.log
+            exit 1
+          fi
           cat /tmp/dual-path-axioms.log
           python3 - <<'PY'
           from pathlib import Path
