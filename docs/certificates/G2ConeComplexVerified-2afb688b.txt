@@ -1,0 +1,40 @@
+G2 CONE COMPLEX VERIFICATION RECEIPT
+Base HEAD: 2afb688b737de237fbf84fac4d88221c58338093
+Toolchain: leanprover/lean4:v4.30.0-rc1
+Validation: exact-source Lean exit code 0,
+declaration-level axiom audit with deduplicated records
+
+COMBINATORIAL: LEAN_VERIFIED_IN_ISOLATION
+File: lean/Poincare/PR199G2VerifiedConeComplex.lean
+SHA256: dcd8e31aff0838f80db7c3f125744926f5f8ce334b8dd5ec44fbae7d9e8013af
+Command: lake env lean lean/Poincare/PR199G2VerifiedConeComplex.lean
+Audited declarations: 33
+Axioms: propext / Classical.choice / Quot.sound only
+
+GEOMETRY_INTERSECTIONS: LEAN_VERIFIED_IN_ISOLATION
+File: research/candidates/G2AllFourExactIntersections.lean
+SHA256: 47f777fc65f34467e6ff46ae0c9863d939f1532559c95572129f600e3f1f43aa
+Command: lake env lean research/candidates/G2AllFourExactIntersections.lean
+Audited declarations: 38
+Axioms: propext / Classical.choice / Quot.sound only
+
+GEOMETRY_GLUING_AUDIT: LEAN_VERIFIED_IN_ISOLATION
+File: research/candidates/G2CyclicGluingBoundaryAudit.lean
+SHA256: 111c6fd942252e380e91376a0e555886813c689b2abf00d850a8539a112eace4
+Command: lake env lean research/candidates/G2CyclicGluingBoundaryAudit.lean
+Audited declarations: 40
+Axioms: propext / Classical.choice / Quot.sound only
+
+TOTAL_AUDITED_DECLARATIONS: 111
+
+PROVED: combinatorial face-edge equivalence;
+nondegenerate triangles; exact intersections;
+simplicial closure; degree two;
+radial exact-two and boundary exact-one incidence.
+
+Geometry audit modules compiled independently.
+No integrated disk homeomorphism is asserted.
+
+OPEN: finite cyclic disk homeomorphism.
+OPEN: embedded geometric dual-disk homeomorphism.
+OPEN: independent global Poincare derivation.
