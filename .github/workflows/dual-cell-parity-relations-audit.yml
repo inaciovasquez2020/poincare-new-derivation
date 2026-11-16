@@ -1,0 +1,46 @@
+name: Dual-cell parity relations isolated audit
+on:
+  push:
+    branches:
+      - audit/reentry-adversarial-h1-20261115
+  pull_request:
+  workflow_dispatch:
+jobs:
+  parity-relations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+      - name: Check dual-cell parity relations and axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          p=research/candidates/DualCellParityRelationsIsolated.lean
+          if ! lake env lean "$p" > /tmp/dual-cell-relations.log 2>&1; then
+            cat /tmp/dual-cell-relations.log
+            exit 1
+          fi
+          cat /tmp/dual-cell-relations.log
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          lines=Path('/tmp/dual-cell-relations.log').read_text().splitlines()
+          for name in [
+            'Poincare.DualCellParity.parity_invariant_edit',
+            'Poincare.DualCellParity.parity_invariant_edits',
+          ]:
+            reports=[line for line in lines if line.startswith(f"'{name}' ")]
+            assert len(reports)==1,(name,reports)
+            row=reports[0]
+            if row==f"'{name}' does not depend on any axioms":
+              axioms=set()
+            else:
+              m=re.fullmatch(re.escape(f"'{name}'")+r" depends on axioms:\s*\[([^\]]*)\]", row)
+              assert m,row
+              axioms={x.strip() for x in m.group(1).split(',') if x.strip()}
+            assert axioms <= {'propext','Classical.choice','Quot.sound'}, axioms
+            print(name,'AXIOMS_PASS')
+          PY

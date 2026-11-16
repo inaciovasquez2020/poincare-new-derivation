@@ -1,0 +1,48 @@
+name: Reentry certificate replay gate
+on:
+  push:
+    branches:
+      - audit/reentry-adversarial-h1-20261115
+  pull_request:
+  workflow_dispatch:
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v5
+      - name: Independent full-trace, compact, and dual-path certificate replay
+        shell: bash
+        run: |
+          set -euo pipefail
+          root=docs/certificates/reentry_2026-11-15
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+          python3 scripts/experiments/poincare_reentry_adversarial_independent_check.py \
+            "$root/poincare_reentry_adversarial_receipt.json" >"$tmp/trace.json"
+          python3 scripts/experiments/verify_reentry_compact.py \
+            "$root/nonsimplyconnected_witness_compact.json" >"$tmp/compact.json"
+          # Dual-path verifier writes its output beside the invoked script;
+          # use a temporary copy and pass the archived receipt explicitly.
+          cp scripts/experiments/poincare_reentry_dual_path_certificate.py "$tmp/dual.py"
+          python3 "$tmp/dual.py" "$PWD/$root/poincare_reentry_adversarial_receipt.json" \
+            >"$tmp/dual.json"
+          python3 - "$tmp" <<'PY'
+          import json, pathlib, sys
+          tmp=pathlib.Path(sys.argv[1])
+          trace=json.loads((tmp/'trace.json').read_text())
+          compact=json.loads((tmp/'compact.json').read_text())
+          dual=json.loads((tmp/'dual.json').read_text())
+          assert trace['status']=='COMPUTATION_PASS', trace
+          assert trace['replayed_moves']==115 and trace['final_tetrahedra']==51,trace
+          assert trace['verified_witness'] is True and trace['verified_nonboundary_cocycle'] is True,trace
+          assert compact['status']=='COMPUTATION_PASS',compact
+          assert (compact['tetrahedra'],compact['faces'],compact['edges'])==(51,102,67),compact
+          assert dual['status']=='COMPUTATION_PASS',dual
+          assert dual['all_spheres_nonbounding'] is True,dual
+          assert dual['negative_control_bounds'] is True,dual
+          print('EXACT_HEAD_REENTRY_CERTIFICATE_REPLAY := COMPUTATION_PASS')
+          print('TRACE_MOVES :=',trace['replayed_moves'])
+          print('DUAL_PATH_Q :=',dual['q'])
+          print('GLOBAL_JIID := OPEN')
+          PY
