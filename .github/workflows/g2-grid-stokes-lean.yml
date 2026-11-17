@@ -28,13 +28,18 @@ jobs:
           import re
           from pathlib import Path
           report=Path('/tmp/g2-grid-stokes.log').read_text()
-          name='Poincare.G2GridStokes.rectangle_perimeter_zero'
-          pattern=re.escape(f"'{name}'")+r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
-          matches=list(re.finditer(pattern,report))
-          assert len(matches)==1,(name,len(matches))
-          payload=matches[0].group(1)
-          axioms=set() if payload is None else {s.strip() for s in payload.split(',') if s.strip()}
-          assert axioms <= {'propext','Classical.choice','Quot.sound'},axioms
+          for name in (
+            'Poincare.G2GridStokes.rectangle_perimeter_zero',
+            'Poincare.G2GridStokes.tetrahedron_quad_parity_zero',
+            'Poincare.G2GridStokes.quad_parity_zero_of_common_tetrahedron',
+          ):
+            pattern=re.escape(f"'{name}'")+r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
+            matches=list(re.finditer(pattern,report))
+            assert len(matches)==1,(name,len(matches))
+            payload=matches[0].group(1)
+            axioms=set() if payload is None else {s.strip() for s in payload.split(',') if s.strip()}
+            assert axioms <= {'propext','Classical.choice','Quot.sound'},(name,axioms)
+            print(name,'AXIOMS_PASS')
           print('G2_GRID_STOKES := LEAN_VERIFIED')
           print('AXIOM_AUDIT := PASS')
           PY
