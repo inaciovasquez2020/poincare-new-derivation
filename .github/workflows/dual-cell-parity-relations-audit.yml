@@ -36,6 +36,8 @@ jobs:
             'Poincare.DualCellParity.dual_cycle_pairing_zero_of_edge_fan_span',
             'Poincare.DualCellParity.range_eq_ker_of_equal_finrank',
             'Poincare.DualCellParity.exists_edge_fan_coeff_of_equal_finrank',
+            'Poincare.DualCellParity.rank_equal_of_closed_three_manifold_counts',
+            'Poincare.DualCellParity.edge_fan_exact_of_closed_three_manifold_rank_counts',
           ]:
             label=re.escape(f"'{name}'")
             pattern=label+r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
