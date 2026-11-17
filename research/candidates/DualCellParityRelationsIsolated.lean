@@ -80,21 +80,21 @@ theorem generated_dual_cycle_pairing_zero
     {Edge Face' : Type*} [Fintype Edge] [Fintype Face']
     (inc : Edge → Face' → ZMod 2)
     (w : Face' → ZMod 2)
-    (λ : Edge → ZMod 2)
+    (coeff : Edge → ZMod 2)
     (hw : ∀ e : Edge, (∑ f : Face', inc e f * w f) = 0) :
-    (∑ f : Face', w f * (∑ e : Edge, λ e * inc e f)) = 0 := by
+    (∑ f : Face', w f * (∑ e : Edge, coeff e * inc e f)) = 0 := by
   calc
-    (∑ f : Face', w f * (∑ e : Edge, λ e * inc e f))
-        = ∑ f : Face', ∑ e : Edge, λ e * (inc e f * w f) := by
+    (∑ f : Face', w f * (∑ e : Edge, coeff e * inc e f))
+        = ∑ f : Face', ∑ e : Edge, coeff e * (inc e f * w f) := by
           apply Finset.sum_congr rfl
           intro f hf
           rw [Finset.mul_sum]
           apply Finset.sum_congr rfl
           intro e he
           ring
-    _ = ∑ e : Edge, ∑ f : Face', λ e * (inc e f * w f) := by
+    _ = ∑ e : Edge, ∑ f : Face', coeff e * (inc e f * w f) := by
           rw [Finset.sum_comm]
-    _ = ∑ e : Edge, λ e * (∑ f : Face', inc e f * w f) := by
+    _ = ∑ e : Edge, coeff e * (∑ f : Face', inc e f * w f) := by
           apply Finset.sum_congr rfl
           intro e he
           rw [Finset.mul_sum]
