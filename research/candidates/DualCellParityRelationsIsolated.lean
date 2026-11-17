@@ -100,8 +100,26 @@ theorem generated_dual_cycle_pairing_zero
           rw [Finset.mul_sum]
     _ = 0 := by simp [hw]
 
+
+/-- A closed dual cycle has zero parity whenever it is a linear combination
+of primal-edge fan incidence vectors. The spanning premise is explicit:
+its derivation from simple connectivity remains the global bridge. -/
+theorem dual_cycle_pairing_zero_of_edge_fan_span
+    {Edge Face' : Type*} [Fintype Edge] [Fintype Face']
+    (inc : Edge → Face' → ZMod 2)
+    (w : Face' → ZMod 2)
+    (z : Face' → ZMod 2)
+    (hw : ∀ e : Edge, (∑ f : Face', inc e f * w f) = 0)
+    (hspan : ∃ coeff : Edge → ZMod 2,
+      ∀ f : Face', z f = ∑ e : Edge, coeff e * inc e f) :
+    (∑ f : Face', w f * z f) = 0 := by
+  obtain ⟨coeff, hcoeff⟩ := hspan
+  simp_rw [hcoeff]
+  exact generated_dual_cycle_pairing_zero inc w coeff hw
+
 #print axioms parity_invariant_edit
 #print axioms parity_invariant_edits
 #print axioms generated_dual_cycle_pairing_zero
+#print axioms dual_cycle_pairing_zero_of_edge_fan_span
 
 end Poincare.DualCellParity
