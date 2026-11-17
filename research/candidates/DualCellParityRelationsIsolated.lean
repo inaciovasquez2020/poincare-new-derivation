@@ -161,11 +161,49 @@ theorem exists_edge_fan_coeff_of_equal_finrank
     exact hzker
   exact hzrange
 
+
+/-- Pure arithmetic rank bridge: the edge-face rank and dual-cycle
+    nullity agree once their genuine finite counts are established.
+    The Euler and rank premises still require proof for the actual K. -/
+theorem rank_equal_of_closed_three_manifold_counts
+    (V E F T rankEdge rankDual : ℕ)
+    (hface : F = 2 * T)
+    (heuler : V + F = E + T)
+    (hprimal : rankEdge + V = E + 1)
+    (hdual : rankDual + T = F + 1) :
+    rankEdge = rankDual := by
+  omega
+
+/-- Rank-count assembly for the abstract finite incidence maps:
+    this does NOT derive any counting premise from simple connectivity. -/
+theorem edge_fan_exact_of_closed_three_manifold_rank_counts
+    {Edge Face' Tet : Type*}
+    [AddCommGroup Edge] [Module (ZMod 2) Edge]
+    [AddCommGroup Face'] [Module (ZMod 2) Face']
+    [AddCommGroup Tet] [Module (ZMod 2) Tet]
+    [FiniteDimensional (ZMod 2) Face']
+    (edgeToFace : Edge →ₗ[ZMod 2] Face')
+    (faceToTet : Face' →ₗ[ZMod 2] Tet)
+    (hchain : ∀ x, faceToTet (edgeToFace x) = 0)
+    (V E F T : ℕ)
+    (hface : F = 2 * T)
+    (heuler : V + F = E + T)
+    (hprimal :
+      Module.finrank (ZMod 2) (↥edgeToFace.range) + V = E + 1)
+    (hdual :
+      Module.finrank (ZMod 2) (↥faceToTet.ker) + T = F + 1) :
+    edgeToFace.range = faceToTet.ker := by
+  apply range_eq_ker_of_equal_finrank edgeToFace faceToTet hchain
+  exact rank_equal_of_closed_three_manifold_counts V E F T
+    _ _ hface heuler hprimal hdual
+
 #print axioms parity_invariant_edit
 #print axioms parity_invariant_edits
 #print axioms generated_dual_cycle_pairing_zero
 #print axioms dual_cycle_pairing_zero_of_edge_fan_span
 #print axioms range_eq_ker_of_equal_finrank
 #print axioms exists_edge_fan_coeff_of_equal_finrank
+#print axioms rank_equal_of_closed_three_manifold_counts
+#print axioms edge_fan_exact_of_closed_three_manifold_rank_counts
 
 end Poincare.DualCellParity
