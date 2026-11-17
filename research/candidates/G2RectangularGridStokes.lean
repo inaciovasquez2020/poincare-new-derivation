@@ -96,6 +96,46 @@ theorem rectangle_perimeter_zero
   rw [hrectangle] at hzero
   simpa only [Finset.sum_add_distrib, add_assoc] using hzero
 
+
+/-- Four vertices lying in a common represented tetrahedron have zero
+    quadrilateral edge-cocycle sum. The two triangular relations correspond to
+    the triangles (a,b,c) and (a,c,d) in that tetrahedron. -/
+theorem tetrahedron_quad_parity_zero
+    {Vertex Tet : Type*}
+    (incident : Vertex → Tet → Prop)
+    (w : Vertex → Vertex → ZMod 2)
+    (hsym : ∀ u v, w u v = w v u)
+    (htri : ∀ t a b c, incident a t → incident b t →
+      incident c t → w a b + w b c + w c a = 0)
+    (t : Tet) (a b c d : Vertex)
+    (ha : incident a t) (hb : incident b t)
+    (hc : incident c t) (hd : incident d t) :
+    w a b + w b c + w c d + w d a = 0 := by
+  have h₁ := htri t a b c ha hb hc
+  have h₂ := htri t a c d ha hc hd
+  rw [hsym c a] at h₁
+  linear_combination h₁ + h₂
+
+/-- An actual common-tetrahedron witness supplies the local square relation.
+    The exterior rectangular cancellation is already rectangle_perimeter_zero.
+    Geometric boundary matching is not assumed here. -/
+theorem quad_parity_zero_of_common_tetrahedron
+    {Vertex Tet : Type*}
+    (incident : Vertex → Tet → Prop)
+    (w : Vertex → Vertex → ZMod 2)
+    (hsym : ∀ u v, w u v = w v u)
+    (htri : ∀ t a b c, incident a t → incident b t →
+      incident c t → w a b + w b c + w c a = 0)
+    (a b c d : Vertex)
+    (hcommon : ∃ t : Tet, incident a t ∧ incident b t ∧
+      incident c t ∧ incident d t) :
+    w a b + w b c + w c d + w d a = 0 := by
+  obtain ⟨t, ha, hb, hc, hd⟩ := hcommon
+  exact tetrahedron_quad_parity_zero incident w hsym htri t
+    a b c d ha hb hc hd
+
 #print axioms rectangle_perimeter_zero
+#print axioms tetrahedron_quad_parity_zero
+#print axioms quad_parity_zero_of_common_tetrahedron
 
 end Poincare.G2GridStokes
