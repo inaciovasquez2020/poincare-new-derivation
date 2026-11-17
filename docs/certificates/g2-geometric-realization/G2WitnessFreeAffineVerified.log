@@ -1,0 +1,465 @@
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:234:8: warning: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp only [List.nodup_cons, List.mem_cons,̵
+  ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵] at hn
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:238:8: warning: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp only [List.nodup_cons, List.mem_cons,̵
+  ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵] at hn
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+'Poincare.PR199G2.ambientFan_distinct_indices_distinct_support' depends on axioms: [propext, Quot.sound]
+'Poincare.PR199G2.unique_face_incident_pair' depends on axioms: [propext, Quot.sound]
+'Poincare.PR199G2.ambientFan_shared_face_unique_index_pair' depends on axioms: [propext, Quot.sound]
+'Poincare.PR199G2.ambientFan_each_face_has_distinct_index_pair' depends on axioms: [propext, Quot.sound]
+'Poincare.PR199G2.ambientFan_adjacency_iff_shared_face' depends on axioms: [propext, Quot.sound]
+'Poincare.PR199G2.four_common_vertices_force_same_support' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.unique_shared_face_third_vertex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.uniqueRelationEquiv' depends on axioms: [Classical.choice]
+'Poincare.PR199G2.representedFace_has_incident_graphEdge' depends on axioms: [propext, Quot.sound]
+'Poincare.PR199G2.graphEdge_has_incident_representedFace' depends on axioms: [propext, Quot.sound]
+'Poincare.PR199G2.representedFace_has_strict_incident_edge' depends on axioms: [propext, Quot.sound]
+'Poincare.PR199G2.strict_incidence_unique_edge' depends on axioms: [propext, Classical.choice, Quot.sound]
+Poincare.PR199G2.unique_shared_face_third_vertex (τ ρ : Tet) (v x y z : ℕ) (hnot : ¬SameTetVertices τ ρ) (hvx : v ≠ x)
+  (hyv : y ≠ v) (hyx : y ≠ x) (hzv : z ≠ v) (hzx : z ≠ x) (hvτ : v ∈ τ.verts) (hxτ : x ∈ τ.verts) (hyτ : y ∈ τ.verts)
+  (hzτ : z ∈ τ.verts) (hvρ : v ∈ ρ.verts) (hxρ : x ∈ ρ.verts) (hyρ : y ∈ ρ.verts) (hzρ : z ∈ ρ.verts) : y = z
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:646:6: warning: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp only [List.nodup_cons, List.mem_cons,̵
+  ̵ ̵ ̵ ̵ ̵ ̵ ̵L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵] at hn
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:651:6: warning: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp only [List.nodup_cons, List.mem_cons,̵
+  ̵ ̵ ̵ ̵ ̵ ̵ ̵L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵] at hn
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:656:6: warning: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp only [List.nodup_cons, List.mem_cons,̵
+  ̵ ̵ ̵ ̵ ̵ ̵ ̵L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵] at hn
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:661:6: warning: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp only [List.nodup_cons, List.mem_cons,̵
+  ̵ ̵ ̵ ̵ ̵ ̵ ̵L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵] at hn
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:666:6: warning: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp only [List.nodup_cons, List.mem_cons,̵
+  ̵ ̵ ̵ ̵ ̵ ̵ ̵L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵] at hn
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+'Poincare.PR199G2.strict_incidence_support_at_index' depends on axioms: [propext, Quot.sound]
+'Poincare.PR199G2.strict_incidence_unique_face' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.graphEdge_has_strict_incident_face' depends on axioms: [propext, Quot.sound]
+'Poincare.PR199G2.concreteFaceEdgeEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.fanConeTriangle_center_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.fanConeTriangle_endpoint_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.fanConeTriangle_card_three' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.representedFaceConeTriangle_card_three' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.fanConeTriangle_intersection' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.fanConeTriangle_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.fanCone_simplex_downward_closed' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.fanCone_triangle_is_simplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:930:4: warning: Try this: intro hs z hz
+'Poincare.PR199G2.fanRadialEdge_card_two' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.fanRadialEdge_subset_triangle_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.fanRadialEdge_is_simplex_of_incident' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.ambientFan_graph_degree_two' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.ambientFan_graph_isCycles' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.fanRadialEdge_exactly_two_triangles' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.fanBoundaryEdge_card_two' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.fanBoundaryEdge_subset_triangle_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.fanBoundaryEdge_unique_incident_triangle' depends on axioms: [propext, Classical.choice, Quot.sound]
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1221:8: warning: This simp argument is unused:
+  Fintype.card_coe
+
+Hint: Omit it from the simp argument list.
+  simp [F̵i̵n̵t̵y̵p̵e̵.̵c̵a̵r̵d̵_̵c̵o̵e̵,̵ ̵hc, nsmul_eq_mul]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+'Poincare.PR199G2.finiteBarycenter_weights_sum_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.finiteBarycenter_mem_convexHull' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.finiteBarycenter_mem_tetHull' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.actualFlagTriangle_subset_geometricCarrier' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.flagTriangle_subset_geometricCarrier' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.barycentricDualFlagTriangle_subset_carrier' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.barycentricEdgeDualCell_subset_carrier' depends on axioms: [propext, Classical.choice, Quot.sound]
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1463:17: warning: This simp argument is unused:
+  mul_one
+
+Hint: Omit it from the simp argument list.
+  simp only [finiteBarycenter,
+  ̵  ̵ ̵ ̵triangulationTopologicalGeometricVertex,
+  ̵  ̵ ̵ ̵Finset.sum_apply,
+      Pi.smul_apply,
+  ̵  ̵ ̵ ̵Pi.single_apply,
+  ̵  ̵ ̵ ̵smul_eq_mul, mul_o̵n̵e̵,̵ ̵m̵u̵l̵_̵zero]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1463:26: warning: This simp argument is unused:
+  mul_zero
+
+Hint: Omit it from the simp argument list.
+  simp only [finiteBarycenter,
+  ̵  ̵ ̵ ̵triangulationTopologicalGeometricVertex,
+  ̵  ̵ ̵ ̵Finset.sum_apply,
+      Pi.smul_apply,
+  ̵  ̵ ̵ ̵Pi.single_apply,
+  ̵  ̵ ̵ ̵smul_eq_mul, mul_one,̵ ̵m̵u̵l̵_̵z̵e̵r̵o̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+'Poincare.PR199G2.finiteBarycenter_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.barycentric_flag_direction_independent' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.barycentricFlagChart_coeff_unique' depends on axioms: [propext, Classical.choice, Quot.sound]
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1676:14: warning: This simp argument is unused:
+  hgcard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hpe, hp, hpg, hpt, hfcard, h̵g̵c̵a̵r̵d̵,̵ ̵htcard,
+        Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hpc
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1687:6: warning: This simp argument is unused:
+  hfcard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hqe, hq, hqf, hqt, h̵f̵c̵a̵r̵d̵,̵ ̵hgcard, htcard,
+        Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hqc
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+'Poincare.PR199G2.barycentricFlagChart_distinctFaces_intersection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1757:14: warning: This simp argument is unused:
+  hucard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hre, hrf, hr, hru, htcard, h̵u̵c̵a̵r̵d̵,̵Pi.add_apply,
+        Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hrcoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1770:6: warning: This simp argument is unused:
+  htcard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hse, hsf, hs, hst, h̵t̵c̵a̵r̵d̵,̵ ̵hucard, Pi.add_apply,
+  ̲  ̲ ̲ ̲ ̲ ̲Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hscoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1785:15: warning: This simp argument is unused:
+  hpt
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hp, hpe, h̵p̵t̵,̵ ̵hpu, hfcard, htcard, hucard, hb,
+  ̲  ̲ ̲ ̲ ̲ ̲hd, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hpcoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1785:20: warning: This simp argument is unused:
+  hpu
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hp, hpe, hpt, h̵p̵u̵,̵hfcard, htcard, hucard, hb,
+        hd, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hpcoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1786:14: warning: This simp argument is unused:
+  htcard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hp, hpe, hpt, hpu, hfcard, h̵t̵c̵a̵r̵d̵,̵ ̵hucard, hb, hd,
+        Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hpcoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1786:22: warning: This simp argument is unused:
+  hucard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hp, hpe, hpt, hpu, hfcard, htcard, h̵u̵c̵a̵r̵d̵,̵hb, hd,
+  ̲  ̲ ̲ ̲ ̲ ̲Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hpcoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1760:4: warning: 'norm_num at hrcoord' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1773:4: warning: 'norm_num at hscoord' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1790:4: warning: 'norm_num at hpcoord' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+'Poincare.PR199G2.barycentricFlagChart_distinctTets_sameFace_intersection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1857:16: warning: This simp argument is unused:
+  hgcard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hre, hrg, hr, hru, hrf, hfcard, h̵g̵c̵a̵r̵d̵,̵ ̵htcard,
+  ̲  ̲ ̲ ̲ ̲ ̲hucard, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hrcoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1857:32: warning: This simp argument is unused:
+  hucard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hre, hrg, hr, hru, hrf, hfcard, hgcard,
+  ̲  ̲ ̲ ̲ ̲ ̲htcard, h̵u̵c̵a̵r̵d̵,̵Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hrcoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1865:8: warning: This simp argument is unused:
+  hfcard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hre, hrg, hr, hru, hrf, h̵f̵c̵a̵r̵d̵,̵ ̵hgcard, htcard,
+  ̲  ̲ ̲ ̲ ̲ ̲hucard, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hrcoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1865:16: warning: This simp argument is unused:
+  hgcard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hre, hrg, hr, hru, hrf, hfcard, h̵g̵c̵a̵r̵d̵,̵ ̵htcard,
+  ̲  ̲ ̲ ̲ ̲ ̲hucard, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hrcoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1865:32: warning: This simp argument is unused:
+  hucard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hre, hrg, hr, hru, hrf, hfcard, hgcard,
+  ̲  ̲ ̲ ̲ ̲ ̲htcard, h̵u̵c̵a̵r̵d̵,̵Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hrcoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1879:8: warning: This simp argument is unused:
+  hfcard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hse, hsf, hs, hst, hsg, h̵f̵c̵a̵r̵d̵,̵ ̵hgcard, htcard,
+  ̲  ̲ ̲ ̲ ̲ ̲hucard, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hscoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1879:24: warning: This simp argument is unused:
+  htcard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hse, hsf, hs, hst, hsg, hfcard, hgcard,
+  ̲  ̲ ̲ ̲ ̲ ̲h̵t̵c̵a̵r̵d̵,̵ ̵hucard, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hscoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1887:8: warning: This simp argument is unused:
+  hfcard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hse, hsf, hs, hst, hsg, h̵f̵c̵a̵r̵d̵,̵ ̵hgcard, htcard,
+  ̲  ̲ ̲ ̲ ̲ ̲hucard, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hscoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1887:16: warning: This simp argument is unused:
+  hgcard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hse, hsf, hs, hst, hsg, hfcard, h̵g̵c̵a̵r̵d̵,̵ ̵htcard,
+  ̲  ̲ ̲ ̲ ̲ ̲hucard, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hscoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1887:24: warning: This simp argument is unused:
+  htcard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hse, hsf, hs, hst, hsg, hfcard, hgcard,
+  ̲  ̲ ̲ ̲ ̲ ̲h̵t̵c̵a̵r̵d̵,̵ ̵hucard, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hscoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1907:14: warning: This simp argument is unused:
+  hgcard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hpe, hp, hpg, hb, hd, hfcard, h̵g̵c̵a̵r̵d̵,̵Pi.add_apply,
+        Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hpcoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1920:6: warning: This simp argument is unused:
+  hfcard
+
+Hint: Omit it from the simp argument list.
+  simp [barycentricFlagChart, finiteBarycenter_apply, hqe, hq, hqf, hb, hd, h̵f̵c̵a̵r̵d̵,̵ ̵hgcard, Pi.add_apply,
+  ̲  ̲ ̲ ̲ ̲ ̲Pi.sub_apply, Pi.smul_apply, smul_eq_mul] at hqcoord
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1868:6: warning: 'norm_num at hrcoord' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1890:6: warning: 'norm_num at hscoord' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1910:4: warning: 'norm_num at hpcoord' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:1923:4: warning: 'norm_num at hqcoord' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+'Poincare.PR199G2.barycentricFlagChart_distinctFaces_distinctTets_intersection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.PR199G2.equalCard_distinct_privateVertices' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.distinctFlagSupports_have_witnesses' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.barycentricFlagChart_allSupportCases' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.actualDualFlags_allSupportCases' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.degenerateTet_threeVertices' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.actualDualFlag_can_have_degenerateTet' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.tet_card_four_of_nodup' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.actualDualFlags_allSupportCases_of_nodup' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.closedCore_dualFlag_nodup' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.closedCore_dualFlag_tet_card_four' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.closedCore_actualDualFlags_allSupportCases' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.convexHull_three_exists_simplexChart' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.simplexCombination_mem_convexHull' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.convexHull_three_iff_simplexCombination' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.actualChart_eq_threeCombination' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.actualChart_hull_membership_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.closedCore_distinctFlags_triangle_intersection_singleton' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:2545:15: warning: This simp argument is unused:
+  add_zero
+
+Hint: Omit it from the simp argument list.
+  simp only [barycentricFlagChart, zero_smul, a̵d̵d̵_̵z̵e̵r̵o̵,̵smul_sub, sub_smul, one_smul]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:2559:15: warning: This simp argument is unused:
+  zero_add
+
+Hint: Omit it from the simp argument list.
+  simp only [barycentricFlagChart, zero_smul, z̵e̵r̵o̵_̵a̵d̵d̵,̵smul_sub, sub_smul, one_smul]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+'Poincare.PR199G2.dualFlagTriangle_mem_iff_chart' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.barycentricFlagChart_zero_tetCoefficient' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.barycentricFlagChart_zero_faceCoefficient' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.edgeFaceSegment_subset_dualFlagTriangle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.edgeTetSegment_subset_dualFlagTriangle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.closedCore_distinctFlags_triangle_intersection_singleton' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.PR199G2.closedCore_sameFace_distinctTets_intersection_segment' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.PR199G2.closedCore_distinctFaces_sameTet_intersection_segment' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.PR199G2.sameSupports_dualFlagTriangle_intersection' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.three_face_unique_extra_vertex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.barycentricFlag_exists_representedFace' depends on axioms: [propext, Classical.choice, Quot.sound]
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:2888:4: warning: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp only [List.nodup_cons, List.mem_cons,̵
+  ̵ ̵ ̵ ̵ ̵L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵] at hn
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/var/folders/g7/t7cdygm521zfn6t572ncddgw0000gn/T/tmp.NaRDTaw8pp/G2WitnessFreeAffineFixed.lean:2898:4: warning: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp only [List.nodup_cons, List.mem_cons,̵
+  ̵ ̵ ̵ ̵ ̵L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵] at hn
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+'_private._stdin.0.Poincare.PR199G2.representedFace_extra_not_mem' depends on axioms: [propext, Quot.sound]
+'Poincare.PR199G2.incidentPairToBarycentricFlag_bijective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.barycentricFlagIncidentEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.strictFaceEndpointTetEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.graphEdgeForFace_strict' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.globalFaceIndexedFlagEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.graphEdgeForFace_bijective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.graphEdgeForFaceEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.faceEndpointGraphEndpointEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.globalTetGraphEndpointEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.barycentricFlagGraphEndpointEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.convexFlagUnion_starShaped' depends on axioms: [propext, Classical.choice, Quot.sound]
+def Poincare.PR199G2.barycentricDualFlagTriangle : {K : Triangulation} →
+  {e : Finset ℕ} → BarycentricDualFlag K e → Set (ℕ → ℝ) :=
+fun {K} {e} a => flagTriangle (finiteBarycenter e) (finiteBarycenter a.face) (finiteBarycenter a.tet.verts.toFinset)
+def Poincare.PR199G2.barycentricEdgeDualCell : Triangulation → Finset ℕ → Set (ℕ → ℝ) :=
+fun K e => ⋃ a, barycentricDualFlagTriangle a
+def Poincare.PR199G2.barycentricFlagGraphEndpointEquiv : {K : Triangulation} →
+  ClosedTriangulationCore K →
+    {v x : ℕ} → AmbientEdgeCyclicFan K v x → BarycentricDualFlag K {v, x} ≃ (g : FanUnorderedGraphEdge K v x) × ↥↑g :=
+fun {K} hcore {v x} F => barycentricFlagIncidentEquiv.trans (globalTetGraphEndpointEquiv hcore F)
+'Poincare.PR199G2.barycentricEdgeDualCell_star_segment' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.dualFlagTriangle_contains_edgeBarycenter' depends on axioms: [propext, Classical.choice, Quot.sound]
+Poincare.PR199G2.closedCore_actualDualFlags_allSupportCases {K : Triangulation} (hcore : ClosedTriangulationCore K)
+  (e : Finset ℕ) (A B : BarycentricDualFlag K e) (a b c d : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hd : 0 ≤ d)
+  (heq :
+    barycentricFlagChart e A.face A.tet.verts.toFinset a b = barycentricFlagChart e B.face B.tet.verts.toFinset c d) :
+  (A.face = B.face → A.tet.verts.toFinset = B.tet.verts.toFinset → a = c ∧ b = d) ∧
+    (A.face ≠ B.face → A.tet.verts.toFinset = B.tet.verts.toFinset → a = 0 ∧ c = 0 ∧ b = d) ∧
+      (A.face = B.face → A.tet.verts.toFinset ≠ B.tet.verts.toFinset → b = 0 ∧ d = 0 ∧ a = c) ∧
+        (A.face ≠ B.face → A.tet.verts.toFinset ≠ B.tet.verts.toFinset → a = 0 ∧ b = 0 ∧ c = 0 ∧ d = 0)
+Poincare.PR199G2.closedCore_sameFace_distinctTets_intersection_segment {K : Triangulation}
+  (hcore : ClosedTriangulationCore K) (e : Finset ℕ) (A B : BarycentricDualFlag K e) (hface : A.face = B.face)
+  (htet : A.tet.verts.toFinset ≠ B.tet.verts.toFinset) :
+  barycentricDualFlagTriangle A ∩ barycentricDualFlagTriangle B =
+    segment ℝ (finiteBarycenter e) (finiteBarycenter A.face)
+Poincare.PR199G2.closedCore_distinctFaces_sameTet_intersection_segment {K : Triangulation}
+  (hcore : ClosedTriangulationCore K) (e : Finset ℕ) (A B : BarycentricDualFlag K e) (hface : A.face ≠ B.face)
+  (htet : A.tet.verts.toFinset = B.tet.verts.toFinset) :
+  barycentricDualFlagTriangle A ∩ barycentricDualFlagTriangle B =
+    segment ℝ (finiteBarycenter e) (finiteBarycenter A.tet.verts.toFinset)
+Poincare.PR199G2.closedCore_distinctFlags_triangle_intersection_singleton {K : Triangulation}
+  (hcore : ClosedTriangulationCore K) (e : Finset ℕ) (A B : BarycentricDualFlag K e) (hface : A.face ≠ B.face)
+  (htet : A.tet.verts.toFinset ≠ B.tet.verts.toFinset) :
+  barycentricDualFlagTriangle A ∩ barycentricDualFlagTriangle B = {finiteBarycenter e}
+Poincare.PR199G2.sameSupports_dualFlagTriangle_intersection {K : Triangulation} (e : Finset ℕ)
+  (A B : BarycentricDualFlag K e) (hface : A.face = B.face) (htet : A.tet.verts.toFinset = B.tet.verts.toFinset) :
+  barycentricDualFlagTriangle A ∩ barycentricDualFlagTriangle B = barycentricDualFlagTriangle A
+Poincare.PR199G2.barycentricFlagGraphEndpointEquiv {K : Triangulation} (hcore : ClosedTriangulationCore K) {v x : ℕ}
+  (F : AmbientEdgeCyclicFan K v x) : BarycentricDualFlag K {v, x} ≃ (g : FanUnorderedGraphEdge K v x) × ↥↑g
+'Poincare.PR199G2.barycentricEdgeDualCell_eq_graphIndexedUnion' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.PR199G2.closedCore_dualFlags_completeIntersection' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.closedCore_graphIndexed_completeIntersection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.PR199G2.barycentricEdgeDualCell_eq_graphIndexedUnion' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.PR199G2.barycentricEdgeDualCell_star_segment' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.barycentricFlagGraphEndpointEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.finite_fan_vertices' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.finite_graph_incidence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.finite_barycentric_flags' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.finite_incidence_of_finite_flags' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.barycentricDualFlagTriangle_isCompact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.barycentricEdgeDualCell_isCompact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.flag_affine_coefficients_unique' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.finiteBarycenter_coordinate' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.actualFlag_affine_coefficients_unique' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.actualFlag_support_witnesses' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.PR199G2.actualFlag_affine_coefficients_unique_no_witnesses' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
