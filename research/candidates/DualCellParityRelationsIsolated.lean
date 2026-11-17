@@ -117,9 +117,55 @@ theorem dual_cycle_pairing_zero_of_edge_fan_span
   simp_rw [hcoeff]
   exact generated_dual_cycle_pairing_zero inc w coeff hw
 
+
+/-- Finite-dimensional exactness from a boundary-composition identity and
+    equality of the ranks of the image and kernel. The rank equality is
+    an explicit obligation, not a disguised simple-connectivity proof. -/
+theorem range_eq_ker_of_equal_finrank
+    {Edge Face' Tet : Type*}
+    [AddCommGroup Edge] [Module (ZMod 2) Edge]
+    [AddCommGroup Face'] [Module (ZMod 2) Face']
+    [AddCommGroup Tet] [Module (ZMod 2) Tet]
+    [FiniteDimensional (ZMod 2) Face']
+    (edgeToFace : Edge →ₗ[ZMod 2] Face')
+    (faceToTet : Face' →ₗ[ZMod 2] Tet)
+    (hchain : ∀ x, faceToTet (edgeToFace x) = 0)
+    (hrank : Module.finrank (ZMod 2) (↥edgeToFace.range) =
+      Module.finrank (ZMod 2) (↥faceToTet.ker)) :
+    edgeToFace.range = faceToTet.ker := by
+  apply Submodule.eq_of_le_of_finrank_eq
+  · rintro z ⟨x, rfl⟩
+    exact LinearMap.mem_ker.mpr (hchain x)
+  · exact hrank
+
+/-- The exactness theorem produces actual coefficient witnesses for
+    any element of the dual boundary kernel. -/
+theorem exists_edge_fan_coeff_of_equal_finrank
+    {Edge Face' Tet : Type*}
+    [AddCommGroup Edge] [Module (ZMod 2) Edge]
+    [AddCommGroup Face'] [Module (ZMod 2) Face']
+    [AddCommGroup Tet] [Module (ZMod 2) Tet]
+    [FiniteDimensional (ZMod 2) Face']
+    (edgeToFace : Edge →ₗ[ZMod 2] Face')
+    (faceToTet : Face' →ₗ[ZMod 2] Tet)
+    (hchain : ∀ x, faceToTet (edgeToFace x) = 0)
+    (hrank : Module.finrank (ZMod 2) (↥edgeToFace.range) =
+      Module.finrank (ZMod 2) (↥faceToTet.ker))
+    (z : Face') (hz : faceToTet z = 0) :
+    ∃ coeff : Edge, edgeToFace coeff = z := by
+  have hexact := range_eq_ker_of_equal_finrank
+    edgeToFace faceToTet hchain hrank
+  have hzker : z ∈ faceToTet.ker := LinearMap.mem_ker.mpr hz
+  have hzrange : z ∈ edgeToFace.range := by
+    rw [hexact]
+    exact hzker
+  exact hzrange
+
 #print axioms parity_invariant_edit
 #print axioms parity_invariant_edits
 #print axioms generated_dual_cycle_pairing_zero
 #print axioms dual_cycle_pairing_zero_of_edge_fan_span
+#print axioms range_eq_ker_of_equal_finrank
+#print axioms exists_edge_fan_coeff_of_equal_finrank
 
 end Poincare.DualCellParity
