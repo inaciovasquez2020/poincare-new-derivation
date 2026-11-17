@@ -32,6 +32,7 @@ jobs:
             'Poincare.DualCellParity.parity_invariant_edit',
             'Poincare.DualCellParity.parity_invariant_edits',
             'Poincare.DualCellParity.generated_dual_cycle_pairing_zero',
+            'Poincare.DualCellParity.dual_cycle_pairing_zero_of_edge_fan_span',
           ]:
             reports=[line for line in lines if line.startswith(f"'{name}' ")]
             assert len(reports)==1,(name,reports)
