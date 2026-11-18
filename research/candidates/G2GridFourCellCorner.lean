@@ -36,6 +36,12 @@ theorem squareGridCell_four_at_node_probe
   simp only [squareGridCell, squareGridCellSource] at hsw hne
   rcases hsw with ⟨_, hxup, _, hyup⟩
   rcases hne with ⟨_, hxup', _, hyup'⟩
+  change (squareGridParameter N hN i'.castSucc : ℝ) ≤
+    (squareGridParameter N hN i'.succ : ℝ) at hxup'
+  change (squareGridParameter N hN j'.castSucc : ℝ) ≤
+    (squareGridParameter N hN j'.succ : ℝ) at hyup'
+  rw [hix] at hxup'
+  rw [hjy] at hyup'
   refine ⟨z, ?_, ?_, ?_, ?_⟩
   all_goals dsimp [z, squareGridCell, squareGridCellSource]
   all_goals rw [hix, hjy]
