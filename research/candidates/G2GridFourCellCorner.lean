@@ -33,12 +33,12 @@ theorem squareGridCell_four_at_node_probe
   have hjy : j'.castSucc = j.succ := by
     apply Fin.ext
     exact hj.symm
-  dsimp [z]
-  simp only [squareGridCell, squareGridCellSource] at hsw hne ⊢
+  simp only [squareGridCell, squareGridCellSource] at hsw hne
   rcases hsw with ⟨_, hxup, _, hyup⟩
   rcases hne with ⟨_, hxup', _, hyup'⟩
-  rw [hix, hjy]
-  refine ⟨?_, ?_, ?_, ?_⟩
+  refine ⟨z, ?_, ?_, ?_, ?_⟩
+  all_goals dsimp [z, squareGridCell, squareGridCellSource]
+  all_goals rw [hix, hjy]
   · exact ⟨hxup, le_rfl, hyup, le_rfl⟩
   · exact ⟨le_rfl, hxup', hyup, le_rfl⟩
   · exact ⟨le_rfl, hxup', le_rfl, hyup'⟩
