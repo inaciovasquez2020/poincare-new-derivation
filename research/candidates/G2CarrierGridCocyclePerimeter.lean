@@ -45,11 +45,14 @@ theorem carrier_grid_cocycle_perimeter_zero_of_common_tet
     (fun i j => w (label i j) (label i (j+1)))
   intro i hi j hj
   obtain ⟨tau, _, ha, hb, hc, hd⟩ := hcommon i hi j hj
-  exact tetrahedron_quad_parity_zero
+  have hquad := tetrahedron_quad_parity_zero
     (fun v tau => v ∈ tau.verts) w hsym htri tau
     (label i j) (label (i+1) j)
     (label (i+1) (j+1)) (label i (j+1))
     ha hb hc hd
+  rw [hsym (label (i+1) (j+1)) (label i (j+1)),
+      hsym (label i (j+1)) (label i j)] at hquad
+  exact hquad
 
 #print axioms carrier_grid_cocycle_perimeter_zero_of_common_tet
 
