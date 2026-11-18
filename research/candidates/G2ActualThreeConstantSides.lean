@@ -47,9 +47,9 @@ theorem g2_top_cell_constant_point
   · have hlast : j.succ = Fin.last N := by
       apply Fin.ext
       dsimp [j]
-      simp
       omega
     rw [hlast, squareGridParameter_last_probe]
+    exact le_rfl
 
 /-- Each right-column closed cell meets x=1 at its southeast corner. -/
 theorem g2_right_cell_constant_point
@@ -74,9 +74,9 @@ theorem g2_right_cell_constant_point
   · have hlast : i.succ = Fin.last N := by
       apply Fin.ext
       dsimp [i]
-      simp
       omega
     rw [hlast, squareGridParameter_last_probe]
+    exact le_rfl
 
 /-- The actual carrier null-homotopy forces all three constant-side
 cell-label sequences to equal the original primal base vertex. -/
