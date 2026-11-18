@@ -114,7 +114,8 @@ theorem tetrahedron_quad_parity_zero
   have h₁ := htri t a b c ha hb hc
   have h₂ := htri t a c d ha hc hd
   rw [hsym c a] at h₁
-  linear_combination h₁ + h₂
+  have hdiag : w a c + w a c = 0 := double_zero (w a c)
+  linear_combination h₁ + h₂ - hdiag
 
 /-- An actual common-tetrahedron witness supplies the local square relation.
     The exterior rectangular cancellation is already rectangle_perimeter_zero.
