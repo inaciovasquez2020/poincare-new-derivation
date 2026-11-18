@@ -1,0 +1,42 @@
+name: G2 primal-edge coordinate Lean audit
+on:
+  pull_request:
+    paths:
+      - 'research/candidates/G2PrimalEdgeCoordinateSupport.lean'
+      - '.github/workflows/g2-edge-coordinate-lean.yml'
+  workflow_dispatch:
+
+jobs:
+  coordinate-support:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+      - name: Compile endpoint-support lemmas and audit axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake env lean research/candidates/G2PrimalEdgeCoordinateSupport.lean > /tmp/g2-edge-coordinate.log 2>&1 || {
+            cat /tmp/g2-edge-coordinate.log
+            exit 1
+          }
+          cat /tmp/g2-edge-coordinate.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report=Path('/tmp/g2-edge-coordinate.log').read_text()
+          for name in (
+            'Poincare.geometric_primal_edge_coordinate_zero_off_endpoints',
+            'Poincare.geometric_primal_edge_positive_coordinate_is_endpoint',
+          ):
+            pattern=re.escape(f"'{name}'")+r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
+            matches=list(re.finditer(pattern,report))
+            assert len(matches)==1,(name,len(matches))
+            payload=matches[0].group(1)
+            axioms=set() if payload is None else {s.strip() for s in payload.split(',') if s.strip()}
+            assert axioms <= {'propext','Classical.choice','Quot.sound'},(name,axioms)
+            print(name,'AXIOMS_PASS')
+          PY
