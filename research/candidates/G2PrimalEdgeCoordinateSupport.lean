@@ -136,10 +136,78 @@ theorem carrier_grid_boundary_cell_breakpoints_same_vertex
   exact hfirst.symm.trans hsecond
 
 
+
+/-- Every positively labelled grid cell containing a point whose carrier
+coordinate is exactly the canonical vertex u must have label u.
+This is independent of which parameter-square boundary is involved. -/
+theorem carrier_grid_cell_vertex_forces_label
+    {K : Triangulation}
+    {x : triangulationTopologicalGeometricCarrier K}
+    {loop : Path x x}
+    (H : CarrierLoopNullHomotopyData K x loop)
+    (N : Nat) (hN : 0 < N)
+    (label : Fin N → Fin N → Nat)
+    (hpositive : ∀ i j : Fin N,
+       ∀ z ∈ CarrierLoopNullHomotopyData.squareGridCell N hN i j,
+         0 < (H.homotopy z).1 (label i j))
+    (i j : Fin N) (z : unitInterval × unitInterval)
+    (hcell : z ∈ CarrierLoopNullHomotopyData.squareGridCell N hN i j)
+    (u : Nat)
+    (hvertex : (H.homotopy z).1 =
+      triangulationTopologicalGeometricVertex u) :
+    label i j = u := by
+  have hp := hpositive i j z hcell
+  rw [hvertex] at hp
+  by_contra hv
+  have hz :
+      triangulationTopologicalGeometricVertex u (label i j) = 0 := by
+    simp [triangulationTopologicalGeometricVertex, hv, Ne.symm hv]
+  rw [hz] at hp
+  exact (not_lt_of_ge le_rfl) hp
+
+/-- All labels on the three constant homotopy sides are the base vertex,
+provided the basepoint is the canonical primal vertex u. -/
+theorem carrier_grid_constant_boundary_cell_label_eq_base_vertex
+    {K : Triangulation}
+    {x : triangulationTopologicalGeometricCarrier K}
+    {loop : Path x x}
+    (H : CarrierLoopNullHomotopyData K x loop)
+    (N : Nat) (hN : 0 < N)
+    (label : Fin N → Fin N → Nat)
+    (hpositive : ∀ i j : Fin N,
+       ∀ z ∈ CarrierLoopNullHomotopyData.squareGridCell N hN i j,
+         0 < (H.homotopy z).1 (label i j))
+    (u : Nat)
+    (hbase : x.1 = triangulationTopologicalGeometricVertex u)
+    (i j : Fin N) (z : unitInterval × unitInterval)
+    (hcell : z ∈ CarrierLoopNullHomotopyData.squareGridCell N hN i j)
+    (hconstant : z.1 = 1 ∨ z.2 = 0 ∨ z.2 = 1) :
+    label i j = u := by
+  have hpoint : H.homotopy z = x := by
+    rcases hconstant with hright | hbottom | htop
+    · have hz : z = ((1 : unitInterval), z.2) := by
+        exact Prod.ext hright rfl
+      rw [hz]
+      exact H.constant_boundary z.2
+    · have hz : z = (z.1, (0 : unitInterval)) := by
+        exact Prod.ext rfl hbottom
+      rw [hz]
+      exact H.source_boundary z.1
+    · have hz : z = (z.1, (1 : unitInterval)) := by
+        exact Prod.ext rfl htop
+      rw [hz]
+      exact H.target_boundary z.1
+  exact carrier_grid_cell_vertex_forces_label
+    H N hN label hpositive i j z hcell u
+    (by rw [hpoint]; exact hbase)
+
+
 #print axioms geometric_primal_edge_coordinate_zero_off_endpoints
 #print axioms geometric_primal_edge_positive_coordinate_is_endpoint
 #print axioms carrier_grid_loopBoundary_label_is_edge_endpoint
 #print axioms carrier_grid_loopBoundary_vertex_forces_label
 #print axioms carrier_grid_boundary_cell_breakpoints_same_vertex
+#print axioms carrier_grid_cell_vertex_forces_label
+#print axioms carrier_grid_constant_boundary_cell_label_eq_base_vertex
 
 end Poincare
