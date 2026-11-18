@@ -48,7 +48,6 @@ theorem edgeCount_breakpoint_refined_grid_vertex
   have hmzero : (m : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hm)
   push_cast
   field_simp
-  ring
 
 /-- Whole-cell coordinate positivity on an edge-count-refined grid.
 The grid length is a multiple of m, so it supports *all* equal-time
