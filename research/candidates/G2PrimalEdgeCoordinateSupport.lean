@@ -102,9 +102,44 @@ theorem carrier_grid_loopBoundary_vertex_forces_label
   rw [hz] at hp
   exact (not_lt_of_ge le_rfl) hp
 
+
+/-- One positively labelled closed boundary cell cannot simultaneously
+contain breakpoints representing two *different* primal vertices. This
+rules out crossing an entire nondegenerate primal edge in one cell. -/
+theorem carrier_grid_boundary_cell_breakpoints_same_vertex
+    {K : Triangulation}
+    {x : triangulationTopologicalGeometricCarrier K}
+    {loop : Path x x}
+    (H : CarrierLoopNullHomotopyData K x loop)
+    (N : Nat) (hN : 0 < N)
+    (label : Fin N → Fin N → Nat)
+    (hpositive : ∀ i j : Fin N,
+       ∀ z ∈ CarrierLoopNullHomotopyData.squareGridCell N hN i j,
+         0 < (H.homotopy z).1 (label i j))
+    (i j : Fin N) (s t : unitInterval)
+    (hs :
+      ((0 : unitInterval), s) ∈
+        CarrierLoopNullHomotopyData.squareGridCell N hN i j)
+    (ht :
+      ((0 : unitInterval), t) ∈
+        CarrierLoopNullHomotopyData.squareGridCell N hN i j)
+    (u v : Nat)
+    (hu : (loop s).1 = triangulationTopologicalGeometricVertex u)
+    (hv : (loop t).1 = triangulationTopologicalGeometricVertex v) :
+    u = v := by
+  have hfirst :=
+    carrier_grid_loopBoundary_vertex_forces_label
+      H N hN label hpositive i j s hs u hu
+  have hsecond :=
+    carrier_grid_loopBoundary_vertex_forces_label
+      H N hN label hpositive i j t ht v hv
+  exact hfirst.symm.trans hsecond
+
+
 #print axioms geometric_primal_edge_coordinate_zero_off_endpoints
 #print axioms geometric_primal_edge_positive_coordinate_is_endpoint
 #print axioms carrier_grid_loopBoundary_label_is_edge_endpoint
 #print axioms carrier_grid_loopBoundary_vertex_forces_label
+#print axioms carrier_grid_boundary_cell_breakpoints_same_vertex
 
 end Poincare
