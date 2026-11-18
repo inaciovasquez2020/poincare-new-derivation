@@ -1,0 +1,44 @@
+name: G2 edge-count aligned grid Lean audit
+on:
+  pull_request:
+    paths:
+      - 'research/candidates/G2EdgeCountAlignedGrid.lean'
+      - '.github/workflows/g2-edge-count-aligned-grid.yml'
+  workflow_dispatch:
+
+jobs:
+  aligned-grid:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+      - name: Compile edge-count-aligned carrier grid and audit axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake env lean research/candidates/G2EdgeCountAlignedGrid.lean > /tmp/g2-aligned-grid.log 2>&1 || {
+            cat /tmp/g2-aligned-grid.log
+            exit 1
+          }
+          cat /tmp/g2-aligned-grid.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report=Path('/tmp/g2-aligned-grid.log').read_text()
+          for name in (
+            'Poincare.CarrierLoopNullHomotopyData.edgeCount_refined_grid_scale',
+            'Poincare.CarrierLoopNullHomotopyData.edgeCount_breakpoint_refined_grid_vertex',
+            'Poincare.CarrierLoopNullHomotopyData.exists_edgeCount_refined_positiveCoordinate_labelling',
+          ):
+            pattern=re.escape(f"'{name}'")+r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
+            matches=list(re.finditer(pattern,report))
+            assert len(matches)==1,(name,len(matches))
+            payload=matches[0].group(1)
+            axioms=set() if payload is None else {x.strip() for x in payload.split(',') if x.strip()}
+            assert axioms <= {'propext','Classical.choice','Quot.sound'},(name,axioms)
+            print(name,'AXIOMS_PASS')
+          print('EDGE_COUNT_ALIGNED_GRID := LEAN_VERIFIED')
+          PY
