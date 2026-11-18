@@ -37,11 +37,15 @@ theorem two_label_edge_weight_eq_coboundary
     (hb : b = u ∨ b = v) :
     w a b = (if a = u then 0 else w u v) +
       (if b = u then 0 else w u v) := by
-  rcases ha with rfl | rfl <;> rcases hb with rfl | rfl
-  · simp [hzero]
-  · simp [huv.symm]
-  · simpa [huv] using (hsym v u)
-  · simp [huv.symm, hzero, twice_zero]
+  rcases ha with ha | ha <;> rcases hb with hb | hb
+  · rw [ha, hb]
+    simp [hzero]
+  · rw [ha, hb]
+    simp [huv.symm]
+  · rw [ha, hb]
+    simpa [huv, huv.symm] using (hsym v u)
+  · rw [ha, hb]
+    simp [huv.symm, hzero, twice_zero]
 
 /-- A finite walk from u to v whose labels all lie in {u,v} has exactly
 the parity of the original edge uv, even with repeated labels/backtracks. -/
@@ -76,4 +80,4 @@ theorem primal_edge_subdivision_parity
 #print axioms two_label_edge_weight_eq_coboundary
 #print axioms primal_edge_subdivision_parity
 
-end Poincare.G2Boundary
+end Poincare.G2BoundaryIsolated
