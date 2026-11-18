@@ -77,7 +77,43 @@ theorem primal_edge_subdivision_parity
     _ = g 0 + g n := telescoping g n
     _ = w u v := by simp [g, hstart, hend, huv.symm]
 
+
+/-- Finite boundary-word assembly over *arbitrarily many* successive
+primal edges, allowing a different positive number of subedges in
+each block. Consecutive blocks share the prescribed primal vertex
+because their endpoint equations use the same vertex function.
+
+The geometric task left open is to obtain these block data from the
+actual labeled null-homotopy boundary; no such assumption is hidden
+inside this theorem. -/
+theorem assembled_primal_edge_loop_subdivision_parity
+    (w : Nat → Nat → ZMod 2)
+    (hzero : ∀ x, w x x = 0)
+    (hsym : ∀ a b, w a b = w b a)
+    (m : Nat)
+    (vertex length : Nat → Nat)
+    (label : Nat → Nat → Nat)
+    (hdistinct : ∀ k, k < m → vertex k ≠ vertex (k + 1))
+    (hsupport : ∀ k, k < m → ∀ i,
+      i ≤ length k →
+        label k i = vertex k ∨ label k i = vertex (k + 1))
+    (hstart : ∀ k, k < m → label k 0 = vertex k)
+    (hend : ∀ k, k < m → label k (length k) = vertex (k + 1)) :
+    (∑ k ∈ Finset.range m,
+      ∑ i ∈ Finset.range (length k),
+        w (label k i) (label k (i + 1))) =
+    ∑ k ∈ Finset.range m, w (vertex k) (vertex (k + 1)) := by
+  apply Finset.sum_congr rfl
+  intro k hk
+  have hkm : k < m := Finset.mem_range.mp hk
+  exact primal_edge_subdivision_parity
+    w hzero hsym (vertex k) (vertex (k + 1))
+    (hdistinct k hkm) (length k) (label k)
+    (hsupport k hkm) (hstart k hkm) (hend k hkm)
+
+
 #print axioms two_label_edge_weight_eq_coboundary
 #print axioms primal_edge_subdivision_parity
+#print axioms assembled_primal_edge_loop_subdivision_parity
 
 end Poincare.G2Boundary
