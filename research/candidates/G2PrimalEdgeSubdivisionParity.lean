@@ -39,9 +39,11 @@ theorem two_label_edge_weight_eq_coboundary
       (if b = u then 0 else w u v) := by
   rcases ha with rfl | rfl <;> rcases hb with rfl | rfl
   · simp [hzero]
-  · simp [huv]
-  · simp [huv, hsym]
-  · simp [huv, hzero, twice_zero]
+  · intro heq
+    exact (huv heq.symm).elim
+  · intro heq
+    exact (huv heq.symm).elim
+  · simp [hzero, twice_zero]
 
 /-- A finite walk from u to v whose labels all lie in {u,v} has exactly
 the parity of the original edge uv, even with repeated labels/backtracks. -/
