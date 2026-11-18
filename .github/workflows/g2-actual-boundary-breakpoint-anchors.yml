@@ -18,6 +18,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          lake build Poincare.G2PrimalEdgeCoordinateSupport
           lake env lean research/candidates/G2ActualBoundaryBreakpointAnchors.lean > /tmp/g2-anchors.log 2>&1 || {
             cat /tmp/g2-anchors.log
             exit 1
