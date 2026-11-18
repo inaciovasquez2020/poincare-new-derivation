@@ -1,3 +1,4 @@
+import Poincare.GlobalMove32ReentryDyadicGridVertices
 import Poincare.CarrierPolygonalPath
 
 /-!
@@ -37,7 +38,41 @@ theorem geometric_primal_edge_positive_coordinate_is_endpoint
   rw [hz] at hpos
   exact (not_lt_of_ge le_rfl) hpos
 
+
+/-- The actual homotopy boundary, evaluated at a point of a labeled closed
+grid cell on the loop side, restricts its label to the two vertices of any
+primal edge segment representing that boundary value. This is a *local*
+boundary compatibility theorem: it does not assume the full loop has been
+subdivided and aligned to the finite grid. -/
+theorem carrier_grid_loopBoundary_label_is_edge_endpoint
+    {K : Triangulation}
+    {x : triangulationTopologicalGeometricCarrier K}
+    {loop : Path x x}
+    (H : CarrierLoopNullHomotopyData K x loop)
+    (N : Nat) (hN : 0 < N)
+    (label : Fin N → Fin N → Nat)
+    (hpositive : ∀ i j : Fin N,
+       ∀ z ∈ CarrierLoopNullHomotopyData.squareGridCell N hN i j,
+         0 < (H.homotopy z).1 (label i j))
+    (i j : Fin N) (t : unitInterval)
+    (hcell :
+      ((0 : unitInterval), t) ∈
+        CarrierLoopNullHomotopyData.squareGridCell N hN i j)
+    (u v : Nat) (s : ℝ)
+    (hsegment :
+      (loop t).1 = AffineMap.lineMap
+        (triangulationTopologicalGeometricVertex u)
+        (triangulationTopologicalGeometricVertex v) s) :
+    label i j = u ∨ label i j = v := by
+  have hp :=
+    hpositive i j ((0 : unitInterval), t) hcell
+  rw [H.loop_boundary t, hsegment] at hp
+  exact geometric_primal_edge_positive_coordinate_is_endpoint
+    u v (label i j) s hp
+
+
 #print axioms geometric_primal_edge_coordinate_zero_off_endpoints
 #print axioms geometric_primal_edge_positive_coordinate_is_endpoint
+#print axioms carrier_grid_loopBoundary_label_is_edge_endpoint
 
 end Poincare
