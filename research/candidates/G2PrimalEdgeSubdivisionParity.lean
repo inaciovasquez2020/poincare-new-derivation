@@ -38,7 +38,10 @@ theorem two_label_edge_weight_eq_coboundary
     w a b = (if a = u then 0 else w u v) +
       (if b = u then 0 else w u v) := by
   rcases ha with rfl | rfl <;> rcases hb with rfl | rfl
-  all_goals simp [huv, hzero, hsym, twice_zero]
+  · simp [hzero]
+  · simp [huv]
+  · simp [huv, hsym]
+  · simp [huv, hzero, twice_zero]
 
 /-- A finite walk from u to v whose labels all lie in {u,v} has exactly
 the parity of the original edge uv, even with repeated labels/backtracks. -/
@@ -68,7 +71,7 @@ theorem primal_edge_subdivision_parity
           intro i hi
           exact hpair i hi
     _ = g 0 + g n := telescoping g n
-    _ = w u v := by simp [g, hstart, hend, huv]
+    _ = w u v := by simp [g, hstart, hend, huv.symm]
 
 #print axioms two_label_edge_weight_eq_coboundary
 #print axioms primal_edge_subdivision_parity
