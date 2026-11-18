@@ -71,8 +71,40 @@ theorem carrier_grid_loopBoundary_label_is_edge_endpoint
     u v (label i j) s hp
 
 
+
+/-- A closed grid cell touching the loop at a canonical primal vertex
+must carry precisely that vertex label, even when the breakpoint is
+not aligned to a grid line. -/
+theorem carrier_grid_loopBoundary_vertex_forces_label
+    {K : Triangulation}
+    {x : triangulationTopologicalGeometricCarrier K}
+    {loop : Path x x}
+    (H : CarrierLoopNullHomotopyData K x loop)
+    (N : Nat) (hN : 0 < N)
+    (label : Fin N → Fin N → Nat)
+    (hpositive : ∀ i j : Fin N,
+       ∀ z ∈ CarrierLoopNullHomotopyData.squareGridCell N hN i j,
+         0 < (H.homotopy z).1 (label i j))
+    (i j : Fin N) (t : unitInterval)
+    (hcell :
+      ((0 : unitInterval), t) ∈
+        CarrierLoopNullHomotopyData.squareGridCell N hN i j)
+    (u : Nat)
+    (hvertex : (loop t).1 = triangulationTopologicalGeometricVertex u) :
+    label i j = u := by
+  have hp :=
+    hpositive i j ((0 : unitInterval), t) hcell
+  rw [H.loop_boundary t, hvertex] at hp
+  by_contra hv
+  have hz :
+      triangulationTopologicalGeometricVertex u (label i j) = 0 := by
+    simp [triangulationTopologicalGeometricVertex, hv, Ne.symm hv]
+  rw [hz] at hp
+  exact (not_lt_of_ge le_rfl) hp
+
 #print axioms geometric_primal_edge_coordinate_zero_off_endpoints
 #print axioms geometric_primal_edge_positive_coordinate_is_endpoint
 #print axioms carrier_grid_loopBoundary_label_is_edge_endpoint
+#print axioms carrier_grid_loopBoundary_vertex_forces_label
 
 end Poincare
