@@ -33,6 +33,7 @@ jobs:
             'Poincare.geometric_primal_edge_positive_coordinate_is_endpoint',
             'Poincare.carrier_grid_loopBoundary_label_is_edge_endpoint',
             'Poincare.carrier_grid_loopBoundary_vertex_forces_label',
+            'Poincare.carrier_grid_boundary_cell_breakpoints_same_vertex',
           ):
             pattern=re.escape(f"'{name}'")+r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
             matches=list(re.finditer(pattern,report))
