@@ -50,7 +50,10 @@ theorem g2_ordered_boundary_word_parity
         · omega
         · omega)
       (by simpa using hanchor k (by omega))
-      (by rw [hn]; exact hanchor (k+1) (by omega))
+      (by
+        change L (anchor k + n) = vertex (k+1)
+        rw [hn]
+        exact hanchor (k+1) (by omega))
     have hb : (∑ j ∈ Finset.range n, f (anchor k+j)) =
         w (vertex k) (vertex (k+1)) := by
       simpa only [f, Nat.add_assoc] using hblock
