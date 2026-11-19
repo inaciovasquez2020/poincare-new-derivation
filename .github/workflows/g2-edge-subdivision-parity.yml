@@ -1,0 +1,43 @@
+name: G2 primal-edge subdivision parity Lean audit
+on:
+  pull_request:
+    paths:
+      - 'research/candidates/G2PrimalEdgeSubdivisionParity.lean'
+      - '.github/workflows/g2-edge-subdivision-parity.yml'
+  workflow_dispatch:
+
+jobs:
+  boundary-parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+      - name: Compile finite primal-edge boundary parity and audit axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake env lean research/candidates/G2PrimalEdgeSubdivisionParity.lean > /tmp/g2-edge-subdivision.log 2>&1 || {
+            cat /tmp/g2-edge-subdivision.log
+            exit 1
+          }
+          cat /tmp/g2-edge-subdivision.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report=Path('/tmp/g2-edge-subdivision.log').read_text()
+          for name in (
+            'Poincare.G2Boundary.two_label_edge_weight_eq_coboundary',
+            'Poincare.G2Boundary.primal_edge_subdivision_parity',
+            'Poincare.G2Boundary.assembled_primal_edge_loop_subdivision_parity',
+          ):
+            pattern=re.escape(f"'{name}'")+r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
+            matches=list(re.finditer(pattern,report))
+            assert len(matches)==1,(name,len(matches))
+            payload=matches[0].group(1)
+            axioms=set() if payload is None else {x.strip() for x in payload.split(',') if x.strip()}
+            assert axioms <= {'propext','Classical.choice','Quot.sound'},(name,axioms)
+            print(name,'AXIOMS_PASS')
+          PY

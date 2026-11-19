@@ -1,0 +1,40 @@
+name: G2 piecewise primal loop cancellation Lean audit
+on:
+  pull_request:
+    paths:
+      - 'research/candidates/G2PiecewisePrimalLoopCancellation.lean'
+      - 'lean/Poincare/G2*.lean'
+      - '.github/workflows/g2-piecewise-primal-loop.yml'
+  workflow_dispatch:
+jobs:
+  piecewise-loop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+      - name: Build prerequisites and audit integrated loop theorem
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.G2OrderedBoundaryWordParity Poincare.G2OrderedBreakpointAnchors Poincare.G2IntermediateBoundaryLabels Poincare.G2ActualActiveBoundaryZero
+          lake env lean research/candidates/G2PiecewisePrimalLoopCancellation.lean > /tmp/g2-piecewise.log 2>&1 || {
+            cat /tmp/g2-piecewise.log
+            exit 1
+          }
+          cat /tmp/g2-piecewise.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          log=Path('/tmp/g2-piecewise.log').read_text()
+          name='Poincare.g2_piecewise_primal_loop_pairing_zero'
+          pattern=re.escape(f"'{name}'")+r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
+          m=list(re.finditer(pattern,log))
+          assert len(m)==1,(name,len(m))
+          raw=m[0].group(1)
+          axioms=set() if raw is None else {x.strip() for x in raw.split(',') if x.strip()}
+          assert axioms <= {'propext','Classical.choice','Quot.sound'},(name,axioms)
+          print('G2_PIECEWISE_PRIMAL_LOOP := LEAN_VERIFIED')
+          PY

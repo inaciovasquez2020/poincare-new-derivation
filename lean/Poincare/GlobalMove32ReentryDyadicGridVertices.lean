@@ -151,6 +151,58 @@ theorem carrier_two_positive_coordinates_common_tet_probe
     List.mem_toFinset.mp (hFtau hwF)
   ⟩
 
+/-- All finitely many simultaneously positive carrier coordinates lie in
+one represented tetrahedron. Pairwise compatibility alone is insufficient
+for triangle filling; this is the stronger common-support statement. -/
+theorem carrier_finite_positive_coordinates_common_tet_probe
+    {K : Triangulation}
+    (p : triangulationTopologicalGeometricCarrier K)
+    (s : Finset Nat)
+    (hs : ∀ v ∈ s, 0 < p.1 v) :
+    ∃ tau : Tet, tau ∈ K.tets ∧
+      ∀ v ∈ s, v ∈ tau.verts := by
+  obtain ⟨F, _, tau, htau, hFtau, a, _, _, hap⟩ :=
+    carrier_exists_finite_barycentric_support p
+  refine ⟨tau, htau, ?_⟩
+  intro v hv
+  have hvF : v ∈ F := by
+    by_contra hvF
+    have hz : p.1 v = 0 := by
+      rw [geometricVertex_weighted_sum_coordinate F a p.1 hap v]
+      simp [hvF]
+    have hpos := hs v hv
+    linarith
+  exact List.mem_toFinset.mp (hFtau hvF)
+
+/-- If finitely many grid cells share one parameter point, all their labels
+belong to ONE represented tetrahedron, not merely pairwise tetrahedra. -/
+theorem squareGrid_commonPoint_labels_common_tet_probe
+    {K : Triangulation}
+    {x : triangulationTopologicalGeometricCarrier K}
+    {loop : Path x x}
+    (H : CarrierLoopNullHomotopyData K x loop)
+    (N : Nat) (hN : 0 < N)
+    (label : Fin N → Fin N → Nat)
+    (hpositive : ∀ i j : Fin N,
+      ∀ z ∈ squareGridCell N hN i j,
+        0 < (H.homotopy z).1 (label i j))
+    (cells : Finset (Fin N × Fin N))
+    (z : unitInterval × unitInterval)
+    (hcommon : ∀ ij ∈ cells, z ∈ squareGridCell N hN ij.1 ij.2) :
+    ∃ tau : Tet, tau ∈ K.tets ∧
+      ∀ ij ∈ cells, label ij.1 ij.2 ∈ tau.verts := by
+  let s : Finset Nat := cells.image (fun ij => label ij.1 ij.2)
+  have hs : ∀ v ∈ s, 0 < (H.homotopy z).1 v := by
+    intro v hv
+    obtain ⟨ij, hij, rfl⟩ := Finset.mem_image.mp hv
+    exact hpositive ij.1 ij.2 z (hcommon ij hij)
+  obtain ⟨tau, htau, hverts⟩ :=
+    carrier_finite_positive_coordinates_common_tet_probe
+      (H.homotopy z) s hs
+  refine ⟨tau, htau, ?_⟩
+  intro ij hij
+  exact hverts (label ij.1 ij.2) (Finset.mem_image.mpr ⟨ij, hij, rfl⟩)
+
 /--
 The finite positive-coordinate filling can be labelled so that any two cells
 which meet have labels occurring together in one represented tetrahedron.

@@ -1,0 +1,42 @@
+name: G2 actual positive carrier perimeter Lean audit
+on:
+  pull_request:
+    paths:
+      - 'lean/Poincare/G2GridFourCellCorner.lean'
+      - 'lean/Poincare/G2CarrierGridCocyclePerimeter.lean'
+      - 'research/candidates/G2ActualCarrierPerimeter.lean'
+      - '.github/workflows/g2-actual-carrier-perimeter.yml'
+  workflow_dispatch:
+
+jobs:
+  actual-perimeter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+      - name: Compile actual positive carrier perimeter and audit axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.G2GridFourCellCorner Poincare.G2CarrierGridCocyclePerimeter
+          lake env lean research/candidates/G2ActualCarrierPerimeter.lean > /tmp/g2-actual-perimeter.log 2>&1 || {
+            cat /tmp/g2-actual-perimeter.log
+            exit 1
+          }
+          cat /tmp/g2-actual-perimeter.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report=Path('/tmp/g2-actual-perimeter.log').read_text()
+          name='Poincare.carrier_grid_positive_labels_cocycle_perimeter_zero'
+          pattern=re.escape(f"'{name}'")+r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
+          matches=list(re.finditer(pattern,report))
+          assert len(matches)==1,(name,len(matches))
+          payload=matches[0].group(1)
+          axioms=set() if payload is None else {x.strip() for x in payload.split(',') if x.strip()}
+          assert axioms <= {'propext','Classical.choice','Quot.sound'},(name,axioms)
+          print('ACTUAL_CARRIER_PERIMETER := LEAN_VERIFIED')
+          PY

@@ -1,0 +1,46 @@
+name: G2 actual three constant sides Lean audit
+on:
+  pull_request:
+    paths:
+      - 'research/candidates/G2ActualThreeConstantSides.lean'
+      - 'lean/Poincare/G2PrimalEdgeCoordinateSupport.lean'
+      - '.github/workflows/g2-actual-three-constant-sides.yml'
+  workflow_dispatch:
+jobs:
+  actual-constant-sides:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+      - name: Verify actual constant-side cell points and labels
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.G2PrimalEdgeCoordinateSupport
+          lake env lean research/candidates/G2ActualThreeConstantSides.lean > /tmp/g2-actual-three-sides.log 2>&1 || {
+            cat /tmp/g2-actual-three-sides.log
+            exit 1
+          }
+          cat /tmp/g2-actual-three-sides.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report=Path('/tmp/g2-actual-three-sides.log').read_text()
+          names=[
+            'Poincare.g2_bottom_cell_constant_point',
+            'Poincare.g2_top_cell_constant_point',
+            'Poincare.g2_right_cell_constant_point',
+            'Poincare.g2_carrier_grid_three_constant_sides_labels',
+          ]
+          for name in names:
+            pattern=re.escape(f"'{name}'")+r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
+            m=list(re.finditer(pattern,report))
+            assert len(m)==1,(name,len(m))
+            axioms=set() if m[0].group(1) is None else {x.strip() for x in m[0].group(1).split(',') if x.strip()}
+            assert axioms <= {'propext','Classical.choice','Quot.sound'},(name,axioms)
+            print(name,'AXIOMS_PASS')
+          print('ACTUAL_CONSTANT_SIDES := LEAN_VERIFIED')
+          PY

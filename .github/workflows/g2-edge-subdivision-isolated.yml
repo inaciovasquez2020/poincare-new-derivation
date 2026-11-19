@@ -1,0 +1,42 @@
+name: G2 isolated alternative subdivision proof audit
+on:
+  pull_request:
+    paths:
+      - 'research/candidates/G2PrimalEdgeSubdivisionParityIsolated.lean'
+      - '.github/workflows/g2-edge-subdivision-isolated.yml'
+  workflow_dispatch:
+
+jobs:
+  isolated-parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+      - name: Compile alternate isolated proof and audit axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake env lean research/candidates/G2PrimalEdgeSubdivisionParityIsolated.lean > /tmp/g2-isolated.log 2>&1 || {
+            cat /tmp/g2-isolated.log
+            exit 1
+          }
+          cat /tmp/g2-isolated.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report=Path('/tmp/g2-isolated.log').read_text()
+          for name in (
+            'Poincare.G2BoundaryIsolated.two_label_edge_weight_eq_coboundary',
+            'Poincare.G2BoundaryIsolated.primal_edge_subdivision_parity',
+          ):
+            pattern=re.escape(f"'{name}'")+r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
+            matches=list(re.finditer(pattern,report))
+            assert len(matches)==1,(name,len(matches))
+            payload=matches[0].group(1)
+            axioms=set() if payload is None else {x.strip() for x in payload.split(',') if x.strip()}
+            assert axioms <= {'propext','Classical.choice','Quot.sound'},(name,axioms)
+            print(name,'AXIOMS_PASS')
+          PY

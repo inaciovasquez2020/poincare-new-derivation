@@ -27,20 +27,24 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import re
-          lines=Path('/tmp/dual-cell-relations.log').read_text().splitlines()
+          log=Path('/tmp/dual-cell-relations.log').read_text()
+          assert 'sorryAx' not in log, 'sorryAx in audit log'
           for name in [
             'Poincare.DualCellParity.parity_invariant_edit',
             'Poincare.DualCellParity.parity_invariant_edits',
+            'Poincare.DualCellParity.generated_dual_cycle_pairing_zero',
+            'Poincare.DualCellParity.dual_cycle_pairing_zero_of_edge_fan_span',
+            'Poincare.DualCellParity.range_eq_ker_of_equal_finrank',
+            'Poincare.DualCellParity.exists_edge_fan_coeff_of_equal_finrank',
+            'Poincare.DualCellParity.rank_equal_of_closed_three_manifold_counts',
+            'Poincare.DualCellParity.edge_fan_exact_of_closed_three_manifold_rank_counts',
           ]:
-            reports=[line for line in lines if line.startswith(f"'{name}' ")]
-            assert len(reports)==1,(name,reports)
-            row=reports[0]
-            if row==f"'{name}' does not depend on any axioms":
-              axioms=set()
-            else:
-              m=re.fullmatch(re.escape(f"'{name}'")+r" depends on axioms:\s*\[([^\]]*)\]", row)
-              assert m,row
-              axioms={x.strip() for x in m.group(1).split(',') if x.strip()}
-            assert axioms <= {'propext','Classical.choice','Quot.sound'}, axioms
+            label=re.escape(f"'{name}'")
+            pattern=label+r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
+            reports=list(re.finditer(pattern,log))
+            assert len(reports)==1,(name,len(reports))
+            payload=reports[0].group(1)
+            axioms=set() if payload is None else {x.strip() for x in payload.split(',') if x.strip()}
+            assert axioms <= {'propext','Classical.choice','Quot.sound'}, (name,axioms)
             print(name,'AXIOMS_PASS')
           PY
