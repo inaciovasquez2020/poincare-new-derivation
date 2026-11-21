@@ -1,0 +1,9 @@
+'Poincare.ClosedTriangulationCore.exists_highFanStep_of_noMove23_noDescent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.ClosedTriangulationCore.exists_perpetual_highFanStep_of_noMove23_noDescent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.ClosedTriangulationCore.exists_recurrent_highFanStep_of_noMove23_noDescent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

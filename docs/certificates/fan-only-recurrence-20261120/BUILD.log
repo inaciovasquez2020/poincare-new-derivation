@@ -1,0 +1,81 @@
+ℹ [3289/3370] Replayed Poincare.Move23BipyramidGeometry
+info: lean/Poincare/Move23BipyramidGeometry.lean:170:75: Try this:
+  [apply] ring_nf
+
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+info: lean/Poincare/Move23BipyramidGeometry.lean:170:75: Try this:
+  [apply] ring_nf
+
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+⚠ [8379/8396] Replayed Poincare.GlobalFanChordContinuationReinjectHigh
+warning: lean/Poincare/GlobalFanChordContinuationReinjectHigh.lean:187:30: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp only [List.mem_cons,̵ ̵L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: lean/Poincare/GlobalFanChordContinuationReinjectHigh.lean:194:30: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp only [List.mem_cons,̵ ̵L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: lean/Poincare/GlobalFanChordContinuationReinjectHigh.lean:201:30: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp only [List.mem_cons,̵ ̵L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: lean/Poincare/GlobalFanChordContinuationReinjectHigh.lean:254:28: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp only [List.mem_cons,̵ ̵L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵] at hc
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [8384/8396] Replayed Poincare.GlobalFanReentryModeContinuation
+warning: lean/Poincare/GlobalFanReentryModeContinuation.lean:100:28: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp only [List.mem_cons,̵ ̵L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵] at hends hcNot
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: lean/Poincare/GlobalFanReentryModeContinuation.lean:106:6: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp only [Move23Site.newTet₀, Tet.verts, List.mem_cons, L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵,̵ ̵List.not_mem_nil, or_false] at hface
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: lean/Poincare/GlobalFanReentryModeContinuation.lean:167:6: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp only [Move23Site.newTet₂, Tet.verts, List.mem_cons, L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵,̵ ̵List.not_mem_nil, or_false] at hface
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: lean/Poincare/GlobalFanReentryModeContinuation.lean:202:32: This simp argument is unused:
+  List.mem_singleton
+
+Hint: Omit it from the simp argument list.
+  simp only [List.mem_cons, L̵i̵s̵t̵.̵m̵e̵m̵_̵s̵i̵n̵g̵l̵e̵t̵o̵n̵,̵ ̵List.not_mem_nil, or_false] at hz
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [8391/8396] Replayed Poincare.GlobalMove32SourceFaceHighEdgeAvoidance
+warning: lean/Poincare/GlobalMove32SourceFaceHighEdgeAvoidance.lean:33:5: unused variable `hvx`
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [8395/8396] Replayed Poincare.GlobalFanReentryModeFiniteRecurrence
+warning: lean/Poincare/GlobalFanReentryModeFiniteRecurrence.lean:43:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+✔ [8396/8396] Built Poincare.GlobalFanOnlyFailClosedRecurrence (159s)
+Build completed successfully (8396 jobs).
