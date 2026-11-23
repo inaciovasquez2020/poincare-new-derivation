@@ -1,0 +1,416 @@
+{
+  "escalation": [
+    {
+      "fvector": [
+        10,
+        33,
+        46,
+        23
+      ],
+      "incidence_02": 5,
+      "incidence_13": 5,
+      "joins": 1,
+      "legal_32": 4,
+      "min_vertex_degree": 6
+    },
+    {
+      "fvector": [
+        14,
+        51,
+        74,
+        37
+      ],
+      "incidence_02": 7,
+      "incidence_13": 5,
+      "joins": 2,
+      "legal_32": 4,
+      "min_vertex_degree": 6
+    },
+    {
+      "fvector": [
+        18,
+        69,
+        102,
+        51
+      ],
+      "incidence_02": 7,
+      "incidence_13": 7,
+      "joins": 3,
+      "legal_32": 4,
+      "min_vertex_degree": 6
+    },
+    {
+      "fvector": [
+        22,
+        87,
+        130,
+        65
+      ],
+      "incidence_02": 9,
+      "incidence_13": 7,
+      "joins": 4,
+      "legal_32": 4,
+      "min_vertex_degree": 6
+    },
+    {
+      "fvector": [
+        26,
+        105,
+        158,
+        79
+      ],
+      "incidence_02": 9,
+      "incidence_13": 9,
+      "joins": 5,
+      "legal_32": 4,
+      "min_vertex_degree": 6
+    },
+    {
+      "fvector": [
+        30,
+        123,
+        186,
+        93
+      ],
+      "incidence_02": 11,
+      "incidence_13": 9,
+      "joins": 6,
+      "legal_32": 4,
+      "min_vertex_degree": 6
+    },
+    {
+      "fvector": [
+        34,
+        141,
+        214,
+        107
+      ],
+      "incidence_02": 11,
+      "incidence_13": 11,
+      "joins": 7,
+      "legal_32": 4,
+      "min_vertex_degree": 6
+    },
+    {
+      "fvector": [
+        38,
+        159,
+        242,
+        121
+      ],
+      "incidence_02": 13,
+      "incidence_13": 11,
+      "joins": 8,
+      "legal_32": 4,
+      "min_vertex_degree": 6
+    },
+    {
+      "fvector": [
+        42,
+        177,
+        270,
+        135
+      ],
+      "incidence_02": 13,
+      "incidence_13": 13,
+      "joins": 9,
+      "legal_32": 4,
+      "min_vertex_degree": 6
+    },
+    {
+      "fvector": [
+        46,
+        195,
+        298,
+        149
+      ],
+      "incidence_02": 15,
+      "incidence_13": 13,
+      "joins": 10,
+      "legal_32": 4,
+      "min_vertex_degree": 6
+    },
+    {
+      "fvector": [
+        50,
+        213,
+        326,
+        163
+      ],
+      "incidence_02": 15,
+      "incidence_13": 15,
+      "joins": 11,
+      "legal_32": 4,
+      "min_vertex_degree": 6
+    },
+    {
+      "fvector": [
+        54,
+        231,
+        354,
+        177
+      ],
+      "incidence_02": 17,
+      "incidence_13": 15,
+      "joins": 12,
+      "legal_32": 4,
+      "min_vertex_degree": 6
+    }
+  ],
+  "first_connected_sum": {
+    "different_transverse_pair": [
+      5,
+      4
+    ],
+    "edge_incidences": [
+      5,
+      5
+    ],
+    "fvector": [
+      10,
+      33,
+      46,
+      23
+    ],
+    "legal_23": 32,
+    "legal_32": 4,
+    "legal_32_reductions": [
+      {
+        "destroyed_witness": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "edge": [
+          0,
+          4
+        ],
+        "phi_after": 48,
+        "ring": [
+          1,
+          3,
+          5
+        ]
+      },
+      {
+        "destroyed_witness": [
+          0,
+          1,
+          2,
+          5
+        ],
+        "edge": [
+          1,
+          5
+        ],
+        "phi_after": 48,
+        "ring": [
+          0,
+          2,
+          4
+        ]
+      },
+      {
+        "destroyed_witness": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "edge": [
+          2,
+          4
+        ],
+        "phi_after": 48,
+        "ring": [
+          1,
+          3,
+          5
+        ]
+      },
+      {
+        "destroyed_witness": [
+          0,
+          2,
+          3,
+          5
+        ],
+        "edge": [
+          3,
+          5
+        ],
+        "phi_after": 48,
+        "ring": [
+          0,
+          2,
+          4
+        ]
+      }
+    ],
+    "mod2_homology": {
+      "betti": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "boundary_ranks": [
+        9,
+        24,
+        22
+      ]
+    },
+    "phi_support": 52,
+    "vertex_degrees": {
+      "0": 12,
+      "1": 12,
+      "2": 12,
+      "3": 12,
+      "4": 6,
+      "5": 6,
+      "6": 8,
+      "7": 8,
+      "8": 8,
+      "9": 8
+    }
+  },
+  "initial_crosspoly_sphere_tetrahedra": 16,
+  "initial_cyclic_sphere_tetrahedra": 9,
+  "method": "pure Python exact set arithmetic and GF(2) elimination",
+  "no_immediate_descent_sphere": {
+    "fvector": [
+      18,
+      69,
+      102,
+      51
+    ],
+    "homology": {
+      "betti": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "boundary_ranks": [
+        17,
+        52,
+        50
+      ]
+    },
+    "legal_23": 96,
+    "legal_23_phi_after_all": [
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136,
+      136
+    ],
+    "legal_32": 0,
+    "min_edge_incidence": 4,
+    "min_vertex_degree": 8,
+    "monotone_single_move_descent_possible": false,
+    "move14_count_checked": 51,
+    "move14_phi_after": 140,
+    "phi_support": 132,
+    "return_incidences": [
+      5,
+      5
+    ]
+  },
+  "python": "3.13.5",
+  "scope": "finite checks plus independent mathematical connected-sum induction; Lean NOT_RUN",
+  "source_commit": "82c5513626533dd1ab925e9529264e2166bd8247",
+  "status": "COMPUTATION_PASS"
+}
