@@ -1,0 +1,17 @@
+{
+  "research_gates": {
+    "completed": 13,
+    "total": 13
+  },
+  "head": "82c5513626533dd1ab925e9529264e2166bd8247",
+  "lean_verified": 62,
+  "warnings": 0,
+  "forbidden_axioms": 0,
+  "normalization": "VERIFIED_CONDITIONAL",
+  "computation": "PASS_BOUNDED",
+  "defect_cap": 368,
+  "minimum_general_moves": 12,
+  "minimum_restored_moves": 13,
+  "immediate_touch_pruning": "NOT_JUSTIFIED",
+  "global_poincare": "OPEN"
+}

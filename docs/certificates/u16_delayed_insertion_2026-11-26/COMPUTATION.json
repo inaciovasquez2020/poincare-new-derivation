@@ -1,0 +1,190 @@
+{
+  "searches": [
+    {
+      "status": "EXHAUSTED_DEPTH_BOUND",
+      "cap": 368,
+      "depth": 11,
+      "restored_vertices": false,
+      "states": 16187,
+      "expanded": 16187,
+      "layers": [
+        [
+          1,
+          7,
+          7
+        ],
+        [
+          2,
+          771,
+          778
+        ],
+        [
+          3,
+          208,
+          986
+        ],
+        [
+          4,
+          10723,
+          11709
+        ],
+        [
+          5,
+          931,
+          12640
+        ],
+        [
+          6,
+          553,
+          13193
+        ],
+        [
+          7,
+          1296,
+          14489
+        ],
+        [
+          8,
+          967,
+          15456
+        ],
+        [
+          9,
+          599,
+          16055
+        ],
+        [
+          10,
+          132,
+          16187
+        ],
+        [
+          11,
+          0,
+          16187
+        ]
+      ],
+      "elapsed_seconds": 20.984072,
+      "immediate_touch_pruning": false,
+      "consecutive_insertions_allowed": true,
+      "facet_sha256": "4e4e4e280195ff124ceb19c5ca0934a3f5829b94ed9a45ca25537d89bf907ccb"
+    },
+    {
+      "status": "EXHAUSTED_DEPTH_BOUND",
+      "cap": 368,
+      "depth": 12,
+      "restored_vertices": true,
+      "states": 23235,
+      "expanded": 23235,
+      "layers": [
+        [
+          1,
+          7,
+          7
+        ],
+        [
+          2,
+          771,
+          778
+        ],
+        [
+          3,
+          208,
+          986
+        ],
+        [
+          4,
+          10723,
+          11709
+        ],
+        [
+          5,
+          931,
+          12640
+        ],
+        [
+          6,
+          553,
+          13193
+        ],
+        [
+          7,
+          1296,
+          14489
+        ],
+        [
+          8,
+          967,
+          15456
+        ],
+        [
+          9,
+          4480,
+          19936
+        ],
+        [
+          10,
+          3208,
+          23144
+        ],
+        [
+          11,
+          67,
+          23211
+        ],
+        [
+          12,
+          24,
+          23235
+        ]
+      ],
+      "elapsed_seconds": 39.126050583,
+      "immediate_touch_pruning": false,
+      "consecutive_insertions_allowed": true,
+      "facet_sha256": "4e4e4e280195ff124ceb19c5ca0934a3f5829b94ed9a45ca25537d89bf907ccb"
+    }
+  ],
+  "witnesses": [
+    {
+      "moves": 12,
+      "defects": [
+        352,
+        360,
+        364,
+        368,
+        364,
+        368,
+        364,
+        360,
+        356,
+        352,
+        356,
+        352,
+        348
+      ],
+      "vertices": 17,
+      "tetrahedra": 104
+    },
+    {
+      "moves": 13,
+      "defects": [
+        352,
+        360,
+        364,
+        368,
+        364,
+        368,
+        364,
+        360,
+        364,
+        360,
+        364,
+        360,
+        356,
+        348
+      ],
+      "vertices": 16,
+      "tetrahedra": 103
+    }
+  ]
+}

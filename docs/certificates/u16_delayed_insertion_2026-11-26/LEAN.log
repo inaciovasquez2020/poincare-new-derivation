@@ -1,0 +1,84 @@
+'Poincare.DelayedInsertionAudit.delayedInsertionCore' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.stellar_cover' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.stellar_commutation_small_simplices' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.DelayedInsertionAudit.noFiveBoundary_of_connected' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.stellar_commutation_41' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.stellar_center_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.independent_insertions_commute' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.DelayedInsertionAudit.sameTetVertices_iff_finset' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.facetFamily_nil' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.facetFamily_cons' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.facetFamily_erase' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.move23_family_replace' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.move32_family_replace' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.move41_family_replace' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.family_witness' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.family_exists_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.family_forall_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.same_match_congr' does not depend on any axioms
+'Poincare.DelayedInsertionAudit.facetMap_nodup' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.family_length_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.family_filter_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.family_filter_length_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.sameTetVerticesBool_congr' depends on axioms: [propext, Quot.sound]
+'Poincare.DelayedInsertionAudit.move23_legal_family_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.move32_legal_family_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.move41_legal_family_transfer' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.move41_legal_family_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.move41_source_family_stellar' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.replace_singleton_inverse' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.move41_source_family_subset' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.move41_inverse_stellar_family' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.Move41Site.replace_headStellar_exact' depends on axioms: [propext, Quot.sound]
+'Poincare.Move41Site.headStellar_closedCore' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.Move41Site.headStellar_legal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.split_list_at_member' depends on axioms: [propext]
+'Poincare.DelayedInsertionAudit.family_eq_of_perm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.core_of_list_perm' depends on axioms: [propext, Quot.sound]
+'Poincare.DelayedInsertionAudit.arbitrary_stellar_insertion_exists' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.DelayedInsertionAudit.starLegal_of_exact_sources' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.starLegal_source_realized' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.starLegal_filtered_family' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.starLegal_count_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.small_forward_legal_diamond' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.move23_exact_star' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.move23_legal_of_exact_star' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.move23_delayed_insertion_diamond' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.DelayedInsertionAudit.move32_exact_star' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.move32_legal_of_exact_star' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.move32_delayed_insertion_diamond' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.DelayedInsertionAudit.move41_target_card' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.move41_exact_star' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.move41_legal_of_exact_star' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Poincare.DelayedInsertionAudit.move41_delayed_insertion_diamond' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.DelayedInsertionAudit.independent_insertions_legal_diamond' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.DelayedInsertionAudit.swap_nonInsertionCount' depends on axioms: [propext]
+'Poincare.DelayedInsertionAudit.delayed_swap_reduces_inversions' depends on axioms: [propext]
+'Poincare.DelayedInsertionAudit.delayed_insertion_normal_form' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.DelayedInsertionAudit.delayed_swap_preserves_upper_bound' depends on axioms: [propext, Quot.sound]
+'Poincare.DelayedInsertionAudit.delayed_swap_preserves_defect_cap' depends on axioms: [propext, Quot.sound]
+'Poincare.DelayedInsertionAudit.delayed_swap_preserves_vertex_cap' depends on axioms: [propext, Quot.sound]
+'Poincare.DelayedInsertionAudit.simultaneous_activation_fixture' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Poincare.DelayedInsertionAudit.simultaneous_activation_nested_rewrite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
