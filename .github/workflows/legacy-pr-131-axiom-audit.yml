@@ -1,0 +1,49 @@
+name: Scoped Lean axiom audit PR 131
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/legacy-pr-131-axiom-audit.yml'
+      - 'lean/Poincare/GlobalDescentEquivalence.lean'
+      - 'lean/Poincare/PoincareConjectureTarget.lean'
+  push:
+    paths:
+      - '.github/workflows/legacy-pr-131-axiom-audit.yml'
+      - 'lean/Poincare/GlobalDescentEquivalence.lean'
+      - 'lean/Poincare/PoincareConjectureTarget.lean'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: leanprover/lean-action@v1
+        with:
+          use-github-cache: false
+      - name: Build exact modules and reject unapproved axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.GlobalDescentEquivalence Poincare.PoincareConjectureTarget
+          tmp="$(mktemp -d)"
+          printf '%s\n' 'import Poincare.GlobalDescentEquivalence' 'import Poincare.PoincareConjectureTarget' '#print axioms Poincare.simplyConnected_global_PhiSupport_descent_iff_every_core_has_normalized_homeomorphic_triangulation' '#print axioms Poincare.poincareConjectureTarget_of_global_PhiSupport_descent' > "$tmp/Audit.lean"
+          lake env lean "$tmp/Audit.lean" | tee "$tmp/axioms.log"
+          python3 - "$tmp/axioms.log" <<'PY'
+          import re, sys
+          from pathlib import Path
+          report = Path(sys.argv[1]).read_text()
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          for name in ["Poincare.simplyConnected_global_PhiSupport_descent_iff_every_core_has_normalized_homeomorphic_triangulation","Poincare.poincareConjectureTarget_of_global_PhiSupport_descent"]:
+              prefix = "'" + name + "'"
+              if prefix + " does not depend on any axioms" in report:
+                  found = set()
+              else:
+                  m = re.search(re.escape(prefix) + r" depends on axioms:\s*\[([^\]]*)\]", report)
+                  assert m is not None, "missing axiom report: " + name
+                  found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+              assert found <= allowed, (name, found - allowed)
+              print(name, "AXIOMS_PASS", sorted(found))
+          PY
