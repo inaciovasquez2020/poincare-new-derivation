@@ -166,4 +166,106 @@ theorem CertifiedPachnerStep.move14_of_legal41_with_fresh_center
     hlegal.closedCore.move41Site_replace_closedCore s hlegal,
     Move41Site.center_not_mem_vertexSupport_replace hlegal, rfl⟩
 
+/-- Concatenate two independently certified finite Pachner histories.
+Every move in the composite was already certified in one of the inputs;
+no monotonicity or global descent hypothesis is required. -/
+theorem CertifiedPachnerPath.trans
+    {K L M : Triangulation}
+    (hKL : CertifiedPachnerPath K L)
+    (hLM : CertifiedPachnerPath L M) :
+    CertifiedPachnerPath K M := by
+  induction hLM with
+  | refl => exact hKL
+  | snoc hpath hstep ih =>
+      exact CertifiedPachnerPath.snoc ih hstep
+
+
+/-- Every certified elementary Pachner move has a closed-triangulation
+target. The inverse 1→4 constructor uses its certified 4→1 predecessor. -/
+theorem CertifiedPachnerStep.target_closedCore
+    {K L : Triangulation} (h : CertifiedPachnerStep K L) :
+    ClosedTriangulationCore L := by
+  cases h with
+  | move23 hcore s hlegal =>
+      exact hcore.move23Site_replace_closedCore s hlegal
+  | move32 hcore s hlegal =>
+      exact hcore.move32Site_replace_closedCore s hlegal
+  | move41 hcore s hlegal =>
+      exact hcore.move41Site_replace_closedCore s hlegal
+  | move14 hcore s hlegal =>
+      exact hcore
+
+/-- A certified finite path cannot leave the closed-core class when its
+source is a closed core. This is an endpoint invariant, not descent. -/
+theorem CertifiedPachnerPath.target_closedCore
+    {K L : Triangulation} (h : CertifiedPachnerPath K L)
+    (hcore : ClosedTriangulationCore K) :
+    ClosedTriangulationCore L := by
+  induction h with
+  | refl => exact hcore
+  | snoc hpath hstep ih =>
+      exact hstep.target_closedCore
+
+
+
+/-- Both endpoints of a non-reflexive certified step are closed cores.
+For inverse 1→4, the source is the legal 4→1 target. -/
+theorem CertifiedPachnerStep.source_closedCore
+    {K L : Triangulation} (h : CertifiedPachnerStep K L) :
+    ClosedTriangulationCore K := by
+  cases h with
+  | move23 hcore s hlegal => exact hcore
+  | move32 hcore s hlegal => exact hcore
+  | move41 hcore s hlegal => exact hcore
+  | move14 hcore s hlegal =>
+      exact hcore.move41Site_replace_closedCore s hlegal
+
+/-- A certified path is either reflexive or both endpoints are closed cores.
+No initial closed-core premise is required, and this asserts no descent. -/
+theorem CertifiedPachnerPath.eq_or_closedCore_endpoints
+    {K L : Triangulation} (h : CertifiedPachnerPath K L) :
+    K = L ∨ (ClosedTriangulationCore K ∧ ClosedTriangulationCore L) := by
+  induction h with
+  | refl => exact Or.inl rfl
+  | snoc hpath hstep ih =>
+      right
+      rcases ih with hEq | ⟨hcoreK, _⟩
+      · subst K
+        exact ⟨hstep.source_closedCore, hstep.target_closedCore⟩
+      · exact ⟨hcoreK, hstep.target_closedCore⟩
+
+/-- Renaming every tetrahedral vertex by a bijection preserves and reflects
+the exact unordered vertex-set equivalence used in certified move sites.
+This does not yet transport the legality or replacement of a Pachner site. -/
+theorem sameTetVertices_relabel_iff
+    (f : Nat ≃ Nat) (τ σ : Tet) :
+    SameTetVertices
+      ⟨f τ.v0, f τ.v1, f τ.v2, f τ.v3⟩
+      ⟨f σ.v0, f σ.v1, f σ.v2, f σ.v3⟩
+      ↔ SameTetVertices τ σ := by
+  let r : Tet → Tet := fun t =>
+    ⟨f t.v0, f t.v1, f t.v2, f t.v3⟩
+  have verts_relabel (t : Tet) :
+      (r t).verts = t.verts.map f := by
+    rfl
+  have mem_relabel (t : Tet) (v : Nat) :
+      v ∈ (r t).verts ↔ f.symm v ∈ t.verts := by
+    rw [verts_relabel t, List.mem_map]
+    constructor
+    · rintro ⟨u, hu, huv⟩
+      have h : u = f.symm v := by
+        apply f.injective
+        simpa using huv
+      exact h ▸ hu
+    · intro hv
+      exact ⟨f.symm v, hv, f.apply_symm_apply v⟩
+  change SameTetVertices (r τ) (r σ) ↔ SameTetVertices τ σ
+  constructor
+  · intro h v
+    have hv := h (f v)
+    simpa only [mem_relabel, f.symm_apply_apply] using hv
+  · intro h v
+    have hv := h (f.symm v)
+    simpa only [mem_relabel] using hv
+
 end Poincare

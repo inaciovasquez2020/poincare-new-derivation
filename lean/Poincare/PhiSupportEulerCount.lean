@@ -101,4 +101,39 @@ theorem ClosedTriangulationCore.PhiSupport_eq_four_mul_tets_sub_vertices
       _ = 4 * K.tets.length := sum_vertexDegrees_eq_four_mul_tets K
   omega
 
+
+/-- The untruncated degree-counting identity for a closed triangulation core.
+This avoids losing information to natural-number subtraction when comparing
+the PhiSupport cost of Pachner moves. -/
+theorem ClosedTriangulationCore.PhiSupport_add_four_mul_vertices_eq_four_mul_tets
+    {K : Triangulation} (hcore : ClosedTriangulationCore K) :
+    PhiSupport K + 4 * (vertexSupport K).length = 4 * K.tets.length := by
+  let s : Finset Nat := (vertexSupport K).toFinset
+  have hnodup : (vertexSupport K).Nodup := by
+    unfold vertexSupport
+    exact eraseDups_nodup_nat (allVerts K)
+  have hcard : s.card = (vertexSupport K).length := by
+    simpa [s] using List.toFinset_card_of_nodup hnodup
+  have hdefect :
+      ∀ v ∈ s, vertexDefect K v + 4 = vertexDegree K v := by
+    intro v hv
+    have hge : 4 ≤ vertexDegree K v :=
+      hcore.vertexDegree_ge_four_of_mem_vertexSupport
+        (List.mem_toFinset.mp hv)
+    have hnonneg :
+        (0 : Int) ≤ (vertexDegree K v : Int) - 4 := by
+      omega
+    have habs := Int.natAbs_of_nonneg hnonneg
+    unfold vertexDefect targetDegree
+    omega
+  calc
+    PhiSupport K + 4 * (vertexSupport K).length =
+        (∑ v ∈ s, vertexDefect K v) + 4 * s.card := by
+          rw [phiSupport_eq_finset_sum K, hcard]
+    _ = (∑ v ∈ s, (vertexDefect K v + 4)) := by
+          simp [Finset.sum_add_distrib, mul_comm]
+    _ = (∑ v ∈ s, vertexDegree K v) :=
+          Finset.sum_congr rfl hdefect
+    _ = 4 * K.tets.length := sum_vertexDegrees_eq_four_mul_tets K
+
 end Poincare

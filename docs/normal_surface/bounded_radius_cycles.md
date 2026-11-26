@@ -1,3 +1,5 @@
+> **Correction (2026-11-25): REFUTED for arbitrary bounded-degree graphs.** Cycles C_n refute the fundamental-cycle diameter bound; connected degree-four graphs also fail by the projection argument in [local homological witness transfer](LOCAL_HOMOLOGICAL_WITNESS_TRANSFER_2026_11_25.md). The manifold-specific bridge remains OPEN.
+
 # Bounded-Radius Fundamental Cycles in Bounded-Degree Dual Graphs
 
 ## Statement (Minimal Missing Lemma)

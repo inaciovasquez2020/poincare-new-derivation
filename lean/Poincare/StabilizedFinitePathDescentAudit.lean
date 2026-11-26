@@ -1,9 +1,14 @@
 import Poincare.StabilizedFinitePathDescent
 
 #print axioms Poincare.CertifiedPachnerStep.homeomorphic
+#print axioms Poincare.CertifiedPachnerPath.trans
 #print axioms Poincare.CertifiedPachnerPath.homeomorphic
 #print axioms Poincare.stabilizedPathDescent_implies_globalDescent
 #print axioms Poincare.crossPolytopeBoundary4_stabilized_path_escape
 #print axioms Poincare.crossPolytopeBoundary4_stabilized_path_strict_descent
 #print axioms Poincare.certifiedPachnerStep_iff_exactLabeledMove
 #print axioms Poincare.CertifiedPachnerStep.move14_of_legal41_with_fresh_center
+#print axioms Poincare.CertifiedPachnerStep.target_closedCore
+#print axioms Poincare.CertifiedPachnerPath.target_closedCore
+#print axioms Poincare.CertifiedPachnerStep.source_closedCore
+#print axioms Poincare.CertifiedPachnerPath.eq_or_closedCore_endpoints
