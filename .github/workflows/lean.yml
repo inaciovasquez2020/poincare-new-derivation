@@ -14,15 +14,497 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Verify fixed cross-polytope fan-chord graph
+        run: python3 scripts/test_crosspoly_fanchord_finite.py
+
       - name: Lean build
         uses: leanprover/lean-action@v1
         with:
           use-github-cache: false
 
+      - name: Verify corrected Perelman interface and its axiom dependencies
+        shell: bash
+        run: |
+          lake build Poincare.PerelmanPL
+          lake env lean lean/Poincare/PerelmanPLAudit.lean > /tmp/perelman-pl-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          report = Path("/tmp/perelman-pl-axioms.txt").read_text()
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          theorems = [
+              "Poincare.universal_S3_false",
+              "Poincare.conditional_PL_poincare_recognition",
+              "Poincare.globalPhiSupportDescent_implies_Perelman_PL",
+          ]
+          for name in theorems:
+              lines = [line for line in report.splitlines() if line.startswith(f"'{name}' ")]
+              assert len(lines) == 1, f"missing or duplicate axiom report for {name}: {report}"
+              if "does not depend on any axioms" in lines[0]:
+                  found = set()
+              else:
+                  match = re.search(r"depends on axioms:\s*\[([^\]]*)\]", lines[0])
+                  assert match is not None, f"unrecognized Lean axiom report: {lines[0]}"
+                  found = {s.strip() for s in match.group(1).split(",") if s.strip()}
+              assert found <= allowed, f"unapproved axioms in {name}: {found - allowed}"
+              print(f"{name}: allowed axioms only: {sorted(found)}")
+          PY
+          python3 tools/verify_perelman_pl_conditional_closure.py
+
+      - name: Build cross-polytope one-step obstruction
+        run: |
+          lake build Poincare.CrossPolytopeOneStepObstruction
+          lake env lean lean/Poincare/CrossPolytopeOneStepAxiomAudit.lean > /tmp/crosspoly-one-step-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report = Path("/tmp/crosspoly-one-step-axioms.txt").read_text()
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          for name in [
+              "Poincare.ClosedTriangulationCore.move23_PhiSupport_eq_add_four",
+              "Poincare.crossPolytopeBoundary4_no_strict_move23",
+              "Poincare.crossPolytopeBoundary4_no_legal_move41",
+              "Poincare.crossPolytopeBoundary4_no_strict_represented_move23_move32_move41",
+          ]:
+              prefix = f"'{name}'"
+              if f"{prefix} does not depend on any axioms" in report:
+                  found = set()
+              else:
+                  match = re.search(
+                      re.escape(prefix) + r" depends on axioms:\s*\[([^\]]*)\]",
+                      report,
+                  )
+                  assert match is not None, f"Unrecognized or missing Lean axiom report: {name}: {report}"
+                  found = {item.strip() for item in match.group(1).split(",") if item.strip()}
+              assert found <= allowed, f"Unapproved axioms for {name}: {found - allowed}"
+          PY
+
+      - name: Verify ascent barrier macro invariant and axiom dependencies
+        shell: bash
+        run: |
+          lake build Poincare.AscentBarrierInvariant
+          lake env lean lean/Poincare/AscentBarrierInvariantAudit.lean > /tmp/ascent-barrier-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          report = Path("/tmp/ascent-barrier-axioms.txt").read_text()
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          for name in [
+              "Poincare.CertifiedAscentBarrierStep.PhiSupport_add_four_eq",
+              "Poincare.CertifiedAscentBarrierStep.PhiSupport_lt",
+              "Poincare.certifiedAscentBarrierStep_wellFounded",
+              "Poincare.CertifiedAscentBarrierStep.homeomorphic",
+              "Poincare.barrierCoverage_implies_globalDescent",
+          ]:
+              prefix = f"'{name}'"
+              if f"{prefix} does not depend on any axioms" in report:
+                  found = set()
+              else:
+                  match = re.search(
+                      re.escape(prefix) + r" depends on axioms:\s*\[([^\]]*)\]",
+                      report,
+                  )
+                  assert match is not None, f"missing or unexpected Lean axiom report: {name}: {report}"
+                  found = {item.strip() for item in match.group(1).split(",") if item.strip()}
+              assert found <= allowed, f"unapproved axioms for {name}: {found - allowed}"
+          PY
+
+      - name: Verify stabilized finite Pachner path and axiom dependencies
+        shell: bash
+        run: |
+          lake build Poincare.StabilizedFinitePathDescent
+          lake env lean lean/Poincare/StabilizedFinitePathDescentAudit.lean > /tmp/stabilized-path-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report = Path("/tmp/stabilized-path-axioms.txt").read_text()
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          for name in [
+              "Poincare.CertifiedPachnerStep.homeomorphic",
+              "Poincare.CertifiedPachnerPath.trans",
+              "Poincare.CertifiedPachnerPath.homeomorphic",
+              "Poincare.stabilizedPathDescent_implies_globalDescent",
+              "Poincare.crossPolytopeBoundary4_stabilized_path_escape",
+              "Poincare.crossPolytopeBoundary4_stabilized_path_strict_descent",
+              "Poincare.certifiedPachnerStep_iff_exactLabeledMove",
+              "Poincare.CertifiedPachnerStep.move14_of_legal41_with_fresh_center",
+              "Poincare.CertifiedPachnerStep.target_closedCore",
+              "Poincare.CertifiedPachnerPath.target_closedCore",
+              "Poincare.CertifiedPachnerStep.source_closedCore",
+              "Poincare.CertifiedPachnerPath.eq_or_closedCore_endpoints",
+          ]:
+              prefix = f"'{name}'"
+              if f"{prefix} does not depend on any axioms" in report:
+                  found = set()
+              else:
+                  match = re.search(
+                      re.escape(prefix) + r" depends on axioms:\s*\[([^\]]*)\]",
+                      report,
+                  )
+                  assert match is not None, f"unrecognized or missing axiom report: {name}: {report}"
+                  found = {item.strip() for item in match.group(1).split(",") if item.strip()}
+              assert found <= allowed, f"unapproved axioms for {name}: {found - allowed}"
+          PY
+
+      - name: Verify integrated two-move stellar-slide certificate and axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.StellarSlideIntegrated
+          printf '%s\n' 'import Poincare.StellarSlideIntegrated' '#print axioms Poincare.Move41Site.stellarSlide_twoMove_certified' > /tmp/stellar-slide-integrated-axioms.lean
+          lake env lean /tmp/stellar-slide-integrated-axioms.lean > /tmp/stellar-slide-integrated-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          name = "Poincare.Move41Site.stellarSlide_twoMove_certified"
+          rows = Path("/tmp/stellar-slide-integrated-axioms.txt").read_text().splitlines()
+          reports = [row for row in rows if row.startswith(f"'{name}' ")]
+          assert len(reports) == 1, f"missing or duplicate report: {reports}"
+          row = reports[0]
+          if row == f"'{name}' does not depend on any axioms":
+              found = set()
+          else:
+              m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", row)
+              assert m, f"unexpected output: {row}"
+              found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+          assert found <= {"propext", "Classical.choice", "Quot.sound"}, found
+          print(f"{name}: AXIOMS_PASS {sorted(found)}")
+          PY
+
+      - name: Verify exact stellar-slide endpoint and axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.StellarSlideEndpoint
+          printf '%s\n' 'import Poincare.StellarSlideEndpoint' '#print axioms Poincare.Move41Site.slideSecond32_replace_canonical' > /tmp/stellar-slide-endpoint-axioms.lean
+          lake env lean /tmp/stellar-slide-endpoint-axioms.lean > /tmp/stellar-slide-endpoint-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          name = "Poincare.Move41Site.slideSecond32_replace_canonical"
+          rows = Path("/tmp/stellar-slide-endpoint-axioms.txt").read_text().splitlines()
+          reports = [row for row in rows if row.startswith(f"'{name}' ")]
+          assert len(reports) == 1, f"missing or duplicate report: {reports}"
+          row = reports[0]
+          if row == f"'{name}' does not depend on any axioms":
+              found = set()
+          else:
+              m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", row)
+              assert m, f"unexpected output: {row}"
+              found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+          assert found <= {"propext", "Classical.choice", "Quot.sound"}, found
+          print(f"{name}: AXIOMS_PASS {sorted(found)}")
+          PY
+
+      - name: Verify second-slide complete legality and axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.StellarSlideSecondLegal
+          printf '%s\n' 'import Poincare.StellarSlideSecondLegal' '#print axioms Poincare.Move41Site.slideSecond32_legal' > /tmp/stellar-second-legal-axioms.lean
+          lake env lean /tmp/stellar-second-legal-axioms.lean > /tmp/stellar-second-legal-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          name = "Poincare.Move41Site.slideSecond32_legal"
+          rows = Path("/tmp/stellar-second-legal-axioms.txt").read_text().splitlines()
+          reports = [row for row in rows if row.startswith(f"'{name}' ")]
+          assert len(reports) == 1, f"missing or duplicate report: {reports}"
+          row = reports[0]
+          if row == f"'{name}' does not depend on any axioms":
+              found = set()
+          else:
+              m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", row)
+              assert m, f"unexpected output: {row}"
+              found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+          assert found <= {"propext", "Classical.choice", "Quot.sound"}, found
+          print(f"{name}: AXIOMS_PASS {sorted(found)}")
+          PY
+
+      - name: Verify second-slide exact shared-edge incidence and axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.StellarSlideSecondEdge
+          printf '%s\n' 'import Poincare.StellarSlideSecondEdge' '#print axioms Poincare.Move41Site.slideSecond32_sharedEdgeExactlyThree' > /tmp/stellar-second-edge-axioms.lean
+          lake env lean /tmp/stellar-second-edge-axioms.lean > /tmp/stellar-second-edge-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          name = "Poincare.Move41Site.slideSecond32_sharedEdgeExactlyThree"
+          rows = Path("/tmp/stellar-second-edge-axioms.txt").read_text().splitlines()
+          reports = [row for row in rows if row.startswith(f"'{name}' ")]
+          assert len(reports) == 1, f"missing or duplicate report: {reports}"
+          row = reports[0]
+          if row == f"'{name}' does not depend on any axioms":
+              found = set()
+          else:
+              m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", row)
+              assert m, f"unexpected output: {row}"
+              found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+          assert found <= {"propext", "Classical.choice", "Quot.sound"}, found
+          print(f"{name}: AXIOMS_PASS {sorted(found)}")
+          PY
+
+      - name: Verify actual second-slide source-face absence and axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.StellarSlideSecondSourceFace
+          printf '%s\n' 'import Poincare.StellarSlideSecondSourceFace' '#print axioms Poincare.Move41Site.slideSecond32_sourceFaceAbsent' > /tmp/stellar-second-source-axioms.lean
+          lake env lean /tmp/stellar-second-source-axioms.lean > /tmp/stellar-second-source-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          name = "Poincare.Move41Site.slideSecond32_sourceFaceAbsent"
+          rows = Path("/tmp/stellar-second-source-axioms.txt").read_text().splitlines()
+          reports = [row for row in rows if row.startswith(f"'{name}' ")]
+          assert len(reports) == 1, f"missing or duplicate report: {reports}"
+          row = reports[0]
+          if row == f"'{name}' does not depend on any axioms":
+              found = set()
+          else:
+              m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", row)
+              assert m, f"invalid report: {row}"
+              found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+          assert found <= {"Classical.choice", "Quot.sound", "propext"}, found
+          print(f"{name}: AXIOMS_PASS {sorted(found)}")
+          PY
+
+      - name: Verify closed-core stellar-slide second-face exclusion
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.StellarSlideSecondFace
+          printf '%s\n' 'import Poincare.StellarSlideSecondFace' '#print axioms Poincare.Move41Site.slide_second_rest_face_absent' > /tmp/stellar-second-face-axioms.lean
+          lake env lean /tmp/stellar-second-face-axioms.lean > /tmp/stellar-second-face-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          name = "Poincare.Move41Site.slide_second_rest_face_absent"
+          rows = Path("/tmp/stellar-second-face-axioms.txt").read_text().splitlines()
+          lines = [row for row in rows if row.startswith(f"'{name}' ")]
+          assert len(lines) == 1, f"missing/duplicate axiom output: {lines}"
+          line = lines[0]
+          if line == f"'{name}' does not depend on any axioms":
+              found = set()
+          else:
+              match = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", line)
+              assert match, f"unexpected output: {line}"
+              found = {v.strip() for v in match.group(1).split(",") if v.strip()}
+          assert found <= {"propext", "Classical.choice", "Quot.sound"}, found
+          print(f"{name}: AXIOMS_PASS {sorted(found)}")
+          PY
+
+      - name: Verify canonical first stellar-slide replacement
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.StellarSlideFirstReplacement
+          printf '%s\n' 'import Poincare.StellarSlideFirstReplacement' '#print axioms Poincare.Move41Site.slideFirst23_replace_canonical' > /tmp/stellar-replacement-axioms.lean
+          lake env lean /tmp/stellar-replacement-axioms.lean > /tmp/stellar-replacement-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          name = "Poincare.Move41Site.slideFirst23_replace_canonical"
+          report = Path("/tmp/stellar-replacement-axioms.txt").read_text().splitlines()
+          lines = [s for s in report if s.startswith(f"'{name}' ")]
+          assert len(lines) == 1, f"missing/duplicate declaration report: {lines}"
+          line = lines[0]
+          if line == f"'{name}' does not depend on any axioms":
+              found = set()
+          else:
+              m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", line)
+              assert m is not None, f"unknown report: {line}"
+              found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+          assert found <= {"propext", "Classical.choice", "Quot.sound"}, f"unapproved axioms: {found}"
+          print(f"{name}: AXIOMS_PASS {sorted(found)}")
+          PY
+
+      - name: Verify first stellar-slide move legality and axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.StellarSlideFirstLegal
+          printf '%s\n' 'import Poincare.StellarSlideFirstLegal' '#print axioms Poincare.Move41Site.slideFirst23_newEdgeAbsent' '#print axioms Poincare.Move41Site.slideFirst23_legal' > /tmp/stellar-first-axioms.lean
+          lake env lean /tmp/stellar-first-axioms.lean > /tmp/stellar-first-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          names = ["Poincare.Move41Site.slideFirst23_newEdgeAbsent",
+                   "Poincare.Move41Site.slideFirst23_legal"]
+          report = Path("/tmp/stellar-first-axioms.txt").read_text().splitlines()
+          for name in names:
+              lines = [s for s in report if s.startswith(f"'{name}' ")]
+              assert len(lines) == 1, f"missing/duplicate report for {name}: {lines}"
+              line = lines[0]
+              if line == f"'{name}' does not depend on any axioms":
+                  found = set()
+              else:
+                  m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", line)
+                  assert m is not None, f"unknown report: {line}"
+                  found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+              assert found <= {"propext", "Classical.choice", "Quot.sound"}, f"unapproved axioms for {name}: {found}"
+              print(f"{name}: AXIOMS_PASS {sorted(found)}")
+          PY
+
+      - name: Verify permutation-aware two-step path and axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.StellarSlideCertifiedPath
+          printf '%s\n' 'import Poincare.StellarSlideCertifiedPath' '#print axioms Poincare.PermutationCertifiedPachnerPath.homeomorphic' '#print axioms Poincare.permutationCertifiedTwoMovePath_of_legal23_legal32' > /tmp/stellar-slide-path-axioms.lean
+          lake env lean /tmp/stellar-slide-path-axioms.lean > /tmp/stellar-slide-path-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          names = ["Poincare.PermutationCertifiedPachnerPath.homeomorphic",
+                   "Poincare.permutationCertifiedTwoMovePath_of_legal23_legal32"]
+          report = Path("/tmp/stellar-slide-path-axioms.txt").read_text().splitlines()
+          for name in names:
+              lines = [s for s in report if s.startswith(f"'{name}' ")]
+              assert len(lines) == 1, f"missing/duplicate report for {name}: {lines}"
+              line = lines[0]
+              if line == f"'{name}' does not depend on any axioms":
+                  found = set()
+              else:
+                  m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", line)
+                  assert m is not None, f"unknown report: {line}"
+                  found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+              assert found <= {"propext", "Classical.choice", "Quot.sound"}, f"unapproved axioms for {name}: {found}"
+              print(f"{name}: AXIOMS_PASS {sorted(found)}")
+          PY
+
+      - name: Verify stellar source distinctness exact axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.HeadStellarNormalForm
+          printf '%s\n' 'import Poincare.HeadStellarNormalForm' '#print axioms Poincare.Move41Site.sourceDistinct' > /tmp/poincare-stellar-source-axioms.lean
+          lake env lean /tmp/poincare-stellar-source-axioms.lean > /tmp/poincare-stellar-source-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          name = "Poincare.Move41Site.sourceDistinct"
+          lines = [s for s in Path("/tmp/poincare-stellar-source-axioms.txt").read_text().splitlines() if s.startswith(f"'{name}' ")]
+          assert len(lines) == 1, f"missing/duplicate axiom report: {lines}"
+          line = lines[0]
+          if line == f"'{name}' does not depend on any axioms":
+              found = set()
+          else:
+              m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", line)
+              assert m is not None, f"unrecognized axiom report: {line}"
+              found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+          assert found <= {"propext", "Classical.choice", "Quot.sound"}, f"unapproved axioms: {found}"
+          print(f"{name}: AXIOMS_PASS: {sorted(found)}")
+          PY
+
+      - name: Verify vertex relabeling exact theorem axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.StabilizedFinitePathDescent
+          printf '%s\n' 'import Poincare.StabilizedFinitePathDescent' '#print axioms Poincare.sameTetVertices_relabel_iff' > /tmp/poincare-relabel-axioms.lean
+          lake env lean /tmp/poincare-relabel-axioms.lean > /tmp/poincare-relabel-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          name = "Poincare.sameTetVertices_relabel_iff"
+          lines = [s for s in Path("/tmp/poincare-relabel-axioms.txt").read_text().splitlines() if s.startswith(f"'{name}' ")]
+          assert len(lines) == 1, f"missing/duplicate declaration report: {lines}"
+          line = lines[0]
+          if line == f"'{name}' does not depend on any axioms":
+              found = set()
+          else:
+              m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", line)
+              assert m is not None, f"unrecognized axiom report: {line}"
+              found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+          assert found <= {"propext", "Classical.choice", "Quot.sound"}, f"unapproved axioms: {found}"
+          print(f"{name}: AXIOMS_PASS: {sorted(found)}")
+          PY
+
+      - name: Verify certified fan-reentry escape or second source-face obstruction
+        shell: bash
+        run: |
+          lake build Poincare.FanReentryCertifiedEscapeOrObstruction
+          lake env lean lean/Poincare/FanReentryCertifiedEscapeOrObstructionAudit.lean > /tmp/fan-reentry-escape-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report = Path("/tmp/fan-reentry-escape-axioms.txt").read_text()
+          name = "Poincare.Move23Site.exists_certifiedPath_descent_or_second_sourceFace_obstruction"
+          prefix = f"'{name}'"
+          if f"{prefix} does not depend on any axioms" in report:
+              found = set()
+          else:
+              match = re.search(re.escape(prefix) + r" depends on axioms:\s*\[([^\]]*)\]", report)
+              assert match is not None, f"missing axiom report: {report}"
+              found = {item.strip() for item in match.group(1).split(",") if item.strip()}
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          assert found <= allowed, f"unapproved axioms: {found - allowed}"
+          print(f"{name}: allowed only {sorted(found)}")
+          PY
+
+      - name: JIID audit isolated mixed-mode recurrence module
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.GlobalFanReentryModeFiniteRecurrence
+          printf '%s\n' 'import Poincare.GlobalFanReentryModeFiniteRecurrence' '#print axioms Poincare.exists_recurrent_fanReentryModeKey_classified' > /tmp/jiid-recurrence-axioms.lean
+          lake env lean /tmp/jiid-recurrence-axioms.lean > /tmp/jiid-recurrence-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          name = "Poincare.exists_recurrent_fanReentryModeKey_classified"
+          lines = [s for s in Path("/tmp/jiid-recurrence-axioms.txt").read_text().splitlines() if s.startswith(f"'{name}' ")]
+          assert len(lines) == 1, f"missing or duplicated report: {lines}"
+          line = lines[0]
+          if line == f"'{name}' does not depend on any axioms":
+              found = set()
+          else:
+              m = re.fullmatch(re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]", line)
+              assert m is not None, f"unrecognized report: {line}"
+              found = {a.strip() for a in m.group(1).split(",") if a.strip()}
+          assert found <= {"propext", "Classical.choice", "Quot.sound"}, f"unapproved: {found}"
+          print(f"{name}: permitted axioms PASS: {sorted(found)}")
+          PY
+
       - name: Build finite witnessed-state module
         run: lake build Poincare.GlobalMove32FiniteWitnessState
       - name: Build witness-anchored continuation module
         run: lake build Poincare.GlobalFanChordWitnessAnchoredContinuation
+
+      - name: Verify PhiSupport Euler count and axiom dependencies
+        shell: bash
+        run: |
+          lake build Poincare.PhiSupportEulerCount
+          printf '%s\n' \
+            'import Poincare.PhiSupportEulerCount' \
+            '#print axioms Poincare.ClosedTriangulationCore.PhiSupport_eq_four_mul_tets_sub_vertices' \
+            > /tmp/phi-support-euler-count-audit.lean
+          lake env lean /tmp/phi-support-euler-count-audit.lean > /tmp/phi-support-euler-count-axioms.txt
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          report = Path("/tmp/phi-support-euler-count-axioms.txt").read_text()
+          name = "Poincare.ClosedTriangulationCore.PhiSupport_eq_four_mul_tets_sub_vertices"
+          prefix = f"'{name}'"
+          if f"{prefix} does not depend on any axioms" in report:
+              found = set()
+          else:
+              match = re.search(
+                  re.escape(prefix) + r" depends on axioms:\s*\[([^\]]*)\]",
+                  report,
+              )
+              assert match is not None, f"missing or invalid axiom report: {report}"
+              found = {s.strip() for s in match.group(1).split(",") if s.strip()}
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          assert found <= allowed, f"unapproved axioms: {found - allowed}"
+          print(f"{name}: allowed axioms only: {sorted(found)}")
+          PY
 
       - name: Build principal theorem module
         run: lake build Poincare.GlobalMove32ReentryLeastBoundaryEscapeIncidenceThreeFork

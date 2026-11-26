@@ -1,0 +1,12 @@
+{
+  "vertices": 8,
+  "seed": "boundary of 4-simplex, then all labeled stellar subdivisions to vertex count",
+  "checked_states": 59394,
+  "discovered_states": 150002,
+  "directed_moves_checked": 753799,
+  "remaining_queue": 90608,
+  "status": "INCOMPLETE",
+  "max_states": 150000,
+  "seconds_limit": 18.0,
+  "witness": null
+}

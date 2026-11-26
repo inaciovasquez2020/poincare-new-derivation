@@ -1,0 +1,73 @@
+name: Positional stellar face-count Lean audit
+
+on:
+  pull_request:
+    paths:
+      - 'lean/**'
+      - 'lean-toolchain'
+      - 'lakefile.lean'
+      - 'lake-manifest.json'
+      - '.github/workflows/position-stellar-face-count.yml'
+  push:
+    paths:
+      - 'lean/**'
+      - 'lean-toolchain'
+      - 'lakefile.lean'
+      - 'lake-manifest.json'
+      - '.github/workflows/position-stellar-face-count.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: leanprover/lean-action@v1
+        with:
+          use-github-cache: true
+      - name: Compile positional face-count transport
+        run: lake build Poincare.PositionStellarClosedCoreTransport
+      - name: Verify exact axiom dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          audit="$(mktemp --suffix=.lean)"
+          report="$(mktemp)"
+          trap 'rm -f "$audit" "$report"' EXIT
+          printf '%s\n' \
+            'import Poincare.PositionStellarClosedCoreTransport' \
+            '#print axioms Poincare.Move41Site.insertFreshAt_filter_length' \
+            '#print axioms Poincare.Move41Site.selected_source_filter_length' \
+            '#print axioms Poincare.ClosedTriangulationCore.of_tets_perm' \
+            '#print axioms Poincare.Move41Site.insertFreshAt_closedCore' > "$audit"
+          lake env lean "$audit" > "$report"
+          python3 - "$report" <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+          report = Path(sys.argv[1]).read_text(encoding="utf-8")
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          names = [
+              "Poincare.Move41Site.insertFreshAt_filter_length",
+              "Poincare.Move41Site.selected_source_filter_length",
+              "Poincare.ClosedTriangulationCore.of_tets_perm",
+              "Poincare.Move41Site.insertFreshAt_closedCore",
+          ]
+          for name in names:
+              prefix = f"'{name}' "
+              lines = [line for line in report.splitlines() if line.startswith(prefix)]
+              assert len(lines) == 1, f"missing or ambiguous axiom output for {name}"
+              line = lines[0][len(prefix):]
+              if line == "does not depend on any axioms":
+                  found = set()
+              else:
+                  match = re.fullmatch(r"depends on axioms:\s*\[([^\]]*)\]", line)
+                  assert match is not None, f"unrecognized axiom output: {name}: {line}"
+                  found = {x.strip() for x in match.group(1).split(",") if x.strip()}
+              assert found <= allowed, f"forbidden axioms: {name}: {found - allowed}"
+              print(f"{name}: AXIOM_AUDIT_PASS {sorted(found)}")
+          PY

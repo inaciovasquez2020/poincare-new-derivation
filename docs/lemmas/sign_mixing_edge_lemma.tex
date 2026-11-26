@@ -1,6 +1,9 @@
+% Mathematical erratum: docs/MATHEMATICAL_ERRATUM_2026-11-25.md
 \documentclass{article}
 \usepackage{amsmath,amssymb}
 \begin{document}
+\par\noindent\textbf{Mathematical correction (25 November 2026).} The averaging proof is invalid. Curvature balance does not imply either weighted degree-three incidence sum vanishes. Edges with a zero-curvature endpoint also need not lie wholly in a single sign class. Even the stated balance and existence of a degree-three edge allow all vertex degrees to equal six at the level of abstract degree data; no strict sign change then exists. This is not asserted to be a realizable triangulation. The intended manifold lemma remains unproved, and \texttt{scripts/tests/sign\_mixing\_search.py} samples unconstrained degree labels and edges rather than triangulations or curvature-balanced data. It cannot certify this lemma. See the existing unsupported-route classification in the derivation document. Historical text follows; disputed steps are not certified.\par
+
 
 \section{Sign-Mixing Edge Lemma (Conditional)}
 
