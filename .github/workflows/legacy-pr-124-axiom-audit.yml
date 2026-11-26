@@ -1,0 +1,47 @@
+name: Scoped Lean axiom audit PR 124
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/legacy-pr-124-axiom-audit.yml'
+      - 'lean/Poincare/GlobalMove32ObstructionLinkConstraints.lean'
+  push:
+    paths:
+      - '.github/workflows/legacy-pr-124-axiom-audit.yml'
+      - 'lean/Poincare/GlobalMove32ObstructionLinkConstraints.lean'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: leanprover/lean-action@v1
+        with:
+          use-github-cache: false
+      - name: Build exact modules and reject unapproved axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.GlobalMove32ObstructionLinkConstraints
+          tmp="$(mktemp -d)"
+          printf '%s\n' 'import Poincare.GlobalMove32ObstructionLinkConstraints' '#print axioms Poincare.exists_link_triangle_with_other_vertices_of_tet_mem' '#print axioms Poincare.obstructing_face_two_link_contributions' > "$tmp/Audit.lean"
+          lake env lean "$tmp/Audit.lean" | tee "$tmp/axioms.log"
+          python3 - "$tmp/axioms.log" <<'PY'
+          import re, sys
+          from pathlib import Path
+          report = Path(sys.argv[1]).read_text()
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          for name in ["Poincare.exists_link_triangle_with_other_vertices_of_tet_mem","Poincare.obstructing_face_two_link_contributions"]:
+              prefix = "'" + name + "'"
+              if prefix + " does not depend on any axioms" in report:
+                  found = set()
+              else:
+                  m = re.search(re.escape(prefix) + r" depends on axioms:\s*\[([^\]]*)\]", report)
+                  assert m is not None, "missing axiom report: " + name
+                  found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+              assert found <= allowed, (name, found - allowed)
+              print(name, "AXIOMS_PASS", sorted(found))
+          PY
