@@ -671,7 +671,7 @@ theorem exists_finite_squareGrid_dyadic_refinement_vertexStar_control_probe
     {loop : Path x x}
     (H : CarrierLoopNullHomotopyData K x loop)
     (m : Nat) :
-    ∃ N : Nat, ∃ hN : 0 < N,
+    ∃ N : Nat, ∃ _ : 0 < N,
       ∃ hD : 0 < N * 2 ^ m,
         ∀ i j : Fin (N * 2 ^ m),
           ∃ v, v ∈ vertexSupport K ∧
