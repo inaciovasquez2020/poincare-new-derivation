@@ -1,0 +1,6 @@
+import Poincare.CrossPolytopeOneStepObstruction
+
+#print axioms Poincare.ClosedTriangulationCore.move23_PhiSupport_eq_add_four
+#print axioms Poincare.crossPolytopeBoundary4_no_strict_move23
+#print axioms Poincare.crossPolytopeBoundary4_no_legal_move41
+#print axioms Poincare.crossPolytopeBoundary4_no_strict_represented_move23_move32_move41

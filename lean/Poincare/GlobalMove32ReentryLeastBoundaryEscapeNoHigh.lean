@@ -1,4 +1,5 @@
 import Poincare.GlobalMove32ReentryLeastBoundaryEscapeIncidenceSplit
+import Poincare.GlobalMove32ReentryPolygonalLoopAnchorObstruction
 
 namespace Poincare
 namespace CarrierLoopNullHomotopyData

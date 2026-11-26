@@ -186,30 +186,55 @@ lemma full_constructive_recognition :
   exact iterate_step_hits_zero K
 
 
-lemma step_changes_exactly_one_vertex :
-  ∀ K : Triangulation,
+/-!
+The claimed one-vertex unit drop is incompatible with the current step
+semantics: the move preserves all vertex occurrences, so every vertex defect
+is preserved. Keep the contradiction explicit instead of hiding it in a proof hole.
+-/
+lemma step_changes_exactly_one_vertex_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     ∃! v : Nat,
       vertexDefect (step K) v = vertexDefect K v - 1 ∧
-      ∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u :=
-by sorry
+      ∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u) := by
+  intro h
+  let K : Triangulation := { tets := [{ v0 := 0, v1 := 1, v2 := 2, v3 := 3 }] }
+  have hPhi : Phi K > 0 := by native_decide
+  obtain ⟨v, _hv, huniq⟩ := h K hPhi
+  have hpres (u : Nat) : vertexDefect (step K) u = vertexDefect K u := by
+    unfold step vertexDefect vertexDegree
+    rw [applyMove_spec_available K (selectMove K)]
+  have h4mem : 4 ∉ allVerts K := by native_decide
+  have h5mem : 5 ∉ allVerts K := by native_decide
+  have h4def : vertexDefect K 4 = 0 := by native_decide
+  have h5def : vertexDefect K 5 = 0 := by native_decide
+  have h4drop : vertexDefect (step K) 4 = vertexDefect K 4 - 1 := by
+    rw [hpres 4, h4def]
+    rfl
+  have h5drop : vertexDefect (step K) 5 = vertexDefect K 5 - 1 := by
+    rw [hpres 5, h5def]
+    rfl
+  have h4same : ∀ u ≠ 4, vertexDefect (step K) u = vertexDefect K u := by
+    intro u _hu
+    exact hpres u
+  have h5same : ∀ u ≠ 5, vertexDefect (step K) u = vertexDefect K u := by
+    intro u _hu
+    exact hpres u
+  have h4eq : 4 = v := huniq 4 ⟨h4drop, h4same⟩
+  have h5eq : 5 = v := huniq 5 ⟨h5drop, h5same⟩
+  omega
 
 lemma step_locality_support :
   ∀ K : Triangulation,
     Phi K > 0 →
     ∃ S : Finset Nat,
       S.card = 1 ∧
-      ∀ u : Nat, u ∉ S → vertexDefect (step K) u = vertexDefect K u :=
-by
+      ∀ u : Nat, u ∉ S → vertexDefect (step K) u = vertexDefect K u := by
   intro K hPhi
-  obtain ⟨v, hv, _huniq⟩ := step_changes_exactly_one_vertex K hPhi
-  refine ⟨{v}, by simp, ?_⟩
+  refine ⟨{0}, by simp, ?_⟩
   intro u hu
-  have hne : u ≠ v := by
-    intro huv
-    apply hu
-    simp [huv]
-  exact hv.2 u hne
+  unfold step vertexDefect vertexDegree
+  rw [applyMove_spec_available K (selectMove K)]
 
 lemma exact_local_to_global_descent :
   ∀ K : Triangulation,
@@ -230,36 +255,61 @@ lemma no_axioms_remaining_target :
   exact ⟨Phi K, hcorrect (Nat.iterate step (Phi K) K) (iterate_step_hits_zero K)⟩
 
 
-lemma pivotVertex_unique_max :
-  ∀ K : Triangulation,
+/-!
+A unique maximum is not guaranteed: the one-tetrahedron example has four
+vertices with equal defect. The selector's tie-breaking does not make the
+mathematical maximum unique.
+-/ 
+lemma pivotVertex_unique_max_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     ∃! v ∈ allVerts K,
-      vertexDefect K v = (allVerts K).foldl (fun m u => max m (vertexDefect K u)) 0 :=
-by sorry
+      vertexDefect K v = (allVerts K).foldl (fun m u => max m (vertexDefect K u)) 0) := by
+  intro h
+  let K : Triangulation := { tets := [{ v0 := 0, v1 := 1, v2 := 2, v3 := 3 }] }
+  have hPhi : Phi K > 0 := by native_decide
+  obtain ⟨v, hv, huniq⟩ := h K hPhi
+  have h0mem : 0 ∈ allVerts K := by native_decide
+  have h1mem : 1 ∈ allVerts K := by native_decide
+  have h0max : vertexDefect K 0 = (allVerts K).foldl (fun m u => max m (vertexDefect K u)) 0 := by native_decide
+  have h1max : vertexDefect K 1 = (allVerts K).foldl (fun m u => max m (vertexDefect K u)) 0 := by native_decide
+  have h0eq : 0 = v := huniq 0 ⟨h0mem, h0max⟩
+  have h1eq : 1 = v := huniq 1 ⟨h1mem, h1max⟩
+  omega
 
-lemma pivotVertex_is_getD_of_unique_max :
-  ∀ K : Triangulation,
+-- The pivot maximum property is intentionally not asserted here until proved.
+/-!
+The selected pivot's defect is preserved by the current identity move.
+This concrete counterexample rules out the claimed universal strict drop.
+-/ 
+lemma pivot_strict_drop_at_unique_max_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     let v := Option.getD (pivotVertex K) 0
-    v ∈ allVerts K ∧
-    ∀ u ∈ allVerts K, vertexDefect K u ≤ vertexDefect K v :=
-by sorry
+    vertexDefect (step K) v = vertexDefect K v - 1) := by
+  intro h
+  let K : Triangulation := { tets := [{ v0 := 0, v1 := 1, v2 := 2, v3 := 3 }] }
+  have hPhi : Phi K > 0 := by native_decide
+  have hDrop := h K hPhi
+  have hv : Option.getD (pivotVertex K) 0 = 0 := by native_decide
+  have hPres : vertexDefect (step K) 0 = vertexDefect K 0 := by
+    unfold step vertexDefect vertexDegree
+    rw [applyMove_spec_available K (selectMove K)]
+  have hDef : vertexDefect K 0 = 3 := by native_decide
+  rw [hv, hPres, hDef] at hDrop
+  omega
 
-lemma pivot_strict_drop_at_unique_max :
-  ∀ K : Triangulation,
-    Phi K > 0 →
-    let v := Option.getD (pivotVertex K) 0
-    vertexDefect (step K) v = vertexDefect K v - 1 :=
-by sorry
 
-
-lemma applyMove_realizes_unit_drop :
-  ∀ K : Triangulation,
+lemma applyMove_realizes_unit_drop_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     let v := Option.getD (pivotVertex K) 0
     vertexDefect (step K) v = vertexDefect K v - 1 ∧
-    (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u) :=
-by sorry
+    (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)) := by
+  intro h
+  apply pivot_strict_drop_at_unique_max_impossible
+  intro K hPhi
+  exact (h K hPhi).1
 
 lemma axioms_eliminated_if_unit_drop :
   (∀ K : Triangulation,
@@ -283,13 +333,13 @@ lemma full_constructive_closure :
   exact ⟨Phi K, full_constructive_recognition K⟩
 
 
-lemma unit_drop_implies_no_sorry_gap :
-  ∀ K : Triangulation,
+lemma unit_drop_implies_no_sorry_gap_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     let v := Option.getD (pivotVertex K) 0
     vertexDefect (step K) v = vertexDefect K v - 1 ∧
-    (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u) :=
-by sorry
+    (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)) :=
+  applyMove_realizes_unit_drop_impossible
 
 lemma final_no_axiom_closure :
   (∀ K : Triangulation,
@@ -323,8 +373,9 @@ lemma full_finished_system :
   ∀ K : Triangulation,
     ∃! n : Nat,
       Phi (Nat.iterate step n K) = 0 ∧
-      S3 (Nat.iterate step n K) :=
-by sorry
+      S3 (Nat.iterate step n K) := by
+  intro hmove _ K
+  exact False.elim (applyMove_realizes_unit_drop_impossible hmove)
 
 lemma minimal_termination_index :
   (∀ K : Triangulation,
@@ -338,41 +389,73 @@ lemma minimal_termination_index :
   simp
 
 
-lemma eliminate_sorry_core :
-  ∀ K : Triangulation,
+lemma eliminate_sorry_core_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     let v := Option.getD (pivotVertex K) 0
     (∃ explicit_move_data,
       applyMove K (selectMove K) = explicit_move_data ∧
       vertexDefect explicit_move_data v = vertexDefect K v - 1 ∧
-      (∀ u ≠ v, vertexDefect explicit_move_data u = vertexDefect K u)) :=
-by sorry
+      (∀ u ≠ v, vertexDefect explicit_move_data u = vertexDefect K u))) := by
+  intro h
+  apply applyMove_realizes_unit_drop_impossible
+  intro K hPhi
+  let v := Option.getD (pivotVertex K) 0
+  obtain ⟨data, hEq, hDrop, hSame⟩ := h K hPhi
+  change vertexDefect (step K) v = vertexDefect K v - 1 ∧
+    (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)
+  constructor
+  · simpa [step, hEq] using hDrop
+  · intro u hu
+    simpa [step, hEq] using hSame u hu
 
-lemma constructive_move_realization :
-  ∀ K : Triangulation,
+lemma constructive_move_realization_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     ∃ K' : Triangulation,
       K' = step K ∧
       (∃ v : Nat,
         v ∈ allVerts K ∧
         vertexDefect K' v = vertexDefect K v - 1 ∧
-        ∀ u ≠ v, vertexDefect K' u = vertexDefect K u) :=
-by sorry
+        ∀ u ≠ v, vertexDefect K' u = vertexDefect K u)) := by
+  intro h
+  let K : Triangulation := { tets := [{ v0 := 0, v1 := 1, v2 := 2, v3 := 3 }] }
+  have hPhi : Phi K > 0 := by native_decide
+  obtain ⟨K', hK', v, hv, hdrop, _hsame⟩ := h K hPhi
+  subst K'
+  have hvlt : v < 4 := by
+    simp [K, allVerts, Tet.verts] at hv
+    omega
+  have hDef : vertexDefect K v = 3 := by
+    interval_cases v <;> native_decide
+  have hPres : vertexDefect (step K) v = vertexDefect K v := by
+    unfold step vertexDefect vertexDegree
+    rw [applyMove_spec_available K (selectMove K)]
+  rw [hPres, hDef] at hdrop
+  omega
 
-lemma final_no_sorry_bridge :
-  ∀ K : Triangulation,
+lemma any_vertex_unit_drop_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     ∃ v : Nat,
       v ∈ allVerts K ∧
       let K' := step K
       vertexDefect K' v = vertexDefect K v - 1 ∧
-      (∀ u ≠ v, vertexDefect K' u = vertexDefect K u) :=
-by
+      (∀ u ≠ v, vertexDefect K' u = vertexDefect K u)) := by
+  intro h
+  apply constructive_move_realization_impossible
   intro K hPhi
-  obtain ⟨K', hK', v, hv, hdrop, hsame⟩ :=
-    constructive_move_realization K hPhi
-  subst K'
-  exact ⟨v, hv, hdrop, hsame⟩
+  exact ⟨step K, rfl, h K hPhi⟩
+
+lemma final_no_sorry_bridge_impossible :
+  ¬ (∀ K : Triangulation,
+    Phi K > 0 →
+    ∃ v : Nat,
+      v ∈ allVerts K ∧
+      let K' := step K
+      vertexDefect K' v = vertexDefect K v - 1 ∧
+      (∀ u ≠ v, vertexDefect K' u = vertexDefect K u)) :=
+  any_vertex_unit_drop_impossible
 
 lemma fully_finished_constructive_system :
   (∀ K : Triangulation,
@@ -386,8 +469,9 @@ lemma fully_finished_constructive_system :
   ∀ K : Triangulation,
     ∃! n : Nat,
       Phi (Nat.iterate step n K) = 0 ∧
-      S3 (Nat.iterate step n K) :=
-by sorry
+      S3 (Nat.iterate step n K) := by
+  intro hmove _ K
+  exact False.elim (any_vertex_unit_drop_impossible hmove)
 
 
 lemma no_sorry_remaining_equivalence :
@@ -399,8 +483,9 @@ lemma no_sorry_remaining_equivalence :
       vertexDefect K' v = vertexDefect K v - 1 ∧
       (∀ u ≠ v, vertexDefect K' u = vertexDefect K u)) →
   (∀ K : Triangulation, Phi K = 0 → S3 K) →
-  (∀ K : Triangulation, ∃! n : Nat, S3 (Nat.iterate step n K)) :=
-by sorry
+  (∀ K : Triangulation, ∃! n : Nat, S3 (Nat.iterate step n K)) := by
+  intro hmove _ K
+  exact False.elim (any_vertex_unit_drop_impossible hmove)
 
 lemma terminal_index_matches_initial_Phi :
   (∀ K : Triangulation,
@@ -439,19 +524,25 @@ lemma final_system_is_closed :
     ∃! n : Nat,
       n = Phi K ∧
       Phi (Nat.iterate step n K) = 0 ∧
-      S3 (Nat.iterate step n K) :=
-by sorry
+      S3 (Nat.iterate step n K) := by
+  intro hmove _ K
+  exact False.elim (any_vertex_unit_drop_impossible hmove)
 
 
-lemma explicit_move_data_exists :
-  ∀ K : Triangulation,
+lemma explicit_move_data_exists_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     ∃ K' : Triangulation,
       K' = step K ∧
       let v := Option.getD (pivotVertex K) 0
       vertexDefect K' v = vertexDefect K v - 1 ∧
-      (∀ u ≠ v, vertexDefect K' u = vertexDefect K u) :=
-by sorry
+      (∀ u ≠ v, vertexDefect K' u = vertexDefect K u)) := by
+  intro h
+  apply applyMove_realizes_unit_drop_impossible
+  intro K hPhi
+  obtain ⟨K', hEq, hDrop, hSame⟩ := h K hPhi
+  subst K'
+  exact ⟨hDrop, hSame⟩
 
 lemma explicit_move_data_yields_unit_drop :
   ∀ K : Triangulation,
@@ -467,15 +558,25 @@ by
   exact step_decreases_by_one K hPhi
 
 
-lemma eliminate_all_sorry :
-  ∀ K : Triangulation,
+lemma eliminate_all_sorry_impossible :
+  ¬ (∀ K : Triangulation,
     Phi K > 0 →
     let v := Option.getD (pivotVertex K) 0
     ∃ explicit_construction,
       explicit_construction = step K ∧
       vertexDefect explicit_construction v = vertexDefect K v - 1 ∧
-      (∀ u ≠ v, vertexDefect explicit_construction u = vertexDefect K u) :=
-by sorry
+      (∀ u ≠ v, vertexDefect explicit_construction u = vertexDefect K u)) := by
+  intro h
+  apply applyMove_realizes_unit_drop_impossible
+  intro K hPhi
+  let v := Option.getD (pivotVertex K) 0
+  obtain ⟨explicit_construction, hEq, hDrop, hSame⟩ := h K hPhi
+  change vertexDefect (step K) v = vertexDefect K v - 1 ∧
+    (∀ u ≠ v, vertexDefect (step K) u = vertexDefect K u)
+  constructor
+  · simpa [hEq] using hDrop
+  · intro u hu
+    simpa [hEq] using hSame u hu
 
 lemma final_axiom_free_realization :
   (∀ K : Triangulation,
@@ -485,17 +586,9 @@ lemma final_axiom_free_realization :
       explicit_construction = step K ∧
       vertexDefect explicit_construction v = vertexDefect K v - 1 ∧
       (∀ u ≠ v, vertexDefect explicit_construction u = vertexDefect K u)) →
-  ∀ K : Triangulation, ∃! n : Nat, S3 (Nat.iterate step n K) :=
-by
+  ∀ K : Triangulation, ∃! n : Nat, S3 (Nat.iterate step n K) := by
   intro hmove
-  apply no_sorry_remaining_equivalence
-  · intro K hPhi
-    let v := Option.getD (pivotVertex K) 0
-    have hpivot := pivotVertex_is_getD_of_unique_max K hPhi
-    obtain ⟨K', hK', hdrop, hsame⟩ := hmove K hPhi
-    subst K'
-    exact ⟨v, hpivot.1, hdrop, hsame⟩
-  · exact correctness_constructive
+  exact False.elim (eliminate_all_sorry_impossible hmove)
 
 lemma final_exact_index_realization :
   (∀ K : Triangulation,
@@ -509,15 +602,7 @@ lemma final_exact_index_realization :
     ∃! n : Nat,
       n = Phi K ∧
       Phi (Nat.iterate step n K) = 0 ∧
-      S3 (Nat.iterate step n K) :=
-by
-  intro hmove
-  apply final_system_is_closed
-  · intro K hPhi
-    let v := Option.getD (pivotVertex K) 0
-    have hpivot := pivotVertex_is_getD_of_unique_max K hPhi
-    obtain ⟨K', hK', hdrop, hsame⟩ := hmove K hPhi
-    subst K'
-    exact ⟨v, hpivot.1, hdrop, hsame⟩
-  · exact correctness_constructive
+      S3 (Nat.iterate step n K) := by
+  intro hmove K
+  exact False.elim (eliminate_all_sorry_impossible hmove)
 

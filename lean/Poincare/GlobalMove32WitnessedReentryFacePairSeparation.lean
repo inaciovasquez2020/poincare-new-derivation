@@ -85,7 +85,6 @@ theorem
     simp only [
       List.nodup_cons,
       List.mem_cons,
-      List.mem_singleton,
       not_or
     ] at hfive ⊢
     aesop

@@ -1,4 +1,6 @@
 from pathlib import Path
+import json
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -13,15 +15,29 @@ for path in [perelman, quarantine, status, artifact]:
 p = perelman.read_text()
 q = quarantine.read_text()
 s = status.read_text()
-a = artifact.read_text()
+a = json.loads(artifact.read_text())
 
 for token in [
-    "axiom Perelman_PL",
-    "CONDITIONAL_EXTERNAL_THEOREM_ONLY",
+    "theorem universal_S3_false",
+    "def Perelman_PL : Prop :=",
+    "TriangulationRealizationIsClosedConnectedTopologicalThreeManifold K",
+    "TriangulationRealizationSimplyConnected K",
+    "TriangulationRealizationHomeomorphicToThreeSphere K",
     "theorem conditional_PL_poincare_recognition",
-    "Perelman_PL K",
+    "(hPL : Perelman_PL)",
+    "hPL K hcore hM hSC",
+    "theorem globalPhiSupportDescent_implies_Perelman_PL",
+    "CONDITIONAL_EXTERNAL_THEOREM_ONLY" if False else "Conditional:",
 ]:
     assert token in p, f"missing PerelmanPL token: {token}"
+
+assert re.search(r"(?m)^\s*(?:axiom|opaque|sorry|admit)\b", p) is None, (
+    "PerelmanPL.lean must have no axioms, opaque constants, or proof holes"
+)
+assert "axiom Perelman_PL" not in p
+assert "∀ K : Triangulation, S3 K" not in p.replace(
+    "¬ (∀ K : Triangulation, S3 K)", ""
+)
 
 for token in [
     "theorem applyMoveImpl_identity",
@@ -39,19 +55,13 @@ for token in [
 ]:
     assert token in s, f"missing status token: {token}"
 
-for token in [
-    '"status": "CONDITIONAL_EXTERNAL_THEOREM_ONLY"',
-    '"theorem_closure": false',
-    '"frontier_preserved": true',
-    '"external_axiom": "Perelman_PL"',
-]:
-    assert token in a, f"missing artifact token: {token}"
+assert a["status"] == "CONDITIONAL_EXTERNAL_THEOREM_ONLY"
+assert a["theorem_closure"] is False
+assert a["frontier_preserved"] is True
+assert a["external_axiom"] is None
+assert a["conditional_hypothesis"] == "Perelman_PL"
+assert a["refuted_statement"] == "forall_K_S3"
+assert a["conditional_theorem"] == "conditional_PL_poincare_recognition"
+assert a["refutation_theorem"] == "universal_S3_false"
 
-for forbidden in [
-    '"theorem_closure": true',
-    '"status": "SOLVED"',
-    '"status": "THEOREM_CLOSED"',
-]:
-    assert forbidden not in a, f"forbidden artifact token present: {forbidden}"
-
-print("Perelman PL conditional closure verified: CONDITIONAL_EXTERNAL_THEOREM_ONLY / FRONTIER_PRESERVED")
+print("Perelman PL interface verified: false axiom removed / conditional statement retained")

@@ -1,4 +1,5 @@
 import Mathlib
+import Poincare.Triangulation
 import Poincare.SumPermFin
 
 namespace Poincare
@@ -7,7 +8,13 @@ open scoped BigOperators
 
 
 def defect (d : ℤ) : ℤ :=
-  Int.natAbs (d - 6)
+  Int.natAbs (d - (targetDegree : ℤ))
+
+/-- The local signed-integer defect is precisely the global degree-four
+supported-vertex defect when evaluated on a vertex degree. -/
+theorem defect_degree_eq_vertexDefect (K : Triangulation) (v : Nat) :
+    defect (vertexDegree K v : ℤ) = (vertexDefect K v : ℤ) := by
+  rfl
 
 def pick4 (x0 x1 x2 x3 : ℤ) : Fin 4 → ℤ
   | 0 => x0
@@ -27,9 +34,8 @@ def pick2 (u v : ℤ) : Fin 2 → ℤ
 def deltaPhiOneToFourFromFamily (x : Fin 4 → ℤ) : ℤ :=
   (∑ i : Fin 4, (defect (x i + 2) - defect (x i))) + defect 4
 
-def deltaPhiTwoToThreeFromFamilies (face : Fin 3 → ℤ) (opp : Fin 2 → ℤ) : ℤ :=
-  (∑ i : Fin 3, (defect (face i - 1) - defect (face i))) +
-  (∑ j : Fin 2, (defect (opp j + 1) - defect (opp j)))
+def deltaPhiTwoToThreeFromFamilies (_face : Fin 3 → ℤ) (opp : Fin 2 → ℤ) : ℤ :=
+  ∑ j : Fin 2, (defect (opp j + 2) - defect (opp j))
 
 def deltaPhiOneToFourFromLocal (x0 x1 x2 x3 : ℤ) : ℤ :=
   deltaPhiOneToFourFromFamily (pick4 x0 x1 x2 x3)
@@ -55,8 +61,7 @@ theorem deltaPhiTwoToThreeFromFamilies_perm
     deltaPhiTwoToThreeFromFamilies (fun i => face (σ i)) (fun j => opp (τ j)) =
       deltaPhiTwoToThreeFromFamilies face opp := by
   unfold deltaPhiTwoToThreeFromFamilies
-  rw [sum_perm_fin (fun i : Fin 3 => defect (face i - 1) - defect (face i)) σ]
-  rw [sum_perm_fin (fun j : Fin 2 => defect (opp j + 1) - defect (opp j)) τ]
+  rw [sum_perm_fin (fun j : Fin 2 => defect (opp j + 2) - defect (opp j)) τ]
 
 theorem deltaPhiOneToFourFromLocal_perm
     (x0 x1 x2 x3 : ℤ) (σ : Equiv.Perm (Fin 4)) :
@@ -82,35 +87,35 @@ theorem deltaPhiTwoToThreeFromLocal_perm
     deltaPhiTwoToThreeFromFamilies_perm (pick3 p q r) (pick2 u v) σ τ
 
 @[simp] theorem deltaPhiOneToFourFromLocal_regular6 :
-    deltaPhiOneToFourFromLocal 6 6 6 6 = 10 := by
-  native_decide
+    deltaPhiOneToFourFromLocal 6 6 6 6 = 8 := by
+  decide
 
 @[simp] theorem deltaPhiTwoToThreeFromLocal_regular6 :
-    deltaPhiTwoToThreeFromLocal 6 6 6 6 6 = 5 := by
-  native_decide
+    deltaPhiTwoToThreeFromLocal 6 6 6 6 6 = 4 := by
+  decide
 
 @[simp] theorem signDeltaOneToFour_regular6 :
     signDeltaOneToFour 6 6 6 6 = Ordering.gt := by
-  native_decide
+  decide
 
 @[simp] theorem signDeltaTwoToThree_regular6 :
     signDeltaTwoToThree 6 6 6 6 6 = Ordering.gt := by
-  native_decide
+  decide
 
 @[simp] theorem deltaPhiOneToFourFromLocal_nonuniform :
     deltaPhiOneToFourFromLocal 5 6 7 8 = 8 := by
-  native_decide
+  decide
 
 @[simp] theorem deltaPhiTwoToThreeFromLocal_nonuniform :
-    deltaPhiTwoToThreeFromLocal 5 6 7 6 8 = 3 := by
-  native_decide
+    deltaPhiTwoToThreeFromLocal 5 6 7 6 8 = 4 := by
+  decide
 
 @[simp] theorem signDeltaOneToFour_nonuniform :
     signDeltaOneToFour 5 6 7 8 = Ordering.gt := by
-  native_decide
+  decide
 
 @[simp] theorem signDeltaTwoToThreeFromLocal_nonuniform :
     signDeltaTwoToThree 5 6 7 6 8 = Ordering.gt := by
-  native_decide
+  decide
 
 end Poincare

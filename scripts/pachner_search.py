@@ -77,6 +77,12 @@ class Triangulation:
         return sum(max(0, d - 2) for d in self._edge_degrees())
 
     def candidate_32_moves(self) -> List[Move32]:
+        """Enumerate 3-to-2 edge stars with fresh target tetrahedra and face.
+
+        A result is a combinatorial candidate, not a certificate that the
+        entire input is a closed triangulated manifold. In particular, this
+        function does not independently validate all vertex links.
+        """
         edge_map = self.edge_to_tets()
         vdeg = self.vertex_degrees()
         phi_self = self.phi()
@@ -108,6 +114,19 @@ class Triangulation:
 
             expected = {frozenset({a, b}), frozenset({b, c}), frozenset({a, c})}
             if set(opp_pairs) != expected:
+                continue
+
+            # A 3->2 bistellar move may not insert a tetrahedron already
+            # represented in the complex. Such collisions otherwise create
+            # duplicate simplices and spurious defect/energy descents.
+            target_u = tuple(sorted((u, a, b, c)))
+            target_v = tuple(sorted((v, a, b, c)))
+            if target_u in self.tetrahedra or target_v in self.tetrahedra:
+                continue
+            # The output triangle must also be absent before the move,
+            # including if it occurs in an unrelated tetrahedron. Its
+            # prior presence would make this an invalid bistellar exchange.
+            if any(a in t and b in t and c in t for t in self.tetrahedra):
                 continue
 
             T2 = self._apply_32_raw(edge, (a, b, c))
