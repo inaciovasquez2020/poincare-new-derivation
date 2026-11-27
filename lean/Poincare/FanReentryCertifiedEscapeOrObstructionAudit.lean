@@ -1,0 +1,3 @@
+import Poincare.FanReentryCertifiedEscapeOrObstruction
+
+#print axioms Poincare.Move23Site.exists_certifiedPath_descent_or_second_sourceFace_obstruction

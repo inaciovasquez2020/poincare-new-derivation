@@ -1,0 +1,83 @@
+name: Positional certified Pachner step Lean audit
+
+on:
+  push:
+    paths:
+      - 'lean/**'
+      - 'lean-toolchain'
+      - 'lakefile.lean'
+      - 'lake-manifest.json'
+      - '.github/workflows/positional-certified-step-audit.yml'
+  pull_request:
+    paths:
+      - 'lean/**'
+      - 'lean-toolchain'
+      - 'lakefile.lean'
+      - 'lake-manifest.json'
+      - '.github/workflows/positional-certified-step-audit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Assert exact checked-out revision
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          echo "EXACT_HEAD := $EXPECTED_SHA"
+      - uses: leanprover/lean-action@v1
+        with:
+          use-github-cache: true
+          auto-config: false
+      - name: Compile positional certified step
+        run: lake build Poincare.PermutationCertifiedStellar
+      - name: Audit exact kernel axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          audit="$(mktemp --suffix=.lean)"
+          report="$(mktemp)"
+          trap 'rm -f "$audit" "$report"' EXIT
+          printf '%s\n' \
+            'import Poincare.PermutationCertifiedStellar' \
+            '#print axioms Poincare.PermutationCertifiedPachnerStep.homeomorphic' \
+            '#print axioms Poincare.Move41Site.insertFreshAt_permutationCertifiedMove14' \
+            '#print axioms Poincare.Move41Site.insertFreshAt_homeomorphic' > "$audit"
+          lake env lean "$audit" > "$report"
+          python3 - "$report" <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+          report = Path(sys.argv[1]).read_text(encoding="utf-8")
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          names = [
+              "Poincare.PermutationCertifiedPachnerStep.homeomorphic",
+              "Poincare.Move41Site.insertFreshAt_permutationCertifiedMove14",
+              "Poincare.Move41Site.insertFreshAt_homeomorphic",
+          ]
+          markers = list(re.finditer(r"^'([^'\n]+)'[ \t]+", report, re.MULTILINE))
+          assert len(markers) == len(names), f"unexpected axiom-report count: {len(markers)}"
+          assert [m.group(1) for m in markers] == names, "missing or reordered declarations"
+          for i, marker in enumerate(markers):
+              stop = markers[i + 1].start() if i + 1 < len(markers) else len(report)
+              body = report[marker.end():stop].strip()
+              if body == "does not depend on any axioms":
+                  axioms = set()
+              else:
+                  match = re.fullmatch(r"depends on axioms:\s*\[([^\]]*)\]", body, re.DOTALL)
+                  assert match is not None, f"unrecognized axiom report: {names[i]}: {body!r}"
+                  axioms = {a.strip() for a in match.group(1).split(",") if a.strip()}
+                  assert axioms, f"empty axiom report: {names[i]}"
+              assert axioms <= allowed, f"forbidden axioms: {names[i]}: {axioms - allowed}"
+              print(f"{names[i]}: AXIOM_AUDIT_PASS {sorted(axioms)}")
+          PY

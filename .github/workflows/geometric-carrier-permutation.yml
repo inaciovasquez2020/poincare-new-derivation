@@ -1,0 +1,71 @@
+name: Geometric carrier permutation Lean audit
+
+on:
+  push:
+    paths:
+      - 'lean/**'
+      - 'lean-toolchain'
+      - 'lakefile.lean'
+      - 'lake-manifest.json'
+      - '.github/workflows/geometric-carrier-permutation.yml'
+  pull_request:
+    paths:
+      - 'lean/**'
+      - 'lean-toolchain'
+      - 'lakefile.lean'
+      - 'lake-manifest.json'
+      - '.github/workflows/geometric-carrier-permutation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: leanprover/lean-action@v1
+        with:
+          use-github-cache: true
+      - name: Compile geometric carrier permutation
+        run: lake build Poincare.GeometricCarrierPermutation
+      - name: Audit kernel axiom dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          audit="$(mktemp --suffix=.lean)"
+          report="$(mktemp)"
+          trap 'rm -f "$audit" "$report"' EXIT
+          printf '%s\n' \
+            'import Poincare.GeometricCarrierPermutation' \
+            '#print axioms Poincare.triangulationTopologicalGeometricComplex_space_eq_of_perm' \
+            '#print axioms Poincare.triangulationTopologicalGeometricCarrier_homeomorph_of_perm' > "$audit"
+          lake env lean "$audit" > "$report"
+          python3 - "$report" <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+          report = Path(sys.argv[1]).read_text(encoding="utf-8")
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          names = [
+              "Poincare.triangulationTopologicalGeometricComplex_space_eq_of_perm",
+              "Poincare.triangulationTopologicalGeometricCarrier_homeomorph_of_perm",
+          ]
+          markers = list(re.finditer(r"^'([^'\n]+)'[ \t]+", report, re.MULTILINE))
+          assert len(markers) == len(names), f"unexpected number of axiom reports: {len(markers)}"
+          assert [m.group(1) for m in markers] == names, "missing or reordered axiom declarations"
+          for i, marker in enumerate(markers):
+              stop = markers[i + 1].start() if i + 1 < len(markers) else len(report)
+              body = report[marker.end():stop].strip()
+              if body == "does not depend on any axioms":
+                  axioms = set()
+              else:
+                  match = re.fullmatch(r"depends on axioms:\s*\[([^\]]*)\]", body, re.DOTALL)
+                  assert match is not None, f"unrecognized axiom report for {names[i]}: {body!r}"
+                  axioms = {x.strip() for x in match.group(1).split(",") if x.strip()}
+                  assert axioms, f"empty or malformed axiom list for {names[i]}"
+              assert axioms <= allowed, f"unapproved axioms for {names[i]}: {axioms - allowed}"
+              print(f"{names[i]}: AXIOM_AUDIT_PASS {sorted(axioms)}")
+          PY

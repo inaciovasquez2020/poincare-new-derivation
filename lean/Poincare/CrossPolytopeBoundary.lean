@@ -36,7 +36,7 @@ theorem crossPolytopeBoundary4_vertexSupport :
 
 theorem crossPolytopeBoundary4_vertexDegree (v : Nat) (hv : v < 8) :
     vertexDegree crossPolytopeBoundary4 v = 8 := by
-  interval_cases v <;> native_decide
+  interval_cases v <;> decide
 
 theorem crossPolytopeBoundary4_PhiSupport : PhiSupport crossPolytopeBoundary4 = 32 := by
   native_decide

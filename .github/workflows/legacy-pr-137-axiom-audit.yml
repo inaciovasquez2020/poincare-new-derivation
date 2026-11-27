@@ -1,0 +1,47 @@
+name: Scoped Lean axiom audit PR 137
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/legacy-pr-137-axiom-audit.yml'
+      - 'lean/Poincare/GlobalMove32ReentryReturnSourceFaceSupportEquality.lean'
+  push:
+    paths:
+      - '.github/workflows/legacy-pr-137-axiom-audit.yml'
+      - 'lean/Poincare/GlobalMove32ReentryReturnSourceFaceSupportEquality.lean'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: leanprover/lean-action@v1
+        with:
+          use-github-cache: false
+      - name: Build exact modules and reject unapproved axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.GlobalMove32ReentryReturnSourceFaceSupportEquality
+          tmp="$(mktemp -d)"
+          printf '%s\n' 'import Poincare.GlobalMove32ReentryReturnSourceFaceSupportEquality' '#print axioms Poincare.ClosedTriangulationCore.sourceFace_support_eq_of_sharedSupportedEdgeState_eq' '#print axioms Poincare.ClosedTriangulationCore.fiveVertex_support_eq_of_recurrent_sourceFace_return' > "$tmp/Audit.lean"
+          lake env lean "$tmp/Audit.lean" | tee "$tmp/axioms.log"
+          python3 - "$tmp/axioms.log" <<'PY'
+          import re, sys
+          from pathlib import Path
+          report = Path(sys.argv[1]).read_text()
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          for name in ["Poincare.ClosedTriangulationCore.sourceFace_support_eq_of_sharedSupportedEdgeState_eq","Poincare.ClosedTriangulationCore.fiveVertex_support_eq_of_recurrent_sourceFace_return"]:
+              prefix = "'" + name + "'"
+              if prefix + " does not depend on any axioms" in report:
+                  found = set()
+              else:
+                  m = re.search(re.escape(prefix) + r" depends on axioms:\s*\[([^\]]*)\]", report)
+                  assert m is not None, "missing axiom report: " + name
+                  found = {x.strip() for x in m.group(1).split(",") if x.strip()}
+              assert found <= allowed, (name, found - allowed)
+              print(name, "AXIOMS_PASS", sorted(found))
+          PY

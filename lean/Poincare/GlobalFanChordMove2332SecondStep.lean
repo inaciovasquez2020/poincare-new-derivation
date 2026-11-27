@@ -1,5 +1,7 @@
 import Poincare.GlobalFanReentryModeContinuation
 import Poincare.Move2332LocalEscapeCriterion
+import Poincare.TriangulationTopologicalHomeomorphTransport
+import Poincare.TriangulationTopologicalHonestConnectedness
 
 namespace Poincare
 
