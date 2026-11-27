@@ -128,6 +128,13 @@ class Triangulation:
         return sum(max(0, d - 2) for d in self._edge_degrees())
 
     def candidate_32_moves(self) -> List[Move32]:
+        """Enumerate 3-to-2 edge stars with fresh target tetrahedra and face.
+
+        A result is a combinatorial candidate, not a certificate that the
+        entire input is a closed triangulated manifold. Admissibility checks
+        only connected link 1-skeleta, face multiplicity and basic simplex validity;
+        it also excludes degree-four vertices in this restricted search.
+        """
         if not self.is_admissible():
             return []
         edge_map = self.edge_to_tets()
@@ -161,6 +168,19 @@ class Triangulation:
 
             expected = {frozenset({a, b}), frozenset({b, c}), frozenset({a, c})}
             if set(opp_pairs) != expected:
+                continue
+
+            # A 3->2 bistellar move may not insert a tetrahedron already
+            # represented in the complex. Such collisions otherwise create
+            # duplicate simplices and spurious defect/energy descents.
+            target_u = tuple(sorted((u, a, b, c)))
+            target_v = tuple(sorted((v, a, b, c)))
+            if target_u in self.tetrahedra or target_v in self.tetrahedra:
+                continue
+            # The output triangle must also be absent before the move,
+            # including if it occurs in an unrelated tetrahedron. Its
+            # prior presence would make this an invalid bistellar exchange.
+            if any(a in t and b in t and c in t for t in self.tetrahedra):
                 continue
 
             T2 = self._apply_32_raw(edge, (a, b, c))
@@ -213,6 +233,9 @@ class Triangulation:
     def apply_32(self, move: Move32) -> "Triangulation":
         if not self.is_admissible():
             raise ValueError("cannot apply a Pachner move to an inadmissible complex")
+        if not any(c.edge == move.edge and c.opposite_vertices == move.opposite_vertices
+                   for c in self.candidate_32_moves()):
+            raise ValueError("move is not an admissible 3-to-2 candidate")
         result = self._apply_32_raw(move.edge, move.opposite_vertices)
         errors = result.admissibility_errors()
         if errors:

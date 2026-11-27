@@ -102,24 +102,116 @@ theorem Move23Site.move32_candidate_sourceFaceAbsent_on_ab_after_incidence_four
   rw [m.replace_tets_eq K] at htau
   simp only [List.mem_cons] at htau
   rcases htau with rfl | rfl | rfl | htau
-  · simp [Move23Site.newTet₀, Tet.verts] at hface
-    aesop
+  · simp only [Move23Site.newTet₀, Tet.verts, List.mem_cons,
+      List.mem_singleton, List.not_mem_nil, or_false] at hface
+    have ha : s.a = m.d ∨ s.a = m.e := by
+      rcases hface.1 with h | h | h | h
+      · exact (hs.1.2.2.1 h).elim
+      · exact (hs.1.2.2.2 h).elim
+      · exact Or.inl h
+      · exact Or.inr h
+    have hb : s.b = m.d ∨ s.b = m.e := by
+      rcases hface.2.1 with h | h | h | h
+      · exact (hs.2.1.2.1 h).elim
+      · exact (hs.2.1.2.2 h).elim
+      · exact Or.inl h
+      · exact Or.inr h
+    have hc : s.c = m.d ∨ s.c = m.e := by
+      rcases hface.2.2 with h | h | h | h
+      · exact (hs.2.2.1.1 h).elim
+      · exact (hs.2.2.1.2 h).elim
+      · exact Or.inl h
+      · exact Or.inr h
+    rcases ha with had | hae
+    · rcases hb with hbd | hbe
+      · exact hs.1.1 (had.trans hbd.symm)
+      · rcases hc with hcd | hce
+        · exact hs.1.2.1 (had.trans hcd.symm)
+        · exact hs.2.1.1 (hbe.trans hce.symm)
+    · rcases hb with hbd | hbe
+      · rcases hc with hcd | hce
+        · exact hs.2.1.1 (hbd.trans hcd.symm)
+        · exact hs.1.2.1 (hae.trans hce.symm)
+      · exact hs.1.1 (hae.trans hbe.symm)
   · simp [Move23Site.newTet₁, Tet.verts] at hface
-    aesop
-  · simp [Move23Site.newTet₂, Tet.verts] at hface
-    aesop
+    have ha : s.a = m.d ∨ s.a = m.e := by
+      rcases hface.1 with h | h | h | h
+      · exact (hs.1.2.2.1 h).elim
+      · exact (hcNot (Or.inl h.symm)).elim
+      · exact Or.inl h
+      · exact Or.inr h
+    have hb : s.b = m.d ∨ s.b = m.e := by
+      rcases hface.2.1 with h | h | h | h
+      · exact (hs.2.1.2.1 h).elim
+      · exact (hcNot (Or.inr (Or.inl h.symm))).elim
+      · exact Or.inl h
+      · exact Or.inr h
+    have hc : s.c = m.d ∨ s.c = m.e := by
+      rcases hface.2.2 with h | h | h | h
+      · exact (hs.2.2.1.1 h).elim
+      · exact (hcNot (Or.inr (Or.inr (Or.inl h.symm)))).elim
+      · exact Or.inl h
+      · exact Or.inr h
+    rcases ha with had | hae
+    · rcases hb with hbd | hbe
+      · exact hs.1.1 (had.trans hbd.symm)
+      · rcases hc with hcd | hce
+        · exact hs.1.2.1 (had.trans hcd.symm)
+        · exact hs.2.1.1 (hbe.trans hce.symm)
+    · rcases hb with hbd | hbe
+      · rcases hc with hcd | hce
+        · exact hs.2.1.1 (hbd.trans hcd.symm)
+        · exact hs.1.2.1 (hae.trans hce.symm)
+      · exact hs.1.1 (hae.trans hbe.symm)
+  · simp only [Move23Site.newTet₂, Tet.verts, List.mem_cons,
+      List.mem_singleton, List.not_mem_nil, or_false] at hface
+    have ha : s.a = m.d ∨ s.a = m.e := by
+      rcases hface.1 with h | h | h | h
+      · exact (hs.1.2.2.2 h).elim
+      · exact (hcNot (Or.inl h.symm)).elim
+      · exact Or.inl h
+      · exact Or.inr h
+    have hb : s.b = m.d ∨ s.b = m.e := by
+      rcases hface.2.1 with h | h | h | h
+      · exact (hs.2.1.2.2 h).elim
+      · exact (hcNot (Or.inr (Or.inl h.symm))).elim
+      · exact Or.inl h
+      · exact Or.inr h
+    have hc : s.c = m.d ∨ s.c = m.e := by
+      rcases hface.2.2 with h | h | h | h
+      · exact (hs.2.2.1.2 h).elim
+      · exact (hcNot (Or.inr (Or.inr (Or.inl h.symm)))).elim
+      · exact Or.inl h
+      · exact Or.inr h
+    rcases ha with had | hae
+    · rcases hb with hbd | hbe
+      · exact hs.1.1 (had.trans hbd.symm)
+      · rcases hc with hcd | hce
+        · exact hs.1.2.1 (had.trans hcd.symm)
+        · exact hs.2.1.1 (hbe.trans hce.symm)
+    · rcases hb with hbd | hbe
+      · rcases hc with hcd | hce
+        · exact hs.2.1.1 (hbd.trans hcd.symm)
+        · exact hs.1.2.1 (hae.trans hce.symm)
+      · exact hs.1.1 (hae.trans hbe.symm)
   · have hunchanged :=
       hcore.move23Site_mem_unchangedTets m hlegal htau
     have hsourceMem :
         ∀ z : Nat, z ∈ [s.a, s.b, s.c] → z ∈ tau.verts := by
       intro z hz
-      simp only [List.mem_cons, List.mem_singleton] at hz
+      simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at hz
       rcases hz with rfl | rfl | rfl
       · exact hface.1
       · exact hface.2.1
       · exact hface.2.2
-    have hdTau : m.d ∈ tau.verts := hsourceMem m.d hends.1
-    have heTau : m.e ∈ tau.verts := hsourceMem m.e hends.2
+    have hdTau : m.d ∈ tau.verts :=
+      hsourceMem m.d (by
+        simpa only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false]
+          using hends.1)
+    have heTau : m.e ∈ tau.verts :=
+      hsourceMem m.e (by
+        simpa only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false]
+          using hends.2)
     exact hlegal.2.2 tau hunchanged.1 ⟨hdTau, heTau⟩
 
 /-- A legal `2-3` move whose shared-face edge `(a,b)` has incidence four

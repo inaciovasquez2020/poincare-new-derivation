@@ -14,6 +14,7 @@ def test_admissible_32_detection_and_step():
         [0, 1, 2, 3],
         [0, 1, 2, 4],
         [0, 1, 3, 4],
+        [5, 6, 7, 8],
     ]
     T = Triangulation(tetrahedra)
     assert T.is_admissible()
@@ -27,6 +28,7 @@ def test_admissible_32_detection_and_step():
 
     actual = canon(T2.tetrahedra)
     expected = canon([
+        (5, 6, 7, 8),
         (0, 2, 3, 4),
         (1, 2, 3, 4),
     ])
@@ -138,3 +140,14 @@ def test_phi4_entropy_spectrum_random_lift_and_adversarial():
     A = adversarial_family_chain(4)
     assert A.phi4() >= 0
     assert A.spectrum_penalty() >= 0
+
+
+def test_apply_32_rejects_fabricated_candidate():
+    from scripts.pachner_search import Move32
+    T = Triangulation([[0, 1, 2, 3]])
+    try:
+        T.apply_32(Move32((4, 5), (6, 7, 8), 0, 0, 0))
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("fabricated move accepted")

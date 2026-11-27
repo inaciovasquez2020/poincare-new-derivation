@@ -157,51 +157,50 @@ theorem exists_recurrent_fanReentryModeKey_classified
 
   refine ⟨i, j, hij, hbound, hkey, hsegment, ?_⟩
 
-  cases hi : states i with
-  | fan old =>
-      cases hj : states j with
-      | fan next =>
-          have hstate : old.edgeState = next.edgeState := by
-            simpa [hi, hj] using hkey
+  have hiCases :
+      (∃ old : HighFanState K, states i = .fan old) ∨
+        (∃ old : WitnessedReentryState K, states i = .reentry old) := by
+    cases h : states i with
+    | fan old => exact Or.inl ⟨old, rfl⟩
+    | reentry old => exact Or.inr ⟨old, rfl⟩
 
-          have hcanon :
-              canonicalEdgeKey old.v old.x =
-                canonicalEdgeKey next.v next.x := by
-            have h :=
-              congrArg
-                (fun q : SupportedEdgeState K => q.key)
-                hstate
-            simpa using h
+  have hjCases :
+      (∃ next : HighFanState K, states j = .fan next) ∨
+        (∃ next : WitnessedReentryState K, states j = .reentry next) := by
+    cases h : states j with
+    | fan next => exact Or.inl ⟨next, rfl⟩
+    | reentry next => exact Or.inr ⟨next, rfl⟩
 
-          have hgap : i + 1 < j := by
-            by_contra hnot
-            have hsucc : j = i + 1 := by
-              omega
-            subst j
-            have hneq :=
-              hfanProgress
-                i old next
-                (Nat.le_refl i)
-                (by omega)
-                hi hj
-            exact hneq hcanon.symm
-
-          exact
-            Or.inl ⟨old, next, hi, hj, hgap, hcanon⟩
-
-      | reentry next =>
-          have hfalse : False := by
-            simpa [hi, hj, FanReentryModeState.finiteKey] using hkey
-          exact hfalse.elim
-
-  | reentry old =>
-      cases hj : states j with
-      | fan next =>
-          have hfalse : False := by
-            simpa [hi, hj, FanReentryModeState.finiteKey] using hkey
-          exact hfalse.elim
-
-      | reentry next =>
-          exact Or.inr ⟨old, next, hi, hj⟩
+  rcases hiCases with ⟨old, hi⟩ | ⟨old, hi⟩
+  · rcases hjCases with ⟨next, hj⟩ | ⟨next, hj⟩
+    · have hstate : old.edgeState = next.edgeState := by
+        have hk := hkey
+        rw [hi, hj] at hk
+        exact congrArg Prod.snd hk
+      have hcanon :
+          canonicalEdgeKey old.v old.x =
+            canonicalEdgeKey next.v next.x := by
+        have h := congrArg (fun q : SupportedEdgeState K => q.key) hstate
+        simpa using h
+      have hgap : i + 1 < j := by
+        by_contra hnot
+        have hsucc : j = i + 1 := by omega
+        have hjstep : states (i + 1) = .fan next := by
+          rw [← hsucc]
+          exact hj
+        have hneq :=
+          hfanProgress i old next (Nat.le_refl i) (by omega) hi hjstep
+        exact hneq hcanon.symm
+      exact Or.inl ⟨old, next, hi, hj, hgap, hcanon⟩
+    · have hk := hkey
+      rw [hi, hj] at hk
+      have hfalse := congrArg Prod.fst hk
+      cases hfalse
+  · rcases hjCases with ⟨next, hj⟩ | ⟨next, hj⟩
+    · have hk := hkey
+      rw [hi, hj] at hk
+      have hfalse := congrArg Prod.fst hk
+      cases hfalse
+    · exact Or.inr ⟨old, next, hi, hj⟩
 
 end Poincare

@@ -1,0 +1,28 @@
+name: DFM stabilized descent focused certificate
+
+on:
+  push:
+    branches: [research/dfm-stabilized-descent-certificate]
+  pull_request:
+    branches: [main]
+    paths:
+      - scripts/tests/dfm_stabilized_descent_certificate.py
+      - .github/workflows/dfm-stabilized-descent-focused.yml
+
+permissions:
+  contents: read
+
+jobs:
+  finite-certificate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+      - name: Replay exact DFM source, including sublevel closure
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B scripts/tests/dfm_stabilized_descent_certificate.py | tee "$RUNNER_TEMP/dfm-certificate.log"
+          grep -Fx 'SUBLEVEL_COMPONENT := 313' "$RUNNER_TEMP/dfm-certificate.log"
+          grep -Fx 'DFM_STABILIZED_DESCENT_CERTIFICATE := PASS' "$RUNNER_TEMP/dfm-certificate.log"
+          grep -F 'DEFECT_PROFILE := ' "$RUNNER_TEMP/dfm-certificate.log"

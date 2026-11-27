@@ -1,0 +1,5 @@
+import Poincare.PerelmanPL
+
+#print axioms Poincare.universal_S3_false
+#print axioms Poincare.conditional_PL_poincare_recognition
+#print axioms Poincare.globalPhiSupportDescent_implies_Perelman_PL
