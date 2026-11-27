@@ -1,0 +1,65 @@
+{
+  "status": "COMPUTATION_PASS",
+  "results": [
+    {
+      "name": "S3_stellar_0",
+      "h1": 0,
+      "h2": 0,
+      "image_dimension": 0,
+      "locally_solvable_quotient_dimension": 0,
+      "residual_local_obstruction_dimension": 0,
+      "forward_basis_checks": 5,
+      "reverse_checks": 16,
+      "local_blocked": 0,
+      "reverse_mode": "exhaustive"
+    },
+    {
+      "name": "S3_stellar_1",
+      "h1": 0,
+      "h2": 0,
+      "image_dimension": 0,
+      "locally_solvable_quotient_dimension": 0,
+      "residual_local_obstruction_dimension": 0,
+      "forward_basis_checks": 6,
+      "reverse_checks": 128,
+      "local_blocked": 0,
+      "reverse_mode": "exhaustive"
+    },
+    {
+      "name": "S3_stellar_2",
+      "h1": 0,
+      "h2": 0,
+      "image_dimension": 0,
+      "locally_solvable_quotient_dimension": 0,
+      "residual_local_obstruction_dimension": 0,
+      "forward_basis_checks": 7,
+      "reverse_checks": 1024,
+      "local_blocked": 0,
+      "reverse_mode": "exhaustive"
+    },
+    {
+      "name": "S2_times_S1",
+      "h1": 1,
+      "h2": 1,
+      "image_dimension": 1,
+      "locally_solvable_quotient_dimension": 1,
+      "residual_local_obstruction_dimension": 0,
+      "forward_basis_checks": 13,
+      "reverse_checks": 37,
+      "local_blocked": 0,
+      "reverse_mode": "zero_and_basis"
+    },
+    {
+      "name": "suspension_torus",
+      "h1": 0,
+      "h2": 2,
+      "image_dimension": 0,
+      "locally_solvable_quotient_dimension": 0,
+      "residual_local_obstruction_dimension": 2,
+      "forward_basis_checks": 11,
+      "reverse_checks": 27,
+      "local_blocked": 11,
+      "reverse_mode": "zero_and_basis"
+    }
+  ]
+}

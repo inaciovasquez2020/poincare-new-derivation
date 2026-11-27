@@ -1,0 +1,44 @@
+{
+  "status": "COMPUTATION_PASS",
+  "disk": {
+    "grid": [
+      2,
+      2
+    ],
+    "assignments": 262144,
+    "compatible": 54758,
+    "cocycles": 8,
+    "exact_cocycles": 8,
+    "pairings": 438064,
+    "nonexact_cocycle_pairings": 0,
+    "three_constant_sides": 46,
+    "mismatches": 0
+  },
+  "annulus": {
+    "grid": [
+      1,
+      2
+    ],
+    "assignments": 46656,
+    "compatible": 5490,
+    "cocycles": 64,
+    "exact_cocycles": 32,
+    "pairings": 351360,
+    "nonexact_cocycle_pairings": 175680,
+    "three_constant_sides": 30,
+    "mismatches": 0
+  },
+  "two_label_word_checks": 32760,
+  "pairwise_only_negative_control": {
+    "corners": [
+      0,
+      1,
+      2,
+      0
+    ],
+    "pairwise_edges_present": true,
+    "common_simplex": false,
+    "boundary_parity": 1
+  },
+  "scope": "Finite algebraic grid and word checks only; no Lean or geometric homotopy verification."
+}
