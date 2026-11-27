@@ -30,7 +30,7 @@ theorem poincareConjectureTarget_of_global_PhiSupport_descent
   exact conditional_poincare_of_simplyConnected_global_PhiSupport_descent
     hdescent hcore hM hSC
 
-/--
+/-
 Open frontier: an unconditional proof of this target is not provided here.
 Do not replace this declaration with an axiom or an admitted proof; either
 would make the formal status misleading.
