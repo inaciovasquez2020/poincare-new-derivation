@@ -1,0 +1,249 @@
+{
+  "status": "COMPUTATION_PASS",
+  "claim": "finite odd-dual-cycle non-3-boundary certificate, NOT universal Lean theorem",
+  "source": "/mnt/data/poincare_reentry_adversarial_receipt.json",
+  "number_tetrahedra": 51,
+  "witnesses": [
+    {
+      "sphere_apex": 2,
+      "sphere_faces": [
+        [
+          2,
+          3,
+          7
+        ],
+        [
+          2,
+          3,
+          12
+        ],
+        [
+          2,
+          7,
+          12
+        ],
+        [
+          3,
+          7,
+          12
+        ]
+      ],
+      "source_tetrahedron_index": 28,
+      "target_tetrahedron_index": 29,
+      "dual_path_avoiding_sphere": [
+        [
+          28,
+          26,
+          [
+            3,
+            12,
+            13
+          ]
+        ],
+        [
+          26,
+          38,
+          [
+            4,
+            12,
+            13
+          ]
+        ],
+        [
+          38,
+          31,
+          [
+            4,
+            9,
+            13
+          ]
+        ],
+        [
+          31,
+          41,
+          [
+            5,
+            9,
+            13
+          ]
+        ],
+        [
+          41,
+          42,
+          [
+            5,
+            10,
+            13
+          ]
+        ],
+        [
+          42,
+          40,
+          [
+            5,
+            10,
+            15
+          ]
+        ],
+        [
+          40,
+          27,
+          [
+            7,
+            10,
+            15
+          ]
+        ],
+        [
+          27,
+          29,
+          [
+            3,
+            7,
+            15
+          ]
+        ]
+      ],
+      "dual_cycle_odd_crossings": 1,
+      "sphere_is_tetrahedron_3_boundary": false,
+      "result": "COMPUTATION_PASS"
+    },
+    {
+      "sphere_apex": 4,
+      "sphere_faces": [
+        [
+          3,
+          4,
+          7
+        ],
+        [
+          3,
+          4,
+          12
+        ],
+        [
+          3,
+          7,
+          12
+        ],
+        [
+          4,
+          7,
+          12
+        ]
+      ],
+      "source_tetrahedron_index": 28,
+      "target_tetrahedron_index": 29,
+      "dual_path_avoiding_sphere": [
+        [
+          28,
+          26,
+          [
+            3,
+            12,
+            13
+          ]
+        ],
+        [
+          26,
+          38,
+          [
+            4,
+            12,
+            13
+          ]
+        ],
+        [
+          38,
+          31,
+          [
+            4,
+            9,
+            13
+          ]
+        ],
+        [
+          31,
+          41,
+          [
+            5,
+            9,
+            13
+          ]
+        ],
+        [
+          41,
+          42,
+          [
+            5,
+            10,
+            13
+          ]
+        ],
+        [
+          42,
+          40,
+          [
+            5,
+            10,
+            15
+          ]
+        ],
+        [
+          40,
+          27,
+          [
+            7,
+            10,
+            15
+          ]
+        ],
+        [
+          27,
+          29,
+          [
+            3,
+            7,
+            15
+          ]
+        ]
+      ],
+      "dual_cycle_odd_crossings": 1,
+      "sphere_is_tetrahedron_3_boundary": false,
+      "result": "COMPUTATION_PASS"
+    }
+  ],
+  "negative_control_boundary4simplex": {
+    "sphere_apex": 3,
+    "sphere_faces": [
+      [
+        0,
+        1,
+        2
+      ],
+      [
+        0,
+        1,
+        3
+      ],
+      [
+        0,
+        2,
+        3
+      ],
+      [
+        1,
+        2,
+        3
+      ]
+    ],
+    "source_tetrahedron_index": 4,
+    "target_tetrahedron_index": 3,
+    "dual_path_avoiding_sphere": null,
+    "dual_cycle_odd_crossings": null,
+    "sphere_is_tetrahedron_3_boundary": true,
+    "result": "COMPUTATION_PASS"
+  },
+  "global_h2_vanishing_bridge": "NOT_RUN",
+  "lean": "NOT_RUN"
+}

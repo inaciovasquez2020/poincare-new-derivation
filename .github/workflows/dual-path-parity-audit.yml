@@ -1,0 +1,47 @@
+name: Dual-path parity kernel audit
+on:
+  push:
+    branches:
+      - audit/reentry-adversarial-h1-20261115
+  pull_request:
+  workflow_dispatch:
+jobs:
+  dual-path:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile standalone parity lemma and print axioms
+        uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+      - name: Kernel check and permitted axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! lake env lean lean/Poincare/DualPathNonboundaryParity.lean > /tmp/dual-path-axioms.log 2>&1; then
+            cat /tmp/dual-path-axioms.log
+            exit 1
+          fi
+          cat /tmp/dual-path-axioms.log
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          lines = Path('/tmp/dual-path-axioms.log').read_text().splitlines()
+          for name in [
+              'Poincare.DualPathParity.equal_on_avoiding_path',
+              'Poincare.DualPathParity.nonboundary_of_avoiding_return',
+          ]:
+              reports = [x for x in lines if x.startswith(f"'{name}' ")]
+              assert len(reports) == 1, (name, reports)
+              if 'does not depend on any axioms' in reports[0]:
+                  axioms = set()
+              else:
+                  match = re.fullmatch(
+                      re.escape(f"'{name}'") + r" depends on axioms:\s*\[([^\]]*)\]",
+                      reports[0])
+                  assert match, reports[0]
+                  axioms = {x.strip() for x in match.group(1).split(',') if x.strip()}
+              assert axioms <= {'propext','Classical.choice','Quot.sound'}, axioms
+              print(name, 'AXIOMS_PASS', sorted(axioms))
+          PY
