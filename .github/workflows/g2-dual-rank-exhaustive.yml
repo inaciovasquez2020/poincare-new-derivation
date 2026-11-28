@@ -1,0 +1,20 @@
+name: G2 dual-rank exhaustive finite fixture
+on:
+  pull_request:
+    paths:
+      - 'scripts/experiments/g2_dual_rank_boundary4_exhaustive.py'
+      - 'scripts/experiments/g2_barycentric_boundary4_rank.py'
+      - '.github/workflows/g2-dual-rank-exhaustive.yml'
+  workflow_dispatch:
+
+jobs:
+  boundary-four-simplex:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Exhaustive mod-two cycle and potential audit
+        run: |
+          set -euo pipefail
+          python3 --version
+          python3 scripts/experiments/g2_dual_rank_boundary4_exhaustive.py
+          python3 scripts/experiments/g2_barycentric_boundary4_rank.py

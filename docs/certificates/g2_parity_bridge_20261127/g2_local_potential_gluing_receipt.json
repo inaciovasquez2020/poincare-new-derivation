@@ -1,0 +1,88 @@
+{
+  "status": "COMPUTATION_PASS",
+  "results": [
+    {
+      "name": "S3_stellar_0",
+      "V": 5,
+      "E": 10,
+      "F": 10,
+      "T": 5,
+      "cycle_dimension": 4,
+      "link_euler_values": [
+        2
+      ],
+      "mode": "exhaustive",
+      "tested": 16,
+      "outcomes": {
+        "glued": 16
+      }
+    },
+    {
+      "name": "S3_stellar_1",
+      "V": 6,
+      "E": 14,
+      "F": 16,
+      "T": 8,
+      "cycle_dimension": 7,
+      "link_euler_values": [
+        2
+      ],
+      "mode": "exhaustive",
+      "tested": 128,
+      "outcomes": {
+        "glued": 128
+      }
+    },
+    {
+      "name": "S3_stellar_2",
+      "V": 7,
+      "E": 18,
+      "F": 22,
+      "T": 11,
+      "cycle_dimension": 10,
+      "link_euler_values": [
+        2
+      ],
+      "mode": "exhaustive",
+      "tested": 1024,
+      "outcomes": {
+        "glued": 1024
+      }
+    },
+    {
+      "name": "S2_times_S1",
+      "V": 12,
+      "E": 48,
+      "F": 72,
+      "T": 36,
+      "cycle_dimension": 36,
+      "link_euler_values": [
+        2
+      ],
+      "mode": "zero_and_basis",
+      "tested": 37,
+      "outcomes": {
+        "glued": 28,
+        "global_obstruction": 9
+      }
+    },
+    {
+      "name": "suspension_torus",
+      "V": 11,
+      "E": 45,
+      "F": 72,
+      "T": 36,
+      "cycle_dimension": 37,
+      "link_euler_values": [
+        0,
+        2
+      ],
+      "mode": "zero_and_basis",
+      "tested": 38,
+      "outcomes": {
+        "glued": 27,
+        "local_obstruction": 11
+      }
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+name: G2 intermediate boundary labels Lean audit
+on:
+  pull_request:
+    paths:
+      - 'research/candidates/G2IntermediateBoundaryLabels.lean'
+      - 'lean/Poincare/G2PrimalEdgeCoordinateSupport.lean'
+      - 'lean/Poincare/G2PrimalEdgeSubdivisionParity.lean'
+      - '.github/workflows/g2-intermediate-boundary-labels.yml'
+  workflow_dispatch:
+jobs:
+  intermediate-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+      - name: Compile geometric intermediate label lemmas
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.G2PrimalEdgeCoordinateSupport Poincare.G2PrimalEdgeSubdivisionParity
+          lake env lean research/candidates/G2IntermediateBoundaryLabels.lean > /tmp/g2-intermediate.log 2>&1 || {
+            cat /tmp/g2-intermediate.log
+            exit 1
+          }
+          cat /tmp/g2-intermediate.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          log=Path('/tmp/g2-intermediate.log').read_text()
+          for name in [
+            'Poincare.g2_intermediate_left_cell_meets_interval',
+            'Poincare.g2_actual_intermediate_boundary_labels',
+          ]:
+            pattern=re.escape(f"'{name}'")+r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
+            m=list(re.finditer(pattern,log))
+            assert len(m)==1,(name,len(m))
+            raw=m[0].group(1)
+            axioms=set() if raw is None else {x.strip() for x in raw.split(',') if x.strip()}
+            assert axioms <= {'propext','Classical.choice','Quot.sound'},(name,axioms)
+            print(name,'AXIOMS_PASS')
+          print('G2_INTERMEDIATE_LABELS := LEAN_VERIFIED')
+          PY

@@ -1,0 +1,45 @@
+name: G2 universal rectangular grid Stokes Lean audit
+on:
+  pull_request:
+    paths:
+      - 'research/candidates/G2RectangularGridStokes.lean'
+      - '.github/workflows/g2-grid-stokes-lean.yml'
+  workflow_dispatch:
+
+jobs:
+  grid-stokes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+      - name: Compile isolated rectangular grid Stokes and audit axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake env lean research/candidates/G2RectangularGridStokes.lean > /tmp/g2-grid-stokes.log 2>&1 || {
+            cat /tmp/g2-grid-stokes.log
+            exit 1
+          }
+          cat /tmp/g2-grid-stokes.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report=Path('/tmp/g2-grid-stokes.log').read_text()
+          for name in (
+            'Poincare.G2GridStokes.rectangle_perimeter_zero',
+            'Poincare.G2GridStokes.tetrahedron_quad_parity_zero',
+            'Poincare.G2GridStokes.quad_parity_zero_of_common_tetrahedron',
+          ):
+            pattern=re.escape(f"'{name}'")+r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
+            matches=list(re.finditer(pattern,report))
+            assert len(matches)==1,(name,len(matches))
+            payload=matches[0].group(1)
+            axioms=set() if payload is None else {s.strip() for s in payload.split(',') if s.strip()}
+            assert axioms <= {'propext','Classical.choice','Quot.sound'},(name,axioms)
+            print(name,'AXIOMS_PASS')
+          print('G2_GRID_STOKES := LEAN_VERIFIED')
+          print('AXIOM_AUDIT := PASS')
+          PY

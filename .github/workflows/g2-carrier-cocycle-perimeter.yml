@@ -1,0 +1,41 @@
+name: G2 carrier grid cocycle perimeter Lean audit
+on:
+  pull_request:
+    paths:
+      - 'lean/Poincare/G2GridStokes.lean'
+      - 'research/candidates/G2CarrierGridCocyclePerimeter.lean'
+      - '.github/workflows/g2-carrier-cocycle-perimeter.yml'
+  workflow_dispatch:
+
+jobs:
+  geometric-cocycle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+      - name: Compile and audit grid cocycle perimeter at actual pinned toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.G2GridStokes
+          lake env lean research/candidates/G2CarrierGridCocyclePerimeter.lean > /tmp/g2-carrier-cocycle.log 2>&1 || {
+            cat /tmp/g2-carrier-cocycle.log
+            exit 1
+          }
+          cat /tmp/g2-carrier-cocycle.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report=Path('/tmp/g2-carrier-cocycle.log').read_text()
+          name='Poincare.carrier_grid_cocycle_perimeter_zero_of_common_tet'
+          pattern=re.escape(f"'{name}'")+r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
+          matches=list(re.finditer(pattern,report))
+          assert len(matches)==1,(name,len(matches))
+          payload=matches[0].group(1)
+          axioms=set() if payload is None else {x.strip() for x in payload.split(',') if x.strip()}
+          assert axioms <= {'propext','Classical.choice','Quot.sound'},(name,axioms)
+          print('G2_CARRIER_GRID_COCYCLE_PERIMETER := LEAN_VERIFIED')
+          PY

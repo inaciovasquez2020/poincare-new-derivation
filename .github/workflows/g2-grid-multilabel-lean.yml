@@ -1,0 +1,45 @@
+name: G2 finite grid common-tetrahedron Lean audit
+on:
+  pull_request:
+    paths:
+      - 'lean/Poincare/GlobalMove32ReentryDyadicGridVertices.lean'
+      - '.github/workflows/g2-grid-multilabel-lean.yml'
+  workflow_dispatch:
+
+jobs:
+  common-tetrahedron:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+      - name: Compile actual carrier-grid module and audit axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.GlobalMove32ReentryDyadicGridVertices
+          cat > /tmp/g2-grid-audit.lean <<'LEAN'
+          import Poincare.GlobalMove32ReentryDyadicGridVertices
+          #print axioms Poincare.CarrierLoopNullHomotopyData.carrier_finite_positive_coordinates_common_tet_probe
+          #print axioms Poincare.CarrierLoopNullHomotopyData.squareGrid_commonPoint_labels_common_tet_probe
+          LEAN
+          lake env lean /tmp/g2-grid-audit.lean > /tmp/g2-grid-audit.log
+          cat /tmp/g2-grid-audit.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report=Path('/tmp/g2-grid-audit.log').read_text()
+          for name in (
+            'Poincare.CarrierLoopNullHomotopyData.carrier_finite_positive_coordinates_common_tet_probe',
+            'Poincare.CarrierLoopNullHomotopyData.squareGrid_commonPoint_labels_common_tet_probe',
+          ):
+            pattern=re.escape(f"'{name}'")+r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
+            matches=list(re.finditer(pattern,report))
+            assert len(matches)==1,(name,len(matches))
+            payload=matches[0].group(1)
+            axioms=set() if payload is None else {s.strip() for s in payload.split(',') if s.strip()}
+            assert axioms <= {'propext','Classical.choice','Quot.sound'},(name,axioms)
+            print(name,'AXIOMS_PASS')
+          PY

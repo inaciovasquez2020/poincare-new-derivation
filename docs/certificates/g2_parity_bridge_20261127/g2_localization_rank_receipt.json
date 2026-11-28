@@ -1,0 +1,175 @@
+{
+  "status": "COMPUTATION_PASS",
+  "method": "independent RREF; exact basis checks",
+  "fixtures": 8,
+  "cycle_basis_checks": 279,
+  "boundary_generator_checks": 276,
+  "localization_kernel_basis_checks": 269,
+  "elapsed_seconds": 0.0929,
+  "results": [
+    {
+      "name": "S3_stellar_0",
+      "V": 5,
+      "E": 10,
+      "F": 10,
+      "T": 5,
+      "h1": 0,
+      "h2": 0,
+      "local_target_dimension": 0,
+      "nonzero_link_h1": [],
+      "localization_rank": 0,
+      "locally_solvable_quotient_dimension": 0,
+      "cycle_basis_checks": 4,
+      "boundary_generator_checks": 5,
+      "localization_kernel_basis_checks": 4
+    },
+    {
+      "name": "S3_stellar_1",
+      "V": 6,
+      "E": 14,
+      "F": 16,
+      "T": 8,
+      "h1": 0,
+      "h2": 0,
+      "local_target_dimension": 0,
+      "nonzero_link_h1": [],
+      "localization_rank": 0,
+      "locally_solvable_quotient_dimension": 0,
+      "cycle_basis_checks": 7,
+      "boundary_generator_checks": 8,
+      "localization_kernel_basis_checks": 7
+    },
+    {
+      "name": "S3_stellar_2",
+      "V": 7,
+      "E": 18,
+      "F": 22,
+      "T": 11,
+      "h1": 0,
+      "h2": 0,
+      "local_target_dimension": 0,
+      "nonzero_link_h1": [],
+      "localization_rank": 0,
+      "locally_solvable_quotient_dimension": 0,
+      "cycle_basis_checks": 10,
+      "boundary_generator_checks": 11,
+      "localization_kernel_basis_checks": 10
+    },
+    {
+      "name": "S2_times_S1",
+      "V": 12,
+      "E": 48,
+      "F": 72,
+      "T": 36,
+      "h1": 1,
+      "h2": 1,
+      "local_target_dimension": 0,
+      "nonzero_link_h1": [],
+      "localization_rank": 0,
+      "locally_solvable_quotient_dimension": 1,
+      "cycle_basis_checks": 36,
+      "boundary_generator_checks": 36,
+      "localization_kernel_basis_checks": 36
+    },
+    {
+      "name": "suspension_torus_3x3",
+      "V": 11,
+      "E": 45,
+      "F": 72,
+      "T": 36,
+      "h1": 0,
+      "h2": 2,
+      "local_target_dimension": 4,
+      "nonzero_link_h1": [
+        [
+          9,
+          2
+        ],
+        [
+          10,
+          2
+        ]
+      ],
+      "localization_rank": 2,
+      "locally_solvable_quotient_dimension": 0,
+      "cycle_basis_checks": 37,
+      "boundary_generator_checks": 36,
+      "localization_kernel_basis_checks": 35
+    },
+    {
+      "name": "suspension_torus_3x4",
+      "V": 14,
+      "E": 60,
+      "F": 96,
+      "T": 48,
+      "h1": 0,
+      "h2": 2,
+      "local_target_dimension": 4,
+      "nonzero_link_h1": [
+        [
+          12,
+          2
+        ],
+        [
+          13,
+          2
+        ]
+      ],
+      "localization_rank": 2,
+      "locally_solvable_quotient_dimension": 0,
+      "cycle_basis_checks": 49,
+      "boundary_generator_checks": 48,
+      "localization_kernel_basis_checks": 47
+    },
+    {
+      "name": "suspension_torus_4x4",
+      "V": 18,
+      "E": 80,
+      "F": 128,
+      "T": 64,
+      "h1": 0,
+      "h2": 2,
+      "local_target_dimension": 4,
+      "nonzero_link_h1": [
+        [
+          16,
+          2
+        ],
+        [
+          17,
+          2
+        ]
+      ],
+      "localization_rank": 2,
+      "locally_solvable_quotient_dimension": 0,
+      "cycle_basis_checks": 65,
+      "boundary_generator_checks": 64,
+      "localization_kernel_basis_checks": 63
+    },
+    {
+      "name": "suspension_genus2",
+      "V": 17,
+      "E": 81,
+      "F": 136,
+      "T": 68,
+      "h1": 0,
+      "h2": 4,
+      "local_target_dimension": 8,
+      "nonzero_link_h1": [
+        [
+          18,
+          4
+        ],
+        [
+          19,
+          4
+        ]
+      ],
+      "localization_rank": 4,
+      "locally_solvable_quotient_dimension": 0,
+      "cycle_basis_checks": 71,
+      "boundary_generator_checks": 68,
+      "localization_kernel_basis_checks": 67
+    }
+  ]
+}

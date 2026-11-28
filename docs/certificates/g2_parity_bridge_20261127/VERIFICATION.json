@@ -1,0 +1,21 @@
+{
+  "status": "RESEARCH_CHECKPOINT",
+  "paper": "PROVED_ON_PAPER_UNDER_EXPLICIT_HYPOTHESES",
+  "lean": "NOT_RUN",
+  "axioms": "NOT_RUN",
+  "global_poincare": "OPEN",
+  "repo_integration": "OPEN",
+  "pr200_head": "36df38d563014164bf288d17448255de4817abb8",
+  "mac_last_reported_head": "ffbd449d21530c1bef49c7b8cfac1cd89b3a2bd5",
+  "python": "3.13.5",
+  "verifiers": {
+    "verify_g2_local_potential_gluing.py": "COMPUTATION_PASS",
+    "verify_g2_localization_rank.py": "COMPUTATION_PASS",
+    "verify_g2_obstruction_isomorphism.py": "COMPUTATION_PASS",
+    "verify_g2_partition.py": "COMPUTATION_PASS",
+    "verify_g2_vertex_grid.py": "COMPUTATION_PASS"
+  },
+  "timeout_seconds_per_verifier": 30,
+  "codex_used": false,
+  "claude_used": false
+}

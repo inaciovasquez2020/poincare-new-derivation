@@ -1,0 +1,40 @@
+name: G2 actual active carrier boundary Lean audit
+on:
+  pull_request:
+    paths:
+      - 'lean/Poincare/G2ActiveBoundaryZero.lean'
+      - 'lean/Poincare/G2ActualThreeConstantSides.lean'
+      - 'research/candidates/G2ActualActiveBoundaryZero.lean'
+      - '.github/workflows/g2-actual-active-boundary.yml'
+  workflow_dispatch:
+jobs:
+  actual-active-boundary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+        with:
+          build: false
+          test: false
+      - name: Compile actual active-boundary theorem and audit axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.G2ActiveBoundaryZero Poincare.G2ActualThreeConstantSides
+          lake env lean research/candidates/G2ActualActiveBoundaryZero.lean > /tmp/g2-actual-active.log 2>&1 || {
+            cat /tmp/g2-actual-active.log
+            exit 1
+          }
+          cat /tmp/g2-actual-active.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          report=Path('/tmp/g2-actual-active.log').read_text()
+          name='Poincare.g2_actual_carrier_active_boundary_pairing_zero'
+          pattern=re.escape(f"'{name}'")+r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
+          m=list(re.finditer(pattern,report))
+          assert len(m)==1,(name,len(m))
+          axioms=set() if m[0].group(1) is None else {x.strip() for x in m[0].group(1).split(',') if x.strip()}
+          assert axioms <= {'propext','Classical.choice','Quot.sound'},(name,axioms)
+          print('G2_ACTUAL_ACTIVE_BOUNDARY := LEAN_VERIFIED')
+          PY
