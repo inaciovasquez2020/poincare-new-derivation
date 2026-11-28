@@ -71,8 +71,8 @@ theorem g2_vertex_link_closed_walk_pairing_zero_candidate
       g2LinkSupportCarrier_space]
     exact triangulationTopologicalVertexLink_simplyConnected_of_topologicalThreeManifold
       K hcore hM hv
-  apply g2_closed_primal_walk_pairing_zero_candidate hSC w hzero hsym
-    ?_ m hm vertex hclosed hdistinct
+  refine g2_closed_primal_walk_pairing_zero_candidate
+    hSC w hzero hsym ?_ m hm vertex hclosed hdistinct ?_
   · intro tau htau a b c ha hb hc
     change tau ∈ (vertexLinkTriangles K v).map g2LinkPaddedTet at htau
     obtain ⟨s, hs, rfl⟩ := List.mem_map.mp htau
