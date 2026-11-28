@@ -6,6 +6,7 @@ on:
       - 'docs/certificates/g2_parity_bridge_20261127/G2ClosedPrimalWalkCandidate.lean'
       - 'lean/Poincare/CarrierPolygonalPath.lean'
       - 'research/candidates/G2VertexLinkWalkCandidate.lean'
+      - 'research/candidates/G2CocyclePotentialCandidate.lean'
       - 'lean/Poincare/TriangulationTopologicalManifoldVertexLinkSimplyConnectedness.lean'
       - 'lean/Poincare/G2*.lean'
       - '.github/workflows/g2-piecewise-primal-loop.yml'
@@ -106,4 +107,44 @@ jobs:
           axioms = set() if raw is None else {x.strip() for x in raw.split(',') if x.strip()}
           assert axioms <= {'propext', 'Classical.choice', 'Quot.sound'}, (name, axioms)
           print('G2_VERTEX_LINK_WALK := LEAN_VERIFIED')
+          PY
+      - name: Compile cocycle potential reconstruction and audit axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          TMP="$(mktemp -d)"
+          {
+            printf '%s\n' 'import Poincare.CarrierPolygonalPath'
+            printf '%s\n' 'import Poincare.TriangulationTopologicalManifoldVertexLinkSimplyConnectedness'
+            printf '%s\n' 'import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected'
+            cat research/candidates/G2PiecewisePrimalLoopCancellation.lean
+            printf '\n'
+            cat docs/certificates/g2_parity_bridge_20261127/G2ClosedPrimalWalkCandidate.lean
+            printf '\n'
+            cat research/candidates/G2VertexLinkWalkCandidate.lean
+            printf '\n'
+            cat research/candidates/G2CocyclePotentialCandidate.lean
+          } > "$TMP/G2CocyclePotential.lean"
+          lake env lean "$TMP/G2CocyclePotential.lean" > "$TMP/LEAN.log" 2>&1 || {
+            cat "$TMP/LEAN.log"
+            exit 1
+          }
+          cat "$TMP/LEAN.log"
+          python3 - "$TMP/LEAN.log" <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+          log = Path(sys.argv[1]).read_text()
+          for name in (
+              'Poincare.g2_graph_potential_of_closed_walks_candidate',
+              'Poincare.g2_vertex_link_cocycle_exact_candidate',
+          ):
+              pattern = re.escape(f"'{name}'") + r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
+              matches = list(re.finditer(pattern, log))
+              assert len(matches) == 1, (name, len(matches))
+              raw = matches[0].group(1)
+              axioms = set() if raw is None else {x.strip() for x in raw.split(',') if x.strip()}
+              assert axioms <= {'propext', 'Classical.choice', 'Quot.sound'}, (name, axioms)
+              print(name, 'AXIOMS_PASS')
+          print('G2_COCYCLE_POTENTIAL := LEAN_VERIFIED')
           PY
