@@ -7,6 +7,8 @@ on:
       - 'lean/Poincare/CarrierPolygonalPath.lean'
       - 'research/candidates/G2VertexLinkWalkCandidate.lean'
       - 'research/candidates/G2CocyclePotentialCandidate.lean'
+      - 'research/candidates/G2VertexLinkH1Candidate.lean'
+      - 'lean/Poincare/VertexLinkMod2Chain.lean'
       - 'lean/Poincare/TriangulationTopologicalManifoldVertexLinkSimplyConnectedness.lean'
       - 'lean/Poincare/G2*.lean'
       - '.github/workflows/g2-piecewise-primal-loop.yml'
@@ -147,4 +149,45 @@ jobs:
               assert axioms <= {'propext', 'Classical.choice', 'Quot.sound'}, (name, axioms)
               print(name, 'AXIOMS_PASS')
           print('G2_COCYCLE_POTENTIAL := LEAN_VERIFIED')
+          PY
+      - name: Compile actual vertex-link homology closure and audit axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          lake build Poincare.VertexLinkMod2Chain
+          TMP="$(mktemp -d)"
+          {
+            printf '%s\n' 'import Poincare.CarrierPolygonalPath'
+            printf '%s\n' 'import Poincare.TriangulationTopologicalManifoldVertexLinkSimplyConnectedness'
+            printf '%s\n' 'import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected'
+            printf '%s\n' 'import Poincare.VertexLinkMod2Chain'
+            printf '%s\n' 'import Mathlib.LinearAlgebra.Dual.Lemmas'
+            cat research/candidates/G2PiecewisePrimalLoopCancellation.lean
+            printf '\n'
+            cat docs/certificates/g2_parity_bridge_20261127/G2ClosedPrimalWalkCandidate.lean
+            printf '\n'
+            cat research/candidates/G2VertexLinkWalkCandidate.lean
+            printf '\n'
+            cat research/candidates/G2CocyclePotentialCandidate.lean
+            printf '\n'
+            cat research/candidates/G2VertexLinkH1Candidate.lean
+          } > "$TMP/G2VertexLinkH1.lean"
+          lake env lean "$TMP/G2VertexLinkH1.lean" > "$TMP/LEAN.log" 2>&1 || {
+            cat "$TMP/LEAN.log"
+            exit 1
+          }
+          cat "$TMP/LEAN.log"
+          python3 - "$TMP/LEAN.log" <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+          log = Path(sys.argv[1]).read_text()
+          name = 'Poincare.g2_vertex_link_mod2_h1_zero_candidate'
+          pattern = re.escape(f"'{name}'") + r" (?:depends on axioms:\s*\[([^\]]*)\]|does not depend on any axioms)"
+          matches = list(re.finditer(pattern, log))
+          assert len(matches) == 1, (name, len(matches))
+          raw = matches[0].group(1)
+          axioms = set() if raw is None else {x.strip() for x in raw.split(',') if x.strip()}
+          assert axioms <= {'propext', 'Classical.choice', 'Quot.sound'}, (name, axioms)
+          print('G2_VERTEX_LINK_H1 := LEAN_VERIFIED')
           PY
