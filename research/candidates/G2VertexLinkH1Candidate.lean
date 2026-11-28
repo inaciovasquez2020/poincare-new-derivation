@@ -129,8 +129,24 @@ theorem g2_vertex_link_mod2_h1_zero_candidate
         simp only [D1, vertexLinkMod2BoundaryOne, Matrix.mulVecLin_apply,
           Matrix.mulVec_single_one, Matrix.col_apply, vertexLinkMod2BoundaryOneMatrix,
           Pi.add_apply, Pi.single_apply]
-        have hlo : x.1 = e.1.lo ↔ x = lo := ⟨Subtype.ext, fun h => congrArg Subtype.val h⟩
-        have hhi : x.1 = e.1.hi ↔ x = hi := ⟨Subtype.ext, fun h => congrArg Subtype.val h⟩
+        have hlo : x.1 = e.1.lo ↔ x = lo := by
+          constructor
+          · intro h
+            apply Subtype.ext
+            change x.1 = e.1.lo
+            exact h
+          · intro h
+            change x.1 = lo.1
+            exact congrArg (fun t : V => t.1) h
+        have hhi : x.1 = e.1.hi ↔ x = hi := by
+          constructor
+          · intro h
+            apply Subtype.ext
+            change x.1 = e.1.hi
+            exact h
+          · intro h
+            change x.1 = hi.1
+            exact congrArg (fun t : V => t.1) h
         rw [hlo, hhi]
         by_cases hl : x = lo
         · subst x; simp [hne, Ne.symm hne]
