@@ -31,7 +31,7 @@ theorem carrier_grid_positive_labels_cocycle_perimeter_zero
         0 < (H.homotopy z).1 (label i j))
     (w : Nat → Nat → ZMod 2)
     (hsym : ∀ u v, w u v = w v u)
-    (htri : ∀ tau : Tet, ∀ a b c : Nat,
+    (htri : ∀ tau : Tet, tau ∈ K.tets → ∀ a b c : Nat,
       a ∈ tau.verts → b ∈ tau.verts → c ∈ tau.verts →
       w a b + w b c + w c a = 0) :
     let get : Nat → Fin N := fun k =>

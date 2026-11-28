@@ -190,7 +190,7 @@ theorem g2_closed_primal_walk_pairing_zero_candidate
     (w : Nat → Nat → ZMod 2)
     (hzero : ∀ u, w u u = 0)
     (hsym : ∀ u v, w u v = w v u)
-    (htri : ∀ tau : Tet, ∀ a b c : Nat,
+    (htri : ∀ tau : Tet, tau ∈ K.tets → ∀ a b c : Nat,
       a ∈ tau.verts → b ∈ tau.verts → c ∈ tau.verts →
       w a b + w b c + w c a = 0)
     (m : Nat) (hm : 0 < m) (vertex : Nat → Nat)

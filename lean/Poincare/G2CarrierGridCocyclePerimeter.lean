@@ -25,7 +25,7 @@ theorem carrier_grid_cocycle_perimeter_zero_of_common_tet
     {K : Triangulation}
     (w : Nat → Nat → ZMod 2)
     (hsym : ∀ u v, w u v = w v u)
-    (htri : ∀ tau : Tet, ∀ a b c : Nat,
+    (htri : ∀ tau : Tet, tau ∈ K.tets → ∀ a b c : Nat,
       a ∈ tau.verts → b ∈ tau.verts → c ∈ tau.verts →
       w a b + w b c + w c a = 0)
     (n : Nat)
@@ -44,9 +44,10 @@ theorem carrier_grid_cocycle_perimeter_zero_of_common_tet
     (fun i j => w (label i j) (label (i+1) j))
     (fun i j => w (label i j) (label i (j+1)))
   intro i hi j hj
-  obtain ⟨tau, _, ha, hb, hc, hd⟩ := hcommon i hi j hj
+  obtain ⟨tau, htau, ha, hb, hc, hd⟩ := hcommon i hi j hj
   have hquad := tetrahedron_quad_parity_zero
-    (fun v tau => v ∈ tau.verts) w hsym htri tau
+    (fun v (t : {τ : Tet // τ ∈ K.tets}) => v ∈ t.val.verts) w hsym
+    (fun t => htri t.val t.property) ⟨tau, htau⟩
     (label i j) (label (i+1) j)
     (label (i+1) (j+1)) (label i (j+1))
     ha hb hc hd

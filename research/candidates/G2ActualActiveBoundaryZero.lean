@@ -28,7 +28,7 @@ theorem g2_actual_carrier_active_boundary_pairing_zero
     (w : Nat → Nat → ZMod 2)
     (hzero : ∀ u, w u u = 0)
     (hsym : ∀ u v, w u v = w v u)
-    (htri : ∀ tau : Tet, ∀ a b c : Nat,
+    (htri : ∀ tau : Tet, tau ∈ K.tets → ∀ a b c : Nat,
       a ∈ tau.verts → b ∈ tau.verts → c ∈ tau.verts →
       w a b + w b c + w c a = 0)
     (base : Nat)
