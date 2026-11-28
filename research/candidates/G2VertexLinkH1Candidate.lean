@@ -53,6 +53,10 @@ theorem g2_vertex_link_mod2_h1_zero_candidate
         φ (Pi.single (⟨e, List.mem_toFinset.mpr he⟩ : E) 1) else 0
     have hcoeff (e : E) : coeff e.1 = φ (Pi.single e 1) := by
       simp only [coeff, dif_pos (List.mem_toFinset.mp e.2)]
+      have heq : (⟨e.1, List.mem_toFinset.mpr (List.mem_toFinset.mp e.2)⟩ : E) = e := by
+        apply Subtype.ext
+        rfl
+      rw [heq]
     let w (a b : Nat) : ZMod 2 :=
       if hab : a ≠ b then coeff (LinkEdge.ofDistinct a b hab) else 0
     have hzero (a : Nat) : w a a = 0 := by simp [w]
