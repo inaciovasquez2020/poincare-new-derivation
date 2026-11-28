@@ -19,6 +19,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          lake build Poincare.GlobalMove32ReentryDyadicGridVertices
           lake env lean research/candidates/G2GridFourCellCorner.lean > /tmp/g2-four-corner.log 2>&1 || {
             cat /tmp/g2-four-corner.log
             exit 1
